@@ -163,12 +163,19 @@
                         </Grid>                      
                     </GroupBox>
 
-                    <TabControl Grid.Row="1" Margin="0,5,0,0">
+                    <TabControl Grid.Row="1" Margin="0,5,0,0"  Background="{DynamicResource WhiteBrush}">
+                        <TabControl.Resources>
+                            <ResourceDictionary>
+                                <ResourceDictionary.MergedDictionaries>
+                                    <ResourceDictionary Source="resources\TabControlStyle.xaml"/>
+                                </ResourceDictionary.MergedDictionaries>
+                            </ResourceDictionary>
+                        </TabControl.Resources>
                         <TabItem Header="Geräte Log">
-                            <TextBox x:Name="TextDeviceLog" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" />
+                            <TextBox x:Name="TextDeviceLog" Foreground="{DynamicResource BlackBrush}" Background="Transparent" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" />                            
                         </TabItem>
                         <TabItem Header="Remote Shell">
-                            <TextBox AcceptsReturn="True" TextWrapping="Wrap" />
+                            <TextBox AcceptsReturn="True" Foreground="{DynamicResource BlackBrush}" Background="Transparent" TextWrapping="Wrap" />
                         </TabItem>
                     </TabControl>
                 </Grid>
