@@ -1,0 +1,55 @@
+﻿<fluent:RibbonWindow  xmlns:fluent="urn:fluent-ribbon" x:Class="Home.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Home" xmlns:controls="clr-namespace:Home.Controls"
+                      mc:Ignorable="d"
+        Title="Home" Height="450" Width="800">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <fluent:Ribbon Background="Transparent">
+            <fluent:Ribbon.Menu>
+                <fluent:Backstage />
+            </fluent:Ribbon.Menu>
+
+            <fluent:RibbonTabItem Header="First">
+                <fluent:RibbonGroupBox Header="First">
+                    <fluent:Button Header="First" />
+                </fluent:RibbonGroupBox>
+            </fluent:RibbonTabItem>
+
+            <fluent:RibbonTabItem Header="Second">
+                <fluent:RibbonGroupBox Header="Second">
+                    <fluent:Button Header="Second" />
+                </fluent:RibbonGroupBox>
+            </fluent:RibbonTabItem>
+        </fluent:Ribbon>
+
+        <Grid Grid.Row="1">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            
+            <StackPanel>
+                <StackPanel.Resources>
+                    <Style TargetType="{x:Type controls:DeviceItem}">
+                        <Setter Property="Margin" Value="0,3,0,0" />
+                    </Style>
+                </StackPanel.Resources>
+                
+                
+                <controls:DeviceItem />
+                <controls:DeviceItem />
+                <controls:DeviceItem />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</fluent:RibbonWindow>
