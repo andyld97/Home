@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Home" xmlns:controls="clr-namespace:Home.Controls"
                       mc:Ignorable="d"
-        Title="Home" Height="450" Width="800">
+        Title="Home Network" Height="768" Width="1024">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -18,13 +18,25 @@
                 <fluent:Backstage />
             </fluent:Ribbon.Menu>
 
-            <fluent:RibbonTabItem Header="First">
-                <fluent:RibbonGroupBox Header="First">
-                    <fluent:Button Header="First" />
+            <fluent:RibbonTabItem Header="Allgemein">
+                <fluent:RibbonGroupBox Header="Werkzeuge">
+                    <fluent:Button Header="Gerät hinzufügen" LargeIcon="/resources/icons/menu/add.png" />
+                    <fluent:Button Header="Log anzeigen" LargeIcon="/resources/icons/menu/log.png" />
+                </fluent:RibbonGroupBox>
+                <fluent:RibbonGroupBox Header="Operationen">
+                    <fluent:Button Header="Nachricht senden" LargeIcon="/resources/icons/menu/send_message.png"/>
+                    <fluent:DropDownButton Header="Herunterfahren Menü" LargeIcon="/resources/icons/menu/shutdown.png">
+                        <fluent:MenuItem Header="Herunterfahren" />
+                        <fluent:MenuItem Header="Neustarten" />
+                    </fluent:DropDownButton>
+                    <fluent:Button Header="Remote Shell" LargeIcon="/resources/icons/menu/shell.png" />
+                    <fluent:Button Header="Remote Verbindung" LargeIcon="/resources/icons/menu/rdp.png" />
+                    <fluent:Button Header="Befehl ausführen" LargeIcon="/resources/icons/menu/run.png" />
+                    <fluent:Button Header="Sound Mute" LargeIcon="/resources/icons/menu/mute.png" />
                 </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>
 
-            <fluent:RibbonTabItem Header="Second">
+            <fluent:RibbonTabItem Header="Verwaltung">
                 <fluent:RibbonGroupBox Header="Second">
                     <fluent:Button Header="Second" />
                 </fluent:RibbonGroupBox>
@@ -32,24 +44,135 @@
         </fluent:Ribbon>
 
         <Grid Grid.Row="1">
-
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="320" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            
-            <StackPanel>
-                <StackPanel.Resources>
-                    <Style TargetType="{x:Type controls:DeviceItem}">
-                        <Setter Property="Margin" Value="0,3,0,0" />
-                    </Style>
-                </StackPanel.Resources>
+
+            <Grid Grid.ColumnSpan="2">
+               <!-- <TextBlock Text="Home Dashboard" FontWeight="Bold" FontSize="22" HorizontalAlignment="Center" /> -->
+            </Grid>
+
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
                 
-                
-                <controls:DeviceItem />
-                <controls:DeviceItem />
-                <controls:DeviceItem />
-            </StackPanel>
+                <ComboBox SelectedIndex="0" Padding="3" Margin="3">
+                    <ComboBoxItem Content="Alle Geräte" />
+                </ComboBox>
+                <ItemsControl x:Name="DeviceHolder" Grid.Row="1" Margin="3,0,0,0">
+                    <ItemsControl.Resources>
+                        <Style TargetType="{x:Type controls:DeviceItem}">
+                            <Setter Property="Margin" Value="0,3,0,0" />
+                        </Style>
+                    </ItemsControl.Resources>
+                    <ItemsControl.Template>
+                        <ControlTemplate TargetType="{x:Type ItemsControl}">
+                            <Border x:Name="Border"
+                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                                <ScrollViewer Margin="0"
+                                      Focusable="False"
+                                      Padding="{TemplateBinding Padding}"
+                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                      HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                                      VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                                      CanContentScroll="{TemplateBinding ScrollViewer.CanContentScroll}">
+                                    <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                </ScrollViewer>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="Border" Property="Background" Value="Gray" />
+                                    <Setter TargetName="Border" Property="BorderBrush" Value="Silver" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </ItemsControl.Template>
+                </ItemsControl>
+            </Grid>
+
+            <Border Grid.Column="1" Grid.Row="1" BorderThickness="2" CornerRadius="5" BorderBrush="Gray" Margin="5">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <GroupBox Header="System Infos">
+                        <Grid>
+                            <Grid.Resources>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Margin" Value="2" />
+                                    <Setter Property="Padding" Value="1" />
+                                    <Setter Property="FontSize" Value="20" />
+                                </Style>
+                            </Grid.Resources>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel>
+                                    <TextBlock Text="OS:" FontWeight="Bold" />
+                                    <TextBlock Text="CPU:" FontWeight="Bold" />
+                                    <TextBlock Text="RAM:" FontWeight="Bold" />
+                                    <TextBlock Text="Laufzeit:" FontWeight="Bold" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock Text="Microsoft Windows 10" />
+                                    <TextBlock Text="AMD Ryzen 7 2700X" />
+                                    <TextBlock Text="24 GB DDR4" />
+                                    <TextBlock Text="00:31" />
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid Grid.Column="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <Border BorderBrush="{DynamicResource BlackBrush}" BorderThickness="2">
+                                    <Grid>
+                                        <Image />
+                                        <TextBlock Text="Andy-PC" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+
+                                <Grid Grid.Row="2" >
+                                    <TextBlock Text="Zuletzt aktualisiert: Nie" HorizontalAlignment="Left"/>
+                                </Grid>
+                            </Grid>
+                        </Grid>                      
+                    </GroupBox>
+
+                    <TabControl Grid.Row="1" Margin="0,5,0,0">
+                        <TabItem Header="Geräte Log">
+                            <TextBox x:Name="TextDeviceLog" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" />
+                        </TabItem>
+                        <TabItem Header="Remote Shell">
+                            <TextBox AcceptsReturn="True" TextWrapping="Wrap" />
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+            </Border>
         </Grid>
     </Grid>
 </fluent:RibbonWindow>

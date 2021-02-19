@@ -38,6 +38,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ControlzEx, Version=4.0.0.0, Culture=neutral, PublicKeyToken=69f1c32f803d307e, processorArchitecture=MSIL">
       <HintPath>..\packages\ControlzEx.4.4.0\lib\net462\ControlzEx.dll</HintPath>
@@ -125,7 +128,32 @@
     <Folder Include="Controls\Dialogs\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="resources\images\device_windows.png" />
+    <Resource Include="icon.ico" />
+    <Resource Include="resources\icons\menu\mute.png" />
+    <Resource Include="resources\icons\menu\rdp.png" />
+    <Resource Include="resources\icons\menu\run.png" />
+    <Resource Include="resources\icons\menu\send_message.png" />
+    <Resource Include="resources\icons\menu\shell.png" />
+    <Resource Include="resources\icons\menu\shutdown.png" />
+    <Resource Include="resources\icons\menu\add.png" />
+    <Resource Include="resources\icons\menu\log.png" />
+    <Resource Include="resources\icons\devices\notebook_linux.png" />
+    <Resource Include="resources\icons\devices\notebook_mint.png" />
+    <Resource Include="resources\icons\devices\notebook_ubuntu.png" />
+    <Resource Include="resources\icons\devices\notebook_windows_10.png" />
+    <Resource Include="resources\icons\devices\notebook_windows_7.png" />
+    <Resource Include="resources\icons\devices\notebook_windows_8.png" />
+    <Resource Include="resources\icons\devices\notebook_windows_vista.png" />
+    <Resource Include="resources\icons\devices\notebook_windows_xp.png" />
+    <Resource Include="resources\icons\devices\desktop_linux.png" />
+    <Content Include="resources\icons\devices\desktop_mint.png" />
+    <Resource Include="resources\icons\devices\pi.png" />
+    <Resource Include="resources\icons\devices\desktop_ubuntu.png" />
+    <Resource Include="resources\icons\devices\desktop_windows_10.png" />
+    <Resource Include="resources\icons\devices\desktop_windows_7.png" />
+    <Resource Include="resources\icons\devices\desktop_windows_8.png" />
+    <Resource Include="resources\icons\devices\desktop_windows_vista.png" />
+    <Resource Include="resources\icons\devices\desktop_windows_xp.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
