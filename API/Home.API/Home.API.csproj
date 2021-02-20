@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup Label="Globals">
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared Libraries\Home.Data\Home.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Serialization">
+      <HintPath>F:\Andy's Dokumente\Eigene Librays\Serialization\Serialization\bin\Debug\Serialization.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+
+</Project>

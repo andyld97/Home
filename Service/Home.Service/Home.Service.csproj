@@ -4,17 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{16547C2C-0E7C-4E77-8864-AD6541F819DD}</ProjectGuid>
+    <ProjectGuid>{BBA6CEE6-1D66-4F82-B179-7203D08EE44C}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Home</RootNamespace>
-    <AssemblyName>Home</AssemblyName>
+    <RootNamespace>Home.Service</RootNamespace>
+    <AssemblyName>Home.Service</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+	<RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <Deterministic>true</Deterministic>
-    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
@@ -39,32 +39,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>icon.ico</ApplicationIcon>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ControlzEx, Version=4.0.0.0, Culture=neutral, PublicKeyToken=69f1c32f803d307e, processorArchitecture=MSIL">
-      <HintPath>..\packages\ControlzEx.4.4.0\lib\net462\ControlzEx.dll</HintPath>
-    </Reference>
-    <Reference Include="Fluent, Version=8.0.0.0, Culture=neutral, PublicKeyToken=3e436e32a8c5546f, processorArchitecture=MSIL">
-      <HintPath>..\packages\Fluent.Ribbon.8.0.3\lib\net462\Fluent.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.31\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Serialization">
-      <HintPath>F:\Andy's Dokumente\Eigene Librays\Serialization\Serialization\bin\Debug\Serialization.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -74,22 +51,15 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="UIAutomationProvider" />
-    <Reference Include="UIAutomationTypes" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Controls\DeviceItem.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -98,17 +68,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Controls\DeviceItem.xaml.cs">
-      <DependentUpon>DeviceItem.xaml</DependentUpon>
-    </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="resources\TabControlStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -128,8 +91,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="app.manifest" />
-    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -139,42 +100,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Controls\Dialogs\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="icon.ico" />
-    <Resource Include="resources\icons\menu\mute.png" />
-    <Resource Include="resources\icons\menu\rdp.png" />
-    <Resource Include="resources\icons\menu\run.png" />
-    <Resource Include="resources\icons\menu\send_message.png" />
-    <Resource Include="resources\icons\menu\shell.png" />
-    <Resource Include="resources\icons\menu\shutdown.png" />
-    <Resource Include="resources\icons\menu\add.png" />
-    <Resource Include="resources\icons\menu\log.png" />
-    <Resource Include="resources\icons\devices\notebook_linux.png" />
-    <Resource Include="resources\icons\devices\notebook_mint.png" />
-    <Resource Include="resources\icons\devices\notebook_ubuntu.png" />
-    <Resource Include="resources\icons\devices\notebook_windows_10.png" />
-    <Resource Include="resources\icons\devices\notebook_windows_7.png" />
-    <Resource Include="resources\icons\devices\notebook_windows_8.png" />
-    <Resource Include="resources\icons\devices\notebook_windows_vista.png" />
-    <Resource Include="resources\icons\devices\notebook_windows_xp.png" />
-    <Resource Include="resources\icons\devices\desktop_linux.png" />
-    <Content Include="resources\icons\devices\desktop_mint.png" />
-    <Resource Include="resources\icons\devices\pi.png" />
-    <Resource Include="resources\icons\devices\desktop_ubuntu.png" />
-    <Resource Include="resources\icons\devices\desktop_windows_10.png" />
-    <Resource Include="resources\icons\devices\desktop_windows_7.png" />
-    <Resource Include="resources\icons\devices\desktop_windows_8.png" />
-    <Resource Include="resources\icons\devices\desktop_windows_vista.png" />
-    <Resource Include="resources\icons\devices\desktop_windows_xp.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Home.Communication\Home.Communication.csproj">
+    <ProjectReference Include="..\..\Home.Communication\Home.Communication.csproj">
       <Project>{d5169a0a-84a0-4f64-aa49-50c58f9d382a}</Project>
       <Name>Home.Communication</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Shared Libraries\Home.Data\Home.Data.csproj">
+    <ProjectReference Include="..\..\Shared Libraries\Home.Data\Home.Data.csproj">
       <Project>{3b6282a4-ef68-477a-b7fd-7e0f96b75862}</Project>
       <Name>Home.Data</Name>
     </ProjectReference>

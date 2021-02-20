@@ -13,10 +13,10 @@ namespace Home.Controls
     /// </summary>
     public partial class DeviceItem : UserControl
     {
-        public DeviceItem(Device deviceItem)
+        public DeviceItem() //Device deviceItem)
         {
             InitializeComponent();
-            DataContext = deviceItem;
+        //    DataContext = deviceItem;
         }
     }
 

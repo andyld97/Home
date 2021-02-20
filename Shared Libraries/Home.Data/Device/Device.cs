@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
+using JsonIgnoreAttribute = Newtonsoft.Json.JsonIgnoreAttribute;
 
 namespace Home.Model
 {
@@ -13,6 +16,7 @@ namespace Home.Model
 
         private string name;
         private string ip;
+        private string guid = Guid.NewGuid().ToString();
         private DateTime lastSeen;
         private DeviceType type;
         private DeviceStatus status;
@@ -21,6 +25,7 @@ namespace Home.Model
         private string location;
 
         [JsonProperty("name")]
+        [System.Text.Json.Serialization.JsonPropertyName("name")]
         public string Name
         { 
             get => name;
@@ -34,7 +39,23 @@ namespace Home.Model
             }
         }
 
+        [JsonProperty("id")]
+        [System.Text.Json.Serialization.JsonPropertyName("id")]
+        public string ID
+        {
+            get => guid.ToString();
+            set
+            {
+                if (guid != null)
+                {
+                    guid = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         [JsonProperty("ip")]
+        [System.Text.Json.Serialization.JsonPropertyName("ip")]
         public string IP
         {
             get => ip;
@@ -49,6 +70,7 @@ namespace Home.Model
         }
 
         [JsonProperty("last_seen")]
+        [System.Text.Json.Serialization.JsonPropertyName("last_seen")]
         public DateTime LastSeen
         {
             get => lastSeen;
@@ -63,6 +85,7 @@ namespace Home.Model
         }
 
         [JsonProperty("state")]
+        [System.Text.Json.Serialization.JsonPropertyName("state")]
         public DeviceStatus Status
         {
             get => status;
@@ -77,6 +100,7 @@ namespace Home.Model
         }
 
         [JsonProperty("type")]
+        [System.Text.Json.Serialization.JsonPropertyName("type")]
         public DeviceType Type
         {
             get => type;
@@ -91,6 +115,7 @@ namespace Home.Model
         }
 
         [JsonProperty("os")]
+        [System.Text.Json.Serialization.JsonPropertyName("os")]
         public OSType OS
         {
             get => os;
@@ -105,6 +130,7 @@ namespace Home.Model
         }
 
         [JsonProperty("group")]
+        [System.Text.Json.Serialization.JsonPropertyName("group")]
         public string DeviceGroup
         {
             get => deviceGroup;
@@ -119,6 +145,7 @@ namespace Home.Model
         }
 
         [JsonProperty("location")]
+        [System.Text.Json.Serialization.JsonPropertyName("location")]
         public string Location
         {
             get => location;
@@ -133,7 +160,12 @@ namespace Home.Model
         }
 
         [JsonProperty("log_entries")]
+        [System.Text.Json.Serialization.JsonPropertyName("log_entries")]
         public ObservableCollection<string> LogEntries { get; set; } = new ObservableCollection<string>();
+
+        [JsonProperty("environment")]
+        [System.Text.Json.Serialization.JsonPropertyName("environment")]
+        public DeviceEnvironment Envoirnment { get; set; } = new DeviceEnvironment();
 
         public enum DeviceStatus
         {
@@ -163,9 +195,7 @@ namespace Home.Model
             Windows10,
             Unix,
             Other
-        }
-
-        
+        }        
 
         public string DetermineDeviceImage()
         {
@@ -280,32 +310,84 @@ namespace Home.Model
             };
 
             return result;
+        }
 
+        public void Update(Device other, DateTime lastSeen, DeviceStatus state, bool isLocal = false)
+        {
+            Name = other.Name;
+            IP = other.IP;
+            LastSeen = lastSeen;
+            Type = other.Type;
+            Status = state;
+            OS = other.OS;
+            DeviceGroup = other.DeviceGroup;
+            Location = other.location;
+            Envoirnment = other.Envoirnment;
+
+            if (isLocal)
+                LogEntries.Clear();
+
+            foreach (var entry in other.LogEntries)
+                LogEntries.Add(entry);
         }
 
         public void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public override string ToString()
+        {
+            string rn = System.Environment.NewLine;
+            string env = Envoirnment.ToString();
+
+            return $"ID: {guid}{rn}Name: {name}{rn}IP: {ip}{rn}Type: {Type}{rn}Status: {Status}{rn}OS: {OS}{rn}Group: {DeviceGroup}{rn}Location: {location}{rn}{rn}{env}";
+        }
     }
 
-    public class System
+    public class DeviceEnvironment
     {
+        [JsonProperty("os_name")]
+        [System.Text.Json.Serialization.JsonPropertyName("os_name")]
         public string OSName { get; set; }
 
+        [JsonProperty("os_version")]
+        [System.Text.Json.Serialization.JsonPropertyName("os_version")]
         public string OSVersion { get; set; }
 
-    }
-
-    public class Hardware
-    {
+        [JsonProperty("cpu_name")]
+        [System.Text.Json.Serialization.JsonPropertyName("cpu_name")]
         public string CPUName { get; set; }
 
+        [JsonProperty("cpu_count")]
+        [System.Text.Json.Serialization.JsonPropertyName("cpu_count")]
         public int CPUCount { get; set; }
 
+        [JsonProperty("total_ram")]
+        [System.Text.Json.Serialization.JsonPropertyName("total_ram")]
         public long TotalRAM { get; set; }
 
+        [JsonProperty("free_ram")]
+        [System.Text.Json.Serialization.JsonPropertyName("free_ram")]
         public long FreeRAM { get; set; }
 
+        [XmlIgnore]
+        [JsonIgnore()]
+        [System.Text.Json.Serialization.JsonIgnore]
+        public TimeSpan RunningTime { get; set; }
+
+        [JsonProperty("running_time")]
+        [JsonPropertyName("running_time")]
+        public string XmlRunningTime
+        {
+            get => RunningTime.ToString();
+            set => RunningTime = TimeSpan.Parse(value);
+        }
+
+        public override string ToString()
+        {
+            string rn = Environment.NewLine;
+            return $"OS: {OSName}{rn}OS-VER: {OSVersion}{rn}CPU: {CPUName}{rn}CPU-COUNT: {CPUCount}{rn}RAM: {TotalRAM}{rn}FREE: {FreeRAM}{rn}Running-Time: {XmlRunningTime}";
+        }
     }
 }

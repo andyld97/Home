@@ -11,6 +11,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Home.Data", "Shared Librari
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{C584A975-1E2C-45DB-9D99-D8CE26ED6F16}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Home.API", "API\Home.API\Home.API.csproj", "{47A580D8-92D0-439B-A32B-A7132C165D4C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Home.Communication", "Home.Communication\Home.Communication.csproj", "{D5169A0A-84A0-4F64-AA49-50C58F9D382A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{69C60DD4-2CEF-4304-A8FF-751BE53960A9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Home.Service", "Service\Home.Service\Home.Service.csproj", "{BBA6CEE6-1D66-4F82-B179-7203D08EE44C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,18 +33,33 @@ Global
 		{3B6282A4-EF68-477A-B7FD-7E0F96B75862}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B6282A4-EF68-477A-B7FD-7E0F96B75862}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B6282A4-EF68-477A-B7FD-7E0F96B75862}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47A580D8-92D0-439B-A32B-A7132C165D4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47A580D8-92D0-439B-A32B-A7132C165D4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47A580D8-92D0-439B-A32B-A7132C165D4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47A580D8-92D0-439B-A32B-A7132C165D4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5169A0A-84A0-4F64-AA49-50C58F9D382A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5169A0A-84A0-4F64-AA49-50C58F9D382A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5169A0A-84A0-4F64-AA49-50C58F9D382A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5169A0A-84A0-4F64-AA49-50C58F9D382A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBA6CEE6-1D66-4F82-B179-7203D08EE44C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBA6CEE6-1D66-4F82-B179-7203D08EE44C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBA6CEE6-1D66-4F82-B179-7203D08EE44C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBA6CEE6-1D66-4F82-B179-7203D08EE44C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{3B6282A4-EF68-477A-B7FD-7E0F96B75862} = {3DDEE229-D318-4A2A-85F4-5ED070765C30}
+		{47A580D8-92D0-439B-A32B-A7132C165D4C} = {C584A975-1E2C-45DB-9D99-D8CE26ED6F16}
+		{D5169A0A-84A0-4F64-AA49-50C58F9D382A} = {3DDEE229-D318-4A2A-85F4-5ED070765C30}
+		{BBA6CEE6-1D66-4F82-B179-7203D08EE44C} = {69C60DD4-2CEF-4304-A8FF-751BE53960A9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {96AFC1EE-03B9-4208-AF3D-A290F2C3B875}
 	EndGlobalSection
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 3
+		SccNumberOfProjects = 6
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://dev.azure.com/code-a-software
 		SccLocalPath0 = .
@@ -47,5 +70,17 @@ Global
 		SccProjectTopLevelParentUniqueName2 = Home.sln
 		SccProjectName2 = Shared\u0020Libraries/Home.Data
 		SccLocalPath2 = Shared\u0020Libraries\\Home.Data
+		SccProjectUniqueName3 = API\\Home.API\\Home.API.csproj
+		SccProjectTopLevelParentUniqueName3 = Home.sln
+		SccProjectName3 = API/Home.API
+		SccLocalPath3 = API\\Home.API
+		SccProjectUniqueName4 = Home.Communication\\Home.Communication.csproj
+		SccProjectTopLevelParentUniqueName4 = Home.sln
+		SccProjectName4 = Home.Communication
+		SccLocalPath4 = Home.Communication
+		SccProjectUniqueName5 = Service\\Home.Service\\Home.Service.csproj
+		SccProjectTopLevelParentUniqueName5 = Home.sln
+		SccProjectName5 = Service/Home.Service
+		SccLocalPath5 = Service\\Home.Service
 	EndGlobalSection
 EndGlobal
