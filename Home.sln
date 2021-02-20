@@ -5,6 +5,12 @@ VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Home", "Home\Home.csproj", "{16547C2C-0E7C-4E77-8864-AD6541F819DD}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared Libraries", "Shared Libraries", "{3DDEE229-D318-4A2A-85F4-5ED070765C30}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Home.Data", "Shared Libraries\Home.Data\Home.Data.csproj", "{3B6282A4-EF68-477A-B7FD-7E0F96B75862}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{C584A975-1E2C-45DB-9D99-D8CE26ED6F16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,20 +21,31 @@ Global
 		{16547C2C-0E7C-4E77-8864-AD6541F819DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16547C2C-0E7C-4E77-8864-AD6541F819DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16547C2C-0E7C-4E77-8864-AD6541F819DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B6282A4-EF68-477A-B7FD-7E0F96B75862}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B6282A4-EF68-477A-B7FD-7E0F96B75862}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B6282A4-EF68-477A-B7FD-7E0F96B75862}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B6282A4-EF68-477A-B7FD-7E0F96B75862}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3B6282A4-EF68-477A-B7FD-7E0F96B75862} = {3DDEE229-D318-4A2A-85F4-5ED070765C30}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {96AFC1EE-03B9-4208-AF3D-A290F2C3B875}
 	EndGlobalSection
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 2
+		SccNumberOfProjects = 3
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://dev.azure.com/code-a-software
 		SccLocalPath0 = .
 		SccProjectUniqueName1 = Home\\Home.csproj
 		SccProjectName1 = Home
 		SccLocalPath1 = Home
+		SccProjectUniqueName2 = Shared\u0020Libraries\\Home.Data\\Home.Data.csproj
+		SccProjectTopLevelParentUniqueName2 = Home.sln
+		SccProjectName2 = Shared\u0020Libraries/Home.Data
+		SccLocalPath2 = Shared\u0020Libraries\\Home.Data
 	EndGlobalSection
 EndGlobal

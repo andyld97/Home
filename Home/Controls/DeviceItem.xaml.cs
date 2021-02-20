@@ -28,13 +28,13 @@ namespace Home.Controls
         {
             Color fill = Colors.Red;
                  
-            if (value is Device.Status state)
+            if (value is Device.DeviceStatus state)
             {
                 switch (state)
                 {
-                    case Device.Status.Active: fill = Colors.Lime; break;
-                    case Device.Status.Idle: fill = Colors.Yellow; break;
-                    case Device.Status.Offline: fill = Colors.Red; break;
+                    case Device.DeviceStatus.Active: fill = Colors.Lime; break;
+                    case Device.DeviceStatus.Idle: fill = Colors.Yellow; break;
+                    case Device.DeviceStatus.Offline: fill = Colors.Red; break;
                 }
             }
 
@@ -54,11 +54,11 @@ namespace Home.Controls
             if (value is Device dev)
             {
                 Color fill = new Color();
-                switch (dev.DeviceStatus)
+                switch (dev.Status)
                 {
-                    case Device.Status.Active: fill = Colors.Lime; break;
-                    case Device.Status.Idle: fill = Colors.Yellow; break;
-                    case Device.Status.Offline: fill = Colors.Red; break;
+                    case Device.DeviceStatus.Active: fill = Colors.Lime; break;
+                    case Device.DeviceStatus.Idle: fill = Colors.Yellow; break;
+                    case Device.DeviceStatus.Offline: fill = Colors.Red; break;
                 }
 
                 /*if (type == Device.DeviceType.Server)

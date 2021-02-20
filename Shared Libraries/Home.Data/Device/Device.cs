@@ -1,29 +1,141 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Home.Model
 {
-    public class Device
+    public class Device : INotifyPropertyChanged
     {
-        public string Name { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        public string IP { get; set; }
+        private string name;
+        private string ip;
+        private DateTime lastSeen;
+        private DeviceType type;
+        private DeviceStatus status;
+        private OSType os;
+        private string deviceGroup;
+        private string location;
 
-        public DateTime LastSeen { get; set; }
+        [JsonProperty("name")]
+        public string Name
+        { 
+            get => name;
+            set
+            {
+                if (value!= name)
+                {
+                    name = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
-        public Status DeviceStatus { get; set; }
+        [JsonProperty("ip")]
+        public string IP
+        {
+            get => ip;
+            set
+            {
+                if (value != ip)
+                {
+                    ip = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
-        public DeviceType Type { get; set; }
+        [JsonProperty("last_seen")]
+        public DateTime LastSeen
+        {
+            get => lastSeen;
+            set
+            {
+                if (value != lastSeen)
+                {
+                    lastSeen = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
-        public OSType OS { get; set; }
+        [JsonProperty("state")]
+        public DeviceStatus Status
+        {
+            get => status;
+            set
+            {
+                if (value != status)
+                {
+                    status = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
-        public string LastScreenshotFileName { get; set; }
+        [JsonProperty("type")]
+        public DeviceType Type
+        {
+            get => type;
+            set
+            {
+                if (type != value)
+                {
+                    type = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
-        public string DeviceGroup { get; set; }
+        [JsonProperty("os")]
+        public OSType OS
+        {
+            get => os;
+            set
+            {
+                if (value != os)
+                {
+                    os = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
-        public string Location { get; set; }
+        [JsonProperty("group")]
+        public string DeviceGroup
+        {
+            get => deviceGroup;
+            set
+            {
+                if (value != deviceGroup)
+                {
+                    deviceGroup = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
-        public enum Status
+        [JsonProperty("location")]
+        public string Location
+        {
+            get => location;
+            set
+            {
+                if (value != location)
+                {
+                    location = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        [JsonProperty("log_entries")]
+        public ObservableCollection<string> LogEntries { get; set; } = new ObservableCollection<string>();
+
+        public enum DeviceStatus
         {
             Active,
             Idle,
@@ -52,6 +164,8 @@ namespace Home.Model
             Unix,
             Other
         }
+
+        
 
         public string DetermineDeviceImage()
         {
@@ -94,7 +208,7 @@ namespace Home.Model
             {
                 new Device()
                 {
-                    DeviceStatus = Device.Status.Active,
+                    Status = Device.DeviceStatus.Active,
                     IP = "192.168.178.2",
                     LastSeen = now.AddHours(-5),
                     Name = "Andy-PC",
@@ -104,7 +218,7 @@ namespace Home.Model
                 },
                 new Device()
                 {
-                    DeviceStatus = Device.Status.Active,
+                    Status = Device.DeviceStatus.Active,
                     IP = "192.168.178.39",
                     LastSeen = now,
                     Name = "srv01",
@@ -115,7 +229,7 @@ namespace Home.Model
                 },
                 new Device()
                 {
-                    DeviceStatus = Device.Status.Offline,
+                    Status = Device.DeviceStatus.Offline,
                     IP = "192.168.178.40",
                     LastSeen = now.AddDays(-5),
                     Name = "ArbeitskellerR",
@@ -125,7 +239,7 @@ namespace Home.Model
                 },
                 new Device()
                 {
-                    DeviceStatus = Status.Idle,
+                    Status = DeviceStatus.Idle,
                     IP = "192.168.178.47",
                     LastSeen = now,
                     Location = "Keller",
@@ -135,7 +249,7 @@ namespace Home.Model
                 },
                 new Device()
                 {
-                    DeviceStatus = Status.Offline,
+                    Status = DeviceStatus.Offline,
                     IP = "Unknown",
                     LastSeen = now,
                     OS = OSType.WindowsXP,
@@ -145,7 +259,7 @@ namespace Home.Model
                 },
                 new Device()
                 {
-                    DeviceStatus = Status.Offline,
+                    Status = DeviceStatus.Offline,
                     IP = "Unknown",
                     LastSeen = now,
                     OS = OSType.Windows7,
@@ -155,7 +269,7 @@ namespace Home.Model
                 },
                 new Device()
                 {
-                    DeviceStatus = Status.Offline,
+                    Status = DeviceStatus.Offline,
                     IP = "Unknown",
                     LastSeen = now,
                     OS = OSType.Windows8,
@@ -167,6 +281,11 @@ namespace Home.Model
 
             return result;
 
+        }
+
+        public void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 

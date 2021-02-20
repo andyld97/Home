@@ -24,7 +24,7 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Image Source="{Binding ., Converter={StaticResource imageConverter}}" Width="64" />
-                <Ellipse Fill="{Binding DeviceStatus, Converter={StaticResource stateToColorConverter}}" Grid.Row="1" Stroke="Black" StrokeThickness="1" Width="10" Height="10" HorizontalAlignment="Center" Margin="0,5,0,5" />
+                <Ellipse Fill="{Binding Status, Converter={StaticResource stateToColorConverter}}" Grid.Row="1" Stroke="Black" StrokeThickness="1" Width="10" Height="10" HorizontalAlignment="Center" Margin="0,5,0,5" />
             </Grid>
 
             <Grid Grid.Column="1">
