@@ -142,6 +142,10 @@
     <Folder Include="Controls\Dialogs\" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="resources\icons\media\usbhdd.png" />
+    <Resource Include="resources\icons\media\cd.png" />
+    <Resource Include="resources\icons\media\hdd.png" />
+    <Resource Include="resources\icons\media\usb.png" />
     <Resource Include="icon.ico" />
     <Resource Include="resources\icons\menu\mute.png" />
     <Resource Include="resources\icons\menu\rdp.png" />

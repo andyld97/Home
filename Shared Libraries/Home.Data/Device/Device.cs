@@ -27,11 +27,11 @@ namespace Home.Model
         [JsonProperty("name")]
         [System.Text.Json.Serialization.JsonPropertyName("name")]
         public string Name
-        { 
+        {
             get => name;
             set
             {
-                if (value!= name)
+                if (value != name)
                 {
                     name = value;
                     OnPropertyChanged();
@@ -167,6 +167,10 @@ namespace Home.Model
         [System.Text.Json.Serialization.JsonPropertyName("environment")]
         public DeviceEnvironment Envoirnment { get; set; } = new DeviceEnvironment();
 
+        [JsonProperty("disk_drives")]
+        [System.Text.Json.Serialization.JsonPropertyName("disk_drives")]
+        public List<DiskDrive> DiskDrives { get; set; } = new List<DiskDrive>();
+
         public enum DeviceStatus
         {
             Active,
@@ -195,7 +199,7 @@ namespace Home.Model
             Windows10,
             Unix,
             Other
-        }        
+        }
 
         public string DetermineDeviceImage()
         {
@@ -208,7 +212,7 @@ namespace Home.Model
                 case DeviceType.Notebook:
                     {
                         string prequel = $"{(Type == DeviceType.Notebook ? "notebook" : "desktop")}_";
-                        
+
                         switch (OS)
                         {
                             case OSType.Linux: prequel += "linux"; break;
@@ -323,6 +327,7 @@ namespace Home.Model
             DeviceGroup = other.DeviceGroup;
             Location = other.location;
             Envoirnment = other.Envoirnment;
+            DiskDrives = other.DiskDrives;
 
             if (isLocal)
                 LogEntries.Clear();
@@ -363,13 +368,37 @@ namespace Home.Model
         [System.Text.Json.Serialization.JsonPropertyName("cpu_count")]
         public int CPUCount { get; set; }
 
+        [JsonProperty("cpu_usage")]
+        [System.Text.Json.Serialization.JsonPropertyName("cpu_usage")]
+        public double CPUUsage { get; set; }
+
         [JsonProperty("total_ram")]
         [System.Text.Json.Serialization.JsonPropertyName("total_ram")]
         public long TotalRAM { get; set; }
 
         [JsonProperty("free_ram")]
         [System.Text.Json.Serialization.JsonPropertyName("free_ram")]
-        public long FreeRAM { get; set; }
+        public string FreeRAM { get; set; }
+
+        [JsonProperty("disk_usage")]
+        [System.Text.Json.Serialization.JsonPropertyName("disk_usage")]
+        public double DiskUsage { get; set; }
+
+        [JsonProperty("is_64bit_os")]
+        [System.Text.Json.Serialization.JsonPropertyName("is_64bit_os")]
+        public bool Is64BitOS { get; set; }
+
+        [JsonProperty("machine_name")]
+        [System.Text.Json.Serialization.JsonPropertyName("machine_name")]
+        public string MachineName { get; set; }
+
+        [JsonProperty("user_name")]
+        [System.Text.Json.Serialization.JsonPropertyName("user_name")]
+        public string UserName { get; set; }
+
+        [JsonProperty("domain_name")]
+        [System.Text.Json.Serialization.JsonPropertyName("domain_name")]
+        public string DomainName { get; set; }
 
         [XmlIgnore]
         [JsonIgnore()]
@@ -388,6 +417,86 @@ namespace Home.Model
         {
             string rn = Environment.NewLine;
             return $"OS: {OSName}{rn}OS-VER: {OSVersion}{rn}CPU: {CPUName}{rn}CPU-COUNT: {CPUCount}{rn}RAM: {TotalRAM}{rn}FREE: {FreeRAM}{rn}Running-Time: {XmlRunningTime}";
+        }
+    }
+
+    public class DiskDrive
+    {
+        [JsonProperty("physical_name")]
+        [JsonPropertyName("physical_name")]
+        public string PhysicalName { get; set; }
+
+        [JsonProperty("disk_name")]
+        [JsonPropertyName("disk_name")]
+        public string DiskName { get; set; }
+
+        [JsonProperty("disk_model")]
+        [JsonPropertyName("disk_model")]
+        public string DiskModel { get; set; }
+
+        [JsonProperty("disk_interface")]
+        [JsonPropertyName("disk_interface")]
+        public string DiskInterface { get; set; }
+
+        [JsonProperty("media_loaded")]
+        [JsonPropertyName("media_loaded")]
+        public bool MediaLoaded { get; set; }
+
+        [JsonProperty("media_type")]
+        [JsonPropertyName("media_type")]
+        public string MediaType { get; set; }
+
+        [JsonProperty("media_signature")]
+        [JsonPropertyName("media_signature")]
+        public uint MediaSignature { get; set; }
+
+        [JsonProperty("media_status")]
+        [JsonPropertyName("media_status")]
+        public string MediaStatus { get; set; }
+
+        [JsonProperty("drive_name")]
+        [JsonPropertyName("drive_name")]
+        public string DriveName { get; set; }
+
+        [JsonProperty("drive_id")]
+        [JsonPropertyName("drive_id")]
+        public string DriveID { get; set; }
+
+        [JsonProperty("drive_compressed")]
+        [JsonPropertyName("drive_compressed")]
+        public bool DriveCompressed { get; set; }
+
+        [JsonProperty("drive_type")]
+        [JsonPropertyName("drive_type")]
+        public uint DriveType { get; set; }
+
+        [JsonProperty("file_system")]
+        [JsonPropertyName("file_system")]
+        public string FileSystem { get; set; }
+
+        [JsonProperty("free_space")]
+        [JsonPropertyName("free_space")]
+        public ulong FreeSpace { get; set; } // bytes
+
+        [JsonProperty("total_space")]
+        [JsonPropertyName("total_space")]
+        public ulong TotalSpace { get; set; } // bytes
+
+        [JsonProperty("drive_media_type")]
+        [JsonPropertyName("drive_media_type")]
+        public uint DriveMediaType { get; set; }
+
+        [JsonProperty("volume_name")]
+        [JsonPropertyName("volume_name")]
+        public string VolumeName { get; set; }
+
+        [JsonProperty("volume_serial")]
+        [JsonPropertyName("volume_serial")]
+        public string VolumeSerial { get; set; }
+
+        public override string ToString()
+        {
+            return $"{PhysicalName}: {VolumeName}";
         }
     }
 }

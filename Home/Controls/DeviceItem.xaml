@@ -34,7 +34,7 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <TextBlock Text="{Binding Name}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding Envoirnment.MachineName}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
                     <TextBlock TextAlignment="Center">
                         <Run Text="IP:" />
                         <Run Text="{Binding IP}" />
