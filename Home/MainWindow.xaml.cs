@@ -82,7 +82,7 @@ namespace Home
             if (result.Success && result.Result != null)
             {
                 var device = result.Result;
-                if (deviceList.Any(d => d.ID == device.DeviceID ))
+                if (deviceList.Any(d => d.ID == device.DeviceID))
                 {
                     // Update 
                     var oldDevice = deviceList.Where(d => d.ID == device.DeviceID).FirstOrDefault();
@@ -93,7 +93,7 @@ namespace Home
 
                         if (lastSelectedDevice == oldDevice)
                         {
-                           // lastSelectedDevice = device.EventData.EventDevice;
+                            // lastSelectedDevice = device.EventData.EventDevice;
                             //RefreshSelectedItem();
                         }
 

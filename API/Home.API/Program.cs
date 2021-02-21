@@ -79,7 +79,19 @@ namespace Home.API
             lock (Devices)
             {
                 foreach (var device in Devices.Where(p => p.Status != Device.DeviceStatus.Offline && p.LastSeen.AddHours(1) < DateTime.Now))
-                    device.Status = Device.DeviceStatus.Offline;
+                {
+                    lock (EventQueues)
+                    {
+                        device.Status = Device.DeviceStatus.Offline;
+                        foreach (var queue in EventQueues)
+                        {
+                            var now = DateTime.Now;
+                            queue.LastEvent = now;
+                            queue.Events.Enqueue(new EventQueueItem() { DeviceID = device.ID, EventDescription = EventQueueItem.EventKind.DeviceChangedState, EventOccured = now, EventData = new EventData(device) });
+                        }
+                    }
+                    
+                }
             }
 
             // Save devices (TODO: Only save if there are any changes recieved from the controller!)
