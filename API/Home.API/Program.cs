@@ -67,7 +67,7 @@ namespace Home.API
             // Check event queues
             lock (EventQueues)
             {
-                var deadEventQueues = EventQueues.Where(e => e.LastClientRequest.AddHours(1) < DateTime.Now).ToList();
+                var deadEventQueues = EventQueues.Where(e => e.LastClientRequest.AddMinutes(10) < DateTime.Now).ToList();
                 foreach (var deq in deadEventQueues)
                 {
                     EventQueues.Remove(deq);
@@ -78,7 +78,7 @@ namespace Home.API
             // Check devices
             lock (Devices)
             {
-                foreach (var device in Devices.Where(p => p.Status != Device.DeviceStatus.Offline && p.LastSeen.AddHours(1) < DateTime.Now))
+                foreach (var device in Devices.Where(p => p.Status != Device.DeviceStatus.Offline && p.LastSeen.AddMinutes(10) < DateTime.Now))
                 {
                     lock (EventQueues)
                     {

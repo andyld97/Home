@@ -100,7 +100,9 @@ namespace Home.Service
             if (ServiceData.Instance.HasLoggedInOnce)
                 isInitalized = true;
 
-            isInitalized = await api.RegisterDeviceAsync(currentDevice);
+            if (!isInitalized)
+                isInitalized = await api.RegisterDeviceAsync(currentDevice);
+
             if (isInitalized)
                 await SendAck();
 
@@ -172,7 +174,7 @@ namespace Home.Service
             PerformanceCounter("System", "Processor Queue Length", null);
         */
 
-        private async Task<bool> SendAck()
+        private async Task SendAck()
         {
             var now = DateTime.Now;
 
@@ -190,7 +192,9 @@ namespace Home.Service
             currentDevice.Envoirnment.UserName = Environment.UserName;
             currentDevice.Envoirnment.DomainName = Environment.UserDomainName;
 
-            return await api.SendAckAsync(currentDevice);
+            string result = await api.SendAckAsync(currentDevice);
+         //   if (!string.IsNullOrEmpty(result))
+           //     MessageBox.Show(result);
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -203,8 +207,15 @@ namespace Home.Service
 
         private long DetermineTotalRAM()
         {
-            GetPhysicallyInstalledSystemMemory(out long memKb);
-            return memKb / 1024 / 1024;
+            try
+            {
+                GetPhysicallyInstalledSystemMemory(out long memKb);
+                return memKb / 1024 / 1024;
+            }
+            catch
+            {
+                return 0;
+            }
         }
 
         private string DetermineFreeRAM()
@@ -240,34 +251,41 @@ namespace Home.Service
 
         public static string DisplayIPAddresses()
         {
-            string returnAddress = String.Empty;
+            string returnAddress = string.Empty;
 
-            // Get a list of all network interfaces (usually one per network card, dialup, and VPN connection)
-            NetworkInterface[] networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
-
-            foreach (NetworkInterface network in networkInterfaces)
+            try
             {
-                // Read the IP configuration for each network
-                IPInterfaceProperties properties = network.GetIPProperties();
+                // Get a list of all network interfaces (usually one per network card, dialup, and VPN connection)
+                NetworkInterface[] networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
 
-                string description = network.Description.ToLower();
-
-                if (network.NetworkInterfaceType == NetworkInterfaceType.Ethernet && network.OperationalStatus == OperationalStatus.Up && !description.Contains("virtual") && !description.Contains("pseudo"))
+                foreach (NetworkInterface network in networkInterfaces)
                 {
-                    // Each network interface may have multiple IP addresses
-                    foreach (IPAddressInformation address in properties.UnicastAddresses)
+                    // Read the IP configuration for each network
+                    IPInterfaceProperties properties = network.GetIPProperties();
+
+                    string description = network.Description.ToLower();
+
+                    if (network.NetworkInterfaceType == NetworkInterfaceType.Ethernet && network.OperationalStatus == OperationalStatus.Up && !description.Contains("virtual") && !description.Contains("pseudo"))
                     {
-                        // We're only interested in IPv4 addresses for now
-                        if (address.Address.AddressFamily != AddressFamily.InterNetwork)
-                            continue;
+                        // Each network interface may have multiple IP addresses
+                        foreach (IPAddressInformation address in properties.UnicastAddresses)
+                        {
+                            // We're only interested in IPv4 addresses for now
+                            if (address.Address.AddressFamily != AddressFamily.InterNetwork)
+                                continue;
 
-                        // Ignore loopback addresses (e.g., 127.0.0.1)
-                        if (IPAddress.IsLoopback(address.Address))
-                            continue;
+                            // Ignore loopback addresses (e.g., 127.0.0.1)
+                            if (IPAddress.IsLoopback(address.Address))
+                                continue;
 
-                        returnAddress = address.Address.ToString();
+                            returnAddress = address.Address.ToString();
+                        }
                     }
                 }
+            }
+            catch
+            {
+
             }
 
             return returnAddress;

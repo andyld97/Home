@@ -82,7 +82,7 @@ namespace Home.Communication
             }
         }
 
-        public async Task<bool> SendAckAsync(Device device)
+        public async Task<string> SendAckAsync(Device device)
         {
             try
             {
@@ -94,19 +94,19 @@ namespace Home.Communication
                 {
                     var answer = System.Text.Json.JsonSerializer.Deserialize<Answer<object>>(content);
                     if (answer != null && answer.Status == "ok")
-                        return true;
+                        return string.Empty;
                     else
-                        return false;
+                        return answer.ErrorMessage;
                 }
                 else
-                    return false;
+                    return string.Empty;
 
 
             }
             catch (Exception ex)
             {
                 // LOG
-                return false;
+                return ex.Message;
             }
         }
 

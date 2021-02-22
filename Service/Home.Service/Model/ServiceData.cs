@@ -146,7 +146,8 @@ namespace Home.Service.Model
         public void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            Save();
+            if (Instance != null)
+                Save();
         }
 
         public void Save()
