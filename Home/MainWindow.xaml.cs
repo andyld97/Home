@@ -1,5 +1,6 @@
 ﻿using Fluent;
 using Home.Controls;
+using Home.Controls.Dialogs;
 using Home.Data;
 using Home.Model;
 using Newtonsoft.Json;
@@ -33,8 +34,6 @@ namespace Home
         public MainWindow()
         {
             InitializeComponent();
-
-            TextDeviceLog.Text = "[19:00] Screenshot von Andy-PC empfangen!" + Environment.NewLine + Environment.NewLine + "[18:54] Verbindung mit Andy-PC hergestellt ...";
             api = new Communication.API("http://192.168.178.38:83");
         }
 
@@ -42,7 +41,6 @@ namespace Home
         {
             await Initalize();
         }
-
 
         public async Task Initalize()
         {
@@ -62,7 +60,7 @@ namespace Home
         private void RefreshDeviceHolder()
         {
             DeviceHolder.Items.Clear();
-            
+
             foreach (var device in deviceList.OrderBy(p => p.Status))
                 DeviceHolder.Items.Add(device);
         }
@@ -82,32 +80,43 @@ namespace Home
             if (result.Success && result.Result != null)
             {
                 var device = result.Result;
-                if (deviceList.Any(d => d.ID == device.DeviceID))
+
+                if (device.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceScreenshotRecieved)
                 {
-                    // Update 
-                    var oldDevice = deviceList.Where(d => d.ID == device.DeviceID).FirstOrDefault();
-                    if (oldDevice != null)
-                    {
-                        // deviceList[deviceList.IndexOf(oldDevice)] = device.EventData.EventDevice;
-                        oldDevice.Update(device.EventData.EventDevice, device.EventData.EventDevice.LastSeen, device.EventData.EventDevice.Status, true);
-
-                        if (lastSelectedDevice == oldDevice)
-                        {
-                            // lastSelectedDevice = device.EventData.EventDevice;
-                            //RefreshSelectedItem();
-                        }
-
-                        RefreshSelectedItem();
-                        RefreshDeviceHolder();
-                    }
+                    // Get this shot
+                    string screenshotFileName = device.EventData.EventDevice.ScreenshotFileNames.LastOrDefault();
+                    if (!string.IsNullOrEmpty(screenshotFileName))
+                        await GetScreenshot(device.EventData.EventDevice, screenshotFileName);
                 }
                 else
                 {
-                    // Add
-                    deviceList.Add(device.EventData.EventDevice);
-                    MessageBox.Show("New device added!");
+                    if (deviceList.Any(d => d.ID == device.DeviceID))
+                    {
+                        // Update 
+                        var oldDevice = deviceList.Where(d => d.ID == device.DeviceID).FirstOrDefault();
+                        if (oldDevice != null)
+                        {
+                            // deviceList[deviceList.IndexOf(oldDevice)] = device.EventData.EventDevice;
+                            oldDevice.Update(device.EventData.EventDevice, device.EventData.EventDevice.LastSeen, device.EventData.EventDevice.Status, true);
 
-                    RefreshDeviceHolder();
+                            if (lastSelectedDevice == oldDevice)
+                            {
+                                // lastSelectedDevice = device.EventData.EventDevice;
+                                //RefreshSelectedItem();
+                            }
+
+                            await RefreshSelectedItem();
+                            RefreshDeviceHolder();
+                        }
+                    }
+                    else
+                    {
+                        // Add
+                        deviceList.Add(device.EventData.EventDevice);
+                        MessageBox.Show("New device added!");
+
+                        RefreshDeviceHolder();
+                    }
                 }
             }
 
@@ -117,16 +126,131 @@ namespace Home
             }
         }
 
-        private void DeviceHolder_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private static readonly string cache_path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "cache");
+
+        private async Task GetScreenshot(Device device, string fileName = "")
+        {
+            byte[] data = null;
+            bool saveInCache = false;
+
+            string cacheDevicePath = System.IO.Path.Combine(cache_path, device.ID);
+            if (!System.IO.Directory.Exists(cacheDevicePath))
+            {
+                try
+                {
+                    System.IO.Directory.CreateDirectory(cacheDevicePath);
+                }
+                catch
+                {
+                    // ToDO: Log
+                }
+            }
+
+            if (string.IsNullOrEmpty(fileName))
+            {
+                // Try to display last-screenshot from cache
+                var files = new System.IO.DirectoryInfo(cacheDevicePath).GetFiles();
+                System.IO.FileInfo fi = null;
+
+                if (files.Where(p => p.Name == device.ScreenshotFileNames.LastOrDefault()).Any())
+                {
+                    var file = files.Where(p => p.Name == device.ScreenshotFileNames.LastOrDefault()).LastOrDefault();
+                    fi = file;
+                }
+                else
+                    fi = files.LastOrDefault();
+
+
+                if (fi != null)
+                {
+                    try
+                    {
+                        data = System.IO.File.ReadAllBytes(fi.FullName);
+                        TextLastScreenshotRefresh.Text = $"{fi.LastAccessTime.ToShortDateString()} @ {fi.LastWriteTime.ToShortTimeString()}";
+                    }
+                    catch
+                    {
+
+                    }
+
+                }
+                saveInCache = false;
+            }
+            else
+            {
+                var recievedScreenshot = await api.RecieveScreenshotAsync(device, fileName);
+
+                if (recievedScreenshot.Success)
+                {
+                    data = Convert.FromBase64String(recievedScreenshot.Result.Data);
+                    saveInCache = true;
+
+                    // Last refresh = now
+                    var now = DateTime.Now;
+                    TextLastScreenshotRefresh.Text = $"{now.ToShortDateString()} @ {now.ToShortTimeString()}";
+                }
+            }
+
+            // Save to cache
+            if (saveInCache)
+            {
+                try
+                {
+                    System.IO.File.WriteAllBytes(System.IO.Path.Combine(cacheDevicePath, $"{fileName}.png"), data);
+                }
+                catch
+                {
+
+                }
+            }
+
+            using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
+            {          
+                if (data != null)
+                {
+                    await ms.WriteAsync(data, 0, data.Length);
+                    ms.Seek(0, System.IO.SeekOrigin.Begin);
+                }
+
+                try
+                {
+                    BitmapImage bi = new BitmapImage();
+                    bi.BeginInit();
+                    bi.CacheOption = BitmapCacheOption.OnLoad;
+                    bi.StreamSource = ms; 
+                    bi.EndInit();
+
+
+                    if (device.Status == Device.DeviceStatus.Offline)
+                    {
+                        FormatConvertedBitmap grayBitmap = new FormatConvertedBitmap();
+                        grayBitmap.BeginInit();
+                        grayBitmap.Source = bi;
+                        grayBitmap.DestinationFormat = PixelFormats.Gray8;
+                        grayBitmap.EndInit();
+
+                        ImageScreenshot.Source = grayBitmap;
+                    }
+                    else 
+                        ImageScreenshot.Source = bi;
+                }
+                catch (Exception ex)
+                {
+                    ImageScreenshot.Source = null;
+                }
+            }
+        }
+
+        private async void DeviceHolder_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             if (DeviceHolder.SelectedItem is Device dev)
             {
                 lastSelectedDevice = dev;
-                RefreshSelectedItem();
+                await RefreshSelectedItem();
             }
         }
 
-        private void RefreshSelectedItem()
+        private async Task RefreshSelectedItem()
         {
             if (lastSelectedDevice == null)
                 return;
@@ -135,6 +259,24 @@ namespace Home
             TextDeviceLog.ScrollToEnd();
             DeviceInfo.DataContext = null;
             DeviceInfo.DataContext = lastSelectedDevice;
+            await GetScreenshot(lastSelectedDevice);
+        }
+
+        private async void HyperLinkRefreshScreenshot_Click(object sender, RoutedEventArgs e)
+        {
+            if (lastSelectedDevice == null)
+                return;
+
+            var result = await api.AquireScreenshot(client, lastSelectedDevice);
+
+        }
+
+        private void ImageScreenshot_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
+            {               
+                new ScreenshotDialog(ImageScreenshot.Source).ShowDialog();
+            }
         }
     }
 

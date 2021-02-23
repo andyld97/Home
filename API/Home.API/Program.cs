@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
+using static Home.Data.Helper.GeneralHelper;
 
 namespace Home.API
 {
@@ -23,6 +24,7 @@ namespace Home.API
         private static readonly object _lock = new object();
 
         public static readonly string Device_PATH = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "devices.xml");
+        public static readonly string SCREENSHOTS_PATH = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "screenshots");
 
         public static void Main(string[] args)
         { 
@@ -83,6 +85,8 @@ namespace Home.API
                     lock (EventQueues)
                     {
                         device.Status = Device.DeviceStatus.Offline;
+                        device.LogEntries.Add("No activity detected ... Device was flagged as offline!".FormatLogLine(DateTime.Now));
+
                         foreach (var queue in EventQueues)
                         {
                             var now = DateTime.Now;

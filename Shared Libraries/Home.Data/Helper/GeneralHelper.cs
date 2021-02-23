@@ -6,7 +6,7 @@ namespace Home.Data.Helper
     {
         public static string FormatLogLine(this string content, DateTime time)
         {
-            return $"[{time.ToShortTimeString()}]: {content}";
+            return $"[{time.ToShortDateString()} @ {time.ToShortTimeString()}]: {content}";
         }
     }
 }

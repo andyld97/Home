@@ -163,6 +163,10 @@ namespace Home.Model
         [System.Text.Json.Serialization.JsonPropertyName("log_entries")]
         public ObservableCollection<string> LogEntries { get; set; } = new ObservableCollection<string>();
 
+        [JsonProperty("screenshots_file_names")]
+        [System.Text.Json.Serialization.JsonPropertyName("screenshots_file_names")]
+        public List<string> ScreenshotFileNames { get; set; } = new List<string>();
+
         [JsonProperty("environment")]
         [System.Text.Json.Serialization.JsonPropertyName("environment")]
         public DeviceEnvironment Envoirnment { get; set; } = new DeviceEnvironment();
@@ -170,6 +174,17 @@ namespace Home.Model
         [JsonProperty("disk_drives")]
         [System.Text.Json.Serialization.JsonPropertyName("disk_drives")]
         public List<DiskDrive> DiskDrives { get; set; } = new List<DiskDrive>();
+
+        [JsonProperty("service_client_version")]
+        [System.Text.Json.Serialization.JsonPropertyName("service_client_version")]
+        public string ServiceClientVersion { get; set; }
+
+        /// <summary>
+        /// Only for internal api usage
+        /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
+        public bool IsScreenshotRequired { get; set; }
 
         public enum DeviceStatus
         {
@@ -328,6 +343,8 @@ namespace Home.Model
             Location = other.location;
             Envoirnment = other.Envoirnment;
             DiskDrives = other.DiskDrives;
+            ScreenshotFileNames = other.ScreenshotFileNames;
+            IsScreenshotRequired = other.IsScreenshotRequired;
 
             if (isLocal)
                 LogEntries.Clear();
@@ -498,5 +515,16 @@ namespace Home.Model
         {
             return $"{PhysicalName}: {VolumeName}";
         }
+    }
+
+    public class Screenshot
+    {
+        [JsonProperty("data")]
+        [JsonPropertyName("data")]
+        public string Data { get; set; }
+
+        [JsonProperty("client_id")]
+        [JsonPropertyName("client_id")]
+        public string ClientID { get; set; }
     }
 }

@@ -184,13 +184,18 @@
 
                                     <Border BorderBrush="{DynamicResource BlackBrush}" BorderThickness="2">
                                         <Grid>
-                                            <Image />
+                                            <Image x:Name="ImageScreenshot" MouseDown="ImageScreenshot_MouseDown" Cursor="Hand" Stretch="UniformToFill" />
                                             <TextBlock Text="{Binding Envoirnment.MachineName}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                         </Grid>
                                     </Border>
 
                                     <Grid Grid.Row="2">
-                                        <TextBlock Text="Zuletzt aktualisiert: Nie" HorizontalAlignment="Left" FontSize="12" />
+                                        <TextBlock HorizontalAlignment="Left" FontSize="12">
+                                            <Hyperlink x:Name="HyperLinkRefreshScreenshot" Click="HyperLinkRefreshScreenshot_Click">
+                                                <Run Text="Zuletzt aktualisiert:" />
+                                                <Run x:Name="TextLastScreenshotRefresh" Text="" />
+                                            </Hyperlink>
+                                        </TextBlock>
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -238,7 +243,7 @@
                         </TabItem>
                     </TabControl>
 
-                    <TabControl Grid.Row="1" Margin="0,-23,0,0" Background="{DynamicResource WhiteBrush}">
+                    <TabControl Grid.Row="1" Margin="0,-0,0,0" Background="{DynamicResource WhiteBrush}">
                         <TabControl.Resources>
                             <ResourceDictionary>
                                 <ResourceDictionary.MergedDictionaries>

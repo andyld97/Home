@@ -1,5 +1,6 @@
 ﻿using Home.Data;
 using Home.Data.Events;
+using Home.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -64,6 +65,60 @@ namespace Home.API.Controllers
             }
 
             return NotFound(AnswerExtensions.Fail("Client not found!"));
+        }
+
+        [HttpGet("get_screenshot/{clientId}/{deviceId}")]
+        public IActionResult AskForScreenshot(string clientId, string deviceID)
+        {
+            if (string.IsNullOrEmpty(clientId))
+                return BadRequest(AnswerExtensions.Fail("Invalid client data"));
+
+            if (string.IsNullOrEmpty(deviceID))
+                return BadRequest(AnswerExtensions.Fail("Invalid device data"));
+
+            lock (Program.Clients)
+            {
+                if (!Program.Clients.Any(p => p.ID == clientId))
+                    return NotFound("Client not found!");
+            }
+
+            lock (Program.Devices)
+            {
+                if (!Program.Devices.Any(p => p.ID == deviceID))
+                    return NotFound("Device not found!");
+
+                var device = Program.Devices.Where(p => p.ID == deviceID).FirstOrDefault();
+                if (device != null)
+                {
+                    device.IsScreenshotRequired = true;
+                    _logger.LogInformation($"Aquired screenshot from {clientId} for device {deviceID}");
+                }
+            }
+
+            return Ok(AnswerExtensions.Success(true));
+        }
+
+        [HttpGet("recieve_screenshot/{deviceId}/{fileName}")]
+        public IActionResult RecieveScreenshot(string deviceId, string fileName)
+        {
+            if (string.IsNullOrEmpty(deviceId))
+                return BadRequest(AnswerExtensions.Fail("Invalid device data"));
+
+            try
+            {
+                string screenshotFilePath = System.IO.Path.Combine(Program.SCREENSHOTS_PATH, deviceId, $"{fileName}.png");
+                Screenshot screenshot = new Screenshot()
+                {
+                    ClientID = null,
+                    Data = Convert.ToBase64String(System.IO.File.ReadAllBytes(screenshotFilePath))
+                };
+
+                return Ok(AnswerExtensions.Success(screenshot));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(AnswerExtensions.Fail<Screenshot>(ex.Message));
+            }
         }
     }
 }

@@ -90,6 +90,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\Dialogs\ScreenshotDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -100,6 +104,9 @@
     </Compile>
     <Compile Include="Controls\DeviceItem.xaml.cs">
       <DependentUpon>DeviceItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Dialogs\ScreenshotDialog.xaml.cs">
+      <DependentUpon>ScreenshotDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -138,9 +145,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controls\Dialogs\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="resources\icons\media\usbhdd.png" />
     <Resource Include="resources\icons\media\cd.png" />

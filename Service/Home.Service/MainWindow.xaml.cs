@@ -1,5 +1,6 @@
 ﻿using Home.Model;
 using Home.Service.Model;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Management;
 using System.Net;
+using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
@@ -187,14 +189,56 @@ namespace Home.Service
             currentDevice.Envoirnment.FreeRAM = DetermineFreeRAM();
             currentDevice.Envoirnment.CPUUsage = Math.Round(cpuCounter.NextValue(), 0);
             currentDevice.Envoirnment.DiskUsage = Math.Round(diskCounter.NextValue(), 0);
-            currentDevice.Envoirnment.Is64BitOS = Environment.Is64BitProcess;
+            currentDevice.Envoirnment.Is64BitOS = Environment.Is64BitOperatingSystem;
             currentDevice.Envoirnment.MachineName = Environment.MachineName;
             currentDevice.Envoirnment.UserName = Environment.UserName;
             currentDevice.Envoirnment.DomainName = Environment.UserDomainName;
+            currentDevice.ServiceClientVersion = $"v{typeof(MainWindow).Assembly.GetName().Version.ToString(3)}";
 
+            // Send ack
             string result = await api.SendAckAsync(currentDevice);
-         //   if (!string.IsNullOrEmpty(result))
-           //     MessageBox.Show(result);
+            if (result == "screenshot_required")
+                await CreateScreenshot();
+        }
+
+        public async Task CreateScreenshot()
+        {
+            try
+            {
+                string filename = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"capture{DateTime.Now:ddMMyyyy-hhmmss}.png");
+
+                double screenLeft = SystemParameters.VirtualScreenLeft;
+                double screenTop = SystemParameters.VirtualScreenTop;
+                double screenWidth = SystemParameters.VirtualScreenWidth;
+                double screenHeight = SystemParameters.VirtualScreenHeight;
+
+                using (System.Drawing.Bitmap bmp = new System.Drawing.Bitmap((int)screenWidth, (int)screenHeight))
+                {
+                    using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(bmp))
+                    {                      
+                        g.CopyFromScreen((int)screenLeft, (int)screenTop, 0, 0, bmp.Size);
+                        bmp.Save(filename);
+                    }
+                }
+
+                byte[] result = System.IO.File.ReadAllBytes(filename);
+                try
+                {
+                    System.IO.File.Delete(filename);
+                }
+                catch
+                {
+
+                }
+
+                var apiResult = await api.SendScreenshot(new Screenshot() { ClientID = ServiceData.Instance.ID, Data = Convert.ToBase64String(result) });
+
+                // ToDO: log
+            }
+            catch (Exception ex)
+            {
+                // ToDo: Log
+            }
         }
 
         protected override void OnClosing(CancelEventArgs e)

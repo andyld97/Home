@@ -22,6 +22,9 @@ namespace Home.Communication
         public static readonly string REGISTER = "register";
         public static readonly string ACK = "ack";
         public static readonly string UPDATE = "update";
+        public static readonly string SCREENSHOT = "screenshot";
+        public static readonly string GET_SCREENSHOT = "get_screenshot";
+        public static readonly string RECIEVE_SCREENSHOT = "recieve_screenshot";
 
         public API(string host)
         {
@@ -92,9 +95,9 @@ namespace Home.Communication
                 var content = await result.Content.ReadAsStringAsync();
                 if (!string.IsNullOrEmpty(content))
                 {
-                    var answer = System.Text.Json.JsonSerializer.Deserialize<Answer<object>>(content);
+                    var answer = System.Text.Json.JsonSerializer.Deserialize<Answer<string>>(content);
                     if (answer != null && answer.Status == "ok")
-                        return string.Empty;
+                        return answer.Result;
                     else
                         return answer.ErrorMessage;
                 }
@@ -132,10 +135,80 @@ namespace Home.Communication
                 // LOG
                 return AnswerExtensions.Fail<EventQueueItem>(ex.Message);
             }
-
-
         }
 
+
+        public async Task<Answer<bool>> SendScreenshot(Screenshot screenshot)
+        {
+            try
+            {
+                string url = GenerateEpUrl(false, SCREENSHOT);
+                var result = await httpClient.PostAsync(url, new StringContent(JsonConvert.SerializeObject(screenshot), System.Text.Encoding.UTF8, "application/json"));
+
+                var content = await result.Content.ReadAsStringAsync();
+                if (!string.IsNullOrEmpty(content))
+                {
+                    var item = System.Text.Json.JsonSerializer.Deserialize<Answer<bool>>(content);
+                    item.Success = (item.Status == "ok");
+                    return item;
+                }
+                else
+                    return AnswerExtensions.Fail<bool>("Empty content!");
+            }
+            catch (Exception ex)
+            {
+                // LOG
+                return AnswerExtensions.Fail<bool>(ex.Message);
+            }
+        }
+
+        public async Task<Answer<Screenshot>> RecieveScreenshotAsync(Device device, string fileName)
+        {
+            try
+            {
+                string url = $"{GenerateEpUrl(true, RECIEVE_SCREENSHOT)}/{device.ID}/{fileName}";
+                var result = await httpClient.GetAsync(url); 
+
+                var content = await result.Content.ReadAsStringAsync();
+                if (!string.IsNullOrEmpty(content))
+                {
+                    var item = System.Text.Json.JsonSerializer.Deserialize<Answer<Screenshot>>(content);
+                    item.Success = (item.Status == "ok");
+                    return item;
+                }
+                else
+                    return AnswerExtensions.Fail<Screenshot>("Empty content!");
+            }
+            catch (Exception ex)
+            {
+                // LOG
+                return AnswerExtensions.Fail<Screenshot>(ex.Message);
+            }
+        }
+
+        public async Task<Answer<bool>> AquireScreenshot(Client client, Device device)
+        {
+            try
+            {
+                string url = $"{GenerateEpUrl(true, GET_SCREENSHOT)}/{client.ID}/{device.ID}";
+                var result = await httpClient.GetAsync(url);
+
+                var content = await result.Content.ReadAsStringAsync();
+                if (!string.IsNullOrEmpty(content))
+                {
+                    var item = System.Text.Json.JsonSerializer.Deserialize<Answer<bool>>(content);
+                    item.Success = (item.Status == "ok");
+                    return item;
+                }
+                else
+                    return AnswerExtensions.Fail<bool>("Empty content!");
+            }
+            catch (Exception ex)
+            {
+                // LOG
+                return AnswerExtensions.Fail<bool>(ex.Message);
+            }
+        }
 
         public string GenerateEpUrl(bool communication, string ep)
         {
