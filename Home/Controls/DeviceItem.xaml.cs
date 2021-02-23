@@ -13,10 +13,9 @@ namespace Home.Controls
     /// </summary>
     public partial class DeviceItem : UserControl
     {
-        public DeviceItem() //Device deviceItem)
+        public DeviceItem()
         {
             InitializeComponent();
-        //    DataContext = deviceItem;
         }
     }
 
@@ -54,12 +53,12 @@ namespace Home.Controls
             if (value is Device dev)
             {
                 Color fill = new Color();
-                switch (dev.Status)
+              /*  switch (dev.Status)
                 {
                     case Device.DeviceStatus.Active: fill = Colors.Lime; break;
                     case Device.DeviceStatus.Idle: fill = Colors.Yellow; break;
                     case Device.DeviceStatus.Offline: fill = Colors.Red; break;
-                }
+                }*/
 
                 /*if (type == Device.DeviceType.Server)
                     return new SolidColorBrush(Colors.MidnightBlue);
@@ -102,6 +101,22 @@ namespace Home.Controls
             }
 
             return null;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class DeviceToOpacityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is Device d && d.Status == Device.DeviceStatus.Offline)
+                return 0.6;
+
+            return 1.0;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

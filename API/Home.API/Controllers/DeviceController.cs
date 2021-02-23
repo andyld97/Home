@@ -83,6 +83,8 @@ namespace Home.API.Controllers
                         // Too many log entries (only report important log entries) and ack works fine now!
                         // device.LogEntries.Add("Recieved ack!".FormatLogLine(now));
                         // _logger.LogInformation($"Recieved ack from device {device}!");
+                        if (dev.Status == Device.DeviceStatus.Offline)
+                            dev.LogEntries.Add("Device has recovered and is now online again!".FormatLogLine(DateTime.Now));
                         isScreenshotRequired = dev.IsScreenshotRequired;
                         dev.Update(device, now, Device.DeviceStatus.Active);
                         dev.IsScreenshotRequired = false;

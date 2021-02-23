@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Home.Controls.DeviceItem"
+﻿    <UserControl x:Class="Home.Controls.DeviceItem"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -10,7 +10,14 @@
         <local:StateToColorConverter x:Key="stateToColorConverter" />
         <local:TypeToBorderConverter x:Key="typeToBorderConverter" />
         <local:ImageConverter x:Key="imageConverter" />
+        <local:DeviceToOpacityConverter x:Key="deviceToOpacityConverter" />
     </UserControl.Resources>
+    <UserControl.Effect>
+        <DropShadowEffect />
+    </UserControl.Effect>
+    <UserControl.Opacity>
+        <Binding Path="." Converter="{StaticResource deviceToOpacityConverter}" />
+    </UserControl.Opacity>
     <Border CornerRadius="5" BorderBrush="{Binding ., Converter={StaticResource typeToBorderConverter}}" BorderThickness="2" Background="{DynamicResource Fluent.Ribbon.Brushes.AccentColorBrush60}">
         <Grid>
             <Grid.ColumnDefinitions>
