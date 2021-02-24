@@ -174,24 +174,45 @@ namespace Home
                 {
                     var file = files.Where(p => p.Name == device.ScreenshotFileNames.LastOrDefault()).LastOrDefault();
                     fi = file;
+
+
+                    if (fi != null && updateGui)
+                    {
+                        try
+                        {
+                            data = System.IO.File.ReadAllBytes(fi.FullName);
+                            TextLastScreenshotRefresh.Text = $"{fi.LastAccessTime.ToShortDateString()} @ {fi.LastWriteTime.ToShortTimeString()}";
+                        }
+                        catch
+                        {
+
+                        }
+                    }
+                    saveInCache = false;
+
                 }
                 else
-                    fi = files.LastOrDefault();
-
-
-                if (fi != null && updateGui)
                 {
-                    try
+                    var fiName = device.ScreenshotFileNames.LastOrDefault();
+                    if (fiName != null)
                     {
-                        data = System.IO.File.ReadAllBytes(fi.FullName);
-                        TextLastScreenshotRefresh.Text = $"{fi.LastAccessTime.ToShortDateString()} @ {fi.LastWriteTime.ToShortTimeString()}";
-                    }
-                    catch
-                    {
+                        var lastScrenshot = await api.RecieveScreenshotAsync(device, fiName);
+                        if (lastScrenshot.Success)
+                        {
+                            data = Convert.FromBase64String(lastScrenshot.Result.Data);
+                            saveInCache = true;
+                            fileName = fiName;
 
+                            // Last refresh = now
+                            if (updateGui)
+                            {
+                                var now = DateTime.Now; // ToDO: Now is not correct! Try to parse the date from file name
+                                TextLastScreenshotRefresh.Text = $"{now.ToShortDateString()} @ {now.ToShortTimeString()}";
+                            }
+                        }
                     }
                 }
-                saveInCache = false;
+          
             }
             else
             {
