@@ -67,13 +67,32 @@ namespace Home.API
             }
 
             // Check event queues
+            List<string> clientIDsToRemove = new List<string>();
             lock (EventQueues)
             {
                 var deadEventQueues = EventQueues.Where(e => e.LastClientRequest.AddMinutes(10) < DateTime.Now).ToList();
                 foreach (var deq in deadEventQueues)
                 {
                     EventQueues.Remove(deq);
+                    clientIDsToRemove.Add(deq.ClientID);
                     _logger.LogInformation($"Event Queue {deq} was removed due to lost activity ...");
+                }
+            }
+
+            // If an event queue is removed, the associated client should also be removed!
+            if (clientIDsToRemove.Count > 0)
+            {
+                lock (Program.Clients)
+                {
+                    foreach (var id in clientIDsToRemove)
+                    {
+                        var client = Program.Clients.Where(p => p.ID == id).FirstOrDefault();
+                        if (client != null)
+                        {
+                            _logger.LogInformation($"Client {client.ID} was removed due to lost activity ...");
+                            Program.Clients.Remove(client);
+                        }
+                    }
                 }
             }
 

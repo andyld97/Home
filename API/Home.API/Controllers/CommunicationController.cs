@@ -41,7 +41,31 @@ namespace Home.API.Controllers
         [HttpPost("logoff")]
         public IActionResult LogOff([FromBody] Client client)
         {
-            return Ok();
+            if (client == null || !client.IsRealClient)
+                return NotFound(AnswerExtensions.Fail("Invalid client data"));
+
+            if (Program.Clients.Any(p => p.ID == client.ID))
+            {
+                lock (Program.Clients)
+                {
+                    Client cl = Program.Clients.Where(p => p.ID == client.ID).FirstOrDefault();
+                    if (cl != null)
+                        Program.Clients.Remove(cl);
+                }
+
+                lock (Program.EventQueues)
+                {
+                    EventQueue eventQueue = Program.EventQueues.Where(p => p.ClientID == client.ID).FirstOrDefault();
+                    if (eventQueue != null)
+                        Program.EventQueues.Remove(eventQueue);
+                }              
+
+                _logger.LogInformation($"Client {client} has just logged off!");
+            }
+            else
+                return BadRequest(AnswerExtensions.Fail("Already logged off"));
+
+            return Ok(AnswerExtensions.Success("ok"));
         }
 
         [HttpPost("update")]

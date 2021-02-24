@@ -23,20 +23,29 @@ namespace Home
     /// </summary>
     public partial class MainWindow : RibbonWindow
     {
-        private readonly Client client = new Client() { IsRealClient = true }; // ToDo: Fixed but unique (just save and load)
+        private static readonly string CACHE_PATH = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "cache");
+        private readonly Client client = new Client() { IsRealClient = true };
         private readonly Home.Communication.API api = null;
 
         private readonly DispatcherTimer updateTimer = new DispatcherTimer();
         private bool isUpdating = false;
         private readonly object _lock = new object();
         private List<Device> deviceList = new List<Device>();
-        private List<DeviceItem> deviceItems = new List<DeviceItem>(); // gui
+        private readonly List<DeviceItem> deviceItems = new List<DeviceItem>(); // gui
         private Device lastSelectedDevice = null;
 
         public MainWindow()
         {
             InitializeComponent();
             api = new Communication.API("http://192.168.178.38:83");
+            client.ID = ClientData.Instance.ClientID;
+
+            Closing += MainWindow_Closing;
+        }
+
+        private async void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            await api.LogoffAsync(client);
         }
 
         private async void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
@@ -47,7 +56,8 @@ namespace Home
         public async Task Initalize()
         {
             var result = await api.LoginAsync(client);
-            deviceList = result.Result;
+            if (result.Result != null)
+                deviceList = result.Result;
 
             if (result.Success)
                 RefreshDeviceHolder();
@@ -135,15 +145,13 @@ namespace Home
             }
         }
 
-        private static readonly string cache_path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "cache");
-
         private async Task GetScreenshot(Device device, string fileName = "")
         {
             byte[] data = null;
             bool saveInCache = false;
             bool updateGui = (lastSelectedDevice.ID == device.ID);
 
-            string cacheDevicePath = System.IO.Path.Combine(cache_path, device.ID);
+            string cacheDevicePath = System.IO.Path.Combine(CACHE_PATH, device.ID);
             if (!System.IO.Directory.Exists(cacheDevicePath))
             {
                 try
@@ -292,7 +300,7 @@ namespace Home
             if (lastSelectedDevice == null)
                 return;
 
-            var result = await api.AquireScreenshot(client, lastSelectedDevice);
+            var result = await api.AquireScreenshotAsync(client, lastSelectedDevice);
 
         }
 

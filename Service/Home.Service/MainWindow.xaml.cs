@@ -231,7 +231,7 @@ namespace Home.Service
 
                 }
 
-                var apiResult = await api.SendScreenshot(new Screenshot() { ClientID = ServiceData.Instance.ID, Data = Convert.ToBase64String(result) });
+                var apiResult = await api.SendScreenshotAsync(new Screenshot() { ClientID = ServiceData.Instance.ID, Data = Convert.ToBase64String(result) });
 
                 // ToDO: log
             }

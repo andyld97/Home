@@ -124,8 +124,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Home.Communication\Home.Communication.csproj">
-      <Project>{d5169a0a-84a0-4f64-aa49-50c58f9d382a}</Project>
+    <ProjectReference Include="..\..\Shared Libraries\Home.Communication\Home.Communication.csproj">
+      <Project>{e812deee-4510-4dee-b9fe-da428abe8a1e}</Project>
       <Name>Home.Communication</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Shared Libraries\Home.Data\Home.Data.csproj">
