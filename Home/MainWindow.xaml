@@ -58,7 +58,7 @@
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="300" />
+                <ColumnDefinition Width="325" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
@@ -78,13 +78,27 @@
                         </TabControl.Resources>
 
                         <TabItem Header="Alle Geräte" Background="{DynamicResource WhiteBrush}">
-                            <ListBox x:Name="DeviceHolder" Background="{DynamicResource WhiteBrush}" BorderThickness="0" SelectionChanged="DeviceHolder_SelectionChanged" Grid.Row="1">
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <controls:DeviceItem DataContext="{Binding .}" />
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
+                            <TabItem.Resources>
+                                <Style x:Key="_ListBoxItemStyle" TargetType="ListBoxItem">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListBoxItem">
+                                                <Border Name="_Border"
+                                Padding="2"
+                                SnapsToDevicePixels="true">
+                                                    <ContentPresenter />
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsSelected" Value="true">
+                                                        <Setter TargetName="_Border" Property="Background" Value="Transparent" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </TabItem.Resources>
+                            <ListBox x:Name="DeviceHolder" ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" Background="{DynamicResource WhiteBrush}" BorderThickness="0" SelectionChanged="DeviceHolder_SelectionChanged" Grid.Row="1" />
                         </TabItem>
                         <TabItem Header="Aktive Geräte">
 
@@ -166,7 +180,8 @@
                                         </TextBlock>
                                         <TextBlock x:Name="TextRunningTime" ToolTip="{Binding ElementName=TextRunningTime, Path=Text}">
                                             <TextBlock.Text>
-                                                <MultiBinding StringFormat="{}{0:00}:{1:00;00}">
+                                                <MultiBinding StringFormat="{}{0:00}:{1:00}:{2:00;00}">
+                                                    <Binding Path="Envoirnment.RunningTime.Days" />
                                                     <Binding Path="Envoirnment.RunningTime.Hours" />
                                                     <Binding Path="Envoirnment.RunningTime.Minutes" />
                                                 </MultiBinding>

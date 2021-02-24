@@ -18,40 +18,52 @@
     <UserControl.Opacity>
         <Binding Path="." Converter="{StaticResource deviceToOpacityConverter}" />
     </UserControl.Opacity>
-    <Border CornerRadius="5" BorderBrush="{Binding ., Converter={StaticResource typeToBorderConverter}}" BorderThickness="2" Background="{DynamicResource Fluent.Ribbon.Brushes.AccentColorBrush60}">
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
 
-            <Grid Grid.Column="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Image Source="{Binding ., Converter={StaticResource imageConverter}}" Width="64" />
-                <Ellipse Fill="{Binding Status, Converter={StaticResource stateToColorConverter}}" Grid.Row="1" Stroke="{DynamicResource WhiteBrush}" StrokeThickness="1" Width="10" Height="10" HorizontalAlignment="Center" Margin="0,5,0,5" />
-            </Grid>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-            <Grid Grid.Column="1">
+        <Grid Grid.Column="0">
+            <Border x:Name="BorderSelected" Visibility="Collapsed" Width="10" Background="{DynamicResource BlackBrush}" Margin="0,0,7,0" />
+        </Grid>
+
+        <Border Grid.Column="1" CornerRadius="5" Background="{DynamicResource Fluent.Ribbon.Brushes.AccentColorBrush60}">
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <TextBlock Text="{Binding Envoirnment.MachineName}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    <TextBlock TextAlignment="Center">
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Image Source="{Binding ., Converter={StaticResource imageConverter}}" Width="64" />
+                    <Ellipse Fill="{Binding Status, Converter={StaticResource stateToColorConverter}}" Grid.Row="1" Stroke="{DynamicResource WhiteBrush}" StrokeThickness="1" Width="10" Height="10" HorizontalAlignment="Center" Margin="0,5,0,5" />
+                </Grid>
+
+                <Grid Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="{Binding Envoirnment.MachineName}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        <TextBlock TextAlignment="Center">
                         <Run Text="IP:" />
                         <Run Text="{Binding IP}" />
-                    </TextBlock>
-                    <TextBlock TextAlignment="Center">
+                        </TextBlock>
+                        <TextBlock TextAlignment="Center">
                         <Run Text="Zuletzt gesehen:" />
                         <Run Text="{Binding LastSeen, StringFormat=dd.MM.yyyy HH:mm}" />
-                    </TextBlock>
-                </StackPanel>
+                        </TextBlock>
+                    </StackPanel>
+                </Grid>
             </Grid>
-        </Grid>
-    </Border>
+        </Border>
+    </Grid>
 </UserControl>

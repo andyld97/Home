@@ -42,6 +42,7 @@ namespace Home.API.Controllers
                     device.LogEntries.Clear();
                     device.LogEntries.Add($"Device {device.Name} was successfully added!".FormatLogLine(now));
                     _logger.LogInformation($"New device {device} has just logged in!");
+                    device.IsScreenshotRequired = true;
                     Program.Devices.Add(device);
 
                     lock (Program.EventQueues)
@@ -84,7 +85,10 @@ namespace Home.API.Controllers
                         // device.LogEntries.Add("Recieved ack!".FormatLogLine(now));
                         // _logger.LogInformation($"Recieved ack from device {device}!");
                         if (dev.Status == Device.DeviceStatus.Offline)
+                        {
                             dev.LogEntries.Add("Device has recovered and is now online again!".FormatLogLine(DateTime.Now));
+                            device.IsScreenshotRequired = true;
+                        }
                         isScreenshotRequired = dev.IsScreenshotRequired;
                         dev.Update(device, now, Device.DeviceStatus.Active);
                         dev.IsScreenshotRequired = false;

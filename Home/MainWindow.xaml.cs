@@ -10,6 +10,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -29,6 +30,7 @@ namespace Home
         private bool isUpdating = false;
         private readonly object _lock = new object();
         private List<Device> deviceList = new List<Device>();
+        private List<DeviceItem> deviceItems = new List<DeviceItem>(); // gui
         private Device lastSelectedDevice = null;
 
         public MainWindow()
@@ -60,9 +62,16 @@ namespace Home
         private void RefreshDeviceHolder()
         {
             DeviceHolder.Items.Clear();
+            deviceItems.Clear();
 
             foreach (var device in deviceList.OrderBy(p => p.Status))
-                DeviceHolder.Items.Add(device);
+            {
+                DeviceItem di = new DeviceItem() { DataContext = device };
+                deviceItems.Add(di);
+                DeviceHolder.Items.Add(di);
+            }
+
+            RefreshSelection();
         }
 
         private async void UpdateTimer_Tick(object sender, EventArgs e)
@@ -132,6 +141,7 @@ namespace Home
         {
             byte[] data = null;
             bool saveInCache = false;
+            bool updateGui = (lastSelectedDevice.ID == device.ID);
 
             string cacheDevicePath = System.IO.Path.Combine(cache_path, device.ID);
             if (!System.IO.Directory.Exists(cacheDevicePath))
@@ -161,7 +171,7 @@ namespace Home
                     fi = files.LastOrDefault();
 
 
-                if (fi != null)
+                if (fi != null && updateGui)
                 {
                     try
                     {
@@ -172,7 +182,6 @@ namespace Home
                     {
 
                     }
-
                 }
                 saveInCache = false;
             }
@@ -186,8 +195,11 @@ namespace Home
                     saveInCache = true;
 
                     // Last refresh = now
-                    var now = DateTime.Now;
-                    TextLastScreenshotRefresh.Text = $"{now.ToShortDateString()} @ {now.ToShortTimeString()}";
+                    if (updateGui)
+                    {
+                        var now = DateTime.Now;
+                        TextLastScreenshotRefresh.Text = $"{now.ToShortDateString()} @ {now.ToShortTimeString()}";
+                    }
                 }
             }
 
@@ -203,6 +215,9 @@ namespace Home
 
                 }
             }
+
+            if (!updateGui)
+                return;
 
             using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
             {          
@@ -243,10 +258,20 @@ namespace Home
 
         private async void DeviceHolder_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            if (DeviceHolder.SelectedItem is Device dev)
+            if (DeviceHolder.SelectedItem is DeviceItem dev)
             {
-                lastSelectedDevice = dev;
+                lastSelectedDevice = dev.DataContext as Device;
                 await RefreshSelectedItem();
+                RefreshSelection();
+            }
+        }
+
+        private void RefreshSelection()
+        {
+            foreach (var item in deviceItems)
+            {
+                var ctx = item.DataContext as Device;
+                item.SetSelected(lastSelectedDevice?.ID == ctx.ID);
             }
         }
 

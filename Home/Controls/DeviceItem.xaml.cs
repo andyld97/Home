@@ -17,6 +17,11 @@ namespace Home.Controls
         {
             InitializeComponent();
         }
+
+        public void SetSelected(bool state)
+        {
+            BorderSelected.Visibility = (state ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed);
+        }
     }
 
     #region Converter
