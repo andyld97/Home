@@ -3,14 +3,12 @@ using Home.Controls;
 using Home.Controls.Dialogs;
 using Home.Data;
 using Home.Model;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -33,6 +31,7 @@ namespace Home
         private List<Device> deviceList = new List<Device>();
         private readonly List<DeviceItem> deviceItems = new List<DeviceItem>(); // gui
         private Device lastSelectedDevice = null;
+        private bool ignoreSelectionChanged = false;
 
         public MainWindow()
         {
@@ -71,6 +70,7 @@ namespace Home
 
         private void RefreshDeviceHolder()
         {
+            ignoreSelectionChanged = true;
             DeviceHolder.Items.Clear();
             deviceItems.Clear();
 
@@ -81,7 +81,15 @@ namespace Home
                 DeviceHolder.Items.Add(di);
             }
 
+            if (lastSelectedDevice != null)
+            {
+                int index = deviceList.IndexOf(lastSelectedDevice);
+                if (index != -1)
+                    DeviceHolder.SelectedIndex = index;
+            }
+
             RefreshSelection();
+            ignoreSelectionChanged = false;
         }
 
         private async void UpdateTimer_Tick(object sender, EventArgs e)
@@ -204,13 +212,14 @@ namespace Home
                             fileName = fiName;
 
                             // Last refresh = now
-                            if (updateGui)
-                            {
-                                var now = DateTime.Now; // ToDO: Now is not correct! Try to parse the date from file name
-                                TextLastScreenshotRefresh.Text = $"{now.ToShortDateString()} @ {now.ToShortTimeString()}";
-                            }
+                            if (updateGui && DateTime.TryParseExact(fileName, "ddMMyyyy-HHmmss", CultureInfo.CurrentCulture, DateTimeStyles.AssumeLocal, out DateTime result))
+                                TextLastScreenshotRefresh.Text = $"{result.ToShortDateString()} @ {result.ToShortTimeString()}";
+                            else
+                                TextLastScreenshotRefresh.Text = "Nie";
                         }
                     }
+                    else
+                        TextLastScreenshotRefresh.Text = "Nie";
                 }
           
             }
@@ -287,11 +296,24 @@ namespace Home
 
         private async void DeviceHolder_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
+            if (ignoreSelectionChanged)
+                return;
+
             if (DeviceHolder.SelectedItem is DeviceItem dev)
             {
                 lastSelectedDevice = dev.DataContext as Device;
                 await RefreshSelectedItem();
                 RefreshSelection();
+                await GetScreenshot(lastSelectedDevice);
+
+                DeviceInfo.Visibility = Visibility.Visible;
+                DeviceInfoHint.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                lastSelectedDevice = null;
+                DeviceInfo.Visibility = Visibility.Collapsed;
+                DeviceInfoHint.Visibility = Visibility.Visible;
             }
         }
 
@@ -313,7 +335,6 @@ namespace Home
             TextDeviceLog.ScrollToEnd();
             DeviceInfo.DataContext = null;
             DeviceInfo.DataContext = lastSelectedDevice;
-            await GetScreenshot(lastSelectedDevice);
         }
 
         private async void HyperLinkRefreshScreenshot_Click(object sender, RoutedEventArgs e)

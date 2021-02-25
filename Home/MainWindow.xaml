@@ -111,168 +111,194 @@
             </Grid>
 
             <Border Grid.Column="1" Grid.Row="1" BorderThickness="2" CornerRadius="5" BorderBrush="Gray" Margin="5">
-                <Grid x:Name="DeviceInfo">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
+                <Grid>
+                    <Grid x:Name="DeviceInfoHint" Visibility="Visible">
+                        <TextBlock Text="Kein Gerät ausgewählt!" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Foreground="{DynamicResource BlackBrush}" FontSize="33" />
+                    </Grid>
+                    
+                    <Grid x:Name="DeviceInfo" Visibility="Collapsed">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="200" />
+                        </Grid.RowDefinitions>
 
-                    <TabControl Margin="0,0,0,-4" Background="{DynamicResource WhiteBrush}">
-                        <TabControl.Resources>
-                            <ResourceDictionary>
-                                <ResourceDictionary.MergedDictionaries>
-                                    <ResourceDictionary Source="resources\TabControlStyle.xaml"/>
-                                </ResourceDictionary.MergedDictionaries>
-                            </ResourceDictionary>
-                        </TabControl.Resources>
-                        <TabItem Header="System">
-                            <Grid>
-                                <Grid.Resources>
-                                    <Style TargetType="{x:Type TextBlock}">
-                                        <Setter Property="Margin" Value="2,0,2,2" />
-                                        <Setter Property="Padding" Value="0" />
-                                        <Setter Property="FontSize" Value="19" />
-                                        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                                    </Style>
-                                </Grid.Resources>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-
+                        <TabControl Margin="0,0,0,-4" Background="{DynamicResource WhiteBrush}">
+                            <TabControl.Resources>
+                                <ResourceDictionary>
+                                    <ResourceDictionary.MergedDictionaries>
+                                        <ResourceDictionary Source="resources\TabControlStyle.xaml"/>
+                                    </ResourceDictionary.MergedDictionaries>
+                                </ResourceDictionary>
+                            </TabControl.Resources>
+                            <TabItem Header="System Übersicht">
                                 <Grid>
+                                    <Grid.Resources>
+                                        <Style TargetType="{x:Type TextBlock}">
+                                            <Setter Property="Margin" Value="2,0,2,2" />
+                                            <Setter Property="Padding" Value="0" />
+                                            <Setter Property="FontSize" Value="19" />
+                                            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                                        </Style>
+                                    </Grid.Resources>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
 
-                                    <StackPanel>
-                                        <TextBlock Text="OS:" FontWeight="Bold" />
-                                        <TextBlock Text="CPU:" FontWeight="Bold" />
-                                        <TextBlock Text="RAM:" FontWeight="Bold" />
-                                        <Separator />
-                                        <TextBlock Text="CPU (%):" FontWeight="Bold" />
-                                        <TextBlock Text="RAM (%): " FontWeight="Bold"/>
-                                        <TextBlock Text="DISK (%): " FontWeight="Bold"/>
-                                        <TextBlock Text="Online:" FontWeight="Bold" />
-                                        <Separator />
-                                    </StackPanel>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
 
-                                    <StackPanel Grid.Column="1">
-                                        <TextBlock x:Name="TextOSName" ToolTip="{Binding ElementName=TextOSName, Path=Text}" >
+                                        <StackPanel>
+                                            <TextBlock Text="Hardware" />
+                                            <Separator />
+                                            <TextBlock Text="OS:" FontWeight="Bold" />
+                                            <TextBlock Text="CPU:" FontWeight="Bold" />
+                                            <TextBlock Text="Kerne:" FontWeight="Bold" />
+                                            <TextBlock Text="RAM:" FontWeight="Bold" />
+                                            <TextBlock Text="Aktivität" Margin="0,10,0,0" />
+                                            <Separator />
+                                            <TextBlock Text="CPU (%):" FontWeight="Bold" />
+                                            <TextBlock Text="RAM (%): " FontWeight="Bold"/>
+                                            <TextBlock Text="DISK (%): " FontWeight="Bold"/>
+                                            <TextBlock Text="Online:" FontWeight="Bold" />
+                                            <Separator />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock />
+                                            <Separator />
+                                            <TextBlock x:Name="TextOSName" ToolTip="{Binding ElementName=TextOSName, Path=Text}" >
                                             <Run Text="{Binding Envoirnment.OSName}" />
                                             <Run Text="(" /><Run Text="{Binding Envoirnment.Is64BitOS, Converter={StaticResource os64BitConverter}}" /><Run Text=")" />
-                                        </TextBlock>
-                                        <TextBlock x:Name="TextCPUName" Text="{Binding Envoirnment.CPUName}" ToolTip="{Binding ElementName=TextCPUName,Path=Text}" />
-                                        <TextBlock x:Name="TextTotalRAM" ToolTip="{Binding ElementName=TextTotalRAM, Path=Text}">
+                                            </TextBlock>
+                                            <TextBlock x:Name="TextCPUName" Text="{Binding Envoirnment.CPUName}" ToolTip="{Binding ElementName=TextCPUName,Path=Text}" />
+                                            <TextBlock x:Name="TextCPUKernel" ToolTip="{Binding ElementName=TextCPUKernel, Path=Text}">
+                                            <Run Text="X" /><Run Text="{Binding Envoirnment.CPUCount}"/>
+                                            </TextBlock>
+                                            <TextBlock x:Name="TextTotalRAM" ToolTip="{Binding ElementName=TextTotalRAM, Path=Text}">
                                             <Run Text="{Binding Envoirnment.TotalRAM}" />
                                             <Run Text="GB" />
-                                        </TextBlock>
-                                        <Separator />
-                                        <TextBlock x:Name="TextCPUUsage">
+                                            </TextBlock>
+                                            <TextBlock Margin="0,10,0,0" />
+                                            <Separator />
+                                            <TextBlock x:Name="TextCPUUsage">
                                             <Run Text="{Binding Envoirnment.CPUUsage}" ToolTip="{Binding ElementName=TextCPUUsage, Path=Text}"/>
                                             <Run Text="%"/>
-                                        </TextBlock>
-                                        <TextBlock x:Name="TextFreeRAM" Text="{Binding Envoirnment.FreeRAM}" ToolTip="{Binding ElementName=TextFreeRAM, Path=Text}"/>
-                                        <TextBlock x:Name="TextDiskUsage">
+                                            </TextBlock>
+                                            <TextBlock x:Name="TextFreeRAM" Text="{Binding Envoirnment.FreeRAM}" ToolTip="{Binding ElementName=TextFreeRAM, Path=Text}"/>
+                                            <TextBlock x:Name="TextDiskUsage">
                                             <Run Text="{Binding Envoirnment.DiskUsage}" ToolTip="{Binding ElementName=TextDiskUsage, Path=Text}" />
                                             <Run Text="%" />
-                                        </TextBlock>
-                                        <TextBlock x:Name="TextRunningTime" ToolTip="{Binding ElementName=TextRunningTime, Path=Text}">
-                                            <TextBlock.Text>
-                                                <MultiBinding StringFormat="{}{0:00}:{1:00}:{2:00;00}">
-                                                    <Binding Path="Envoirnment.RunningTime.Days" />
-                                                    <Binding Path="Envoirnment.RunningTime.Hours" />
-                                                    <Binding Path="Envoirnment.RunningTime.Minutes" />
-                                                </MultiBinding>
-                                            </TextBlock.Text>
-                                        </TextBlock>
-                                        <Separator />
-                                    </StackPanel>
-                                </Grid>
+                                            </TextBlock>
+                                            <TextBlock x:Name="TextRunningTime" ToolTip="{Binding ElementName=TextRunningTime, Path=Text}">
+                                                <TextBlock.Text>
+                                                    <MultiBinding StringFormat="{}{0:00}:{1:00}:{2:00;00}">
+                                                        <Binding Path="Envoirnment.RunningTime.Days" />
+                                                        <Binding Path="Envoirnment.RunningTime.Hours" />
+                                                        <Binding Path="Envoirnment.RunningTime.Minutes" />
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                            <Separator />
+                                        </StackPanel>
+                                    </Grid>
 
-                                <Grid Grid.Column="1">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
+                                    <Grid Grid.Column="1">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
 
-                                    <Border BorderBrush="{DynamicResource BlackBrush}" BorderThickness="2">
-                                        <Grid>
-                                            <Image x:Name="ImageScreenshot" MouseDown="ImageScreenshot_MouseDown" Cursor="Hand" Stretch="UniformToFill" />
-                                            <TextBlock Text="{Binding Envoirnment.MachineName}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Grid>
-                                    </Border>
+                                        <Border BorderBrush="{DynamicResource BlackBrush}" BorderThickness="2">
+                                            <Grid>
+                                                <Image x:Name="ImageScreenshot" MouseDown="ImageScreenshot_MouseDown" Cursor="Hand" Stretch="UniformToFill" />
+                                                <TextBlock Text="{Binding Envoirnment.MachineName}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
 
-                                    <Grid Grid.Row="2">
-                                        <TextBlock HorizontalAlignment="Left" FontSize="12">
+                                        <Grid Grid.Row="2">
+                                            <TextBlock HorizontalAlignment="Left" FontSize="12">
                                             <Hyperlink x:Name="HyperLinkRefreshScreenshot" Click="HyperLinkRefreshScreenshot_Click">
                                                 <Run Text="Zuletzt aktualisiert:" />
                                                 <Run x:Name="TextLastScreenshotRefresh" Text="" />
                                             </Hyperlink>
-                                        </TextBlock>
+                                            </TextBlock>
+                                        </Grid>
                                     </Grid>
                                 </Grid>
-                            </Grid>
-                        </TabItem>
-                        <TabItem Header="Datenträger">
-                            <ListBox Foreground="{DynamicResource BlackBrush}" Background="{DynamicResource WhiteBrush}" ItemsSource="{Binding DiskDrives}">
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto" />
-                                                <ColumnDefinition Width="*" />
-                                            </Grid.ColumnDefinitions>
-
+                            </TabItem>
+                            <TabItem Header="Benutzer">
+                                <TextBlock>
+                                <Run Text="{Binding Envoirnment.UserName}" />
+                                <LineBreak />
+                                <Run Text="{Binding Envoirnment.DomainName}" />
+                                <LineBreak />
+                                <Run Text="{Binding Envoirnment.MachineName}" />
+                                <LineBreak />
+                                </TextBlock>
+                            </TabItem>
+                            <TabItem Header="Datenträger">
+                                <ListBox Foreground="{DynamicResource BlackBrush}" Background="{DynamicResource WhiteBrush}" ItemsSource="{Binding DiskDrives}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
                                             <Grid>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="*" />
-                                                    <RowDefinition Height="Auto" />
-                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
 
-                                                <Image Source="{Binding ., Converter={StaticResource diskImageConverter}}" Width="48" Margin="5" />
-                                                <TextBlock Text="{Binding FileSystem}" FontWeight="Bold" HorizontalAlignment="Center" Grid.Row="1" />
-                                            </Grid>
-                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock FontWeight="Bold">
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="*" />
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+
+                                                    <Image Source="{Binding ., Converter={StaticResource diskImageConverter}}" Width="48" Margin="5" />
+                                                    <TextBlock Text="{Binding FileSystem}" FontWeight="Bold" HorizontalAlignment="Center" Grid.Row="1" />
+                                                </Grid>
+                                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                    <TextBlock FontWeight="Bold">
                                                     <Run Text="{Binding VolumeName}" />
                                                     <Run Text="(" /><Run Text="{Binding DriveID}" /><Run Text=")" />
-                                                </TextBlock>
-                                                <TextBlock>
+                                                    </TextBlock>
+                                                    <TextBlock>
                                                     <Run Text="{Binding DiskName}" />
-                                                </TextBlock>
-                                                <TextBlock>
+                                                    </TextBlock>
+                                                    <TextBlock>
                                                     <Run Text="{Binding FreeSpace, Converter={StaticResource byteToGBConverter}}" />
                                                     <Run Text="GB" />
                                                     <Run Text="frei von" />
                                                     <Run Text="{Binding TotalSpace, Converter={StaticResource byteToGBConverter}}" />
                                                     <Run Text="GB" />
-                                                </TextBlock>
-                                                <ProgressBar Value="{Binding ., Converter={StaticResource spaceToProgressBarConverter}}" Height="10" Maximum="100" Foreground="{Binding ., Converter={StaticResource spaceToProgressBarColorConverter}}" />
-                                            </StackPanel>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
-                        </TabItem>
-                    </TabControl>
+                                                    </TextBlock>
+                                                    <ProgressBar Value="{Binding ., Converter={StaticResource spaceToProgressBarConverter}}" Height="10" Maximum="100" Foreground="{Binding ., Converter={StaticResource spaceToProgressBarColorConverter}}" />
+                                                </StackPanel>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </TabItem>
+                        </TabControl>
 
-                    <TabControl Grid.Row="1" Margin="0,-0,0,0" Background="{DynamicResource WhiteBrush}">
-                        <TabControl.Resources>
-                            <ResourceDictionary>
-                                <ResourceDictionary.MergedDictionaries>
-                                    <ResourceDictionary Source="resources\TabControlStyle.xaml"/>
-                                </ResourceDictionary.MergedDictionaries>
-                            </ResourceDictionary>
-                        </TabControl.Resources>
-                        <TabItem Header="Geräte Log">
-                            <TextBox x:Name="TextDeviceLog" FontFamily="Consolas" Foreground="{DynamicResource BlackBrush}" Background="Transparent" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" />
-                        </TabItem>
-                        <TabItem Header="Remote Shell">
-                            <TextBox AcceptsReturn="True" Foreground="{DynamicResource BlackBrush}" Background="Transparent" TextWrapping="Wrap" />
-                        </TabItem>
-                    </TabControl>
+                        <TabControl Grid.Row="1" Margin="0,-0,0,0" Background="{DynamicResource WhiteBrush}">
+                            <TabControl.Resources>
+                                <ResourceDictionary>
+                                    <ResourceDictionary.MergedDictionaries>
+                                        <ResourceDictionary Source="resources\TabControlStyle.xaml"/>
+                                    </ResourceDictionary.MergedDictionaries>
+                                </ResourceDictionary>
+                            </TabControl.Resources>
+                            <TabItem Header="Geräte Log">
+                                <TextBox x:Name="TextDeviceLog" FontFamily="Consolas" Foreground="{DynamicResource BlackBrush}" Background="Transparent" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" />
+                            </TabItem>
+                            <TabItem Header="Remote Shell">
+                                <TextBox AcceptsReturn="True" Foreground="{DynamicResource BlackBrush}" Background="Transparent" TextWrapping="Wrap" />
+                            </TabItem>
+                        </TabControl>
+                    </Grid>
                 </Grid>
             </Border>
         </Grid>

@@ -343,7 +343,10 @@ namespace Home.Model
             Location = other.location;
             Envoirnment = other.Envoirnment;
             DiskDrives = other.DiskDrives;
-            ScreenshotFileNames = other.ScreenshotFileNames;
+
+            foreach (var shot in other.ScreenshotFileNames)
+                ScreenshotFileNames.Add(shot);
+
             IsScreenshotRequired = other.IsScreenshotRequired;
 
             if (isLocal)

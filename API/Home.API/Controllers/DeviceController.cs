@@ -191,6 +191,7 @@ namespace Home.API.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(AnswerExtensions.Fail(ex.Message));
             }
         }
