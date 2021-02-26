@@ -1,0 +1,9 @@
+﻿{
+  "id": null, /* Will be set automatically */
+  "api": "http://192.168.178.38:83",
+  "location": null,
+  "device_group": null,
+  "os": 2, /* Linux = 0 | LinuxMint = 1 | LinuxUbuntu = 2 | WindowsXP = 3 | WindowsVista = 4 | Windows7 = 5 | Windows8 = 6 | Windows10 = 7 | Unix = 8 | Other = 9 */
+  "type": 0, /* SingleBoardDevice = 0 | MiniPC = 1 | Notebook = 2 | Desktop = 3 | Server = 4 */
+  "is_signed_in": false /* should be false on first start! */
+}

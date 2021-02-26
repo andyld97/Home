@@ -11,6 +11,7 @@
         <local:SpaceToProgressBarConverter x:Key="spaceToProgressBarConverter" />
         <local:SpaceToProgressBarColorConverter x:Key="spaceToProgressBarColorConverter" />
         <local:OS64BitConverter x:Key="os64BitConverter" />
+        <local:OSNameConverter x:Key="osNameConverter" />
     </fluent:RibbonWindow.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -119,7 +120,7 @@
                     <Grid x:Name="DeviceInfo" Visibility="Collapsed">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
-                            <RowDefinition Height="200" />
+                            <RowDefinition Height="250" />
                         </Grid.RowDefinitions>
 
                         <TabControl Margin="0,0,0,-4" Background="{DynamicResource WhiteBrush}">
@@ -155,6 +156,7 @@
                                             <TextBlock Text="Hardware" />
                                             <Separator />
                                             <TextBlock Text="OS:" FontWeight="Bold" />
+                                            <TextBlock Text="VER:" FontWeight="Bold" />
                                             <TextBlock Text="CPU:" FontWeight="Bold" />
                                             <TextBlock Text="GRAFIK:" FontWeight="Bold" />
                                             <TextBlock Text="RAM:" FontWeight="Bold" />
@@ -171,28 +173,29 @@
                                             <TextBlock />
                                             <Separator />
                                             <TextBlock x:Name="TextOSName" ToolTip="{Binding ElementName=TextOSName, Path=Text}" >
-                                            <Run Text="{Binding Envoirnment.OSName}" />
-                                            <Run Text="(" /><Run Text="{Binding Envoirnment.Is64BitOS, Converter={StaticResource os64BitConverter}}" /><Run Text=")" />
+                                                <Run Text="{Binding OS, Converter={StaticResource osNameConverter}}" />
+                                                <Run Text="(" /><Run Text="{Binding Envoirnment.Is64BitOS, Converter={StaticResource os64BitConverter}}" /><Run Text=")" />
                                             </TextBlock>
-                                            <TextBlock x:Name="TextCPUName" ToolTip="{Binding ElementName=TextCPUName,Path=Text}">
+                                            <TextBlock Text="{Binding Envoirnment.OSVersion}" ToolTip="{Binding Envoirnment.OSVersion}" />
+                                            <TextBlock x:Name="TextCPUName" ToolTip="{Binding ElementName=TextCPUName, Path=Text}">
                                                 <Run  Text="{Binding Envoirnment.CPUName}"  />
-                                                <Run Text=" x" /><Run Text="{Binding Envoirnment.CPUCount}" />
+                                                <Run Text=" x " /><Run Text="{Binding Envoirnment.CPUCount}" />
                                             </TextBlock>
                                             <TextBlock x:Name="TextGraphics" Text="{Binding Envoirnment.Graphics}" ToolTip="{Binding ElementName=TextGraphics, Path=Text}" />
                                             <TextBlock x:Name="TextTotalRAM" ToolTip="{Binding ElementName=TextTotalRAM, Path=Text}">
-                                            <Run Text="{Binding Envoirnment.TotalRAM}" />
-                                            <Run Text="GB" />
+                                                <Run Text="{Binding Envoirnment.TotalRAM}" />
+                                                <Run Text="GB" />
                                             </TextBlock>
                                             <TextBlock Margin="0,10,0,0" />
                                             <Separator />
                                             <TextBlock x:Name="TextCPUUsage">
-                                            <Run Text="{Binding Envoirnment.CPUUsage}" ToolTip="{Binding ElementName=TextCPUUsage, Path=Text}"/>
-                                            <Run Text="%"/>
+                                                <Run Text="{Binding Envoirnment.CPUUsage}" ToolTip="{Binding ElementName=TextCPUUsage, Path=Text}"/>
+                                                <Run Text="%"/>
                                             </TextBlock>
                                             <TextBlock x:Name="TextFreeRAM" Text="{Binding Envoirnment.FreeRAM}" ToolTip="{Binding ElementName=TextFreeRAM, Path=Text}"/>
                                             <TextBlock x:Name="TextDiskUsage">
-                                            <Run Text="{Binding Envoirnment.DiskUsage}" ToolTip="{Binding ElementName=TextDiskUsage, Path=Text}" />
-                                            <Run Text="%" />
+                                                <Run Text="{Binding Envoirnment.DiskUsage}" ToolTip="{Binding ElementName=TextDiskUsage, Path=Text}" />
+                                                <Run Text="%" />
                                             </TextBlock>
                                             <TextBlock x:Name="TextRunningTime" ToolTip="{Binding ElementName=TextRunningTime, Path=Text}">
                                                 <TextBlock.Text>

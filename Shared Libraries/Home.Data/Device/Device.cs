@@ -43,7 +43,7 @@ namespace Home.Model
         [System.Text.Json.Serialization.JsonPropertyName("id")]
         public string ID
         {
-            get => guid.ToString();
+            get => guid?.ToString();
             set
             {
                 if (guid != null)

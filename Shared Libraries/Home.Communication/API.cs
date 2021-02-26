@@ -109,6 +109,7 @@ namespace Home.Communication
             catch (Exception ex)
             {
                 // LOG
+                Console.WriteLine(ex.Message);
                 return false;
             }
         }
