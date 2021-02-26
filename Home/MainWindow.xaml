@@ -156,7 +156,7 @@
                                             <Separator />
                                             <TextBlock Text="OS:" FontWeight="Bold" />
                                             <TextBlock Text="CPU:" FontWeight="Bold" />
-                                            <TextBlock Text="Kerne:" FontWeight="Bold" />
+                                            <TextBlock Text="GRAFIK:" FontWeight="Bold" />
                                             <TextBlock Text="RAM:" FontWeight="Bold" />
                                             <TextBlock Text="Aktivität" Margin="0,10,0,0" />
                                             <Separator />
@@ -174,10 +174,11 @@
                                             <Run Text="{Binding Envoirnment.OSName}" />
                                             <Run Text="(" /><Run Text="{Binding Envoirnment.Is64BitOS, Converter={StaticResource os64BitConverter}}" /><Run Text=")" />
                                             </TextBlock>
-                                            <TextBlock x:Name="TextCPUName" Text="{Binding Envoirnment.CPUName}" ToolTip="{Binding ElementName=TextCPUName,Path=Text}" />
-                                            <TextBlock x:Name="TextCPUKernel" ToolTip="{Binding ElementName=TextCPUKernel, Path=Text}">
-                                            <Run Text="X" /><Run Text="{Binding Envoirnment.CPUCount}"/>
+                                            <TextBlock x:Name="TextCPUName" ToolTip="{Binding ElementName=TextCPUName,Path=Text}">
+                                                <Run  Text="{Binding Envoirnment.CPUName}"  />
+                                                <Run Text=" x" /><Run Text="{Binding Envoirnment.CPUCount}" />
                                             </TextBlock>
+                                            <TextBlock x:Name="TextGraphics" Text="{Binding Envoirnment.Graphics}" ToolTip="{Binding ElementName=TextGraphics, Path=Text}" />
                                             <TextBlock x:Name="TextTotalRAM" ToolTip="{Binding ElementName=TextTotalRAM, Path=Text}">
                                             <Run Text="{Binding Envoirnment.TotalRAM}" />
                                             <Run Text="GB" />

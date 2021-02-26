@@ -392,6 +392,10 @@ namespace Home.Model
         [System.Text.Json.Serialization.JsonPropertyName("cpu_usage")]
         public double CPUUsage { get; set; }
 
+        [JsonProperty("graphics")]
+        [System.Text.Json.Serialization.JsonPropertyName("graphics")]
+        public string Graphics { get; set; }
+
         [JsonProperty("total_ram")]
         [System.Text.Json.Serialization.JsonPropertyName("total_ram")]
         public long TotalRAM { get; set; }

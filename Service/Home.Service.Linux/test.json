@@ -1,0 +1,566 @@
+[                           
+{
+  "id" : "andy-optiplex-790",
+  "class" : "system",
+  "claimed" : true,
+  "description" : "Computer",
+  "width" : 64,
+  "capabilities" : {
+    "smp" : "Symmetric Multi-Processing",
+    "vsyscall32" : "32-Bit-Prozesse"
+  },
+  "children" : [
+    {
+      "id" : "core",
+      "class" : "bus",
+      "claimed" : true,
+      "description" : "Motherboard",
+      "physid" : "0",
+      "children" : [
+        {
+          "id" : "memory",
+          "class" : "memory",
+          "claimed" : true,
+          "description" : "Systemspeicher",
+          "physid" : "0",
+          "units" : "bytes",
+          "size" : 8589934592
+        },
+        {
+          "id" : "cpu",
+          "class" : "processor",
+          "claimed" : true,
+          "product" : "Intel(R) Core(TM) i3-2100 CPU @ 3.10GHz",
+          "vendor" : "Intel Corp.",
+          "physid" : "1",
+          "businfo" : "cpu@0",
+          "units" : "Hz",
+          "size" : 2575579000,
+          "capacity" : 3100000000,
+          "width" : 64,
+          "capabilities" : {
+            "fpu" : "mathematical co-processor",
+            "fpu_exception" : "FPU exceptions reporting",
+            "wp" : true,
+            "vme" : "virtual mode extensions",
+            "de" : "debugging extensions",
+            "pse" : "page size extensions",
+            "tsc" : "time stamp counter",
+            "msr" : "model-specific registers",
+            "pae" : "4GB+ memory addressing (Physical Address Extension)",
+            "mce" : "machine check exceptions",
+            "cx8" : "compare and exchange 8-byte",
+            "apic" : "on-chip advanced programmable interrupt controller (APIC)",
+            "sep" : "fast system calls",
+            "mtrr" : "memory type range registers",
+            "pge" : "page global enable",
+            "mca" : "machine check architecture",
+            "cmov" : "conditional move instruction",
+            "pat" : "page attribute table",
+            "pse36" : "36-bit page size extensions",
+            "clflush" : true,
+            "dts" : "debug trace and EMON store MSRs",
+            "acpi" : "thermal control (ACPI)",
+            "mmx" : "multimedia extensions (MMX)",
+            "fxsr" : "fast floating point save/restore",
+            "sse" : "streaming SIMD extensions (SSE)",
+            "sse2" : "streaming SIMD extensions (SSE2)",
+            "ht" : "HyperThreading",
+            "tm" : "thermal interrupt and status",
+            "pbe" : "pending break event",
+            "syscall" : "fast system calls",
+            "nx" : "no-execute bit (NX)",
+            "rdtscp" : true,
+            "x86-64" : "64bits extensions (x86-64)",
+            "constant_tsc" : true,
+            "arch_perfmon" : true,
+            "pebs" : true,
+            "bts" : true,
+            "rep_good" : true,
+            "nopl" : true,
+            "xtopology" : true,
+            "nonstop_tsc" : true,
+            "cpuid" : true,
+            "aperfmperf" : true,
+            "pni" : true,
+            "pclmulqdq" : true,
+            "dtes64" : true,
+            "monitor" : true,
+            "ds_cpl" : true,
+            "vmx" : true,
+            "est" : true,
+            "tm2" : true,
+            "ssse3" : true,
+            "cx16" : true,
+            "xtpr" : true,
+            "pdcm" : true,
+            "pcid" : true,
+            "sse4_1" : true,
+            "sse4_2" : true,
+            "popcnt" : true,
+            "tsc_deadline_timer" : true,
+            "xsave" : true,
+            "avx" : true,
+            "lahf_lm" : true,
+            "epb" : true,
+            "pti" : true,
+            "ssbd" : true,
+            "ibrs" : true,
+            "ibpb" : true,
+            "stibp" : true,
+            "tpr_shadow" : true,
+            "vnmi" : true,
+            "flexpriority" : true,
+            "ept" : true,
+            "vpid" : true,
+            "xsaveopt" : true,
+            "dtherm" : true,
+            "arat" : true,
+            "pln" : true,
+            "pts" : true,
+            "md_clear" : true,
+            "flush_l1d" : true,
+            "cpufreq" : "CPU Frequency scaling"
+          }
+        },
+        {
+          "id" : "pci",
+          "class" : "bridge",
+          "claimed" : true,
+          "handle" : "PCIBUS:0000:00",
+          "description" : "Host bridge",
+          "product" : "2nd Generation Core Processor Family DRAM Controller",
+          "vendor" : "Intel Corporation",
+          "physid" : "100",
+          "businfo" : "pci@0000:00:00.0",
+          "version" : "09",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "driver" : "snb_uncore"
+          },
+          "children" : [
+            {
+              "id" : "display",
+              "class" : "display",
+              "claimed" : true,
+              "handle" : "PCI:0000:00:02.0",
+              "description" : "VGA compatible controller",
+              "product" : "2nd Generation Core Processor Family Integrated Graphics Controller",
+              "vendor" : "Intel Corporation",
+              "physid" : "2",
+              "businfo" : "pci@0000:00:02.0",
+              "version" : "09",
+              "width" : 64,
+              "clock" : 33000000,
+              "configuration" : {
+                "driver" : "i915",
+                "latency" : "0"
+              },
+              "capabilities" : {
+                "vga_controller" : true,
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing",
+                "rom" : "extension ROM"
+              }
+            },
+            {
+              "id" : "communication",
+              "class" : "communication",
+              "claimed" : true,
+              "handle" : "PCI:0000:00:16.0",
+              "description" : "Communication controller",
+              "product" : "6 Series/C200 Series Chipset Family MEI Controller #1",
+              "vendor" : "Intel Corporation",
+              "physid" : "16",
+              "businfo" : "pci@0000:00:16.0",
+              "version" : "04",
+              "width" : 64,
+              "clock" : 33000000,
+              "configuration" : {
+                "driver" : "mei_me",
+                "latency" : "0"
+              },
+              "capabilities" : {
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              }
+            },
+            {
+              "id" : "network",
+              "class" : "network",
+              "claimed" : true,
+              "handle" : "PCI:0000:00:19.0",
+              "description" : "Ethernet interface",
+              "product" : "82579LM Gigabit Network Connection (Lewisville)",
+              "vendor" : "Intel Corporation",
+              "physid" : "19",
+              "businfo" : "pci@0000:00:19.0",
+              "logicalname" : "eno1",
+              "version" : "04",
+              "serial" : "18:03:73:2c:42:7b",
+              "units" : "bit/s",
+              "size" : 1000000000,
+              "capacity" : 1000000000,
+              "width" : 32,
+              "clock" : 33000000,
+              "configuration" : {
+                "autonegotiation" : "on",
+                "broadcast" : "yes",
+                "driver" : "e1000e",
+                "driverversion" : "3.2.6-k",
+                "duplex" : "full",
+                "firmware" : "0.13-4",
+                "ip" : "192.168.178.101",
+                "latency" : "0",
+                "link" : "yes",
+                "multicast" : "yes",
+                "port" : "twisted pair",
+                "speed" : "1Gbit/s"
+              },
+              "capabilities" : {
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing",
+                "ethernet" : true,
+                "physical" : "Physische Schnittstelle",
+                "tp" : "Verdrillte Zweidrahtleitung",
+                "10bt" : "10Mbit/s",
+                "10bt-fd" : "10Mbit/s (Vollduplex)",
+                "100bt" : "100Mbit/s",
+                "100bt-fd" : "100Mbit/s (Vollduplex)",
+                "1000bt-fd" : "1Gbit/s (Vollduplex)",
+                "autonegotiation" : "Auto-verhandeln"
+              }
+            },
+            {
+              "id" : "usb:0",
+              "class" : "bus",
+              "claimed" : true,
+              "handle" : "PCI:0000:00:1a.0",
+              "description" : "USB controller",
+              "product" : "6 Series/C200 Series Chipset Family USB Enhanced Host Controller #2",
+              "vendor" : "Intel Corporation",
+              "physid" : "1a",
+              "businfo" : "pci@0000:00:1a.0",
+              "version" : "04",
+              "width" : 32,
+              "clock" : 33000000,
+              "configuration" : {
+                "driver" : "ehci-pci",
+                "latency" : "0"
+              },
+              "capabilities" : {
+                "ehci" : "Enhanced Host Controller Interface (USB2)",
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              }
+            },
+            {
+              "id" : "multimedia",
+              "class" : "multimedia",
+              "claimed" : true,
+              "handle" : "PCI:0000:00:1b.0",
+              "description" : "Audio device",
+              "product" : "6 Series/C200 Series Chipset Family High Definition Audio Controller",
+              "vendor" : "Intel Corporation",
+              "physid" : "1b",
+              "businfo" : "pci@0000:00:1b.0",
+              "version" : "04",
+              "width" : 64,
+              "clock" : 33000000,
+              "configuration" : {
+                "driver" : "snd_hda_intel",
+                "latency" : "0"
+              },
+              "capabilities" : {
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              }
+            },
+            {
+              "id" : "pci:0",
+              "class" : "bridge",
+              "claimed" : true,
+              "handle" : "PCIBUS:0000:01",
+              "description" : "PCI bridge",
+              "product" : "6 Series/C200 Series Chipset Family PCI Express Root Port 1",
+              "vendor" : "Intel Corporation",
+              "physid" : "1c",
+              "businfo" : "pci@0000:00:1c.0",
+              "version" : "b4",
+              "width" : 32,
+              "clock" : 33000000,
+              "configuration" : {
+                "driver" : "pcieport"
+              },
+              "capabilities" : {
+                "pci" : true,
+                "normal_decode" : true,
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              }
+            },
+            {
+              "id" : "pci:1",
+              "class" : "bridge",
+              "claimed" : true,
+              "handle" : "PCIBUS:0000:02",
+              "description" : "PCI bridge",
+              "product" : "6 Series/C200 Series Chipset Family PCI Express Root Port 3",
+              "vendor" : "Intel Corporation",
+              "physid" : "1c.2",
+              "businfo" : "pci@0000:00:1c.2",
+              "version" : "b4",
+              "width" : 32,
+              "clock" : 33000000,
+              "configuration" : {
+                "driver" : "pcieport"
+              },
+              "capabilities" : {
+                "pci" : true,
+                "normal_decode" : true,
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              }
+            },
+            {
+              "id" : "usb:1",
+              "class" : "bus",
+              "claimed" : true,
+              "handle" : "PCI:0000:00:1d.0",
+              "description" : "USB controller",
+              "product" : "6 Series/C200 Series Chipset Family USB Enhanced Host Controller #1",
+              "vendor" : "Intel Corporation",
+              "physid" : "1d",
+              "businfo" : "pci@0000:00:1d.0",
+              "version" : "04",
+              "width" : 32,
+              "clock" : 33000000,
+              "configuration" : {
+                "driver" : "ehci-pci",
+                "latency" : "0"
+              },
+              "capabilities" : {
+                "ehci" : "Enhanced Host Controller Interface (USB2)",
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              }
+            },
+            {
+              "id" : "pci:2",
+              "class" : "bridge",
+              "claimed" : true,
+              "handle" : "PCIBUS:0000:03",
+              "description" : "PCI bridge",
+              "product" : "82801 PCI Bridge",
+              "vendor" : "Intel Corporation",
+              "physid" : "1e",
+              "businfo" : "pci@0000:00:1e.0",
+              "version" : "a4",
+              "width" : 32,
+              "clock" : 33000000,
+              "capabilities" : {
+                "pci" : true,
+                "subtractive_decode" : true,
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              }
+            },
+            {
+              "id" : "isa",
+              "class" : "bridge",
+              "claimed" : true,
+              "handle" : "PCI:0000:00:1f.0",
+              "description" : "ISA bridge",
+              "product" : "Q65 Express Chipset LPC Controller",
+              "vendor" : "Intel Corporation",
+              "physid" : "1f",
+              "businfo" : "pci@0000:00:1f.0",
+              "version" : "04",
+              "width" : 32,
+              "clock" : 33000000,
+              "configuration" : {
+                "driver" : "lpc_ich",
+                "latency" : "0"
+              },
+              "capabilities" : {
+                "isa" : true,
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              }
+            },
+            {
+              "id" : "sata",
+              "class" : "storage",
+              "claimed" : true,
+              "handle" : "PCI:0000:00:1f.2",
+              "description" : "SATA controller",
+              "product" : "6 Series/C200 Series Chipset Family 6 port Desktop SATA AHCI Controller",
+              "vendor" : "Intel Corporation",
+              "physid" : "1f.2",
+              "businfo" : "pci@0000:00:1f.2",
+              "version" : "04",
+              "width" : 32,
+              "clock" : 66000000,
+              "configuration" : {
+                "driver" : "ahci",
+                "latency" : "0"
+              },
+              "capabilities" : {
+                "sata" : true,
+                "ahci_1.0" : true,
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              }
+            },
+            {
+              "id" : "serial",
+              "class" : "bus",
+              "claimed" : true,
+              "handle" : "PCI:0000:00:1f.3",
+              "description" : "SMBus",
+              "product" : "6 Series/C200 Series Chipset Family SMBus Controller",
+              "vendor" : "Intel Corporation",
+              "physid" : "1f.3",
+              "businfo" : "pci@0000:00:1f.3",
+              "version" : "04",
+              "width" : 64,
+              "clock" : 33000000,
+              "configuration" : {
+                "driver" : "i801_smbus",
+                "latency" : "0"
+              }
+            }
+          ]
+        },
+        {
+          "id" : "pnp00:00",
+          "class" : "system",
+          "claimed" : true,
+          "product" : "PnP device PNP0c02",
+          "physid" : "2",
+          "configuration" : {
+            "driver" : "system"
+          },
+          "capabilities" : {
+            "pnp" : true
+          }
+        },
+        {
+          "id" : "pnp00:01",
+          "class" : "system",
+          "claimed" : true,
+          "product" : "PnP device PNP0b00",
+          "physid" : "3",
+          "configuration" : {
+            "driver" : "rtc_cmos"
+          },
+          "capabilities" : {
+            "pnp" : true
+          }
+        },
+        {
+          "id" : "pnp00:02",
+          "class" : "generic",
+          "claimed" : true,
+          "product" : "PnP device INT3f0d",
+          "physid" : "4",
+          "configuration" : {
+            "driver" : "system"
+          },
+          "capabilities" : {
+            "pnp" : true
+          }
+        },
+        {
+          "id" : "pnp00:03",
+          "class" : "input",
+          "claimed" : true,
+          "product" : "PnP device PNP0f13",
+          "physid" : "5",
+          "configuration" : {
+            "driver" : "i8042 aux"
+          },
+          "capabilities" : {
+            "pnp" : true
+          }
+        },
+        {
+          "id" : "pnp00:04",
+          "class" : "communication",
+          "claimed" : true,
+          "product" : "PnP device PNP0501",
+          "physid" : "6",
+          "configuration" : {
+            "driver" : "serial"
+          },
+          "capabilities" : {
+            "pnp" : true
+          }
+        },
+        {
+          "id" : "pnp00:05",
+          "class" : "system",
+          "claimed" : true,
+          "product" : "PnP device PNP0c02",
+          "physid" : "7",
+          "configuration" : {
+            "driver" : "system"
+          },
+          "capabilities" : {
+            "pnp" : true
+          }
+        },
+        {
+          "id" : "pnp00:06",
+          "class" : "system",
+          "claimed" : true,
+          "product" : "PnP device PNP0c01",
+          "physid" : "8",
+          "configuration" : {
+            "driver" : "system"
+          },
+          "capabilities" : {
+            "pnp" : true
+          }
+        },
+        {
+          "id" : "scsi",
+          "class" : "storage",
+          "claimed" : true,
+          "physid" : "9",
+          "logicalname" : "scsi1",
+          "capabilities" : {
+            "emulated" : "Emulated device"
+          },
+          "children" : [
+            {
+              "id" : "cdrom",
+              "class" : "disk",
+              "claimed" : true,
+              "handle" : "SCSI:01:00:00:00",
+              "description" : "DVD reader",
+              "product" : "DVD-ROM DH41N",
+              "vendor" : "HL-DT-ST",
+              "physid" : "0.0.0",
+              "businfo" : "scsi@1:0.0.0",
+              "logicalname" : ["/dev/cdrom", "/dev/dvd", "/dev/sr0"],
+              "dev" : "11:0",
+              "version" : "A101",
+              "configuration" : {
+                "ansiversion" : "5",
+                "status" : "nodisc"
+              },
+              "capabilities" : {
+                "removable" : "support is removable",
+                "audio" : "Audio CD playback",
+                "dvd" : "DVD playback"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+]

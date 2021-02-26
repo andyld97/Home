@@ -193,6 +193,7 @@ namespace Home.Service
             currentDevice.Envoirnment.MachineName = Environment.MachineName;
             currentDevice.Envoirnment.UserName = Environment.UserName;
             currentDevice.Envoirnment.DomainName = Environment.UserDomainName;
+            currentDevice.Envoirnment.Graphics = GetGraphics();
             currentDevice.ServiceClientVersion = $"v{typeof(MainWindow).Assembly.GetName().Version.ToString(3)}";
 
             // Send ack
@@ -239,6 +240,32 @@ namespace Home.Service
             {
                 // ToDo: Log
             }
+        }
+
+        public string GetGraphics()
+        {
+            try
+            {
+                ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_DisplayConfiguration");
+
+                string graphicsCard = string.Empty;
+                foreach (ManagementObject mo in searcher.Get())
+                {
+                    foreach (PropertyData property in mo.Properties)
+                    {
+                        if (property.Name == "Description")
+                        {
+                            return property.Value.ToString();
+                        }
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+
+            return string.Empty;
         }
 
         protected override void OnClosing(CancelEventArgs e)

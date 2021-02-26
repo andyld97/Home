@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Home.Service", "Service\Hom
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Home.Communication", "Shared Libraries\Home.Communication\Home.Communication.csproj", "{E812DEEE-4510-4DEE-B9FE-DA428ABE8A1E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Home.Service.Linux", "Service\Home.Service.Linux\Home.Service.Linux.csproj", "{30B690AF-CEFA-47A2-A392-DA878E75E7C0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{E812DEEE-4510-4DEE-B9FE-DA428ABE8A1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E812DEEE-4510-4DEE-B9FE-DA428ABE8A1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E812DEEE-4510-4DEE-B9FE-DA428ABE8A1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30B690AF-CEFA-47A2-A392-DA878E75E7C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30B690AF-CEFA-47A2-A392-DA878E75E7C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30B690AF-CEFA-47A2-A392-DA878E75E7C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30B690AF-CEFA-47A2-A392-DA878E75E7C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,12 +60,13 @@ Global
 		{47A580D8-92D0-439B-A32B-A7132C165D4C} = {C584A975-1E2C-45DB-9D99-D8CE26ED6F16}
 		{BBA6CEE6-1D66-4F82-B179-7203D08EE44C} = {69C60DD4-2CEF-4304-A8FF-751BE53960A9}
 		{E812DEEE-4510-4DEE-B9FE-DA428ABE8A1E} = {3DDEE229-D318-4A2A-85F4-5ED070765C30}
+		{30B690AF-CEFA-47A2-A392-DA878E75E7C0} = {69C60DD4-2CEF-4304-A8FF-751BE53960A9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {96AFC1EE-03B9-4208-AF3D-A290F2C3B875}
 	EndGlobalSection
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 6
+		SccNumberOfProjects = 7
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://dev.azure.com/code-a-software
 		SccLocalPath0 = .
@@ -82,5 +89,9 @@ Global
 		SccProjectTopLevelParentUniqueName5 = Home.sln
 		SccProjectName5 = Shared\u0020Libraries/Home.Communication
 		SccLocalPath5 = Shared\u0020Libraries\\Home.Communication
+		SccProjectUniqueName6 = Service\\Home.Service.Linux\\Home.Service.Linux.csproj
+		SccProjectTopLevelParentUniqueName6 = Home.sln
+		SccProjectName6 = Service/Home.Service.Linux
+		SccLocalPath6 = Service\\Home.Service.Linux
 	EndGlobalSection
 EndGlobal

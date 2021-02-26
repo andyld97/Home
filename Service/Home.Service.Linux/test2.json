@@ -1,0 +1,222 @@
+{
+  "id" : "andy-pc",
+  "class" : "system",
+  "claimed" : true,
+  "description" : "Computer",
+  "width" : 64,
+  "capabilities" : {
+    "smp" : "Symmetric Multi-Processing"
+  },
+  "children" : [
+    {
+      "id" : "core",
+      "class" : "bus",
+      "claimed" : true,
+      "description" : "Motherboard",
+      "physid" : "0",
+      "children" : [
+        {
+          "id" : "memory",
+          "class" : "memory",
+          "claimed" : true,
+          "description" : "System memory",
+          "physid" : "0",
+          "units" : "bytes",
+          "size" : 25695334400
+        },
+        {
+          "id" : "cpu",
+          "class" : "processor",
+          "claimed" : true,
+          "product" : "AMD Ryzen 7 2700X Eight-Core Processor",
+          "vendor" : "Advanced Micro Devices [AMD]",
+          "physid" : "1",
+          "businfo" : "cpu@0",
+          "units" : "Hz",
+          "capacity" : 3700000000,
+          "width" : 64,
+          "capabilities" : {
+            "fpu" : "mathematical co-processor",
+            "fpu_exception" : "FPU exceptions reporting",
+            "wp" : true,
+            "vme" : "virtual mode extensions",
+            "de" : "debugging extensions",
+            "pse" : "page size extensions",
+            "tsc" : "time stamp counter",
+            "msr" : "model-specific registers",
+            "pae" : "4GB+ memory addressing (Physical Address Extension)",
+            "mce" : "machine check exceptions",
+            "cx8" : "compare and exchange 8-byte",
+            "apic" : "on-chip advanced programmable interrupt controller (APIC)",
+            "sep" : "fast system calls",
+            "mtrr" : "memory type range registers",
+            "pge" : "page global enable",
+            "mca" : "machine check architecture",
+            "cmov" : "conditional move instruction",
+            "pat" : "page attribute table",
+            "pse36" : "36-bit page size extensions",
+            "clflush" : true,
+            "mmx" : "multimedia extensions (MMX)",
+            "fxsr" : "fast floating point save/restore",
+            "sse" : "streaming SIMD extensions (SSE)",
+            "sse2" : "streaming SIMD extensions (SSE2)",
+            "ht" : "HyperThreading",
+            "syscall" : "fast system calls",
+            "nx" : "no-execute bit (NX)",
+            "mmxext" : "multimedia extensions (MMXExt)",
+            "fxsr_opt" : true,
+            "pdpe1gb" : true,
+            "rdtscp" : true,
+            "x86-64" : "64bits extensions (x86-64)",
+            "pni" : true,
+            "pclmulqdq" : true,
+            "ssse3" : true,
+            "fma" : true,
+            "cx16" : true,
+            "sse4_1" : true,
+            "sse4_2" : true,
+            "movbe" : true,
+            "popcnt" : true,
+            "aes" : true,
+            "xsave" : true,
+            "osxsave" : true,
+            "avx" : true,
+            "f16c" : true,
+            "rdrand" : true,
+            "hypervisor" : true,
+            "lahf_lm" : true,
+            "cmp_legacy" : true,
+            "cr8_legacy" : true,
+            "abm" : true,
+            "sse4a" : true,
+            "misalignsse" : true,
+            "3dnowprefetch" : true,
+            "osvw" : true,
+            "wdt" : true,
+            "topoext" : true,
+            "perfctr_core" : true,
+            "fsgsbase" : true,
+            "bmi1" : true,
+            "avx2" : true,
+            "smep" : true,
+            "bmi2" : true,
+            "rdseed" : true,
+            "adx" : true,
+            "smap" : true,
+            "clflushopt" : true,
+            "sha_ni" : true,
+            "cpufreq" : "CPU Frequency scaling"
+          }
+        }
+      ]
+    },
+    {
+      "id" : "network:0",
+      "class" : "network",
+      "claimed" : true,
+      "description" : "Ethernet interface",
+      "physid" : "1",
+      "logicalname" : "eth0",
+      "serial" : "70:85:c2:48:60:4d",
+      "configuration" : {
+        "broadcast" : "yes",
+        "ip" : "192.168.178.39",
+        "multicast" : "yes"
+      },
+      "capabilities" : {
+        "ethernet" : true,
+        "physical" : "Physical interface"
+      }
+    },
+    {
+      "id" : "network:1",
+      "class" : "network",
+      "claimed" : true,
+      "description" : "Ethernet interface",
+      "physid" : "2",
+      "logicalname" : "eth4",
+      "serial" : "00:15:5d:f5:32:15",
+      "configuration" : {
+        "broadcast" : "yes",
+        "ip" : "172.26.0.1",
+        "multicast" : "yes"
+      },
+      "capabilities" : {
+        "ethernet" : true,
+        "physical" : "Physical interface"
+      }
+    },
+    {
+      "id" : "network:2",
+      "class" : "network",
+      "claimed" : true,
+      "description" : "Ethernet interface",
+      "physid" : "3",
+      "logicalname" : "eth5",
+      "serial" : "00:15:5d:43:61:2e",
+      "configuration" : {
+        "broadcast" : "yes",
+        "ip" : "172.20.192.1",
+        "multicast" : "yes"
+      },
+      "capabilities" : {
+        "ethernet" : true,
+        "physical" : "Physical interface"
+      }
+    },
+    {
+      "id" : "network:3",
+      "class" : "network",
+      "claimed" : true,
+      "description" : "Ethernet interface",
+      "physid" : "4",
+      "logicalname" : "eth6",
+      "serial" : "00:15:5d:f4:18:45",
+      "configuration" : {
+        "broadcast" : "yes",
+        "ip" : "172.19.160.1",
+        "multicast" : "yes"
+      },
+      "capabilities" : {
+        "ethernet" : true,
+        "physical" : "Physical interface"
+      }
+    },
+    {
+      "id" : "network:4",
+      "class" : "network",
+      "claimed" : true,
+      "description" : "Ethernet interface",
+      "physid" : "5",
+      "logicalname" : "eth7",
+      "serial" : "00:15:5d:12:13:83",
+      "configuration" : {
+        "broadcast" : "yes",
+        "ip" : "172.29.224.1",
+        "multicast" : "yes"
+      },
+      "capabilities" : {
+        "ethernet" : true,
+        "physical" : "Physical interface"
+      }
+    },
+    {
+      "id" : "network:5",
+      "class" : "network",
+      "claimed" : true,
+      "description" : "Ethernet interface",
+      "physid" : "6",
+      "logicalname" : "eth8",
+      "serial" : "00:15:5d:16:de:49",
+      "configuration" : {
+        "broadcast" : "yes",
+        "ip" : "172.17.16.1",
+        "multicast" : "yes"
+      },
+      "capabilities" : {
+        "ethernet" : true,
+        "physical" : "Physical interface"
+      }
+    }
+  ]
+}
