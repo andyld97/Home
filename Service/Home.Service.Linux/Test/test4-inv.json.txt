@@ -1,0 +1,276 @@
+﻿[
+{
+  "id" : "garden",
+  "class" : "system",
+  "claimed" : true,
+  "description" : "ARMv7 Processor rev 4 (v7l)",
+  "product" : "Raspberry Pi 3 Model B Rev 1.2",
+  "serial" : "00000000f94bfeb5",
+  "width" : 32,
+  "capabilities" : {
+    "smp" : "Symmetric Multi-Processing"
+  }    {
+      "id" : "core",
+      "class" : "bus",
+      "claimed" : true,
+      "description" : "Motherboard",
+      "physid" : "0"        {
+          "id" : "cpu:0",
+          "class" : "processor",
+          "claimed" : true,
+          "description" : "CPU",
+          "product" : "cpu",
+          "physid" : "0",
+          "businfo" : "cpu@0",
+          "units" : "Hz",
+          "size" : 1200000000,
+          "capacity" : 1200000000,
+          "capabilities" : {
+            "half" : "Unknown",
+            "thumb" : "Thumb instruction set",
+            "fastmult" : "Fast Multiplication",
+            "vfp" : "VFP (vector floating point instructions)",
+            "edsp" : "DSP extensions",
+            "neon" : "NEON aka MPE - Media Processing Engine",
+            "vfpv3" : "VFP version 3",
+            "tls" : "TLS register",
+            "vfpv4" : "VFP version 4",
+            "idiva" : "SDIV and UDIV hardware division in ARM mode",
+            "idivt" : "SDIV and UDIV hardware division in Thumb mode",
+            "vfpd32" : "Unknown",
+            "lpae" : "Large Physical Address Extension architecture",
+            "evtstrm" : "Unknown",
+            "crc32" : true,
+            "cpufreq" : "CPU Frequency scaling"
+          }
+        },
+        {
+          "id" : "cpu:1",
+          "class" : "processor",
+          "claimed" : true,
+          "description" : "CPU",
+          "product" : "cpu",
+          "physid" : "1",
+          "businfo" : "cpu@1",
+          "units" : "Hz",
+          "size" : 1200000000,
+          "capacity" : 1200000000,
+          "capabilities" : {
+            "half" : "Unknown",
+            "thumb" : "Thumb instruction set",
+            "fastmult" : "Fast Multiplication",
+            "vfp" : "VFP (vector floating point instructions)",
+            "edsp" : "DSP extensions",
+            "neon" : "NEON aka MPE - Media Processing Engine",
+            "vfpv3" : "VFP version 3",
+            "tls" : "TLS register",
+            "vfpv4" : "VFP version 4",
+            "idiva" : "SDIV and UDIV hardware division in ARM mode",
+            "idivt" : "SDIV and UDIV hardware division in Thumb mode",
+            "vfpd32" : "Unknown",
+            "lpae" : "Large Physical Address Extension architecture",
+            "evtstrm" : "Unknown",
+            "crc32" : true,
+            "cpufreq" : "CPU Frequency scaling"
+          }
+        },
+        {
+          "id" : "cpu:2",
+          "class" : "processor",
+          "claimed" : true,
+          "description" : "CPU",
+          "product" : "cpu",
+          "physid" : "2",
+          "businfo" : "cpu@2",
+          "units" : "Hz",
+          "size" : 1200000000,
+          "capacity" : 1200000000,
+          "capabilities" : {
+            "half" : "Unknown",
+            "thumb" : "Thumb instruction set",
+            "fastmult" : "Fast Multiplication",
+            "vfp" : "VFP (vector floating point instructions)",
+            "edsp" : "DSP extensions",
+            "neon" : "NEON aka MPE - Media Processing Engine",
+            "vfpv3" : "VFP version 3",
+            "tls" : "TLS register",
+            "vfpv4" : "VFP version 4",
+            "idiva" : "SDIV and UDIV hardware division in ARM mode",
+            "idivt" : "SDIV and UDIV hardware division in Thumb mode",
+            "vfpd32" : "Unknown",
+            "lpae" : "Large Physical Address Extension architecture",
+            "evtstrm" : "Unknown",
+            "crc32" : true,
+            "cpufreq" : "CPU Frequency scaling"
+          }
+        },
+        {
+          "id" : "cpu:3",
+          "class" : "processor",
+          "claimed" : true,
+          "description" : "CPU",
+          "product" : "cpu",
+          "physid" : "3",
+          "businfo" : "cpu@3",
+          "units" : "Hz",
+          "size" : 1200000000,
+          "capacity" : 1200000000,
+          "capabilities" : {
+            "half" : "Unknown",
+            "thumb" : "Thumb instruction set",
+            "fastmult" : "Fast Multiplication",
+            "vfp" : "VFP (vector floating point instructions)",
+            "edsp" : "DSP extensions",
+            "neon" : "NEON aka MPE - Media Processing Engine",
+            "vfpv3" : "VFP version 3",
+            "tls" : "TLS register",
+            "vfpv4" : "VFP version 4",
+            "idiva" : "SDIV and UDIV hardware division in ARM mode",
+            "idivt" : "SDIV and UDIV hardware division in Thumb mode",
+            "vfpd32" : "Unknown",
+            "lpae" : "Large Physical Address Extension architecture",
+            "evtstrm" : "Unknown",
+            "crc32" : true,
+            "cpufreq" : "CPU Frequency scaling"
+          }
+        },
+        {
+          "id" : "memory",
+          "class" : "memory",
+          "claimed" : true,
+          "description" : "System memory",
+          "physid" : "4",
+          "units" : "bytes",
+          "size" : 971038720
+        },
+
+    },
+    {
+      "id" : "usbhost",
+      "class" : "bus",
+      "claimed" : true,
+      "handle" : "USB:1:1",
+      "product" : "DWC OTG Controller",
+      "vendor" : "Linux 4.19.118-v7+ dwc_otg_hcd",
+      "physid" : "1",
+      "businfo" : "usb@1",
+      "logicalname" : "usb1",
+      "version" : "4.19",
+      "configuration" : {
+        "driver" : "hub",
+        "slots" : "1",
+        "speed" : "480Mbit/s"
+      },
+      "capabilities" : {
+        "usb-2.00" : "USB 2.0"
+      }        {
+          "id" : "usb",
+          "class" : "bus",
+          "claimed" : true,
+          "handle" : "USB:1:2",
+          "description" : "USB hub",
+          "product" : "SMC9514 Hub",
+          "vendor" : "Standard Microsystems Corp.",
+          "physid" : "1",
+          "businfo" : "usb@1:1",
+          "version" : "2.00",
+          "configuration" : {
+            "driver" : "hub",
+            "maxpower" : "2mA",
+            "slots" : "5",
+            "speed" : "480Mbit/s"
+          },
+          "capabilities" : {
+            "usb-2.00" : "USB 2.0"
+          }            {
+              "id" : "usb:0",
+              "class" : "network",
+              "claimed" : true,
+              "handle" : "USB:1:3",
+              "description" : "Ethernet interface",
+              "product" : "SMSC9512/9514 Fast Ethernet Adapter",
+              "vendor" : "Standard Microsystems Corp.",
+              "physid" : "1",
+              "businfo" : "usb@1:1.1",
+              "logicalname" : "eth0",
+              "version" : "2.00",
+              "serial" : "b8:27:eb:4b:fe:b5",
+              "units" : "bit/s",
+              "size" : 100000000,
+              "capacity" : 100000000,
+              "configuration" : {
+                "autonegotiation" : "on",
+                "broadcast" : "yes",
+                "driver" : "smsc95xx",
+                "driverversion" : "22-Aug-2005",
+                "duplex" : "full",
+                "firmware" : "smsc95xx USB 2.0 Ethernet",
+                "ip" : "192.168.178.193",
+                "link" : "yes",
+                "maxpower" : "2mA",
+                "multicast" : "yes",
+                "port" : "MII",
+                "speed" : "100Mbit/s"
+              },
+              "capabilities" : {
+                "usb-2.00" : "USB 2.0",
+                "ethernet" : true,
+                "physical" : "Physical interface",
+                "tp" : "twisted pair",
+                "mii" : "Media Independent Interface",
+                "10bt" : "10Mbit/s",
+                "10bt-fd" : "10Mbit/s (full duplex)",
+                "100bt" : "100Mbit/s",
+                "100bt-fd" : "100Mbit/s (full duplex)",
+                "autonegotiation" : "Auto-negotiation"
+              }
+            },
+            {
+              "id" : "usb:1",
+              "class" : "generic",
+              "claimed" : true,
+              "handle" : "USB:1:4",
+              "description" : "Generic USB device",
+              "product" : "USB2.0-Serial",
+              "vendor" : "QinHeng Electronics",
+              "physid" : "3",
+              "businfo" : "usb@1:1.3",
+              "version" : "2.63",
+              "configuration" : {
+                "driver" : "ch341",
+                "maxpower" : "98mA",
+                "speed" : "12Mbit/s"
+              },
+              "capabilities" : {
+                "usb-1.10" : "USB 1.1"
+              }
+            },
+
+        },
+
+    },
+    {
+      "id" : "network",
+      "class" : "network",
+      "claimed" : true,
+      "description" : "Wireless interface",
+      "physid" : "2",
+      "logicalname" : "wlan0",
+      "serial" : "b8:27:eb:1e:ab:e0",
+      "configuration" : {
+        "broadcast" : "yes",
+        "driver" : "brcmfmac",
+        "driverversion" : "7.45.98.94",
+        "firmware" : "01-3b33decd",
+        "multicast" : "yes",
+        "wireless" : "IEEE 802.11"
+      },
+      "capabilities" : {
+        "ethernet" : true,
+        "physical" : "Physical interface",
+        "wireless" : "Wireless-LAN"
+      }
+    },
+
+]
+

@@ -45,7 +45,6 @@ namespace Home.Service
         public MainWindow()
         {
             InitializeComponent();
-            
             api = new Communication.API("http://localhost:5000");
 
             cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total", true);
@@ -195,6 +194,7 @@ namespace Home.Service
             currentDevice.Envoirnment.DomainName = Environment.UserDomainName;
             currentDevice.Envoirnment.Graphics = GetGraphics();
             currentDevice.ServiceClientVersion = $"v{typeof(MainWindow).Assembly.GetName().Version.ToString(3)}";
+            GetDeviceInfo(currentDevice);
 
             // Send ack
             string result = await api.SendAckAsync(currentDevice);
@@ -276,12 +276,12 @@ namespace Home.Service
                 WindowState = WindowState.Minimized;
         }
 
-        private long DetermineTotalRAM()
+        private double DetermineTotalRAM()
         {
             try
             {
                 GetPhysicallyInstalledSystemMemory(out long memKb);
-                return memKb / 1024 / 1024;
+                return Math.Round(memKb / 1024.0 / 1024.0, 2);
             }
             catch
             {
@@ -292,10 +292,10 @@ namespace Home.Service
         private string DetermineFreeRAM()
         {
             long freeGB = (long)(ramCounter.NextValue() / 1024);
-            long totalGB = DetermineTotalRAM();
+            double totalGB = DetermineTotalRAM();
             double usedGB = totalGB - freeGB;
 
-            int percentage = (int)Math.Round((usedGB / (double)totalGB) * 100);
+            int percentage = (int)Math.Round((usedGB / totalGB) * 100);
 
             return $"{usedGB} GB used ({percentage} %)";
         }
@@ -318,6 +318,34 @@ namespace Home.Service
             }
 
             return string.Empty;
+        }
+
+        public static void GetDeviceInfo(Device device)
+        {
+            try
+            {
+                ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_ComputerSystemProduct");
+
+                foreach (ManagementObject mo in searcher.Get())
+                {
+                    foreach (PropertyData property in mo.Properties)
+                    {
+                        if (property.Name == "Name")
+                            device.Envoirnment.Product = property.Value?.ToString();
+
+                        else if (property.Name == "Description")
+                            device.Envoirnment.Description = property.Value?.ToString();
+
+                        else if (property.Name == "Vendor")
+                            device.Envoirnment.Vendor = property.Value?.ToString();
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+
         }
 
         public static string DisplayIPAddresses()

@@ -87,7 +87,7 @@ namespace Home.API.Controllers
                         if (dev.Status == Device.DeviceStatus.Offline)
                         {
                             dev.LogEntries.Add("Device has recovered and is now online again!".FormatLogLine(DateTime.Now));
-                            device.IsScreenshotRequired = true;
+                            dev.IsScreenshotRequired = true;
                         }
                         isScreenshotRequired = dev.IsScreenshotRequired;
                         dev.Update(device, now, Device.DeviceStatus.Active);
@@ -122,7 +122,7 @@ namespace Home.API.Controllers
         public async Task<IActionResult> PostScreenshot([FromBody] Screenshot shot)
         {
             var now = DateTime.Now;
-            string fileName = now.ToString("ddMMyyyy-hhmmss");                             
+            string fileName = now.ToString("ddMMyyyy-HHmmss");                             
 
             if (shot == null)
                 return BadRequest(AnswerExtensions.Fail("screenshot is null!"));

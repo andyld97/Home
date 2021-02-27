@@ -22,15 +22,15 @@ namespace Home.Service.Linux
         private static JObject jInfo = null;
 
         private static readonly string CONFIG_FILENAME = "config.json";
-        private static Timer ackTimer = new Timer();
-        private static object _lock = new object();
+        private static readonly Timer ackTimer = new Timer();
+        private static readonly object _lock = new object();
         private static bool isSendingAck = false;
+        private static string normalUser = string.Empty;
 
 
         public static void Main(string[] args)
         {
-            MainAsync(args).GetAwaiter().GetResult();
-
+            MainAsync(args).GetAwaiter().GetResult();  
             Console.ReadKey();
         }
 
@@ -51,6 +51,7 @@ namespace Home.Service.Linux
             currentDevice.ID = id;
             currentDevice.Location = jInfo["location"].ToString();
             currentDevice.DeviceGroup = jInfo["device_group"].ToString();
+            normalUser = jInfo["user"].ToString();
             currentDevice.OS = (OSType)jInfo["os"].Value<int>();
             currentDevice.Envoirnment.OSName = currentDevice.OS.ToString();
             currentDevice.Type = (DeviceType)jInfo["type"].Value<int>();
@@ -106,6 +107,34 @@ namespace Home.Service.Linux
             Console.WriteLine("Sending ack ...");
             RefreshDeviceInfo();
             string result = await api.SendAckAsync(currentDevice);
+            if (result == "screenshot_required")
+            {
+                Console.WriteLine("Creating a screenshot ...");
+
+                // 1) Create a screenshot (but ensure that this command will be executed as the normal user)
+                ExecuteSystemCommand("sudo", $"-H -u {normalUser} bash -c \"sh screenshot.sh\"");
+
+                // 2) Post screenshot to the api
+                if (System.IO.File.Exists("screenshot.png"))
+                {
+                    try
+                    {
+                        byte[] data = await System.IO.File.ReadAllBytesAsync("screenshot.png");
+                        var screenshotResult = await api.SendScreenshotAsync(new Screenshot() { ClientID = currentDevice.ID, Data = Convert.ToBase64String(data) });
+
+                        if (!screenshotResult.Success)
+                            Console.WriteLine(screenshotResult.ErrorMessage);
+                        else
+                            Console.WriteLine("Succsessfully uploaded screeenshot!");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Failed to get screenshot: {ex.Message}");
+                    }
+
+                }
+
+            }
             Console.WriteLine($"ACK result: {result}");
 
 
@@ -195,7 +224,7 @@ namespace Home.Service.Linux
 
                 if (ulong.TryParse(kbTotal, out ulong total) && ulong.TryParse(kbFree, out ulong free))
                 {
-                    currentDevice.Envoirnment.TotalRAM = (long)(total / 1024 / 1024);
+                    currentDevice.Envoirnment.TotalRAM = Math.Round((total / 1024.0 / 1024.0), 2);
 
                     // 3GB used (75 %)
 
@@ -215,11 +244,47 @@ namespace Home.Service.Linux
             }
         }
 
+        private static bool IsValidJson(string strInput)
+        {
+            if (string.IsNullOrWhiteSpace(strInput)) { return false; }
+            strInput = strInput.Trim();
+            if ((strInput.StartsWith("{") && strInput.EndsWith("}")) || //For object
+                (strInput.StartsWith("[") && strInput.EndsWith("]"))) //For array
+            {
+                try
+                {
+                    var obj = JToken.Parse(strInput);
+                    return true;
+                }
+                catch (JsonReaderException jex)
+                {
+                    //Exception in parsing json
+                    Console.WriteLine(jex.Message);
+                    return false;
+                }
+                catch (Exception ex) //some other exception
+                {
+                    Console.WriteLine(ex.ToString());
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         public static void ParseHardwareInfo(string json, Device device)
         {
             if (string.IsNullOrEmpty(json))
                 return;
+             
+            // Check if json is valid
+            if (!IsValidJson(json))
+            {
+                Console.WriteLine("Ensure that the newest lswh version is installed (https://packages.debian.org/jessie/utils/lshw). Because it seems that you're using a version with produces invalid json!");
+                Environment.Exit(-1);
+            }
 
             currentDevice.DiskDrives.Clear();
             JToken item = null;
@@ -235,6 +300,12 @@ namespace Home.Service.Linux
 
             device.Name =
             device.Envoirnment.MachineName = item.Value<string>("id").ToUpper();
+
+            if (item.Value<string>("product") != null && !item.Value<string>("product").Contains("To Be Filled By O.E.M."))
+                device.Envoirnment.Product = item.Value<string>("product");
+
+            if (item.Value<string>("description") != null)
+                device.Envoirnment.Description = item.Value<string>("description");
 
             Queue<JToken> childrenQueue = new Queue<JToken>();
             childrenQueue.Enqueue(item);
@@ -350,19 +421,66 @@ namespace Home.Service.Linux
                             JObject volumeConfig = volume.Value<JObject>("configuration");
 
                             ulong size = volume.Value<ulong>("size");
-                            JArray logicalNames = volume.Value<JArray>("logicalname");
-                            string fs = volumeConfig.Value<string>("filesystem");
+
+                            string logicalNames = string.Empty;
+
+                            try
+                            {
+                                logicalNames = string.Join(",", volume.Value<JArray>("logicalname"));
+                            }
+                            catch
+                            {
+                                try
+                                {
+                                    logicalName = volume.Value<string>("logicalname");
+                                }
+                                catch
+                                {
+
+                                }
+                            }
+
+                            if (string.IsNullOrEmpty(logicalNames))
+                                logicalNames = logicalName;
+
+                            if (string.IsNullOrEmpty(logicalNames))
+                                logicalNames = "Unknown";
+         
+                            string fs = volumeConfig?.Value<string>("filesystem");
 
                             dd.DiskInterface = childID;
                             dd.DiskModel = product;
                             dd.DiskName = product;
-                            dd.MediaLoaded = volumeConfig.Value<string>("state") == "mounted";
+                            try
+                            {
+                                dd.MediaLoaded = volumeConfig?.Value<string>("state") == "mounted";
+                            }
+                            catch
+                            {
+
+                            }
                             dd.VolumeSerial = serial;
-                            dd.VolumeName = volume.Value<string>("id");
-                            dd.PhysicalName = volume.Value<string>("physid");
-                            dd.FileSystem = fs.ToUpper();
+
+                            try
+                            {
+                                dd.VolumeName = volume.Value<string>("id");
+                            }
+                            catch
+                            {
+
+                            }
+
+                            try
+                            {
+                                dd.PhysicalName = volume.Value<string>("physid");
+                            }
+                            catch
+                            {
+
+                            }
+                            dd.FileSystem = fs?.ToUpper();
                             dd.TotalSpace = size;
-                            dd.VolumeName = string.Join(",", logicalNames);
+                            dd.VolumeName = logicalNames;
 
                             device.DiskDrives.Add(dd);
                         }
@@ -391,7 +509,8 @@ namespace Home.Service.Linux
                     dd.PhysicalName = child.Value<string>("physid");
                     dd.FileSystem = fs?.ToUpper();
                     dd.TotalSpace = size;
-                    dd.VolumeName = string.Join(",", logicalNames);
+                    if (logicalNames != null)
+                        dd.VolumeName = string.Join(",", logicalNames);         
 
                     device.DiskDrives.Add(dd);
                 }

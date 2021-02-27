@@ -343,6 +343,7 @@ namespace Home.Model
             Location = other.location;
             Envoirnment = other.Envoirnment;
             DiskDrives = other.DiskDrives;
+            ServiceClientVersion = other.ServiceClientVersion;
 
             foreach (var shot in other.ScreenshotFileNames)
                 ScreenshotFileNames.Add(shot);
@@ -372,6 +373,18 @@ namespace Home.Model
 
     public class DeviceEnvironment
     {
+        [JsonProperty("product")]
+        [System.Text.Json.Serialization.JsonPropertyName("product")]
+        public string Product { get; set; }
+
+        [JsonProperty("description")]
+        [System.Text.Json.Serialization.JsonPropertyName("description")]
+        public string Description { get; set; }
+
+        [JsonProperty("vendor")]
+        [System.Text.Json.Serialization.JsonPropertyName("vendor")]
+        public string Vendor { get; set; }
+
         [JsonProperty("os_name")]
         [System.Text.Json.Serialization.JsonPropertyName("os_name")]
         public string OSName { get; set; }
@@ -398,7 +411,7 @@ namespace Home.Model
 
         [JsonProperty("total_ram")]
         [System.Text.Json.Serialization.JsonPropertyName("total_ram")]
-        public long TotalRAM { get; set; }
+        public double TotalRAM { get; set; }
 
         [JsonProperty("free_ram")]
         [System.Text.Json.Serialization.JsonPropertyName("free_ram")]

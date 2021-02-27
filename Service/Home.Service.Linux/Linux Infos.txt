@@ -1,0 +1,13 @@
+mpstat ->
+
+14:16:18     CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle
+14:16:18     all    5,30    0,98    9,23    0,12    0,00    0,54    0,00    0,00    0,00   83,84
+
+%sys 	:= CPU
+%iowait := DISK
+
+sudo apt install sysstat
+iostat -dx
+
+sudo apt install scrot
+https://askubuntu.com/questions/921355/giblib-error-cant-open-x-display-on-ubuntu-14-04

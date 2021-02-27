@@ -1,5 +1,6 @@
 ﻿{
   "id": null, /* Will be set automatically */
+  "user": "server", /* Should not be root, but can be like pi */ 
   "api": "http://192.168.178.38:83",
   "location": null,
   "device_group": null,

@@ -12,6 +12,7 @@
         <local:SpaceToProgressBarColorConverter x:Key="spaceToProgressBarColorConverter" />
         <local:OS64BitConverter x:Key="os64BitConverter" />
         <local:OSNameConverter x:Key="osNameConverter" />
+        <local:EmptyConverter x:Key="emptyConverter" />
     </fluent:RibbonWindow.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -137,7 +138,7 @@
                                         <Style TargetType="{x:Type TextBlock}">
                                             <Setter Property="Margin" Value="2,0,2,2" />
                                             <Setter Property="Padding" Value="0" />
-                                            <Setter Property="FontSize" Value="19" />
+                                            <Setter Property="FontSize" Value="15" />
                                             <Setter Property="TextTrimming" Value="CharacterEllipsis" />
                                         </Style>
                                     </Grid.Resources>
@@ -153,7 +154,13 @@
                                         </Grid.ColumnDefinitions>
 
                                         <StackPanel>
-                                            <TextBlock Text="Hardware" />
+                                            <TextBlock Text="Gerät:" />
+                                            <Separator />
+                                            <TextBlock Text="Hersteller: " />
+                                            <TextBlock Text="Produkt: " />
+                                            <TextBlock Text="Beschreibung: "/>
+                                            <TextBlock Text="Client-Version: "/>
+                                            <TextBlock Text="Hardware:" Margin="0,10,0,0" />
                                             <Separator />
                                             <TextBlock Text="OS:" FontWeight="Bold" />
                                             <TextBlock Text="VER:" FontWeight="Bold" />
@@ -172,6 +179,12 @@
                                         <StackPanel Grid.Column="1">
                                             <TextBlock />
                                             <Separator />
+                                            <TextBlock Text="{Binding Envoirnment.Vendor, Converter={StaticResource emptyConverter}}" />
+                                            <TextBlock Text="{Binding Envoirnment.Product, Converter={StaticResource emptyConverter}}" />
+                                            <TextBlock Text="{Binding Envoirnment.Description, Converter={StaticResource emptyConverter}}"/>
+                                            <TextBlock Text="{Binding ServiceClientVersion, Converter={StaticResource emptyConverter}}"/>
+                                            <TextBlock Margin="0,10,0,0" />
+                                            <Separator />
                                             <TextBlock x:Name="TextOSName" ToolTip="{Binding ElementName=TextOSName, Path=Text}" >
                                                 <Run Text="{Binding OS, Converter={StaticResource osNameConverter}}" />
                                                 <Run Text="(" /><Run Text="{Binding Envoirnment.Is64BitOS, Converter={StaticResource os64BitConverter}}" /><Run Text=")" />
@@ -181,7 +194,7 @@
                                                 <Run  Text="{Binding Envoirnment.CPUName}"  />
                                                 <Run Text=" x " /><Run Text="{Binding Envoirnment.CPUCount}" />
                                             </TextBlock>
-                                            <TextBlock x:Name="TextGraphics" Text="{Binding Envoirnment.Graphics}" ToolTip="{Binding ElementName=TextGraphics, Path=Text}" />
+                                            <TextBlock x:Name="TextGraphics" Text="{Binding Envoirnment.Graphics, Converter={StaticResource emptyConverter}}" ToolTip="{Binding ElementName=TextGraphics, Path=Text}" />
                                             <TextBlock x:Name="TextTotalRAM" ToolTip="{Binding ElementName=TextTotalRAM, Path=Text}">
                                                 <Run Text="{Binding Envoirnment.TotalRAM}" />
                                                 <Run Text="GB" />
