@@ -26,12 +26,6 @@
             </fluent:Ribbon.Menu>
 
             <fluent:RibbonTabItem Header="Allgemein">
-
-                <fluent:RibbonGroupBox Header="Log">
-                    <fluent:Button Header="Log anzeigen" LargeIcon="/resources/icons/menu/log.png" />
-                    <fluent:Button Header="Log leeren" LargeIcon="/resources/icons/menu/log.png" />
-                </fluent:RibbonGroupBox>
-
                 <fluent:RibbonGroupBox Header="Operationen">
                     <fluent:Button Header="Nachricht senden" LargeIcon="/resources/icons/menu/send_message.png"/>
                     <fluent:DropDownButton Header="Herunterfahren Menü" LargeIcon="/resources/icons/menu/shutdown.png">
@@ -42,13 +36,14 @@
                     <fluent:Button Header="Remote Verbindung" LargeIcon="/resources/icons/menu/rdp.png" />
                     <fluent:Button Header="Befehl ausführen" LargeIcon="/resources/icons/menu/run.png" />
                     <fluent:Button Header="Sound Mute" LargeIcon="/resources/icons/menu/mute.png" />
+                    <fluent:Button x:Name="MenuButtonClearLog" Click="MenuButtonClearLog_Click"  Header="Log leeren" LargeIcon="/resources/icons/menu/clear_log.png" />
                 </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>
 
             <fluent:RibbonTabItem Header="Verwaltung">
                 <fluent:RibbonGroupBox Header="Werkzeuge">
                     <fluent:Button Header="Gerät hinzufügen" LargeIcon="/resources/icons/menu/add.png" />
-                    <fluent:Button Header="Gerät löschen" LargeIcon="/resources/icons/menu/log.png" />
+                    <fluent:Button Header="Gerät löschen" LargeIcon="/resources/icons/menu/add.png" />
                 </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>
         </fluent:Ribbon>
@@ -154,26 +149,25 @@
                                         </Grid.ColumnDefinitions>
 
                                         <StackPanel>
-                                            <TextBlock Text="Gerät:" />
+                                            <TextBlock Text="Gerät" FontWeight="Bold" />
                                             <Separator />
                                             <TextBlock Text="Hersteller: " />
                                             <TextBlock Text="Produkt: " />
                                             <TextBlock Text="Beschreibung: "/>
                                             <TextBlock Text="Client-Version: "/>
-                                            <TextBlock Text="Hardware:" Margin="0,10,0,0" />
+                                            <TextBlock Text="Hardware" Margin="0,10,0,0" FontWeight="Bold" />
                                             <Separator />
                                             <TextBlock Text="OS:" FontWeight="Bold" />
                                             <TextBlock Text="VER:" FontWeight="Bold" />
                                             <TextBlock Text="CPU:" FontWeight="Bold" />
                                             <TextBlock Text="GRAFIK:" FontWeight="Bold" />
                                             <TextBlock Text="RAM:" FontWeight="Bold" />
-                                            <TextBlock Text="Aktivität" Margin="0,10,0,0" />
+                                            <TextBlock Text="Aktivität" Margin="0,10,0,0" FontWeight="Bold" />
                                             <Separator />
                                             <TextBlock Text="CPU (%):" FontWeight="Bold" />
                                             <TextBlock Text="RAM (%): " FontWeight="Bold"/>
                                             <TextBlock Text="DISK (%): " FontWeight="Bold"/>
                                             <TextBlock Text="Online:" FontWeight="Bold" />
-                                            <Separator />
                                         </StackPanel>
 
                                         <StackPanel Grid.Column="1">
@@ -219,7 +213,6 @@
                                                     </MultiBinding>
                                                 </TextBlock.Text>
                                             </TextBlock>
-                                            <Separator />
                                         </StackPanel>
                                     </Grid>
 
@@ -308,7 +301,13 @@
                                     </ResourceDictionary.MergedDictionaries>
                                 </ResourceDictionary>
                             </TabControl.Resources>
-                            <TabItem Header="Geräte Log">
+                            <TabItem>
+                                <TabItem.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="resources/icons/log.png" Width="16" />
+                                        <TextBlock Margin="5,0,0,0" Text="Geräte Log" />
+                                    </StackPanel>
+                                </TabItem.Header>
                                 <TextBox x:Name="TextDeviceLog" FontFamily="Consolas" Foreground="{DynamicResource BlackBrush}" Background="Transparent" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" />
                             </TabItem>
                             <TabItem Header="Remote Shell">

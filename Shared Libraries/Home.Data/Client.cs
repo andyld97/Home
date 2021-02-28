@@ -8,9 +8,11 @@ namespace Home.Data
 
         public bool IsRealClient { get; set; } = false;
 
+        public string Name { get; set; } = Environment.MachineName;
+
         public override string ToString()
         {
-            return $"c{ID}";
+            return Name;
         }
     }
 }

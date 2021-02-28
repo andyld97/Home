@@ -41,7 +41,7 @@ namespace Home.API.Controllers
                     device.LastSeen = now;
                     device.LogEntries.Clear();
                     device.LogEntries.Add($"Device {device.Name} was successfully added!".FormatLogLine(now));
-                    _logger.LogInformation($"New device {device} has just logged in!");
+                    _logger.LogInformation($"New device {device.Envoirnment.MachineName} has just logged in!");
                     device.IsScreenshotRequired = true;
                     Program.Devices.Add(device);
 
@@ -91,7 +91,8 @@ namespace Home.API.Controllers
                         }
                         isScreenshotRequired = dev.IsScreenshotRequired;
                         dev.Update(device, now, Device.DeviceStatus.Active);
-                        dev.IsScreenshotRequired = false;
+                        // dev.IsScreenshotRequired = false;
+                        // Will not be set here (only will be set if a screenshot was posted)
                         
                         result = true;
 
@@ -122,7 +123,7 @@ namespace Home.API.Controllers
         public async Task<IActionResult> PostScreenshot([FromBody] Screenshot shot)
         {
             var now = DateTime.Now;
-            string fileName = now.ToString("ddMMyyyy-HHmmss");                             
+            string fileName = now.ToString(Consts.SCREENSHOT_DATE_FILE_FORMAT);                             
 
             if (shot == null)
                 return BadRequest(AnswerExtensions.Fail("screenshot is null!"));
@@ -173,8 +174,9 @@ namespace Home.API.Controllers
                 lock (Program.Devices)
                 {
                     deviceFound.LogEntries.Add("Recieved screenshot from this device!".FormatLogLine(now));
-                    _logger.LogInformation($"Recieved screenshot from {deviceFound.ID}");
+                    _logger.LogInformation($"Recieved screenshot from {deviceFound.Envoirnment.MachineName}");
                     deviceFound.ScreenshotFileNames.Add(fileName);
+                    deviceFound.IsScreenshotRequired = false;
                 }
 
                 // Also append to event queue

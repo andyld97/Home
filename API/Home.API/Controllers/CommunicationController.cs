@@ -100,10 +100,13 @@ namespace Home.API.Controllers
             if (string.IsNullOrEmpty(deviceID))
                 return BadRequest(AnswerExtensions.Fail("Invalid device data"));
 
+            Client cl = null;
             lock (Program.Clients)
             {
                 if (!Program.Clients.Any(p => p.ID == clientId))
                     return NotFound("Client not found!");
+                else
+                    cl = Program.Clients.Where(c => c.ID == clientId).FirstOrDefault();
             }
 
             lock (Program.Devices)
@@ -115,7 +118,7 @@ namespace Home.API.Controllers
                 if (device != null)
                 {
                     device.IsScreenshotRequired = true;
-                    _logger.LogInformation($"Aquired screenshot from {clientId} for device {deviceID}");
+                    _logger.LogInformation($"Aquired screenshot from {cl?.Name} for device {device.Name}");
                 }
             }
 
@@ -143,6 +146,36 @@ namespace Home.API.Controllers
             {
                 return BadRequest(AnswerExtensions.Fail<Screenshot>(ex.Message));
             }
+        }
+
+        [HttpGet("clear_log/{deviceID}")]
+        public IActionResult ClearDeviceLog(string deviceID)
+        {
+            if (string.IsNullOrEmpty(deviceID))
+                return BadRequest(AnswerExtensions.Fail("Invalid device data"));
+
+            lock (Program.Devices)
+            {
+                if (!Program.Devices.Any(p => p.ID == deviceID))
+                    return NotFound("Device not found!");
+
+                var device = Program.Devices.Where(p => p.ID == deviceID).FirstOrDefault();
+                if (device != null)
+                {
+                    device.LogEntries.Clear();
+                    _logger.LogInformation($"Clearing log of {device.Name} ...");
+                    lock (Program.EventQueues)
+                    {
+                        foreach (var queue in Program.EventQueues)
+                        {
+                            queue.LastEvent = DateTime.Now;
+                            queue.Events.Enqueue(new EventQueueItem() { DeviceID = deviceID, EventData = new EventData(device), EventDescription = EventQueueItem.EventKind.LogCleared, EventOccured = DateTime.Now });
+                        }
+                    }
+                }
+            }
+
+            return Ok(AnswerExtensions.Success("ok"));
         }
     }
 }

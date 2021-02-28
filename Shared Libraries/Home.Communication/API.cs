@@ -26,6 +26,7 @@ namespace Home.Communication
         public static readonly string SCREENSHOT = "screenshot";
         public static readonly string GET_SCREENSHOT = "get_screenshot";
         public static readonly string RECIEVE_SCREENSHOT = "recieve_screenshot";
+        public static readonly string CLEAR_LOG = "clear_log";
 
         public API(string host)
         {
@@ -236,6 +237,30 @@ namespace Home.Communication
             {
                 // LOG
                 return AnswerExtensions.Fail<bool>(ex.Message);
+            }
+        }
+
+        public async Task<Answer<string>> ClearDeviceLogAsync(Device device)
+        {
+            try
+            {
+                string url = $"{GenerateEpUrl(true, CLEAR_LOG)}/{device.ID}";
+                var result = await httpClient.GetAsync(url);
+
+                var content = await result.Content.ReadAsStringAsync();
+                if (!string.IsNullOrEmpty(content))
+                {
+                    var item = System.Text.Json.JsonSerializer.Deserialize<Answer<string>>(content);
+                    item.Success = (item.Status == "ok");
+                    return item;
+                }
+                else
+                    return AnswerExtensions.Fail<string>("Empty content!");
+            }
+            catch (Exception ex)
+            {
+                // LOG
+                return AnswerExtensions.Fail<string>(ex.Message);
             }
         }
 

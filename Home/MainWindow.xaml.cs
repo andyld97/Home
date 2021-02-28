@@ -213,7 +213,7 @@ namespace Home
                             fileName = fiName;
 
                             // Last refresh = now
-                            if (updateGui && DateTime.TryParseExact(fileName, "ddMMyyyy-HHmmss", CultureInfo.CurrentCulture, DateTimeStyles.AssumeLocal, out DateTime result))
+                            if (updateGui && DateTime.TryParseExact(fileName, Consts.SCREENSHOT_DATE_FILE_FORMAT, CultureInfo.CurrentCulture, DateTimeStyles.AssumeLocal, out DateTime result))
                                 TextLastScreenshotRefresh.Text = $"{result.ToShortDateString()} @ {result.ToShortTimeString()}";
                             else
                                 TextLastScreenshotRefresh.Text = "Nie";
@@ -353,6 +353,14 @@ namespace Home
             {               
                 new ScreenshotDialog(ImageScreenshot.Source).ShowDialog();
             }
+        }
+
+        private async void MenuButtonClearLog_Click(object sender, RoutedEventArgs e)
+        {
+            if (lastSelectedDevice == null)
+                return;
+
+            var result = await api.ClearDeviceLogAsync(lastSelectedDevice);
         }
     }
 

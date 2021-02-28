@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Timers;
 using static Home.Data.Helper.GeneralHelper;
@@ -23,7 +24,7 @@ namespace Home.API
         private static bool isHealthCheckTimerActive = false;
         private static readonly object _lock = new object();
 
-        public static readonly string Device_PATH = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "devices.xml");
+        public static readonly string DEVICE_PATH = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "devices.xml");
         public static readonly string SCREENSHOTS_PATH = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "screenshots");
 
         public static void Main(string[] args)
@@ -33,11 +34,11 @@ namespace Home.API
             _logger = loggerFactory.CreateLogger<Startup>();
 
             // Load devices
-            if (System.IO.File.Exists(Device_PATH))
+            if (System.IO.File.Exists(DEVICE_PATH))
             {
                 try
                 {
-                    Devices = Serialization.Serialization.Read<List<Device>>(Device_PATH, Serialization.Serialization.Mode.Normal);
+                    Devices = Serialization.Serialization.Read<List<Device>>(DEVICE_PATH, Serialization.Serialization.Mode.Normal);
                 }
                 catch (Exception ex)
                 {
@@ -112,17 +113,70 @@ namespace Home.API
                             queue.LastEvent = now;
                             queue.Events.Enqueue(new EventQueueItem() { DeviceID = device.ID, EventDescription = EventQueueItem.EventKind.DeviceChangedState, EventOccured = now, EventData = new EventData(device) });
                         }
-                    }
-                    
+                    }                    
                 }
+
+                foreach (var device in Devices.Where(p => p.Status != Device.DeviceStatus.Offline))
+                {
+                    if (device.IsScreenshotRequired)
+                        continue;
+
+                    if (device.ScreenshotFileNames.Count == 0)
+                        continue;
+
+                    string screenshotFileName = device.ScreenshotFileNames.LastOrDefault();
+                    if (string.IsNullOrEmpty(screenshotFileName))
+                        continue;
+
+                    // Check age of this screenshot
+                    if (DateTime.TryParseExact(screenshotFileName, Consts.SCREENSHOT_DATE_FILE_FORMAT, System.Globalization.CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime result) && result.AddHours(12) < DateTime.Now)
+                    {
+                        device.IsScreenshotRequired = true;
+                        device.LogEntries.Add("Last screenshot was older than 12h. Aquiring a new screenshot ...".FormatLogLine(DateTime.Now));
+                    }
+                }
+
+
+                // Delete screenshots which are older than one day
+                foreach (var device in Devices)
+                {
+                    if (device.ScreenshotFileNames.Count == 0 || device.ScreenshotFileNames.Count == 1)
+                        continue;
+
+                    List<string> screenshotsToRemove = new List<string>();
+                    foreach (var shot in device.ScreenshotFileNames.Take(device.ScreenshotFileNames.Count - 1))
+                    {
+                        if (DateTime.TryParseExact(shot, Consts.SCREENSHOT_DATE_FILE_FORMAT, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime result) && result.AddDays(1) < DateTime.Now)
+                        {
+                            screenshotsToRemove.Add(shot);
+                            _logger.LogInformation($"Deleted screenshot {shot} from device {device.Name}, because it is older than one day!");
+                        }
+                    }
+
+                    foreach (var shot in device.ScreenshotFileNames)
+                    {
+                        device.ScreenshotFileNames.Remove(shot);
+                        string path = System.IO.Path.Combine(SCREENSHOTS_PATH, device.ID, $"{shot}.png");
+                        try
+                        {
+                            System.IO.File.Delete(path);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError($"Failed to remove screenshot {ex.Message}");
+                        }
+                    }
+                }
+
             }
 
-            // Save devices (TODO: Only save if there are any changes recieved from the controller!)
+            // ToDo: *** Truncate device log automatically if it gets too big
+            // Save devices (TODO: *** Only save if there are any changes recieved from the controller!)
             try
             {
                 lock (Devices)
                 {
-                    Serialization.Serialization.Save<List<Device>>(Device_PATH, Devices, Serialization.Serialization.Mode.Normal);
+                    Serialization.Serialization.Save<List<Device>>(DEVICE_PATH, Devices, Serialization.Serialization.Mode.Normal);
                 }
             }
             catch

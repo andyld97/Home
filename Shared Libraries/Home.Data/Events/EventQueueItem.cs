@@ -31,6 +31,7 @@ namespace Home.Data.Events
             DeviceScreenshotRecieved,
             LogEntriesRecieved,
             ErrorReported,
+            LogCleared
         }
     }
 

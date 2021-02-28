@@ -148,6 +148,15 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Resource Include="resources\icons\devices\server_windows_7.png" />
+    <Resource Include="resources\icons\devices\server_windows_10.png" />
+    <Resource Include="resources\icons\devices\server_windows_8.png" />
+    <Resource Include="resources\icons\devices\server_linux.png" />
+    <Resource Include="resources\icons\devices\server_mint.png" />
+    <Resource Include="resources\icons\devices\server_ubuntu.png" />
+    <Resource Include="resources\icons\devices\server_windows_vista.png" />
+    <Resource Include="resources\icons\devices\server_windows_xp.png" />
+    <Resource Include="resources\icons\menu\clear_log.png" />
     <Resource Include="resources\icons\media\usbhdd.png" />
     <Resource Include="resources\icons\media\cd.png" />
     <Resource Include="resources\icons\media\hdd.png" />
@@ -160,7 +169,7 @@
     <Resource Include="resources\icons\menu\shell.png" />
     <Resource Include="resources\icons\menu\shutdown.png" />
     <Resource Include="resources\icons\menu\add.png" />
-    <Resource Include="resources\icons\menu\log.png" />
+    <Resource Include="resources\icons\log.png" />
     <Resource Include="resources\icons\devices\notebook_linux.png" />
     <Resource Include="resources\icons\devices\notebook_mint.png" />
     <Resource Include="resources\icons\devices\notebook_ubuntu.png" />

@@ -226,7 +226,15 @@ namespace Home.Model
                 case DeviceType.Desktop:
                 case DeviceType.Notebook:
                     {
-                        string prequel = $"{(Type == DeviceType.Notebook ? "notebook" : "desktop")}_";
+                        string prequel;
+                        if (Type == DeviceType.Notebook)
+                            prequel = "notebook";
+                        else if (Type == DeviceType.Server)
+                            prequel = "server";
+                        else
+                            prequel = "desktop";
+
+                        prequel += "_";
 
                         switch (OS)
                         {
