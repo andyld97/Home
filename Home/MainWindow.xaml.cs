@@ -9,7 +9,9 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -333,6 +335,62 @@ namespace Home
                 return;
 
             TextDeviceLog.Text = string.Join("\n", lastSelectedDevice.LogEntries);
+            
+            // Generate log entries FlowDocument
+            FlowDocument flowDocument = new FlowDocument { FontFamily = new FontFamily("Consolas") };
+            Paragraph currentParagraph = new Paragraph();
+
+            foreach (var entry in lastSelectedDevice.LogEntries)
+            {
+       
+
+                // Get image
+                BitmapImage bi = new BitmapImage { CacheOption = BitmapCacheOption.OnLoad };
+                bi.BeginInit();
+                string resourceName = string.Empty;
+                SolidColorBrush foregroundBrush = null;
+
+
+                switch (entry.Level)
+                {
+                    case LogEntry.LogLevel.Debug:
+                    case LogEntry.LogLevel.Information:
+                        {
+                            resourceName = "info.png";
+                            foregroundBrush = new SolidColorBrush(Colors.Gray);
+                        }
+                        break;
+                    case LogEntry.LogLevel.Warning:
+                        {
+                            resourceName = "warning.png";
+                            foregroundBrush = new SolidColorBrush(Colors.Orange);
+                        }
+                        break;
+                    case LogEntry.LogLevel.Error:
+                        {
+                            resourceName = "error.png";
+                            foregroundBrush = new SolidColorBrush(Colors.Red);
+                        }
+                        break;
+                }
+                
+                bi.UriSource = new Uri($"pack://application:,,,/Home;Component/resources/icons/{resourceName}");
+                bi.EndInit();
+
+                currentParagraph.Inlines.Add(new InlineUIContainer(new Image() { Source = bi, Width = 20, Margin = new Thickness(0,2,2,0) }) { BaselineAlignment = BaselineAlignment.Bottom });
+                currentParagraph.Inlines.Add(new Run($"[{entry.Timestamp.ToShortDateString()} {entry.Timestamp.ToShortTimeString()}]: ") { Foreground = new SolidColorBrush(Colors.Green), BaselineAlignment = BaselineAlignment.TextTop  });
+                currentParagraph.Inlines.Add(new Run(entry.Message) { Foreground = foregroundBrush, BaselineAlignment = BaselineAlignment.Bottom });
+                currentParagraph.Inlines.Add(new LineBreak());
+         
+            }
+
+
+            flowDocument.Blocks.Add(currentParagraph);
+
+            // ToDo: Don't create a new viewer each time (Fixed viewer on TabLog)
+            var viewer = new FlowDocumentScrollViewer { Document = flowDocument };
+            TabLog.Content = viewer;
+
             TextDeviceLog.ScrollToEnd();
             DeviceInfo.DataContext = null;
             DeviceInfo.DataContext = lastSelectedDevice;

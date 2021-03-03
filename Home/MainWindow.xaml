@@ -127,7 +127,13 @@
                                     </ResourceDictionary.MergedDictionaries>
                                 </ResourceDictionary>
                             </TabControl.Resources>
-                            <TabItem Header="System Übersicht">
+                            <TabItem>
+                                <TabItem.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="resources/icons/info.png" Width="16" />
+                                        <TextBlock Margin="5,0,0,0" Text="System Übersicht" />
+                                    </StackPanel>
+                                </TabItem.Header>
                                 <Grid>
                                     <Grid.Resources>
                                         <Style TargetType="{x:Type TextBlock}">
@@ -154,6 +160,7 @@
                                             <TextBlock Text="Hersteller: " />
                                             <TextBlock Text="Produkt: " />
                                             <TextBlock Text="Beschreibung: "/>
+                                            <TextBlock Text="Ort:" />
                                             <TextBlock Text="Client-Version: "/>
                                             <TextBlock Text="Hardware" Margin="0,10,0,0" FontWeight="Bold" />
                                             <Separator />
@@ -176,6 +183,7 @@
                                             <TextBlock Text="{Binding Envoirnment.Vendor, Converter={StaticResource emptyConverter}}" />
                                             <TextBlock Text="{Binding Envoirnment.Product, Converter={StaticResource emptyConverter}}" />
                                             <TextBlock Text="{Binding Envoirnment.Description, Converter={StaticResource emptyConverter}}"/>
+                                            <TextBlock Text="{Binding Location, Converter={StaticResource emptyConverter}}" />
                                             <TextBlock Text="{Binding ServiceClientVersion, Converter={StaticResource emptyConverter}}"/>
                                             <TextBlock Margin="0,10,0,0" />
                                             <Separator />
@@ -240,17 +248,29 @@
                                     </Grid>
                                 </Grid>
                             </TabItem>
-                            <TabItem Header="Benutzer">
+                            <TabItem>
+                                <TabItem.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="resources/icons/user.png" Width="16" />
+                                        <TextBlock Margin="5,0,0,0" Text="Benutzer" />
+                                    </StackPanel>
+                                </TabItem.Header>
                                 <TextBlock>
-                                <Run Text="{Binding Envoirnment.UserName}" />
-                                <LineBreak />
-                                <Run Text="{Binding Envoirnment.DomainName}" />
-                                <LineBreak />
-                                <Run Text="{Binding Envoirnment.MachineName}" />
-                                <LineBreak />
+                                    <Run Text="{Binding Envoirnment.UserName}" />
+                                    <LineBreak />
+                                    <Run Text="{Binding Envoirnment.DomainName}" />
+                                    <LineBreak />   
+                                    <Run Text="{Binding Envoirnment.MachineName}" />
+                                    <LineBreak />
                                 </TextBlock>
                             </TabItem>
-                            <TabItem Header="Datenträger">
+                            <TabItem>
+                                <TabItem.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="resources/icons/hdd.png" Width="16" />
+                                        <TextBlock Margin="5,0,0,0" Text="Datenträger" />
+                                    </StackPanel>
+                                </TabItem.Header>
                                 <ListBox Foreground="{DynamicResource BlackBrush}" Background="{DynamicResource WhiteBrush}" ItemsSource="{Binding DiskDrives}">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
@@ -301,7 +321,7 @@
                                     </ResourceDictionary.MergedDictionaries>
                                 </ResourceDictionary>
                             </TabControl.Resources>
-                            <TabItem>
+                            <TabItem x:Name="TabLog">
                                 <TabItem.Header>
                                     <StackPanel Orientation="Horizontal">
                                         <Image Source="resources/icons/log.png" Width="16" />
@@ -310,7 +330,13 @@
                                 </TabItem.Header>
                                 <TextBox x:Name="TextDeviceLog" FontFamily="Consolas" Foreground="{DynamicResource BlackBrush}" Background="Transparent" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" />
                             </TabItem>
-                            <TabItem Header="Remote Shell">
+                            <TabItem>
+                                <TabItem.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="resources/icons/menu/shell.png" Width="16" />
+                                        <TextBlock Margin="5,0,0,0" Text="Remote Shell" />
+                                    </StackPanel>
+                                </TabItem.Header>
                                 <TextBox AcceptsReturn="True" Foreground="{DynamicResource BlackBrush}" Background="Transparent" TextWrapping="Wrap" />
                             </TabItem>
                         </TabControl>

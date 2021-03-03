@@ -105,7 +105,7 @@ namespace Home.API
                     lock (EventQueues)
                     {
                         device.Status = Device.DeviceStatus.Offline;
-                        device.LogEntries.Add("No activity detected ... Device was flagged as offline!".FormatLogLine(DateTime.Now));
+                        device.LogEntries.Add(new LogEntry(DateTime.Now, "No activity detected ... Device was flagged as offline!", LogEntry.LogLevel.Warning));
 
                         foreach (var queue in EventQueues)
                         {
@@ -132,7 +132,7 @@ namespace Home.API
                     if (DateTime.TryParseExact(screenshotFileName, Consts.SCREENSHOT_DATE_FILE_FORMAT, System.Globalization.CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime result) && result.AddHours(12) < DateTime.Now)
                     {
                         device.IsScreenshotRequired = true;
-                        device.LogEntries.Add("Last screenshot was older than 12h. Aquiring a new screenshot ...".FormatLogLine(DateTime.Now));
+                        device.LogEntries.Add(new LogEntry(DateTime.Now, "Last screenshot was older than 12h. Aquiring a new screenshot ...", LogEntry.LogLevel.Information));
                     }
                 }
 
@@ -171,6 +171,8 @@ namespace Home.API
             }
 
             // ToDo: *** Truncate device log automatically if it gets too big
+            // Delete these log lines and insert at 0, "Truncated log file of this device"
+
             // Save devices (TODO: *** Only save if there are any changes recieved from the controller!)
             try
             {

@@ -148,6 +148,11 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Resource Include="resources\icons\error.png" />
+    <Resource Include="resources\icons\warning.png" />
+    <Resource Include="resources\icons\hdd.png" />
+    <Resource Include="resources\icons\user.png" />
+    <Resource Include="resources\icons\info.png" />
     <Resource Include="resources\icons\devices\server_windows_7.png" />
     <Resource Include="resources\icons\devices\server_windows_10.png" />
     <Resource Include="resources\icons\devices\server_windows_8.png" />

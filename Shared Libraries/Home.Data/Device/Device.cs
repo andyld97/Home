@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Home.Data;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -161,7 +162,7 @@ namespace Home.Model
 
         [JsonProperty("log_entries")]
         [System.Text.Json.Serialization.JsonPropertyName("log_entries")]
-        public ObservableCollection<string> LogEntries { get; set; } = new ObservableCollection<string>();
+        public ObservableCollection<LogEntry> LogEntries { get; set; } = new ObservableCollection<LogEntry>();
 
         [JsonProperty("screenshots_file_names")]
         [System.Text.Json.Serialization.JsonPropertyName("screenshots_file_names")]

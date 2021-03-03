@@ -40,7 +40,7 @@ namespace Home.API.Controllers
                     device.Status = Device.DeviceStatus.Active;
                     device.LastSeen = now;
                     device.LogEntries.Clear();
-                    device.LogEntries.Add($"Device {device.Name} was successfully added!".FormatLogLine(now));
+                    device.LogEntries.Add(new LogEntry(now, $"Device {device.Name} was successfully added!", LogEntry.LogLevel.Information));
                     _logger.LogInformation($"New device {device.Envoirnment.MachineName} has just logged in!");
                     device.IsScreenshotRequired = true;
                     Program.Devices.Add(device);
@@ -86,7 +86,7 @@ namespace Home.API.Controllers
                         // _logger.LogInformation($"Recieved ack from device {device}!");
                         if (dev.Status == Device.DeviceStatus.Offline)
                         {
-                            dev.LogEntries.Add("Device has recovered and is now online again!".FormatLogLine(DateTime.Now));
+                            dev.LogEntries.Add(new LogEntry(DateTime.Now, "Device has recovered and is now online again!", LogEntry.LogLevel.Information));
                             dev.IsScreenshotRequired = true;
                         }
                         isScreenshotRequired = dev.IsScreenshotRequired;
@@ -173,7 +173,7 @@ namespace Home.API.Controllers
                 // Add filename to list and append to log
                 lock (Program.Devices)
                 {
-                    deviceFound.LogEntries.Add("Recieved screenshot from this device!".FormatLogLine(now));
+                    deviceFound.LogEntries.Add(new LogEntry(now, "Recieved screenshot from this device!", LogEntry.LogLevel.Information));
                     _logger.LogInformation($"Recieved screenshot from {deviceFound.Envoirnment.MachineName}");
                     deviceFound.ScreenshotFileNames.Add(fileName);
                     deviceFound.IsScreenshotRequired = false;
