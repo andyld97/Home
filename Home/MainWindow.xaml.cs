@@ -311,10 +311,12 @@ namespace Home
 
                 DeviceInfo.Visibility = Visibility.Visible;
                 DeviceInfoHint.Visibility = Visibility.Collapsed;
+                MenuButtonSendMessage.IsEnabled = true;
             }
             else
             {
                 lastSelectedDevice = null;
+                MenuButtonSendMessage.IsEnabled = false;
                 DeviceInfo.Visibility = Visibility.Collapsed;
                 DeviceInfoHint.Visibility = Visibility.Visible;
             }
@@ -333,17 +335,13 @@ namespace Home
         {
             if (lastSelectedDevice == null)
                 return;
-
-            TextDeviceLog.Text = string.Join("\n", lastSelectedDevice.LogEntries);
             
             // Generate log entries FlowDocument
             FlowDocument flowDocument = new FlowDocument { FontFamily = new FontFamily("Consolas") };
             Paragraph currentParagraph = new Paragraph();
 
             foreach (var entry in lastSelectedDevice.LogEntries)
-            {
-       
-
+            {     
                 // Get image
                 BitmapImage bi = new BitmapImage { CacheOption = BitmapCacheOption.OnLoad };
                 bi.BeginInit();
@@ -380,18 +378,14 @@ namespace Home
                 currentParagraph.Inlines.Add(new InlineUIContainer(new Image() { Source = bi, Width = 20, Margin = new Thickness(0,2,2,0) }) { BaselineAlignment = BaselineAlignment.Bottom });
                 currentParagraph.Inlines.Add(new Run($"[{entry.Timestamp.ToShortDateString()} {entry.Timestamp.ToShortTimeString()}]: ") { Foreground = new SolidColorBrush(Colors.Green), BaselineAlignment = BaselineAlignment.TextTop  });
                 currentParagraph.Inlines.Add(new Run(entry.Message) { Foreground = foregroundBrush, BaselineAlignment = BaselineAlignment.Bottom });
-                currentParagraph.Inlines.Add(new LineBreak());
-         
+                currentParagraph.Inlines.Add(new LineBreak());         
             }
 
 
             flowDocument.Blocks.Add(currentParagraph);
+            LogHolder.Document = flowDocument;
+            LogScrollViewer.ScrollToEnd();
 
-            // ToDo: Don't create a new viewer each time (Fixed viewer on TabLog)
-            var viewer = new FlowDocumentScrollViewer { Document = flowDocument };
-            TabLog.Content = viewer;
-
-            TextDeviceLog.ScrollToEnd();
             DeviceInfo.DataContext = null;
             DeviceInfo.DataContext = lastSelectedDevice;
         }
@@ -419,6 +413,18 @@ namespace Home
                 return;
 
             var result = await api.ClearDeviceLogAsync(lastSelectedDevice);
+        }
+
+        private void MenuButtonSendMessage_Click(object sender, RoutedEventArgs e)
+        {
+            if (lastSelectedDevice != null)
+                new SendMessage(lastSelectedDevice, api).ShowDialog();
+
+        }
+
+        private void LogHolder_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        {
+            LogScrollViewer.ScrollToVerticalOffset(LogScrollViewer.VerticalOffset - e.Delta);
         }
     }
 

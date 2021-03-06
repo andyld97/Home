@@ -14,7 +14,7 @@ namespace Home.Data
         public T Result { get; set; }
 
         [JsonIgnore]
-        public bool Success { get; set; }
+        public bool Success => Status == "ok";
 
         public Answer()
         { }
@@ -40,7 +40,7 @@ namespace Home.Data
 
         public static Answer<T> Success<T>(T value)
         {
-            return new Answer<T>("ok", value) { Success = true };
+            return new Answer<T>("ok", value);
         }
     }
 

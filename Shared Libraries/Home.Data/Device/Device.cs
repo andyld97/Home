@@ -1,4 +1,5 @@
 ﻿using Home.Data;
+using Home.Data.Com;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -180,12 +181,23 @@ namespace Home.Model
         [System.Text.Json.Serialization.JsonPropertyName("service_client_version")]
         public string ServiceClientVersion { get; set; }
 
+        #region Properties for Internal API Usage
         /// <summary>
         /// Only for internal api usage
         /// </summary>
         [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         public bool IsScreenshotRequired { get; set; }
+
+        /// <summary>
+        /// Only for internal api usage
+        /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
+        [XmlIgnore]
+        public Queue<Message> Messages { get; set; } = new Queue<Message>();
+
+        #endregion
 
         public enum DeviceStatus
         {
@@ -458,6 +470,11 @@ namespace Home.Model
             get => RunningTime.ToString();
             set => RunningTime = TimeSpan.Parse(value);
         }
+
+
+        [JsonProperty("start_time")]
+        [JsonPropertyName("start_time")]
+        public DateTime StartTimestamp { get; set; }
 
         public override string ToString()
         {

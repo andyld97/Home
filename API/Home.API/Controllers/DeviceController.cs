@@ -1,14 +1,14 @@
 ﻿using Home.Data;
+using Home.Data.Com;
 using Home.Data.Events;
 using Home.Model;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using static Home.Data.Helper.GeneralHelper;
 
 namespace Home.API.Controllers
 {
@@ -74,6 +74,8 @@ namespace Home.API.Controllers
 
             bool result = false;
             bool isScreenshotRequired = false;
+            Message hasMessage = null;
+
             lock (Program.Devices)
             {
                 if (Program.Devices.Any(d => d.ID == device.ID))
@@ -89,10 +91,19 @@ namespace Home.API.Controllers
                             dev.LogEntries.Add(new LogEntry(DateTime.Now, "Device has recovered and is now online again!", LogEntry.LogLevel.Information));
                             dev.IsScreenshotRequired = true;
                         }
+                        if (dev.ServiceClientVersion != device.ServiceClientVersion)
+                            dev.LogEntries.Add(new LogEntry(DateTime.Now, $"Detected new client version: {device.ServiceClientVersion}", LogEntry.LogLevel.Information));
+
                         isScreenshotRequired = dev.IsScreenshotRequired;
                         dev.Update(device, now, Device.DeviceStatus.Active);
                         // dev.IsScreenshotRequired = false;
                         // Will not be set here (only will be set if a screenshot was posted)
+
+                        lock (dev.Messages)
+                        {
+                            if (dev.Messages.Count != 0)
+                                hasMessage = dev.Messages.Dequeue();
+                        }
                         
                         result = true;
 
@@ -110,13 +121,24 @@ namespace Home.API.Controllers
 
             if (result)
             {
+                // isScreenshotRequired
+                AckResult ackResult = new AckResult();
+                AckResult.Ack ack = AckResult.Ack.OK;
+
                 if (isScreenshotRequired)
-                    return Ok(AnswerExtensions.Success("screenshot_required"));
-                else 
-                    return Ok(AnswerExtensions.Success("ack proceeded"));
+                    ack |= AckResult.Ack.ScreenshotRequired;
+
+                if (hasMessage != null)
+                {
+                    ack |= AckResult.Ack.MessageRecieved;
+                    ackResult.JsonData = JsonConvert.SerializeObject(hasMessage);
+                }
+
+                ackResult.Result = ack;
+                return Ok(AnswerExtensions.Success(ackResult));
             }
 
-            return BadRequest(AnswerExtensions.Fail("Device-ACK couldn't be processed. This device was not logged in before!"));
+            return BadRequest(new Answer<AckResult>("fail", new AckResult(AckResult.Ack.Invalid)) { ErrorMessage = "Device-ACK couldn't be processed. This device was not logged in before!" });
         }
 
         [HttpPost("screenshot")]

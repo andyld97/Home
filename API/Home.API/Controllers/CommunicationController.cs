@@ -1,4 +1,5 @@
 ﻿using Home.Data;
+using Home.Data.Com;
 using Home.Data.Events;
 using Home.Model;
 using Microsoft.AspNetCore.Mvc;
@@ -174,6 +175,48 @@ namespace Home.API.Controllers
                     }
                 }
             }
+
+            return Ok(AnswerExtensions.Success("ok"));
+        }
+
+        [HttpPost("send_message")]
+        public IActionResult SendMessage([FromBody] Message message)
+        {
+            if (message == null)
+                return BadRequest(AnswerExtensions.Fail("Invalid device data!"));
+
+            Device device = null;
+            // Check if this devices exists
+            lock (Program.Devices)
+            {
+                if (!Program.Devices.Any(p => p.ID == message.DeviceID))
+                    return BadRequest(AnswerExtensions.Fail("Device doesn't exists!"));
+                else
+                    device = Program.Devices.Where(p => p.ID == message.DeviceID).FirstOrDefault();
+            }
+
+            _logger.LogInformation($"Sent message to {device.Name}: {message}");
+            device.Messages.Enqueue(message);
+
+            LogEntry.LogLevel level = LogEntry.LogLevel.Information;
+            switch (message.Type)
+            {
+                case Message.MessageImage.Information: level = LogEntry.LogLevel.Information; break;
+                case Message.MessageImage.Warning: level = LogEntry.LogLevel.Warning; break;
+                case Message.MessageImage.Error: level = LogEntry.LogLevel.Error; break;
+            }
+
+            device.LogEntries.Add(new LogEntry(DateTime.Now, $"Recieved message: {message}", level));
+
+            lock (Program.EventQueues)
+            {
+                foreach (var queue in Program.EventQueues)
+                {
+                    queue.LastEvent = DateTime.Now;
+                    queue.Events.Enqueue(new EventQueueItem() { DeviceID = device.ID, EventData = new EventData(device), EventDescription = EventQueueItem.EventKind.LogEntriesRecieved, EventOccured = DateTime.Now });
+                }
+            }
+
 
             return Ok(AnswerExtensions.Success("ok"));
         }

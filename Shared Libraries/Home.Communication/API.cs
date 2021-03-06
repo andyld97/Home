@@ -1,4 +1,5 @@
 ﻿using Home.Data;
+using Home.Data.Com;
 using Home.Data.Events;
 using Home.Model;
 using Newtonsoft.Json;
@@ -115,7 +116,7 @@ namespace Home.Communication
             }
         }
 
-        public async Task<string> SendAckAsync(Device device)
+        public async Task<Answer<AckResult>> SendAckAsync(Device device)
         {
             try
             {
@@ -124,22 +125,15 @@ namespace Home.Communication
 
                 var content = await result.Content.ReadAsStringAsync();
                 if (!string.IsNullOrEmpty(content))
-                {
-                    var answer = System.Text.Json.JsonSerializer.Deserialize<Answer<string>>(content);
-                    if (answer != null && answer.Status == "ok")
-                        return answer.Result;
-                    else
-                        return answer.ErrorMessage;
-                }
+                    return System.Text.Json.JsonSerializer.Deserialize<Answer<AckResult>>(content);
                 else
-                    return string.Empty;
-
+                    return AnswerExtensions.Fail<AckResult>("Recieved empty string!");
 
             }
             catch (Exception ex)
             {
                 // LOG
-                return ex.Message;
+                return AnswerExtensions.Fail<AckResult>(ex.Message);
             }
         }
 
@@ -154,7 +148,6 @@ namespace Home.Communication
                 if (!string.IsNullOrEmpty(content))
                 {
                     var item = System.Text.Json.JsonSerializer.Deserialize<Answer<EventQueueItem>>(content);
-                    item.Success = (item.Status == "ok");
                     return item;
                 }
                 else
@@ -179,7 +172,6 @@ namespace Home.Communication
                 if (!string.IsNullOrEmpty(content))
                 {
                     var item = System.Text.Json.JsonSerializer.Deserialize<Answer<bool>>(content);
-                    item.Success = (item.Status == "ok");
                     return item;
                 }
                 else
@@ -189,6 +181,29 @@ namespace Home.Communication
             {
                 // LOG
                 return AnswerExtensions.Fail<bool>(ex.Message);
+            }
+        }
+
+        public async Task<Answer<string>> SendMessageAsync(Message message)
+        {
+            try
+            {
+                string url = GenerateEpUrl(true, "send_message");
+                var result = await httpClient.PostAsync(url, new StringContent(JsonConvert.SerializeObject(message), System.Text.Encoding.UTF8, "application/json"));
+
+                var content = await result.Content.ReadAsStringAsync();
+                if (!string.IsNullOrEmpty(content))
+                {
+                    var item = System.Text.Json.JsonSerializer.Deserialize<Answer<string>>(content);
+                    return item;
+                }
+                else
+                    return AnswerExtensions.Fail<string>("Empty content!");
+            }
+            catch (Exception ex)
+            {
+                // LOG
+                return AnswerExtensions.Fail<string>(ex.Message);
             }
         }
 
@@ -203,7 +218,6 @@ namespace Home.Communication
                 if (!string.IsNullOrEmpty(content))
                 {
                     var item = System.Text.Json.JsonSerializer.Deserialize<Answer<Screenshot>>(content);
-                    item.Success = (item.Status == "ok");
                     return item;
                 }
                 else
@@ -227,7 +241,6 @@ namespace Home.Communication
                 if (!string.IsNullOrEmpty(content))
                 {
                     var item = System.Text.Json.JsonSerializer.Deserialize<Answer<bool>>(content);
-                    item.Success = (item.Status == "ok");
                     return item;
                 }
                 else
@@ -251,7 +264,6 @@ namespace Home.Communication
                 if (!string.IsNullOrEmpty(content))
                 {
                     var item = System.Text.Json.JsonSerializer.Deserialize<Answer<string>>(content);
-                    item.Success = (item.Status == "ok");
                     return item;
                 }
                 else

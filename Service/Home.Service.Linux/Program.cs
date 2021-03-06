@@ -1,4 +1,5 @@
-﻿using Home.Model;
+﻿using Home.Data.Com;
+using Home.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -16,7 +17,7 @@ namespace Home.Service.Linux
     public class Program
     {
         private static readonly Device currentDevice = new Device();
-        private static readonly Version ClientVersion = new Version(0, 0, 1);
+        private static readonly Version ClientVersion = new Version(0, 0, 3);
         private static readonly DateTime startTime = DateTime.Now;
         private static Home.Communication.API api;
         private static JObject jInfo = null;
@@ -25,7 +26,7 @@ namespace Home.Service.Linux
         private static readonly Timer ackTimer = new Timer();
         private static readonly object _lock = new object();
         private static bool isSendingAck = false;
-        private static string normalUser = string.Empty;
+        private static string NormalUser = string.Empty;
 
 
         public static void Main(string[] args)
@@ -51,10 +52,11 @@ namespace Home.Service.Linux
             currentDevice.ID = id;
             currentDevice.Location = jInfo["location"].ToString();
             currentDevice.DeviceGroup = jInfo["device_group"].ToString();
-            normalUser = jInfo["user"].ToString();
+            NormalUser = jInfo["user"].ToString();
             currentDevice.OS = (OSType)jInfo["os"].Value<int>();
             currentDevice.Envoirnment.OSName = currentDevice.OS.ToString();
             currentDevice.Type = (DeviceType)jInfo["type"].Value<int>();
+            currentDevice.Envoirnment.StartTimestamp = startTime;
             RefreshDeviceInfo();
 
             if (!isSignedIn)
@@ -106,40 +108,86 @@ namespace Home.Service.Linux
 
             Console.WriteLine("Sending ack ...");
             RefreshDeviceInfo();
-            string result = await api.SendAckAsync(currentDevice);
-            if (result == "screenshot_required")
+            var ackResult = await api.SendAckAsync(currentDevice);
+            // Process ack answer
+            if (ackResult != null && ackResult.Success && ackResult.Result.Result.HasFlag(Data.Com.AckResult.Ack.OK))
             {
-                Console.WriteLine("Creating a screenshot ...");
+                if (ackResult.Result.Result.HasFlag(Data.Com.AckResult.Ack.ScreenshotRequired))
+                    await CreateScreenshot();
 
-                // 1) Create a screenshot (but ensure that this command will be executed as the normal user)
-                ExecuteSystemCommand("sudo", $"-H -u {normalUser} bash -c \"sh screenshot.sh\"");
-
-                // 2) Post screenshot to the api
-                if (System.IO.File.Exists("screenshot.png"))
+                if (ackResult.Result.Result.HasFlag(Data.Com.AckResult.Ack.MessageRecieved))
                 {
+                    // Show message
+                    Message message = JsonConvert.DeserializeObject<Message>(ackResult.Result.JsonData);
+                    string image = "info";
+                    switch (message.Type)
+                    {
+                        case Message.MessageImage.Error: image = "error"; break;
+                        case Message.MessageImage.Information: image = "info"; break;
+                        case Message.MessageImage.Warning: image = "warning"; break;
+                    }
+
+                    // sudo zenity --error --text="Test" --title="hi"
+                    string shellScript = $"#!bin/bash\nDISPLAY=:0 zenity --{image} --title=\"{message.Title}\" --text=\"{message.Content}\"";
+
+
                     try
                     {
-                        byte[] data = await System.IO.File.ReadAllBytesAsync("screenshot.png");
-                        var screenshotResult = await api.SendScreenshotAsync(new Screenshot() { ClientID = currentDevice.ID, Data = Convert.ToBase64String(data) });
-
-                        if (!screenshotResult.Success)
-                            Console.WriteLine(screenshotResult.ErrorMessage);
-                        else
-                            Console.WriteLine("Succsessfully uploaded screeenshot!");
+                        System.IO.File.Delete("zenity.sh");
                     }
-                    catch (Exception ex)
+                    catch
+                    { }
+
+                    try
+                    { 
+                        System.IO.File.WriteAllText("zenity.sh", shellScript);
+                    }
+                    catch
                     {
-                        Console.WriteLine($"Failed to get screenshot: {ex.Message}");
+
                     }
 
+                    Console.WriteLine("Showing message " + shellScript);
+                    ExecuteSystemCommand("sudo", $"-H -u {NormalUser} bash -c \"sh zenity.sh\"", async: true);
+                    Console.WriteLine("Test");
                 }
 
+                if (ackResult.Result.Result.HasFlag(AckResult.Ack.CommandRecieved))
+                {
+                    // ToDO: 
+                }
             }
-            Console.WriteLine($"ACK result: {result}");
 
 
             lock (_lock)
                 isSendingAck = false;
+        }
+
+        public static async Task CreateScreenshot()
+        {
+            Console.WriteLine("Creating a screenshot ...");
+
+            // 1) Create a screenshot (but ensure that this command will be executed as the normal user)
+            ExecuteSystemCommand("sudo", $"-H -u {NormalUser} bash -c \"sh screenshot.sh\"");
+
+            // 2) Post screenshot to the api
+            if (System.IO.File.Exists("screenshot.png"))
+            {
+                try
+                {
+                    byte[] data = await System.IO.File.ReadAllBytesAsync("screenshot.png");
+                    var screenshotResult = await api.SendScreenshotAsync(new Screenshot() { ClientID = currentDevice.ID, Data = Convert.ToBase64String(data) });
+
+                    if (!screenshotResult.Success)
+                        Console.WriteLine(screenshotResult.ErrorMessage);
+                    else
+                        Console.WriteLine("Succsessfully uploaded screeenshot!");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to get screenshot: {ex.Message}");
+                }
+            }
         }
 
         public static void RefreshDeviceInfo()
@@ -157,15 +205,15 @@ namespace Home.Service.Linux
             ReadDiskUsage();
         }
 
-        public static string ExecuteSystemCommand(string command, string parameter)
+        public static string ExecuteSystemCommand(string command, string parameter, bool async = false)
         {
             StringBuilder sb = new StringBuilder();
             try
             {
-                Process proc = new Process { StartInfo = new ProcessStartInfo(command, parameter) { RedirectStandardOutput = true } };
+                Process proc = new Process { StartInfo = new ProcessStartInfo(command, parameter) { RedirectStandardOutput = !async } };
                 proc.Start();
                 
-                while (!proc.StandardOutput.EndOfStream)
+                while (!proc.StandardOutput.EndOfStream && !async)
                 {
                     var line = proc.StandardOutput.ReadLine();
                     sb.Append(line);

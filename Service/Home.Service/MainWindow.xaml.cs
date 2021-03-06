@@ -1,4 +1,5 @@
-﻿using Home.Model;
+﻿using Home.Data.Com;
+using Home.Model;
 using Home.Service.Model;
 using Newtonsoft.Json;
 using System;
@@ -26,7 +27,7 @@ namespace Home.Service
     public partial class MainWindow : Window
     {
         private Home.Communication.API api = null;
-        private readonly DateTime startTime = DateTime.Now;
+        private readonly DateTime startTimestamp = DateTime.Now;
 
         private readonly PerformanceCounter cpuCounter;
         private readonly PerformanceCounter ramCounter;
@@ -93,7 +94,8 @@ namespace Home.Service
                     TotalRAM = DetermineTotalRAM(),
                     OSName = ServiceData.Instance.OSName,
                     OSVersion = Environment.OSVersion.ToString(),
-                    RunningTime = now.Subtract(startTime)
+                    RunningTime = now.Subtract(startTimestamp),
+                    StartTimestamp = startTimestamp
                 }
             };
 
@@ -181,7 +183,7 @@ namespace Home.Service
 
             currentDevice.IP = DisplayIPAddresses();
             currentDevice.DiskDrives = DetermineDiskDrives();
-            currentDevice.Envoirnment.RunningTime = now.Subtract(startTime); // Environment.TickCount?
+            currentDevice.Envoirnment.RunningTime = now.Subtract(startTimestamp); // Environment.TickCount?
             currentDevice.Envoirnment.OSVersion = Environment.OSVersion.ToString();
             currentDevice.Envoirnment.CPUCount = Environment.ProcessorCount;
             currentDevice.Envoirnment.TotalRAM = DetermineTotalRAM();
@@ -197,9 +199,32 @@ namespace Home.Service
             GetDeviceInfo(currentDevice);
 
             // Send ack
-            string result = await api.SendAckAsync(currentDevice);
-            if (result == "screenshot_required")
-                await CreateScreenshot();
+            var ackResult = await api.SendAckAsync(currentDevice);
+
+            // Process ack answer
+            if (ackResult != null && ackResult.Success && ackResult.Result.Result.HasFlag(Data.Com.AckResult.Ack.OK))
+            {
+                if (ackResult.Result.Result.HasFlag(Data.Com.AckResult.Ack.ScreenshotRequired))
+                    await CreateScreenshot();
+
+                if (ackResult.Result.Result.HasFlag(Data.Com.AckResult.Ack.MessageRecieved))
+                {
+                    // Show message
+                    try
+                    {
+                        System.Diagnostics.Process.Start("Notification.exe", Convert.ToBase64String(System.Text.Encoding.Default.GetBytes(ackResult.Result.JsonData)));
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message); 
+                    }
+                }
+
+                if (ackResult.Result.Result.HasFlag(AckResult.Ack.CommandRecieved))
+                {
+                    // ToDO: 
+                }
+            }
         }
 
         public async Task CreateScreenshot()
