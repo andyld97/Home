@@ -25,6 +25,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Helper Applications", "Help
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification", "Helper Applications\Notification\Notification.csproj", "{AA694400-3AE8-4160-BB47-FD5427932D36}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Home.Service.Legacy", "Service\Home.Service.Legacy\Home.Service.Legacy.csproj", "{5A59FDA7-BD65-406F-A705-487C82D4EF5B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Home.Measure.Windows", "Shared Libraries\Home.Measure.Windows\Home.Measure.Windows.csproj", "{36F79A8A-96BF-49B5-AAA7-39D434385B44}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +63,14 @@ Global
 		{AA694400-3AE8-4160-BB47-FD5427932D36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA694400-3AE8-4160-BB47-FD5427932D36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA694400-3AE8-4160-BB47-FD5427932D36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A59FDA7-BD65-406F-A705-487C82D4EF5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A59FDA7-BD65-406F-A705-487C82D4EF5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A59FDA7-BD65-406F-A705-487C82D4EF5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A59FDA7-BD65-406F-A705-487C82D4EF5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36F79A8A-96BF-49B5-AAA7-39D434385B44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36F79A8A-96BF-49B5-AAA7-39D434385B44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36F79A8A-96BF-49B5-AAA7-39D434385B44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36F79A8A-96BF-49B5-AAA7-39D434385B44}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -70,12 +82,14 @@ Global
 		{E812DEEE-4510-4DEE-B9FE-DA428ABE8A1E} = {3DDEE229-D318-4A2A-85F4-5ED070765C30}
 		{30B690AF-CEFA-47A2-A392-DA878E75E7C0} = {69C60DD4-2CEF-4304-A8FF-751BE53960A9}
 		{AA694400-3AE8-4160-BB47-FD5427932D36} = {04A92809-609E-48F8-B50D-3D0145657931}
+		{5A59FDA7-BD65-406F-A705-487C82D4EF5B} = {69C60DD4-2CEF-4304-A8FF-751BE53960A9}
+		{36F79A8A-96BF-49B5-AAA7-39D434385B44} = {3DDEE229-D318-4A2A-85F4-5ED070765C30}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {96AFC1EE-03B9-4208-AF3D-A290F2C3B875}
 	EndGlobalSection
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 8
+		SccNumberOfProjects = 10
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://dev.azure.com/code-a-software
 		SccLocalPath0 = .
@@ -106,5 +120,13 @@ Global
 		SccProjectTopLevelParentUniqueName7 = Home.sln
 		SccProjectName7 = Helper\u0020Applications/Notification
 		SccLocalPath7 = Helper\u0020Applications\\Notification
+		SccProjectUniqueName8 = Service\\Home.Service.Legacy\\Home.Service.Legacy.csproj
+		SccProjectTopLevelParentUniqueName8 = Home.sln
+		SccProjectName8 = Service/Home.Service.Legacy
+		SccLocalPath8 = Service\\Home.Service.Legacy
+		SccProjectUniqueName9 = Shared\u0020Libraries\\Home.Measure.Windows\\Home.Measure.Windows.csproj
+		SccProjectTopLevelParentUniqueName9 = Home.sln
+		SccProjectName9 = Shared\u0020Libraries/Home.Measure.Windows
+		SccLocalPath9 = Shared\u0020Libraries\\Home.Measure.Windows
 	EndGlobalSection
 EndGlobal

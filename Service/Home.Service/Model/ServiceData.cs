@@ -28,7 +28,7 @@ namespace Home.Service.Model
                 if (id != value)
                 {
                     id = value;
-                    NotifyPropertyChanged();
+                    NotifyPropertyChanged(nameof(ID));
                 }
             }
         }
@@ -41,7 +41,7 @@ namespace Home.Service.Model
                 if (osName != value)
                 {
                     osName = value;
-                    NotifyPropertyChanged();
+                    NotifyPropertyChanged(nameof(OSName));
                 }
             }
         }
@@ -54,7 +54,7 @@ namespace Home.Service.Model
                 if (value != apiURL)
                 {
                     apiURL = value;
-                    NotifyPropertyChanged();
+                    NotifyPropertyChanged(nameof(APIUrl));
                 }
             }
         }
@@ -67,7 +67,7 @@ namespace Home.Service.Model
                 if (osType != value)
                 {
                     osType = value;
-                    NotifyPropertyChanged();
+                    NotifyPropertyChanged(nameof(SystemType));
                 }
             }
         }
@@ -80,7 +80,7 @@ namespace Home.Service.Model
                 if (deviceType != value)
                 {
                     deviceType = value;
-                    NotifyPropertyChanged();
+                    NotifyPropertyChanged(nameof(Type));
                 }
             }
         }
@@ -93,7 +93,7 @@ namespace Home.Service.Model
                 if (hasLoggedIn != value)
                 {
                     hasLoggedIn = value;
-                    NotifyPropertyChanged();
+                    NotifyPropertyChanged(nameof(HasLoggedInOnce));
                 }
             }
         }
@@ -106,7 +106,7 @@ namespace Home.Service.Model
                 if (deviceGroup != value)
                 {
                     deviceGroup = value;
-                    NotifyPropertyChanged();
+                    NotifyPropertyChanged(nameof(DeviceGroup));
                 }
             }
         }
@@ -119,7 +119,7 @@ namespace Home.Service.Model
                 if (location != value)
                 {
                     location = value;
-                    NotifyPropertyChanged();
+                    NotifyPropertyChanged(nameof(Location));
                 }
             }
         }
@@ -143,7 +143,7 @@ namespace Home.Service.Model
             return new ServiceData();
         }
 
-        public void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+        public void NotifyPropertyChanged(string propertyName) // cannot use [CallerMemberName] due to compability issues
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             if (Instance != null)

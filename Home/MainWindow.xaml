@@ -65,6 +65,26 @@
 
             <Grid Grid.Row="1">
                 <Border BorderThickness="2" CornerRadius="5" BorderBrush="Gray" Margin="5,5,-1,5">
+                    <Border.Resources>
+                        <Style x:Key="_ListBoxItemStyle" TargetType="ListBoxItem">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Border Name="_Border"
+                                Padding="2"
+                                SnapsToDevicePixels="true">
+                                            <ContentPresenter />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsSelected" Value="true">
+                                                <Setter TargetName="_Border" Property="Background" Value="Transparent" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Border.Resources>
                     <TabControl Background="{DynamicResource WhiteBrush}">
                         <TabControl.Resources>
                             <ResourceDictionary>
@@ -73,35 +93,15 @@
                                 </ResourceDictionary.MergedDictionaries>
                             </ResourceDictionary>
                         </TabControl.Resources>
-
-                        <TabItem Header="Alle Geräte" Background="{DynamicResource WhiteBrush}">
-                            <TabItem.Resources>
-                                <Style x:Key="_ListBoxItemStyle" TargetType="ListBoxItem">
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="ListBoxItem">
-                                                <Border Name="_Border"
-                                Padding="2"
-                                SnapsToDevicePixels="true">
-                                                    <ContentPresenter />
-                                                </Border>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsSelected" Value="true">
-                                                        <Setter TargetName="_Border" Property="Background" Value="Transparent" />
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </TabItem.Resources>
-                            <ListBox x:Name="DeviceHolder" ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" Background="{DynamicResource WhiteBrush}" BorderThickness="0" SelectionChanged="DeviceHolder_SelectionChanged" Grid.Row="1" />
+                       
+                        <TabItem x:Name="TabActiveDevices" Header="Aktive Geräte">
+                            <ListBox x:Name="DeviceHolderActive" ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" Background="{DynamicResource WhiteBrush}" BorderThickness="0" SelectionChanged="DeviceHolder_SelectionChanged" Grid.Row="1" />
                         </TabItem>
-                        <TabItem Header="Aktive Geräte">
-
+                        <TabItem x:Name="TabOfflineDevices" Header="Inaktive Geräte">
+                            <ListBox x:Name="DeviceHolderOffline" ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" Background="{DynamicResource WhiteBrush}" BorderThickness="0" SelectionChanged="DeviceHolder_SelectionChanged" Grid.Row="1" />
                         </TabItem>
-                        <TabItem Header="Inaktive Geräte">
-
+                        <TabItem x:Name="TabAllDevices" Header="Alle Geräte" Background="{DynamicResource WhiteBrush}">
+                            <ListBox x:Name="DeviceHolderAll" ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" Background="{DynamicResource WhiteBrush}" BorderThickness="0" SelectionChanged="DeviceHolder_SelectionChanged" Grid.Row="1" />
                         </TabItem>
                     </TabControl>
                 </Border>

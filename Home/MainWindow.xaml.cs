@@ -74,23 +74,50 @@ namespace Home
         private void RefreshDeviceHolder()
         {
             ignoreSelectionChanged = true;
-            DeviceHolder.Items.Clear();
+            DeviceHolderAll.Items.Clear();
+            DeviceHolderOffline.Items.Clear();
+            DeviceHolderActive.Items.Clear();
             deviceItems.Clear();
 
             foreach (var device in deviceList.OrderBy(p => p.Status))
             {
                 DeviceItem di = new DeviceItem() { DataContext = device };
                 deviceItems.Add(di);
-                DeviceHolder.Items.Add(di);
+                DeviceHolderAll.Items.Add(di);
+
+                if (device.Status == DeviceStatus.Active)
+                {
+                    DeviceItem active = new DeviceItem() { DataContext = device };
+                    deviceItems.Add(active);
+                    DeviceHolderActive.Items.Add(active);
+                }
+
+                if (device.Status == DeviceStatus.Offline)
+                {
+                    DeviceItem off = new DeviceItem() { DataContext = device };
+                    deviceItems.Add(off);
+                    DeviceHolderOffline.Items.Add(off);
+                }
             }
 
             if (lastSelectedDevice != null)
             {
-                int index = deviceList.IndexOf(lastSelectedDevice);
-                if (index != -1)
-                    DeviceHolder.SelectedIndex = index;
+                int allIndex = deviceList.IndexOf(lastSelectedDevice);
+                if (allIndex != -1)
+                    DeviceHolderAll.SelectedIndex = allIndex;
+
+                int activeIndex = deviceList.Where(p => p.Status != DeviceStatus.Offline).ToList().IndexOf(lastSelectedDevice);
+                if (activeIndex != -1)
+                    DeviceHolderActive.SelectedIndex = activeIndex;
+
+                int offIndex = deviceList.Where(p => p.Status == DeviceStatus.Offline).ToList().IndexOf(lastSelectedDevice);
+                if (offIndex != -1)
+                    DeviceHolderActive.SelectedIndex = offIndex;
             }
 
+            TabAllDevices.Header = $"Alle Geräte: {deviceList.Count}";
+            TabActiveDevices.Header = $"Aktive Geräte {deviceList.Where(p => p.Status != DeviceStatus.Offline).Count()}";
+            TabOfflineDevices.Header = $"Inaktive Geräte: {deviceList.Where(p => p.Status == DeviceStatus.Offline).Count()}";
             RefreshSelection();
             ignoreSelectionChanged = false;
         }
@@ -302,7 +329,7 @@ namespace Home
             if (ignoreSelectionChanged)
                 return;
 
-            if (DeviceHolder.SelectedItem is DeviceItem dev)
+            if ((sender as ListBox).SelectedItem is DeviceItem dev)
             {
                 lastSelectedDevice = dev.DataContext as Device;
                 await RefreshSelectedItem();

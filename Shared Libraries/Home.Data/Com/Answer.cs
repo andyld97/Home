@@ -1,19 +1,35 @@
-﻿using System.Text.Json.Serialization;
+﻿#if !LEGACY
+using System.Text.Json.Serialization;
+#endif
+
+using Newtonsoft.Json;
 
 namespace Home.Data
 {
     public class Answer<T>
     {
+        [JsonProperty("status")]
+#if !LEGACY
         [JsonPropertyName("status")]
+#endif
         public string Status { get; set; } = "ok";
 
+#if !LEGACY
         [JsonPropertyName("error")]
+#endif
+        [JsonProperty("error")]
         public string ErrorMessage { get; set; } = string.Empty;
 
+#if !LEGACY
         [JsonPropertyName("result")]
+#endif
+        [JsonProperty("result")]
         public T Result { get; set; }
 
-        [JsonIgnore]
+#if !LEGACY
+        [System.Text.Json.Serialization.JsonIgnore]
+#endif
+        [Newtonsoft.Json.JsonIgnore]
         public bool Success => Status == "ok";
 
         public Answer()

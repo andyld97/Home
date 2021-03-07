@@ -1,12 +1,17 @@
 ﻿using Home.Data;
+
+#if !LEGACY
 using Home.Data.Com;
+#endif
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+#if !LEGACY
 using System.Text.Json.Serialization;
+#endif
 using System.Xml.Serialization;
 using JsonIgnoreAttribute = Newtonsoft.Json.JsonIgnoreAttribute;
 
@@ -27,7 +32,9 @@ namespace Home.Model
         private string location;
 
         [JsonProperty("name")]
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("name")]
+#endif
         public string Name
         {
             get => name;
@@ -36,13 +43,15 @@ namespace Home.Model
                 if (value != name)
                 {
                     name = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(Name));
                 }
             }
         }
 
         [JsonProperty("id")]
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("id")]
+#endif
         public string ID
         {
             get => guid?.ToString();
@@ -51,13 +60,15 @@ namespace Home.Model
                 if (guid != null)
                 {
                     guid = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(ID));
                 }
             }
         }
 
         [JsonProperty("ip")]
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("ip")]
+#endif
         public string IP
         {
             get => ip;
@@ -66,13 +77,15 @@ namespace Home.Model
                 if (value != ip)
                 {
                     ip = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(IP));
                 }
             }
         }
 
         [JsonProperty("last_seen")]
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("last_seen")]
+#endif
         public DateTime LastSeen
         {
             get => lastSeen;
@@ -81,13 +94,15 @@ namespace Home.Model
                 if (value != lastSeen)
                 {
                     lastSeen = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(LastSeen));
                 }
             }
         }
 
         [JsonProperty("state")]
+         #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("state")]
+        #endif
         public DeviceStatus Status
         {
             get => status;
@@ -96,13 +111,15 @@ namespace Home.Model
                 if (value != status)
                 {
                     status = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(Status));
                 }
             }
         }
 
         [JsonProperty("type")]
+         #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("type")]
+        #endif
         public DeviceType Type
         {
             get => type;
@@ -111,13 +128,15 @@ namespace Home.Model
                 if (type != value)
                 {
                     type = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(Type));
                 }
             }
         }
 
         [JsonProperty("os")]
+         #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("os")]
+        #endif
         public OSType OS
         {
             get => os;
@@ -126,13 +145,15 @@ namespace Home.Model
                 if (value != os)
                 {
                     os = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(OS));
                 }
             }
         }
 
         [JsonProperty("group")]
+         #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("group")]
+        #endif
         public string DeviceGroup
         {
             get => deviceGroup;
@@ -141,13 +162,15 @@ namespace Home.Model
                 if (value != deviceGroup)
                 {
                     deviceGroup = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(DeviceGroup));
                 }
             }
         }
 
         [JsonProperty("location")]
+         #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("location")]
+        #endif
         public string Location
         {
             get => location;
@@ -156,32 +179,43 @@ namespace Home.Model
                 if (value != location)
                 {
                     location = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(Location));
                 }
             }
         }
 
         [JsonProperty("log_entries")]
+         #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("log_entries")]
+        #endif
         public ObservableCollection<LogEntry> LogEntries { get; set; } = new ObservableCollection<LogEntry>();
 
         [JsonProperty("screenshots_file_names")]
+         #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("screenshots_file_names")]
+        #endif
         public List<string> ScreenshotFileNames { get; set; } = new List<string>();
 
         [JsonProperty("environment")]
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("environment")]
+#endif
         public DeviceEnvironment Envoirnment { get; set; } = new DeviceEnvironment();
 
         [JsonProperty("disk_drives")]
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("disk_drives")]
+#endif
         public List<DiskDrive> DiskDrives { get; set; } = new List<DiskDrive>();
 
         [JsonProperty("service_client_version")]
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("service_client_version")]
+#endif
         public string ServiceClientVersion { get; set; }
 
-        #region Properties for Internal API Usage
+#if !LEGACY
+#region Properties for Internal API Usage
         /// <summary>
         /// Only for internal api usage
         /// </summary>
@@ -197,7 +231,8 @@ namespace Home.Model
         [XmlIgnore]
         public Queue<Message> Messages { get; set; } = new Queue<Message>();
 
-        #endregion
+#endregion
+#endif
 
         public enum DeviceStatus
         {
@@ -369,7 +404,9 @@ namespace Home.Model
             foreach (var shot in other.ScreenshotFileNames)
                 ScreenshotFileNames.Add(shot);
 
+#if !LEGACY
             IsScreenshotRequired = other.IsScreenshotRequired;
+#endif
 
             if (isLocal)
                 LogEntries.Clear();
@@ -378,7 +415,7 @@ namespace Home.Model
                 LogEntries.Add(entry);
         }
 
-        public void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        public void OnPropertyChanged(string propertyName) // Cannot use [CallerMemberName] due to compability issues
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -395,85 +432,122 @@ namespace Home.Model
     public class DeviceEnvironment
     {
         [JsonProperty("product")]
+        #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("product")]
+#endif
         public string Product { get; set; }
 
         [JsonProperty("description")]
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("description")]
+#endif
         public string Description { get; set; }
 
         [JsonProperty("vendor")]
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("vendor")]
+#endif
         public string Vendor { get; set; }
 
         [JsonProperty("os_name")]
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("os_name")]
+#endif
         public string OSName { get; set; }
 
         [JsonProperty("os_version")]
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("os_version")]
+#endif
         public string OSVersion { get; set; }
 
         [JsonProperty("cpu_name")]
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("cpu_name")]
+#endif
         public string CPUName { get; set; }
 
         [JsonProperty("cpu_count")]
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("cpu_count")]
+#endif
         public int CPUCount { get; set; }
 
         [JsonProperty("cpu_usage")]
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("cpu_usage")]
+#endif
         public double CPUUsage { get; set; }
 
         [JsonProperty("graphics")]
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("graphics")]
+#endif
         public string Graphics { get; set; }
 
         [JsonProperty("total_ram")]
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("total_ram")]
+#endif
         public double TotalRAM { get; set; }
 
         [JsonProperty("free_ram")]
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("free_ram")]
+#endif
         public string FreeRAM { get; set; }
 
         [JsonProperty("disk_usage")]
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("disk_usage")]
+#endif
         public double DiskUsage { get; set; }
 
         [JsonProperty("is_64bit_os")]
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("is_64bit_os")]
+#endif
         public bool Is64BitOS { get; set; }
 
         [JsonProperty("machine_name")]
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("machine_name")]
+#endif
         public string MachineName { get; set; }
 
         [JsonProperty("user_name")]
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("user_name")]
+#endif
         public string UserName { get; set; }
 
         [JsonProperty("domain_name")]
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("domain_name")]
+#endif
         public string DomainName { get; set; }
 
         [XmlIgnore]
         [JsonIgnore()]
+#if !LEGACY
         [System.Text.Json.Serialization.JsonIgnore]
+#endif
         public TimeSpan RunningTime { get; set; }
 
         [JsonProperty("running_time")]
+#if !LEGACY
         [JsonPropertyName("running_time")]
+#endif
         public string XmlRunningTime
         {
             get => RunningTime.ToString();
             set => RunningTime = TimeSpan.Parse(value);
         }
 
-
         [JsonProperty("start_time")]
+#if !LEGACY
         [JsonPropertyName("start_time")]
+#endif
         public DateTime StartTimestamp { get; set; }
 
         public override string ToString()
@@ -486,75 +560,111 @@ namespace Home.Model
     public class DiskDrive
     {
         [JsonProperty("physical_name")]
+#if !LEGACY
         [JsonPropertyName("physical_name")]
+#endif
         public string PhysicalName { get; set; }
 
         [JsonProperty("disk_name")]
+#if !LEGACY
         [JsonPropertyName("disk_name")]
+#endif
         public string DiskName { get; set; }
 
         [JsonProperty("disk_model")]
+#if !LEGACY
         [JsonPropertyName("disk_model")]
+#endif
         public string DiskModel { get; set; }
 
         [JsonProperty("disk_interface")]
+#if !LEGACY
         [JsonPropertyName("disk_interface")]
+#endif
         public string DiskInterface { get; set; }
 
         [JsonProperty("media_loaded")]
+#if !LEGACY
         [JsonPropertyName("media_loaded")]
+#endif
         public bool MediaLoaded { get; set; }
 
         [JsonProperty("media_type")]
+#if !LEGACY
         [JsonPropertyName("media_type")]
+#endif
         public string MediaType { get; set; }
 
         [JsonProperty("media_signature")]
+#if !LEGACY
         [JsonPropertyName("media_signature")]
+#endif
         public uint MediaSignature { get; set; }
 
         [JsonProperty("media_status")]
+#if !LEGACY
         [JsonPropertyName("media_status")]
+#endif
         public string MediaStatus { get; set; }
 
         [JsonProperty("drive_name")]
+#if !LEGACY
         [JsonPropertyName("drive_name")]
+#endif
         public string DriveName { get; set; }
 
         [JsonProperty("drive_id")]
+#if !LEGACY
         [JsonPropertyName("drive_id")]
+#endif
         public string DriveID { get; set; }
 
         [JsonProperty("drive_compressed")]
+#if !LEGACY
         [JsonPropertyName("drive_compressed")]
+#endif
         public bool DriveCompressed { get; set; }
 
         [JsonProperty("drive_type")]
+#if !LEGACY
         [JsonPropertyName("drive_type")]
+#endif
         public uint DriveType { get; set; }
 
         [JsonProperty("file_system")]
+#if !LEGACY
         [JsonPropertyName("file_system")]
+#endif
         public string FileSystem { get; set; }
 
         [JsonProperty("free_space")]
+#if !LEGACY
         [JsonPropertyName("free_space")]
+#endif
         public ulong FreeSpace { get; set; } // bytes
 
         [JsonProperty("total_space")]
+#if !LEGACY
         [JsonPropertyName("total_space")]
+#endif
         public ulong TotalSpace { get; set; } // bytes
 
         [JsonProperty("drive_media_type")]
+#if !LEGACY
         [JsonPropertyName("drive_media_type")]
+#endif
         public uint DriveMediaType { get; set; }
 
         [JsonProperty("volume_name")]
+#if !LEGACY
         [JsonPropertyName("volume_name")]
+#endif
         public string VolumeName { get; set; }
 
         [JsonProperty("volume_serial")]
+#if !LEGACY
         [JsonPropertyName("volume_serial")]
+#endif
         public string VolumeSerial { get; set; }
 
         public override string ToString()
@@ -566,11 +676,15 @@ namespace Home.Model
     public class Screenshot
     {
         [JsonProperty("data")]
+#if !LEGACY
         [JsonPropertyName("data")]
+#endif
         public string Data { get; set; }
 
         [JsonProperty("client_id")]
+#if !LEGACY
         [JsonPropertyName("client_id")]
+#endif
         public string ClientID { get; set; }
     }
 }

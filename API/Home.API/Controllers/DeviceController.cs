@@ -91,7 +91,7 @@ namespace Home.API.Controllers
                             dev.LogEntries.Add(new LogEntry(DateTime.Now, "Device has recovered and is now online again!", LogEntry.LogLevel.Information));
                             dev.IsScreenshotRequired = true;
                         }
-                        if (dev.ServiceClientVersion != device.ServiceClientVersion)
+                        if (dev.ServiceClientVersion != device.ServiceClientVersion && !string.IsNullOrEmpty(dev.ServiceClientVersion))
                             dev.LogEntries.Add(new LogEntry(DateTime.Now, $"Detected new client version: {device.ServiceClientVersion}", LogEntry.LogLevel.Information));
 
                         isScreenshotRequired = dev.IsScreenshotRequired;

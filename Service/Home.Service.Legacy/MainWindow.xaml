@@ -1,0 +1,59 @@
+﻿<Window x:Class="Home.Service.Legacy.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Home.Service.Legacy"
+      mc:Ignorable="d" ResizeMode="CanMinimize"
+        ShowInTaskbar="False"
+        Title="Home Service Client (Legacy Edition)" SizeToContent="Height" Width="400" Loaded="Window_Loaded">
+    <Grid>
+        <Expander x:Name="ExpanderSettings" Header="Geräte Einstellungen" IsExpanded="True" IsEnabled="True">
+            <StackPanel>
+                <StackPanel.Resources>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="Margin" Value="2" />
+                        <Setter Property="Padding" Value="0" />
+                    </Style>
+                    <Style TargetType="{x:Type ComboBox}">
+                        <Setter Property="Margin" Value="1" />
+                        <Setter Property="Padding" Value="4" />
+                    </Style>
+                    <Style TargetType="{x:Type TextBox}">
+                        <Setter Property="Padding" Value="2" />
+                    </Style>
+                </StackPanel.Resources>
+
+                <TextBlock Text="API-Zugang:" />
+                <TextBox x:Name="TextAPIUrl" Text="http://192.168.178.38:83" />
+
+                <TextBlock Text="Betriebssystem:" />
+                <ComboBox x:Name="CmbOS" SelectedIndex="0">
+                    <ComboBox.Items>
+                        <ComboBoxItem Content="Windows XP" />
+                        <ComboBoxItem Content="Windows Vista" />
+                    </ComboBox.Items>
+                </ComboBox>
+
+                <TextBlock Text="Geräte-Art:" />
+                <ComboBox x:Name="CmbDeviceType" SelectedIndex="0">
+                    <ComboBox.Items>
+                        <ComboBoxItem Content="SingleBoardDevice" />
+                        <ComboBoxItem Content="Notebook" />
+                        <ComboBoxItem Content="Mini-PC" />
+                        <ComboBoxItem Content="Desktop" />
+                    </ComboBox.Items>
+                </ComboBox>
+
+                <TextBlock Text="Ort:" />
+                <TextBox x:Name="TextLocation" />
+
+                <TextBlock Text="Gruppe:" />
+                <TextBox x:Name="TextGroup" />
+
+                <Button x:Name="ButtonInitalize" Click="ButtonInitalize_Click"  HorizontalAlignment="Left" Content="Initalisieren" Margin="3" Padding="3" Width="200" />
+
+            </StackPanel>
+        </Expander>
+    </Grid>
+</Window>
