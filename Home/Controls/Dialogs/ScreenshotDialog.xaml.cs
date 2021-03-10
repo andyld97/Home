@@ -11,7 +11,7 @@ namespace Home.Controls.Dialogs
         public ScreenshotDialog(ImageSource imageSource)
         {
             InitializeComponent();
-            ImageScreenshot.Source = imageSource;
+            ImageScreenshot.SetImageSource(imageSource);
         }
     }
 }

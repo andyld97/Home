@@ -1,4 +1,5 @@
-﻿using Fluent;
+﻿using ControlzEx.Theming;
+using Fluent;
 using Home.Controls;
 using Home.Controls.Dialogs;
 using Home.Data;
@@ -187,7 +188,7 @@ namespace Home
         {
             byte[] data = null;
             bool saveInCache = false;
-            bool updateGui = (lastSelectedDevice.ID == device.ID);
+            bool updateGui = (lastSelectedDevice?.ID == device.ID);
 
             string cacheDevicePath = System.IO.Path.Combine(CACHE_PATH, device.ID);
             if (!System.IO.Directory.Exists(cacheDevicePath))
@@ -312,14 +313,14 @@ namespace Home
                         grayBitmap.DestinationFormat = PixelFormats.Gray8;
                         grayBitmap.EndInit();
 
-                        ImageScreenshot.Source = grayBitmap;
+                        ImageScreenshot.SetImageSource(grayBitmap);
                     }
-                    else 
-                        ImageScreenshot.Source = bi;
+                    else
+                        ImageScreenshot.SetImageSource(bi);
                 }
                 catch (Exception ex)
                 {
-                    ImageScreenshot.Source = null;
+                    ImageScreenshot.SetImageSource(null);
                 }
             }
         }
@@ -430,7 +431,7 @@ namespace Home
         {
             if (e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
             {               
-                new ScreenshotDialog(ImageScreenshot.Source).ShowDialog();
+                new ScreenshotDialog(ImageScreenshot.ImageDisplay.Source).ShowDialog();
             }
         }
 
@@ -452,6 +453,14 @@ namespace Home
         private void LogHolder_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
         {
             LogScrollViewer.ScrollToVerticalOffset(LogScrollViewer.VerticalOffset - e.Delta);
+        }
+
+
+        private void MenuButtonChangeTheme_Click(object sender, RoutedEventArgs e)
+        {
+            ThemeManager.Current.ThemeSyncMode = ThemeSyncMode.DoNotSync;
+            ThemeManager.Current.ChangeTheme(Application.Current, ThemeManager.Current.GetInverseTheme(ThemeManager.Current.DetectTheme()));
+            ThemeManager.Current.SyncTheme();
         }
     }
 

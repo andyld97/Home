@@ -52,14 +52,14 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <TextBlock Text="{Binding Envoirnment.MachineName}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        <TextBlock TextAlignment="Center">
-                        <Run Text="IP:" />
-                        <Run Text="{Binding IP}" />
+                        <TextBlock Text="{Binding Envoirnment.MachineName}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" />
+                        <TextBlock TextAlignment="Center" Foreground="White">
+                            <Run Text="IP:" />
+                            <Run Text="{Binding IP}" />
                         </TextBlock>
-                        <TextBlock TextAlignment="Center">
-                        <Run Text="Zuletzt gesehen:" />
-                        <Run Text="{Binding LastSeen, StringFormat=dd.MM.yyyy HH:mm}" />
+                        <TextBlock TextAlignment="Center" Foreground="White">
+                            <Run Text="Zuletzt gesehen:" />
+                            <Run Text="{Binding LastSeen, StringFormat=dd.MM.yyyy HH:mm}" />
                         </TextBlock>
                     </StackPanel>
                 </Grid>

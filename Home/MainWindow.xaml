@@ -22,7 +22,10 @@
 
         <fluent:Ribbon Background="Transparent">
             <fluent:Ribbon.Menu>
-                <fluent:Backstage />
+                <fluent:ApplicationMenu Header="Datei" MaxDropDownHeight="500" BorderBrush="Blue">
+                    <fluent:MenuItem x:Name="MenuButtonChangeTheme" Click="MenuButtonChangeTheme_Click" Header="Themenwechsel" />
+                    <fluent:MenuItem Header="Beenden" />
+                </fluent:ApplicationMenu>
             </fluent:Ribbon.Menu>
 
             <fluent:RibbonTabItem Header="Allgemein">
@@ -234,7 +237,7 @@
 
                                         <Border BorderBrush="{DynamicResource BlackBrush}" BorderThickness="2">
                                             <Grid>
-                                                <Image x:Name="ImageScreenshot" MouseDown="ImageScreenshot_MouseDown" Cursor="Hand" Stretch="UniformToFill" />
+                                                <controls:ZoomImageViewer x:Name="ImageScreenshot" MouseDown="ImageScreenshot_MouseDown" Cursor="Hand"   />
                                                 <TextBlock Text="{Binding Envoirnment.MachineName}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Grid>
                                         </Border>
