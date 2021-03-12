@@ -6,15 +6,13 @@ mpstat ->
 %sys 	:= CPU
 %iowait := DISK
 
-sudo apt install sysstat
+
 iostat -dx
 
-sudo apt install scrot
+
 https://askubuntu.com/questions/921355/giblib-error-cant-open-x-display-on-ubuntu-14-04
 
+To Install:
 
-START ANWEISUNGEN:
-
-1.) TMUX-SESSION starten!
-2.) export DISPLAY=:0 
-3.) clear;sudo dotnet Home.Service.Linux.dll
+sudo apt install scrot
+sudo apt install sysstat

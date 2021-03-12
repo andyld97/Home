@@ -28,11 +28,27 @@ namespace Home.Service.Linux
         private static bool isSendingAck = false;
         private static string NormalUser = string.Empty;
 
-
         public static void Main(string[] args)
         {
-            MainAsync(args).GetAwaiter().GetResult();  
-            Console.ReadKey();
+            try
+            {
+                Task task = MainAsync(args);
+                task.Wait();
+
+             //   if (Console.KeyAvailable)
+               //     Console.ReadKey();
+                //else
+                {
+                    while (true)
+                    {
+                        System.Threading.Thread.Sleep(100);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exiting: " + e.Message);
+            }         
         }
 
         public static async Task MainAsync(string[] args)
@@ -92,6 +108,9 @@ namespace Home.Service.Linux
                 ackTimer.Interval = TimeSpan.FromMinutes(1).TotalMilliseconds;
                 ackTimer.Elapsed += AckTimer_Elapsed;
                 ackTimer.Start();
+
+                // Execute on start
+                AckTimer_Elapsed(null, null);
             }
 
         }
@@ -106,56 +125,63 @@ namespace Home.Service.Linux
                     isSendingAck = true;
             }
 
-            Console.WriteLine("Sending ack ...");
-            RefreshDeviceInfo();
-            var ackResult = await api.SendAckAsync(currentDevice);
-            // Process ack answer
-            if (ackResult != null && ackResult.Success && ackResult.Result.Result.HasFlag(Data.Com.AckResult.Ack.OK))
+            try
             {
-                if (ackResult.Result.Result.HasFlag(Data.Com.AckResult.Ack.ScreenshotRequired))
-                    await CreateScreenshot();
-
-                if (ackResult.Result.Result.HasFlag(Data.Com.AckResult.Ack.MessageRecieved))
+                Console.WriteLine("Sending ack ...");
+                RefreshDeviceInfo();
+                var ackResult = await api.SendAckAsync(currentDevice);
+                // Process ack answer
+                if (ackResult != null && ackResult.Success && ackResult.Result.Result.HasFlag(Data.Com.AckResult.Ack.OK))
                 {
-                    // Show message
-                    Message message = JsonConvert.DeserializeObject<Message>(ackResult.Result.JsonData);
-                    string image = "info";
-                    switch (message.Type)
+                    if (ackResult.Result.Result.HasFlag(Data.Com.AckResult.Ack.ScreenshotRequired))
+                        await CreateScreenshot();
+
+                    if (ackResult.Result.Result.HasFlag(Data.Com.AckResult.Ack.MessageRecieved))
                     {
-                        case Message.MessageImage.Error: image = "error"; break;
-                        case Message.MessageImage.Information: image = "info"; break;
-                        case Message.MessageImage.Warning: image = "warning"; break;
+                        // Show message
+                        Message message = JsonConvert.DeserializeObject<Message>(ackResult.Result.JsonData);
+                        string image = "info";
+                        switch (message.Type)
+                        {
+                            case Message.MessageImage.Error: image = "error"; break;
+                            case Message.MessageImage.Information: image = "info"; break;
+                            case Message.MessageImage.Warning: image = "warning"; break;
+                        }
+
+                        // sudo zenity --error --text="Test" --title="hi"
+                        string shellScript = $"#!bin/bash\nDISPLAY=:0 zenity --{image} --title=\"{message.Title}\" --text=\"{message.Content}\"";
+
+
+                        try
+                        {
+                            System.IO.File.Delete("zenity.sh");
+                        }
+                        catch
+                        { }
+
+                        try
+                        {
+                            System.IO.File.WriteAllText("zenity.sh", shellScript);
+                        }
+                        catch
+                        {
+
+                        }
+
+                        Console.WriteLine("Showing message " + shellScript);
+                        ExecuteSystemCommand("sudo", $"-H -u {NormalUser} bash -c \"sh zenity.sh\"", async: true);
+                        Console.WriteLine("Test");
                     }
 
-                    // sudo zenity --error --text="Test" --title="hi"
-                    string shellScript = $"#!bin/bash\nDISPLAY=:0 zenity --{image} --title=\"{message.Title}\" --text=\"{message.Content}\"";
-
-
-                    try
+                    if (ackResult.Result.Result.HasFlag(AckResult.Ack.CommandRecieved))
                     {
-                        System.IO.File.Delete("zenity.sh");
+                        // ToDO: 
                     }
-                    catch
-                    { }
-
-                    try
-                    { 
-                        System.IO.File.WriteAllText("zenity.sh", shellScript);
-                    }
-                    catch
-                    {
-
-                    }
-
-                    Console.WriteLine("Showing message " + shellScript);
-                    ExecuteSystemCommand("sudo", $"-H -u {NormalUser} bash -c \"sh zenity.sh\"", async: true);
-                    Console.WriteLine("Test");
                 }
-
-                if (ackResult.Result.Result.HasFlag(AckResult.Ack.CommandRecieved))
-                {
-                    // ToDO: 
-                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
 
 

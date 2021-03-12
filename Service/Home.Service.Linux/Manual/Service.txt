@@ -1,0 +1,30 @@
+Anleitung: Service erstellen:
+
+1. Skript erstellen:
+sudo nano /etc/systemd/system/kestrel-hellomvc.service
+
+----------------------------------------------------------------------              
+[Unit]
+Description=Home Service Linux
+
+[Service]
+WorkingDirectory=/home/andy/Schreibtisch/Service
+ExecStart=/usr/bin/dotnet /home/andy/Schreibtisch/Service/Home.Service.Linux.dll
+Restart=always
+# Restart service after 10 seconds if the dotnet service crashes:
+RestartSec=10
+SyslogIdentifier=home.service.linux
+User=root
+
+[Install]
+WantedBy=multi-user.target
+----------------------------------------------------------------------  
+
+2. Service einrichten (aktivieren & starten)
+
+systemctl enable  kestrel-hellomvc.service # Aktiviert den Service (auch Autostart)
+systemctl disable kestrel-hellomvc.service
+systemctl restart kestrel-hellomvc.service
+systemctl stop kestrel-hellomvc.service
+systemctl start kestrel-hellomvc.service
+systemctl status kestrel-hellomvc.service
