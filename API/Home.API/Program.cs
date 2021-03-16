@@ -100,7 +100,7 @@ namespace Home.API
             // Check devices
             lock (Devices)
             {
-                foreach (var device in Devices.Where(p => p.Status != Device.DeviceStatus.Offline && p.LastSeen.AddMinutes(10) < DateTime.Now))
+                foreach (var device in Devices.Where(p => p.Status != Device.DeviceStatus.Offline && p.LastSeen.AddMinutes(3) < DateTime.Now))
                 {
                     lock (EventQueues)
                     {

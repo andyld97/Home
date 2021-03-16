@@ -28,6 +28,8 @@ namespace Home.Communication
         public static readonly string GET_SCREENSHOT = "get_screenshot";
         public static readonly string RECIEVE_SCREENSHOT = "recieve_screenshot";
         public static readonly string CLEAR_LOG = "clear_log";
+        public static readonly string SEND_MESSAGE = "send_message";
+        public static readonly string SEND_COMMAND = "send_command";
 
         public API(string host)
         {
@@ -188,8 +190,31 @@ namespace Home.Communication
         {
             try
             {
-                string url = GenerateEpUrl(true, "send_message");
+                string url = GenerateEpUrl(true, SEND_MESSAGE);
                 var result = await httpClient.PostAsync(url, new StringContent(JsonConvert.SerializeObject(message), System.Text.Encoding.UTF8, "application/json"));
+
+                var content = await result.Content.ReadAsStringAsync();
+                if (!string.IsNullOrEmpty(content))
+                {
+                    var item = System.Text.Json.JsonSerializer.Deserialize<Answer<string>>(content);
+                    return item;
+                }
+                else
+                    return AnswerExtensions.Fail<string>("Empty content!");
+            }
+            catch (Exception ex)
+            {
+                // LOG
+                return AnswerExtensions.Fail<string>(ex.Message);
+            }
+        }
+
+        public async Task<Answer<string>> SendCommandAsync(Command command)
+        {
+            try
+            {
+                string url = GenerateEpUrl(true, SEND_COMMAND);
+                var result = await httpClient.PostAsync(url, new StringContent(JsonConvert.SerializeObject(command), System.Text.Encoding.UTF8, "application/json"));
 
                 var content = await result.Content.ReadAsStringAsync();
                 if (!string.IsNullOrEmpty(content))

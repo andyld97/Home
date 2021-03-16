@@ -32,12 +32,12 @@
                 <fluent:RibbonGroupBox Header="Operationen">
                     <fluent:Button x:Name="MenuButtonSendMessage" Click="MenuButtonSendMessage_Click" Header="Nachricht senden" LargeIcon="/resources/icons/menu/send_message.png"/>
                     <fluent:DropDownButton Header="Herunterfahren Menü" LargeIcon="/resources/icons/menu/shutdown.png">
-                        <fluent:MenuItem Header="Herunterfahren" />
-                        <fluent:MenuItem Header="Neustarten" />
+                        <fluent:MenuItem x:Name="MenuButtonShutdown" Click="MenuButtonShutdown_Click"  Header="Herunterfahren" Icon="/resources/icons/menu/shutdown.png" />
+                        <fluent:MenuItem x:Name="MenuButtonReboot" Click="MenuButtonReboot_Click"  Header="Neustarten" Icon="/resources/icons/menu/reboot.png" />
                     </fluent:DropDownButton>
+                    <fluent:Button x:Name="MenuButtonSendCommand" Click="MenuButtonSendCommand_Click"  Header="Befehl ausführen" LargeIcon="/resources/icons/menu/run.png" />
                     <fluent:Button Header="Remote Shell" LargeIcon="/resources/icons/menu/shell.png" />
                     <fluent:Button Header="Remote Verbindung" LargeIcon="/resources/icons/menu/rdp.png" />
-                    <fluent:Button Header="Befehl ausführen" LargeIcon="/resources/icons/menu/run.png" />
                     <fluent:Button Header="Sound Mute" LargeIcon="/resources/icons/menu/mute.png" />
                     <fluent:Button x:Name="MenuButtonClearLog" Click="MenuButtonClearLog_Click"  Header="Log leeren" LargeIcon="/resources/icons/menu/clear_log.png" />
                 </fluent:RibbonGroupBox>
@@ -237,17 +237,22 @@
 
                                         <Border BorderBrush="{DynamicResource BlackBrush}" BorderThickness="2">
                                             <Grid>
-                                                <controls:ZoomImageViewer x:Name="ImageScreenshot" MouseDown="ImageScreenshot_MouseDown" Cursor="Hand"   />
+                                                <controls:ZoomImageViewer x:Name="ImageScreenshot" />
                                                 <TextBlock Text="{Binding Envoirnment.MachineName}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Grid>
                                         </Border>
 
                                         <Grid Grid.Row="2">
                                             <TextBlock HorizontalAlignment="Left" FontSize="12">
-                                            <Hyperlink x:Name="HyperLinkRefreshScreenshot" Click="HyperLinkRefreshScreenshot_Click">
-                                                <Run Text="Zuletzt aktualisiert:" />
-                                                <Run x:Name="TextLastScreenshotRefresh" Text="" />
-                                            </Hyperlink>
+                                                <Hyperlink x:Name="HyperLinkRefreshScreenshot" Click="HyperLinkRefreshScreenshot_Click">
+                                                    <Run Text="Zuletzt aktualisiert:" />
+                                                    <Run x:Name="TextLastScreenshotRefresh" Text="" />
+                                                </Hyperlink>
+                                            </TextBlock>
+                                            <TextBlock HorizontalAlignment="Right" FontSize="12">
+                                                <Hyperlink x:Name="HyperLinkShowImageViewer" Click="HyperLinkShowImageViewer_Click">
+                                                    <Run Text="Screenshot öffnen" />
+                                                </Hyperlink>
                                             </TextBlock>
                                         </Grid>
                                     </Grid>

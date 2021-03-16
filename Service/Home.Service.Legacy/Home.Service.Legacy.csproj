@@ -69,6 +69,9 @@
     <Compile Include="..\..\Shared Libraries\Home.Data\Com\Answer.cs">
       <Link>Model\Answer.cs</Link>
     </Compile>
+    <Compile Include="..\..\Shared Libraries\Home.Data\Com\Command.cs">
+      <Link>Model\Command.cs</Link>
+    </Compile>
     <Compile Include="..\..\Shared Libraries\Home.Data\Consts.cs">
       <Link>Model\Consts.cs</Link>
     </Compile>

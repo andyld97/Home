@@ -94,6 +94,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\Dialogs\SendCommandDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Dialogs\SendMessage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -115,6 +119,9 @@
     </Compile>
     <Compile Include="Controls\Dialogs\ScreenshotDialog.xaml.cs">
       <DependentUpon>ScreenshotDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Dialogs\SendCommandDialog.xaml.cs">
+      <DependentUpon>SendCommandDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Dialogs\SendMessage.xaml.cs">
       <DependentUpon>SendMessage.xaml</DependentUpon>
@@ -162,6 +169,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Resource Include="resources\icons\menu\reboot.png" />
     <Resource Include="resources\icons\error.png" />
     <Resource Include="resources\icons\warning.png" />
     <Resource Include="resources\icons\hdd.png" />

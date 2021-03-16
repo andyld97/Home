@@ -154,6 +154,13 @@ namespace Home
                         var oldDevice = deviceList.Where(d => d.ID == device.DeviceID).FirstOrDefault();
                         if (oldDevice != null)
                         {
+                            bool update = false;
+                            if (oldDevice.Status == DeviceStatus.Active && device.EventData.EventDevice.Status == DeviceStatus.Offline)
+                            {
+                                // Update grayscale shot
+                                update = true;
+                            }
+
                             // deviceList[deviceList.IndexOf(oldDevice)] = device.EventData.EventDevice;
                             oldDevice.Update(device.EventData.EventDevice, device.EventData.EventDevice.LastSeen, device.EventData.EventDevice.Status, true);
 
@@ -163,8 +170,12 @@ namespace Home
                                 //RefreshSelectedItem();
                             }
 
+
                             await RefreshSelectedItem();
                             RefreshDeviceHolder();
+
+                            if (update)
+                                await GetScreenshot(oldDevice);
                         }
                     }
                     else
@@ -376,7 +387,6 @@ namespace Home
                 string resourceName = string.Empty;
                 SolidColorBrush foregroundBrush = null;
 
-
                 switch (entry.Level)
                 {
                     case LogEntry.LogLevel.Debug:
@@ -427,13 +437,7 @@ namespace Home
 
         }
 
-        private void ImageScreenshot_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
-            {               
-                new ScreenshotDialog(ImageScreenshot.ImageDisplay.Source).ShowDialog();
-            }
-        }
+        #region Menu
 
         private async void MenuButtonClearLog_Click(object sender, RoutedEventArgs e)
         {
@@ -447,7 +451,12 @@ namespace Home
         {
             if (lastSelectedDevice != null)
                 new SendMessage(lastSelectedDevice, api).ShowDialog();
+        }
 
+        private void MenuButtonSendCommand_Click(object sender, RoutedEventArgs e)
+        {
+            if (lastSelectedDevice != null)
+                new SendCommandDialog(lastSelectedDevice, api).ShowDialog();
         }
 
         private void LogHolder_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
@@ -462,6 +471,58 @@ namespace Home
             ThemeManager.Current.ChangeTheme(Application.Current, ThemeManager.Current.GetInverseTheme(ThemeManager.Current.DetectTheme()));
             ThemeManager.Current.SyncTheme();
         }
+
+        private async void MenuButtonShutdown_Click(object sender, RoutedEventArgs e)
+        {
+            if (lastSelectedDevice == null)
+                return;
+
+            await ShutdownOrRestart(true, lastSelectedDevice);
+        }
+
+        private async void MenuButtonReboot_Click(object sender, RoutedEventArgs e)
+        {
+            if (lastSelectedDevice == null)
+                return;
+
+            await ShutdownOrRestart(false, lastSelectedDevice);
+        }
+
+        private async Task ShutdownOrRestart(bool shutdown, Device device)
+        {
+            if (MessageBox.Show($"Sind Sie sich sicher, dass Sie das Gerät {device.Name} {(shutdown ? "herunterfahren" : "neustarten")} möchten?", "Wirklich?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+                return;
+
+            string parameter = string.Empty;
+            string executable;
+            if (device.OS == OSType.Linux || device.OS == OSType.LinuxMint || device.OS == OSType.LinuxUbuntu || device.OS == OSType.Unix || device.OS == OSType.Other)
+            {
+                if (shutdown)
+                {
+                    executable = "shutdown";
+                    parameter = "-h now";
+                }
+                else
+                    executable = "reboot";
+            }
+            else
+            {
+                executable = "shutdown.exe";
+                parameter = $"/{(shutdown ? "s" : "r")} /f /t 00";
+            }
+
+            await api.SendCommandAsync(new Data.Com.Command() { DeviceID = device.ID, Executable = executable, Parameter = parameter });
+        }
+
+        #endregion
+
+
+
+        private void HyperLinkShowImageViewer_Click(object sender, RoutedEventArgs e)
+        {
+            new ScreenshotDialog(ImageScreenshot.ImageDisplay.Source).ShowDialog();
+        }
+
     }
 
     #region Converter

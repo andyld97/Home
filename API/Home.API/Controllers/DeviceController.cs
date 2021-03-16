@@ -75,6 +75,7 @@ namespace Home.API.Controllers
             bool result = false;
             bool isScreenshotRequired = false;
             Message hasMessage = null;
+            Command hasCommand = null;
 
             lock (Program.Devices)
             {
@@ -104,6 +105,16 @@ namespace Home.API.Controllers
                             if (dev.Messages.Count != 0)
                                 hasMessage = dev.Messages.Dequeue();
                         }
+
+                        if (hasMessage == null)
+                        {
+                            lock (dev.Commands)
+                            {
+                                // Check for commands
+                                if (dev.Commands.Count != 0)
+                                    hasCommand = dev.Commands.Dequeue();
+                            }
+                        }
                         
                         result = true;
 
@@ -132,6 +143,12 @@ namespace Home.API.Controllers
                 {
                     ack |= AckResult.Ack.MessageRecieved;
                     ackResult.JsonData = JsonConvert.SerializeObject(hasMessage);
+                }
+
+                if (hasCommand != null)
+                {
+                    ack |= AckResult.Ack.CommandRecieved;
+                    ackResult.JsonData = JsonConvert.SerializeObject(hasCommand);
                 }
 
                 ackResult.Result = ack;

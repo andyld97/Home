@@ -172,10 +172,18 @@ namespace Home.Service.Linux
                         ExecuteSystemCommand("sudo", $"-H -u {NormalUser} bash -c \"sh zenity.sh\"", async: true);
                         Console.WriteLine("Test");
                     }
-
-                    if (ackResult.Result.Result.HasFlag(AckResult.Ack.CommandRecieved))
+                    else if (ackResult.Result.Result.HasFlag(AckResult.Ack.CommandRecieved))
                     {
-                        // ToDO: 
+                        try
+                        {
+                            var command = JsonConvert.DeserializeObject<Command>(ackResult.Result.JsonData);
+                            if (command != null)
+                                ExecuteSystemCommand(command.Executable, command.Parameter);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
                     }
                 }
             }

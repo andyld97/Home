@@ -23,11 +23,11 @@ namespace Home.Data.Com
         [Flags]
         public enum Ack
         {
-            OK = 0x01,
-            Invalid = 0x02,
-            ScreenshotRequired = 0x04,
-            MessageRecieved = 0x08,
-            CommandRecieved = 0x0F
+            OK = 1,
+            Invalid = 2,
+            ScreenshotRequired = 4,
+            MessageRecieved = 8,
+            CommandRecieved = 16
         }
 
         public AckResult()

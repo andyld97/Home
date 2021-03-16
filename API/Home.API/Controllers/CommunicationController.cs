@@ -196,7 +196,10 @@ namespace Home.API.Controllers
             }
 
             _logger.LogInformation($"Sent message to {device.Name}: {message}");
-            device.Messages.Enqueue(message);
+            lock (device.Messages)
+            {
+                device.Messages.Enqueue(message);
+            }
 
             LogEntry.LogLevel level = LogEntry.LogLevel.Information;
             switch (message.Type)
@@ -217,6 +220,40 @@ namespace Home.API.Controllers
                 }
             }
 
+
+            return Ok(AnswerExtensions.Success("ok"));
+        }
+
+        [HttpPost("send_command")]
+        public IActionResult SendCommnad([FromBody] Command command)
+        {
+            if (command == null)
+                return BadRequest(AnswerExtensions.Fail("Invalid device data!"));
+
+            Device device = null;
+            // Check if this devices exists
+            lock (Program.Devices)
+            {
+                if (!Program.Devices.Any(p => p.ID == command.DeviceID))
+                    return BadRequest(AnswerExtensions.Fail("Device doesn't exists!"));
+                else
+                    device = Program.Devices.Where(p => p.ID == command.DeviceID).FirstOrDefault();
+            }
+
+            _logger.LogInformation($"Sent command to {device.Name}: {command}");
+            lock (device.Commands)
+                device.Commands.Enqueue(command);
+
+            device.LogEntries.Add(new LogEntry(DateTime.Now, $"Recieved command: {command}", LogEntry.LogLevel.Information));
+
+            lock (Program.EventQueues)
+            {
+                foreach (var queue in Program.EventQueues)
+                {
+                    queue.LastEvent = DateTime.Now;
+                    queue.Events.Enqueue(new EventQueueItem() { DeviceID = device.ID, EventData = new EventData(device), EventDescription = EventQueueItem.EventKind.LogEntriesRecieved, EventOccured = DateTime.Now });
+                }
+            }
 
             return Ok(AnswerExtensions.Success("ok"));
         }

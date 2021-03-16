@@ -231,7 +231,15 @@ namespace Home.Model
         [XmlIgnore]
         public Queue<Message> Messages { get; set; } = new Queue<Message>();
 
-#endregion
+        /// <summary>
+        /// Only for internal api usage
+        /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
+        [XmlIgnore]
+        public Queue<Command> Commands { get; set; } = new Queue<Command>();
+
+        #endregion
 #endif
 
         public enum DeviceStatus
