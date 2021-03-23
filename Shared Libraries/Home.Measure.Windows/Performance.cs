@@ -60,14 +60,13 @@ namespace Home.Measure.Windows
 
         public static string DetermineFreeRAM()
         {
-            long freeGB = (long)(ramCounter.NextValue() / 1024);
+            double freeGB = ramCounter.NextValue() / 1024.0;
             double totalGB = Native.DetermineTotalRAM();
             double usedGB = totalGB - freeGB;
 
             int percentage = (int)Math.Round((usedGB / totalGB) * 100);
 
-            return $"{usedGB} GB used ({percentage} %)";
+            return $"{Math.Round(usedGB, 2)} GB used ({percentage} %)";
         }
-
     }
 }
