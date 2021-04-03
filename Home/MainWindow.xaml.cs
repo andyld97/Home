@@ -523,6 +523,36 @@ namespace Home
             new ScreenshotDialog(ImageScreenshot.ImageDisplay.Source).ShowDialog();
         }
 
+        #region Auto Refresh
+
+        private static readonly DispatcherTimer autoRefreshTimer = new DispatcherTimer();
+        private Device autoRefreshDevice = null;
+
+        static MainWindow()
+        {
+            autoRefreshTimer.Interval = TimeSpan.FromMinutes(1);         
+        }
+
+        private async void AutoRefreshTimer_Tick(object sender, EventArgs e)
+        {
+            var result = await api.AquireScreenshotAsync(client, autoRefreshDevice);
+        }
+
+        private void CheckBoxAutoRefresh_Checked(object sender, RoutedEventArgs e)
+        {
+            autoRefreshTimer.Tick += AutoRefreshTimer_Tick;
+            autoRefreshDevice = lastSelectedDevice;
+            autoRefreshTimer.Start();
+        }
+
+        private void CheckBoxAutoRefresh_Unchecked(object sender, RoutedEventArgs e)
+        {
+            autoRefreshTimer.Tick -= AutoRefreshTimer_Tick;
+            autoRefreshDevice = null;
+            autoRefreshTimer.Stop();
+        }
+
+        #endregion
     }
 
     #region Converter

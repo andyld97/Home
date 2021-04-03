@@ -243,12 +243,14 @@
                                         </Border>
 
                                         <Grid Grid.Row="2">
-                                            <TextBlock HorizontalAlignment="Left" FontSize="12">
-                                                <Hyperlink x:Name="HyperLinkRefreshScreenshot" Click="HyperLinkRefreshScreenshot_Click">
-                                                    <Run Text="Zuletzt aktualisiert:" />
-                                                    <Run x:Name="TextLastScreenshotRefresh" Text="" />
-                                                </Hyperlink>
-                                            </TextBlock>
+                                            <CheckBox x:Name="CheckBoxAutoRefresh" Checked="CheckBoxAutoRefresh_Checked" Unchecked="CheckBoxAutoRefresh_Unchecked" ToolTip="Auto Refresh aktivieren">
+                                                <TextBlock HorizontalAlignment="Left" FontSize="12">
+                                                    <Hyperlink x:Name="HyperLinkRefreshScreenshot" Click="HyperLinkRefreshScreenshot_Click">
+                                                        <Run Text="Zuletzt aktualisiert:" />
+                                                        <Run x:Name="TextLastScreenshotRefresh" Text="" />
+                                                    </Hyperlink>
+                                                </TextBlock>
+                                            </CheckBox>
                                             <TextBlock HorizontalAlignment="Right" FontSize="12">
                                                 <Hyperlink x:Name="HyperLinkShowImageViewer" Click="HyperLinkShowImageViewer_Click">
                                                     <Run Text="Screenshot öffnen" />
