@@ -1,4 +1,5 @@
-﻿using Home.Model;
+﻿using Home.Data;
+using Home.Model;
 using Microsoft.Win32;
 using System;
 using System.Windows;
@@ -6,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace Home.Controls
 {
@@ -18,6 +20,9 @@ namespace Home.Controls
         private bool isInLiveMode = false;
         private string lastDate = string.Empty;
         private Device lastSelectedDevice = null;
+        private bool isAquiringScreenshotTimerActive = false;
+        private object sync = new object();
+        private static readonly DispatcherTimer autoRefreshTimer = new DispatcherTimer();
 
         public delegate void resizeHandler(bool isLittle);
         public event resizeHandler OnResize;
@@ -28,6 +33,24 @@ namespace Home.Controls
         {
             InitializeComponent();
             SetLiveMode(false, force: true);
+            autoRefreshTimer.Interval = TimeSpan.FromMinutes(1);
+            autoRefreshTimer.Tick += AutoRefreshTimer_Tick;
+        }
+
+        private void AutoRefreshTimer_Tick(object sender, EventArgs e)
+        {
+            lock (sync)
+            {
+                if (isAquiringScreenshotTimerActive)
+                    return;
+                else
+                    isAquiringScreenshotTimerActive = true;
+            }
+
+            OnScreenShotAquired?.Invoke(this, e);
+
+            lock (sync)
+                isAquiringScreenshotTimerActive = false;
         }
 
         public void SetImageSource(ImageSource bi)
@@ -52,7 +75,7 @@ namespace Home.Controls
 
             lastSelectedDevice = device;
 
-            SetLiveMode(false, true);
+            SetLiveMode(isInLiveMode, true);
         }
 
         public void SetLiveMode(bool live, bool force = false)
@@ -67,7 +90,7 @@ namespace Home.Controls
             }
 
             MainBorder.BorderBrush =
-            SubBorder.BorderBrush = (live ? new SolidColorBrush(Colors.Red) : FindResource("BlackBrush") as SolidColorBrush);            
+            SubBorder.BorderBrush = live ? new SolidColorBrush(Colors.Red) : FindResource("BlackBrush") as SolidColorBrush;            
 
             string path = $"pack://application:,,,/Home;Component/resources/icons/live/{(live ? "toggle" : "offline")}.png";
             BitmapImage bi = new BitmapImage();
@@ -99,9 +122,9 @@ namespace Home.Controls
         private void UpdateLiveButton(bool state, bool enabled)
         {
             ButtonToggleLiveMode.IsEnabled = enabled;
-            string image = string.Empty;
+            string image;
             if (enabled)
-                image = (!state ? "toggle" : "offline");
+                image = !state ? "toggle" : "offline";
             else
                 image = "offline";
 
@@ -114,6 +137,11 @@ namespace Home.Controls
             bi.EndInit();
 
             ImageToggleLive.Source = bi;
+
+            if (isInLiveMode)
+                autoRefreshTimer.Start();
+            else
+                autoRefreshTimer.Stop();
         }
 
         private void ButtonResize_MouseDown(object sender, MouseButtonEventArgs e)

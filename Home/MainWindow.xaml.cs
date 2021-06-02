@@ -27,7 +27,7 @@ namespace Home
     {
         private static readonly string CACHE_PATH = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "cache");
         private readonly Client client = new Client() { IsRealClient = true };
-        private readonly Home.Communication.API api = null;
+        private readonly Communication.API api = null;
 
         private readonly DispatcherTimer updateTimer = new DispatcherTimer();
         private bool isUpdating = false;
@@ -539,46 +539,6 @@ namespace Home
             }
 
             await api.SendCommandAsync(new Data.Com.Command() { DeviceID = device.ID, Executable = executable, Parameter = parameter });
-        }
-
-        #endregion
-
-
-
-        private void HyperLinkShowImageViewer_Click(object sender, RoutedEventArgs e)
-        {
-            //new ScreenshotDialog(ImageScreenshot.ImageDisplay.Source).ShowDialog();
-        }
-
-        #region Auto Refresh
-
-        private static readonly DispatcherTimer autoRefreshTimer = new DispatcherTimer();
-        private Device autoRefreshDevice = null;
-
-        static MainWindow()
-        {
-            autoRefreshTimer.Interval = TimeSpan.FromMinutes(1);         
-        }
-
-        private async void AutoRefreshTimer_Tick(object sender, EventArgs e)
-        {
-            var result = await api.AquireScreenshotAsync(client, autoRefreshDevice);
-        }
-
-        private void CheckBoxAutoRefresh_Checked(object sender, RoutedEventArgs e)
-        {
-            //ScreenshotBorder.BorderBrush = new SolidColorBrush(Colors.Red);
-            autoRefreshTimer.Tick += AutoRefreshTimer_Tick;
-            autoRefreshDevice = lastSelectedDevice;
-            autoRefreshTimer.Start();
-        }
-
-        private void CheckBoxAutoRefresh_Unchecked(object sender, RoutedEventArgs e)
-        {
-           // ScreenshotBorder.BorderBrush = FindResource("BlackBrush") as SolidColorBrush;
-            autoRefreshTimer.Tick -= AutoRefreshTimer_Tick;
-            autoRefreshDevice = null;
-            autoRefreshTimer.Stop();
         }
 
         #endregion
