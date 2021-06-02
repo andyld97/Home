@@ -44,6 +44,32 @@ namespace Home
             client.ID = ClientData.Instance.ClientID;
 
             Closing += MainWindow_Closing;
+            ScreenshotViewer.OnResize += ScreenshotViewer_OnResize;
+            ScreenshotViewer.OnScreenShotAquired += ScreenshotViewer_OnScreenShotAquired;
+        }
+
+        private async void ScreenshotViewer_OnScreenShotAquired(object sender, EventArgs e)
+        {
+            if (lastSelectedDevice == null)
+                return;
+
+            await api.AquireScreenshotAsync(client, lastSelectedDevice);
+        }
+
+        private void ScreenshotViewer_OnResize(bool isLittle)
+        {
+            if (!isLittle)
+            {
+                Grid.SetColumn(ScreeshotViewHolder, 0);
+                Grid.SetColumnSpan(ScreeshotViewHolder, 2);
+                InfoGrid.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                Grid.SetColumn(ScreeshotViewHolder, 1);
+                Grid.SetColumnSpan(ScreeshotViewHolder, 1);
+                InfoGrid.Visibility = Visibility.Visible;
+            }
         }
 
         private async void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -231,7 +257,7 @@ namespace Home
                         try
                         {
                             data = System.IO.File.ReadAllBytes(fi.FullName);
-                            TextLastScreenshotRefresh.Text = $"{fi.LastAccessTime.ToShortDateString()} @ {fi.LastWriteTime.ToShortTimeString()}";
+                            ScreenshotViewer.UpdateDate($"{fi.LastAccessTime.ToShortDateString()} @ {fi.LastWriteTime.ToShortTimeString()}");
                         }
                         catch
                         {
@@ -255,13 +281,13 @@ namespace Home
 
                             // Last refresh = now
                             if (updateGui && DateTime.TryParseExact(fileName, Consts.SCREENSHOT_DATE_FILE_FORMAT, CultureInfo.CurrentCulture, DateTimeStyles.AssumeLocal, out DateTime result))
-                                TextLastScreenshotRefresh.Text = $"{result.ToShortDateString()} @ {result.ToShortTimeString()}";
+                                ScreenshotViewer.UpdateDate($"{result.ToShortDateString()} @ {result.ToShortTimeString()}");
                             else
-                                TextLastScreenshotRefresh.Text = "Nie";
+                                ScreenshotViewer.UpdateDate(null);
                         }
                     }
                     else
-                        TextLastScreenshotRefresh.Text = "Nie";
+                        ScreenshotViewer.UpdateDate(null);
                 }
           
             }
@@ -278,7 +304,7 @@ namespace Home
                     if (updateGui)
                     {
                         var now = DateTime.Now;
-                        TextLastScreenshotRefresh.Text = $"{now.ToShortDateString()} @ {now.ToShortTimeString()}";
+                        ScreenshotViewer.UpdateDate($"{now.ToShortDateString()} @ {now.ToShortTimeString()}");
                     }
                 }
             }
@@ -324,14 +350,14 @@ namespace Home
                         grayBitmap.DestinationFormat = PixelFormats.Gray8;
                         grayBitmap.EndInit();
 
-                        ImageScreenshot.SetImageSource(grayBitmap);
+                        ScreenshotViewer.SetImageSource(grayBitmap);
                     }
                     else
-                        ImageScreenshot.SetImageSource(bi);
+                        ScreenshotViewer.SetImageSource(bi);
                 }
                 catch (Exception ex)
                 {
-                    ImageScreenshot.SetImageSource(null);
+                    ScreenshotViewer.SetImageSource(null);
                 }
             }
         }
@@ -426,6 +452,7 @@ namespace Home
 
             DeviceInfo.DataContext = null;
             DeviceInfo.DataContext = lastSelectedDevice;
+            ScreenshotViewer.UpdateDevice(lastSelectedDevice);
         }
 
         private async void HyperLinkRefreshScreenshot_Click(object sender, RoutedEventArgs e)
@@ -520,7 +547,7 @@ namespace Home
 
         private void HyperLinkShowImageViewer_Click(object sender, RoutedEventArgs e)
         {
-            new ScreenshotDialog(ImageScreenshot.ImageDisplay.Source).ShowDialog();
+            //new ScreenshotDialog(ImageScreenshot.ImageDisplay.Source).ShowDialog();
         }
 
         #region Auto Refresh
@@ -540,6 +567,7 @@ namespace Home
 
         private void CheckBoxAutoRefresh_Checked(object sender, RoutedEventArgs e)
         {
+            //ScreenshotBorder.BorderBrush = new SolidColorBrush(Colors.Red);
             autoRefreshTimer.Tick += AutoRefreshTimer_Tick;
             autoRefreshDevice = lastSelectedDevice;
             autoRefreshTimer.Start();
@@ -547,6 +575,7 @@ namespace Home
 
         private void CheckBoxAutoRefresh_Unchecked(object sender, RoutedEventArgs e)
         {
+           // ScreenshotBorder.BorderBrush = FindResource("BlackBrush") as SolidColorBrush;
             autoRefreshTimer.Tick -= AutoRefreshTimer_Tick;
             autoRefreshDevice = null;
             autoRefreshTimer.Stop();

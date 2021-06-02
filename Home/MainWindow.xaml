@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Home" xmlns:controls="clr-namespace:Home.Controls" mc:Ignorable="d"
-        Title="Home Network" Height="768" Width="1024" Loaded="RibbonWindow_Loaded">
+        Title="Home Network" Height="1024" Width="1280" Loaded="RibbonWindow_Loaded">
     <fluent:RibbonWindow.Resources>
         <local:DiskImageConverter x:Key="diskImageConverter" />
         <local:ByteToGBConverter x:Key="byteToGBConverter" />
@@ -119,7 +119,7 @@
                     <Grid x:Name="DeviceInfo" Visibility="Collapsed">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
-                            <RowDefinition Height="250" />
+                            <RowDefinition Height="200" />
                         </Grid.RowDefinitions>
 
                         <TabControl Margin="0,0,0,-4" Background="{DynamicResource WhiteBrush}">
@@ -151,29 +151,29 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
 
-                                    <Grid>
+                                    <Grid x:Name="InfoGrid">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
 
                                         <StackPanel>
-                                            <TextBlock Text="Gerät" FontWeight="Bold" />
-                                            <Separator />
+                                            <TextBlock Text="Gerät" FontSize="25" FontWeight="Bold"/>
+                                            <Separator Margin="0,5,0,0" Foreground="{DynamicResource BlackBrush}" />
                                             <TextBlock Text="Hersteller: " />
                                             <TextBlock Text="Produkt: " />
                                             <TextBlock Text="Beschreibung: "/>
                                             <TextBlock Text="Ort:" />
                                             <TextBlock Text="Client-Version: "/>
-                                            <TextBlock Text="Hardware" Margin="0,10,0,0" FontWeight="Bold" />
-                                            <Separator />
+                                            <TextBlock Text="Hardware" FontSize="25" Margin="0,10,0,0" FontWeight="Bold" />
+                                            <Separator Margin="0,5,0,0" />
                                             <TextBlock Text="OS:" FontWeight="Bold" />
                                             <TextBlock Text="VER:" FontWeight="Bold" />
                                             <TextBlock Text="CPU:" FontWeight="Bold" />
                                             <TextBlock Text="GRAFIK:" FontWeight="Bold" />
                                             <TextBlock Text="RAM:" FontWeight="Bold" />
-                                            <TextBlock Text="Aktivität" Margin="0,10,0,0" FontWeight="Bold" />
-                                            <Separator />
+                                            <TextBlock Text="Aktivität" FontSize="25" Margin="0,10,0,0" FontWeight="Bold" />
+                                            <Separator Margin="0,5,0,0" />
                                             <TextBlock Text="CPU (%):" FontWeight="Bold" />
                                             <TextBlock Text="RAM (%): " FontWeight="Bold"/>
                                             <TextBlock Text="DISK (%): " FontWeight="Bold"/>
@@ -182,15 +182,15 @@
                                         </StackPanel>
 
                                         <StackPanel Grid.Column="1">
-                                            <TextBlock />
-                                            <Separator />
+                                            <TextBlock FontSize="25" />
+                                            <Separator Margin="0,5,0,0" />
                                             <TextBlock Text="{Binding Envoirnment.Vendor, Converter={StaticResource emptyConverter}}" />
                                             <TextBlock Text="{Binding Envoirnment.Product, Converter={StaticResource emptyConverter}}" />
                                             <TextBlock Text="{Binding Envoirnment.Description, Converter={StaticResource emptyConverter}}"/>
                                             <TextBlock Text="{Binding Location, Converter={StaticResource emptyConverter}}" />
                                             <TextBlock Text="{Binding ServiceClientVersion, Converter={StaticResource emptyConverter}}"/>
-                                            <TextBlock Margin="0,10,0,0" />
-                                            <Separator />
+                                            <TextBlock Margin="0,10,0,0" FontSize="25" />
+                                            <Separator Margin="0,5,0,0" />
                                             <TextBlock x:Name="TextOSName" ToolTip="{Binding ElementName=TextOSName, Path=Text}" >
                                                 <Run Text="{Binding OS, Converter={StaticResource osNameConverter}}" />
                                                 <Run Text="(" /><Run Text="{Binding Envoirnment.Is64BitOS, Converter={StaticResource os64BitConverter}}" /><Run Text=")" />
@@ -205,8 +205,8 @@
                                                 <Run Text="{Binding Envoirnment.TotalRAM}" />
                                                 <Run Text="GB" />
                                             </TextBlock>
-                                            <TextBlock Margin="0,10,0,0" />
-                                            <Separator />
+                                            <TextBlock Margin="0,10,0,0" FontSize="25" />
+                                            <Separator Margin="0,5,0,0" />
                                             <TextBlock x:Name="TextCPUUsage">
                                                 <Run Text="{Binding Envoirnment.CPUUsage}" ToolTip="{Binding ElementName=TextCPUUsage, Path=Text}"/>
                                                 <Run Text="%"/>
@@ -229,34 +229,9 @@
                                         </StackPanel>
                                     </Grid>
 
-                                    <Grid Grid.Column="1">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="*" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-
-                                        <Border BorderBrush="{DynamicResource BlackBrush}" BorderThickness="2">
-                                            <Grid>
-                                                <controls:ZoomImageViewer x:Name="ImageScreenshot" />
-                                                <TextBlock Text="{Binding Envoirnment.MachineName}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Grid>
-                                        </Border>
-
-                                        <Grid Grid.Row="2">
-                                            <CheckBox x:Name="CheckBoxAutoRefresh" Checked="CheckBoxAutoRefresh_Checked" Unchecked="CheckBoxAutoRefresh_Unchecked" ToolTip="Auto Refresh aktivieren">
-                                                <TextBlock HorizontalAlignment="Left" FontSize="12">
-                                                    <Hyperlink x:Name="HyperLinkRefreshScreenshot" Click="HyperLinkRefreshScreenshot_Click">
-                                                        <Run Text="Zuletzt aktualisiert:" />
-                                                        <Run x:Name="TextLastScreenshotRefresh" Text="" />
-                                                    </Hyperlink>
-                                                </TextBlock>
-                                            </CheckBox>
-                                            <TextBlock HorizontalAlignment="Right" FontSize="12">
-                                                <Hyperlink x:Name="HyperLinkShowImageViewer" Click="HyperLinkShowImageViewer_Click">
-                                                    <Run Text="Screenshot öffnen" />
-                                                </Hyperlink>
-                                            </TextBlock>
-                                        </Grid>
+                                    <Grid x:Name="ScreeshotViewHolder" Grid.Column="1">
+                                        <controls:ScreenshotViewer x:Name="ScreenshotViewer" />
+                                        <TextBlock Text="{Binding Envoirnment.MachineName}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Grid>
                                 </Grid>
                             </TabItem>

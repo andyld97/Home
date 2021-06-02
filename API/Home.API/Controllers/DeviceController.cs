@@ -127,7 +127,21 @@ namespace Home.API.Controllers
                             }
                         }
                     }
-                }                
+                }  
+                else
+                {
+                    // Temporay fix if data is empty again :(
+                    Program.Devices.Add(device);
+
+                    lock (Program.EventQueues)
+                    {
+                        foreach (var queue in Program.EventQueues)
+                        {
+                            queue.LastEvent = now;
+                            queue.Events.Enqueue(new EventQueueItem() { DeviceID = device.ID, EventData = new EventData() { EventDevice = device }, EventDescription = EventQueueItem.EventKind.NewDeviceConnected, EventOccured = now });
+                        }
+                    }
+                }
             }
 
             if (result)

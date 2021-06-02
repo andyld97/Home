@@ -58,8 +58,9 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Serialization">
-      <HintPath>F:\Andy's Dokumente\Eigene Librays\Serialization\Serialization\bin\Debug\Serialization.dll</HintPath>
+    <Reference Include="Serialization, Version=1.0.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\External Libraries\Serialization.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -102,6 +103,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\ScreenshotViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\ZoomImageViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -125,6 +130,9 @@
     </Compile>
     <Compile Include="Controls\Dialogs\SendMessage.xaml.cs">
       <DependentUpon>SendMessage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ScreenshotViewer.xaml.cs">
+      <DependentUpon>ScreenshotViewer.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ZoomImageViewer.xaml.cs">
       <DependentUpon>ZoomImageViewer.xaml</DependentUpon>
@@ -169,6 +177,11 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Resource Include="resources\icons\live\offline.png" />
+    <Resource Include="resources\icons\live\toggle.png" />
+    <Resource Include="resources\icons\live\save.png" />
+    <Resource Include="resources\icons\live\refresh.png" />
+    <Resource Include="resources\icons\live\maximize.png" />
     <Resource Include="resources\icons\menu\reboot.png" />
     <Resource Include="resources\icons\error.png" />
     <Resource Include="resources\icons\warning.png" />

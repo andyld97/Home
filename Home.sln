@@ -29,6 +29,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Home.Service.Legacy", "Serv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Home.Measure.Windows", "Shared Libraries\Home.Measure.Windows\Home.Measure.Windows.csproj", "{36F79A8A-96BF-49B5-AAA7-39D434385B44}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External Libraries", "External Libraries", "{222CEA8C-2B0E-44D2-8738-97D1D26AAC30}"
+	ProjectSection(SolutionItems) = preProject
+		External Libraries\Serialization.dll = External Libraries\Serialization.dll
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
