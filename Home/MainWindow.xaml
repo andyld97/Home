@@ -97,13 +97,28 @@
                             </ResourceDictionary>
                         </TabControl.Resources>
                        
-                        <TabItem x:Name="TabActiveDevices" Header="Aktive Geräte">
+                        <TabItem x:Name="TabActiveDevices">
+                            <TabItem.Header>
+                                <Border Height="20">
+                                    <TextBlock x:Name="TextActiveDevices" Text="Aktive Geräte" TextAlignment="Center" />
+                                </Border>
+                            </TabItem.Header>
                             <ListBox x:Name="DeviceHolderActive" ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" Background="{DynamicResource WhiteBrush}" BorderThickness="0" SelectionChanged="DeviceHolder_SelectionChanged" Grid.Row="1" />
                         </TabItem>
-                        <TabItem x:Name="TabOfflineDevices" Header="Inaktive Geräte">
+                        <TabItem x:Name="TabOfflineDevices">
+                            <TabItem.Header>
+                                <Border Height="20">
+                                    <TextBlock x:Name="TextOfflineDevices" Text="Inaktive Geräte" TextAlignment="Center" />
+                                </Border>
+                            </TabItem.Header>
                             <ListBox x:Name="DeviceHolderOffline" ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" Background="{DynamicResource WhiteBrush}" BorderThickness="0" SelectionChanged="DeviceHolder_SelectionChanged" Grid.Row="1" />
                         </TabItem>
-                        <TabItem x:Name="TabAllDevices" Header="Alle Geräte" Background="{DynamicResource WhiteBrush}">
+                        <TabItem x:Name="TabAllDevices" Background="{DynamicResource WhiteBrush}">
+                            <TabItem.Header>
+                                <Border Height="20">
+                                    <TextBlock x:Name="TextAllDevices" Text="Alle Geräte" TextAlignment="Center" />
+                                </Border>
+                            </TabItem.Header>
                             <ListBox x:Name="DeviceHolderAll" ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" Background="{DynamicResource WhiteBrush}" BorderThickness="0" SelectionChanged="DeviceHolder_SelectionChanged" Grid.Row="1" />
                         </TabItem>
                     </TabControl>
@@ -119,7 +134,7 @@
                     <Grid x:Name="DeviceInfo" Visibility="Collapsed">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
-                            <RowDefinition Height="200" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
                         <TabControl Margin="0,0,0,-4" Background="{DynamicResource WhiteBrush}">
@@ -132,9 +147,9 @@
                             </TabControl.Resources>
                             <TabItem>
                                 <TabItem.Header>
-                                    <StackPanel Orientation="Horizontal">
+                                    <StackPanel Orientation="Horizontal" Height="20">
                                         <Image Source="resources/icons/info.png" Width="16" />
-                                        <TextBlock Margin="5,0,0,0" Text="System Übersicht" />
+                                        <TextBlock Margin="5,0,0,0" Text="System Übersicht" TextAlignment="Center" />
                                     </StackPanel>
                                 </TabItem.Header>
                                 <Grid>
@@ -237,9 +252,9 @@
                             </TabItem>
                             <TabItem>
                                 <TabItem.Header>
-                                    <StackPanel Orientation="Horizontal">
+                                    <StackPanel Orientation="Horizontal" Height="20">
                                         <Image Source="resources/icons/user.png" Width="16" />
-                                        <TextBlock Margin="5,0,0,0" Text="Benutzer" />
+                                        <TextBlock Margin="5,0,0,0" Text="Benutzer" TextAlignment="Center" />
                                     </StackPanel>
                                 </TabItem.Header>
                                 <TextBlock>
@@ -253,9 +268,9 @@
                             </TabItem>
                             <TabItem>
                                 <TabItem.Header>
-                                    <StackPanel Orientation="Horizontal">
+                                    <StackPanel Orientation="Horizontal" Height="20">
                                         <Image Source="resources/icons/hdd.png" Width="16" />
-                                        <TextBlock Margin="5,0,0,0" Text="Datenträger" />
+                                        <TextBlock Margin="5,0,0,0" Text="Datenträger" TextAlignment="Center" />
                                     </StackPanel>
                                 </TabItem.Header>
                                 <ListBox Foreground="{DynamicResource BlackBrush}" Background="{DynamicResource WhiteBrush}" ItemsSource="{Binding DiskDrives}">
@@ -300,35 +315,38 @@
                             </TabItem>
                         </TabControl>
 
-                        <TabControl Grid.Row="1" Margin="0,-0,0,0" Background="{DynamicResource WhiteBrush}">
-                            <TabControl.Resources>
-                                <ResourceDictionary>
-                                    <ResourceDictionary.MergedDictionaries>
-                                        <ResourceDictionary Source="resources\TabControlStyle.xaml"/>
-                                    </ResourceDictionary.MergedDictionaries>
-                                </ResourceDictionary>
-                            </TabControl.Resources>
-                            <TabItem x:Name="TabLog">
-                                <TabItem.Header>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Image Source="resources/icons/log.png" Width="16" />
-                                        <TextBlock Margin="5,0,0,0" Text="Geräte Log" />
-                                    </StackPanel>
-                                </TabItem.Header>
-                                <ScrollViewer x:Name="LogScrollViewer">
-                                    <FlowDocumentScrollViewer x:Name="LogHolder" PreviewMouseWheel="LogHolder_PreviewMouseWheel" VerticalScrollBarVisibility="Disabled"  />
-                                </ScrollViewer>
-                            </TabItem>
-                            <TabItem>
-                                <TabItem.Header>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Image Source="resources/icons/menu/shell.png" Width="16" />
-                                        <TextBlock Margin="5,0,0,0" Text="Remote Shell" />
-                                    </StackPanel>
-                                </TabItem.Header>
-                                <TextBox AcceptsReturn="True" Foreground="{DynamicResource BlackBrush}" Background="Transparent" TextWrapping="Wrap" />
-                            </TabItem>
-                        </TabControl>
+                        <Grid Grid.Row="1">
+                            <Expander x:Name="TabExpander" IsExpanded="False" Collapsed="TabExpander_Collapsed" Expanded="TabExpander_Expanded" Panel.ZIndex="1000" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,2,5,5" />
+                            <TabControl x:Name="BottomTabControl" Height="200" Margin="0,-0,0,0" Background="{DynamicResource WhiteBrush}">
+                                <TabControl.Resources>
+                                    <ResourceDictionary>
+                                        <ResourceDictionary.MergedDictionaries>
+                                            <ResourceDictionary Source="resources\TabControlStyle.xaml"/>
+                                        </ResourceDictionary.MergedDictionaries>
+                                    </ResourceDictionary>
+                                </TabControl.Resources>
+                                <TabItem x:Name="TabLog">
+                                    <TabItem.Header>
+                                        <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Center">
+                                            <Image Source="resources/icons/log.png" Width="16" />
+                                            <TextBlock Margin="5,0,0,0" Text="Geräte Log" TextAlignment="Center" />
+                                        </StackPanel>
+                                    </TabItem.Header>
+                                    <ScrollViewer x:Name="LogScrollViewer">
+                                        <FlowDocumentScrollViewer x:Name="LogHolder" PreviewMouseWheel="LogHolder_PreviewMouseWheel" VerticalScrollBarVisibility="Disabled"  />
+                                    </ScrollViewer>
+                                </TabItem>
+                                <TabItem>
+                                    <TabItem.Header>
+                                        <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Center">
+                                            <Image Source="resources/icons/menu/shell.png" Width="16" />
+                                            <TextBlock Margin="5,0,0,0" Text="Remote Shell" TextAlignment="Center" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </TabItem.Header>
+                                    <TextBox AcceptsReturn="True" Foreground="{DynamicResource BlackBrush}" Background="Transparent" TextWrapping="Wrap" />
+                                </TabItem>
+                            </TabControl>
+                        </Grid>
                     </Grid>
                 </Grid>
             </Border>

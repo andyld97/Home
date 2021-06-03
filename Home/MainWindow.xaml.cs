@@ -142,9 +142,9 @@ namespace Home
                     DeviceHolderActive.SelectedIndex = offIndex;
             }
 
-            TabAllDevices.Header = $"Alle Geräte: {deviceList.Count}";
-            TabActiveDevices.Header = $"Aktive Geräte {deviceList.Where(p => p.Status != DeviceStatus.Offline).Count()}";
-            TabOfflineDevices.Header = $"Inaktive Geräte: {deviceList.Where(p => p.Status == DeviceStatus.Offline).Count()}";
+            TextAllDevices.Text = $"Alle Geräte: {deviceList.Count}";
+            TextActiveDevices.Text = $"Aktive Geräte {deviceList.Where(p => p.Status != DeviceStatus.Offline).Count()}";
+            TextOfflineDevices.Text = $"Inaktive Geräte: {deviceList.Where(p => p.Status == DeviceStatus.Offline).Count()}";
             RefreshSelection();
             ignoreSelectionChanged = false;
         }
@@ -289,7 +289,7 @@ namespace Home
                     else
                         ScreenshotViewer.UpdateDate(null);
                 }
-          
+
             }
             else
             {
@@ -326,7 +326,7 @@ namespace Home
                 return;
 
             using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
-            {          
+            {
                 if (data != null)
                 {
                     await ms.WriteAsync(data, 0, data.Length);
@@ -338,7 +338,7 @@ namespace Home
                     BitmapImage bi = new BitmapImage();
                     bi.BeginInit();
                     bi.CacheOption = BitmapCacheOption.OnLoad;
-                    bi.StreamSource = ms; 
+                    bi.StreamSource = ms;
                     bi.EndInit();
 
 
@@ -400,13 +400,13 @@ namespace Home
         {
             if (lastSelectedDevice == null)
                 return;
-            
+
             // Generate log entries FlowDocument
             FlowDocument flowDocument = new FlowDocument { FontFamily = new FontFamily("Consolas") };
             Paragraph currentParagraph = new Paragraph();
 
             foreach (var entry in lastSelectedDevice.LogEntries)
-            {     
+            {
                 // Get image
                 BitmapImage bi = new BitmapImage { CacheOption = BitmapCacheOption.OnLoad };
                 bi.BeginInit();
@@ -435,14 +435,14 @@ namespace Home
                         }
                         break;
                 }
-                
+
                 bi.UriSource = new Uri($"pack://application:,,,/Home;Component/resources/icons/{resourceName}");
                 bi.EndInit();
 
-                currentParagraph.Inlines.Add(new InlineUIContainer(new Image() { Source = bi, Width = 20, Margin = new Thickness(0,2,2,0) }) { BaselineAlignment = BaselineAlignment.Bottom });
-                currentParagraph.Inlines.Add(new Run($"[{entry.Timestamp.ToShortDateString()} {entry.Timestamp.ToShortTimeString()}]: ") { Foreground = new SolidColorBrush(Colors.Green), BaselineAlignment = BaselineAlignment.TextTop  });
+                currentParagraph.Inlines.Add(new InlineUIContainer(new Image() { Source = bi, Width = 20, Margin = new Thickness(0, 2, 2, 0) }) { BaselineAlignment = BaselineAlignment.Bottom });
+                currentParagraph.Inlines.Add(new Run($"[{entry.Timestamp.ToShortDateString()} {entry.Timestamp.ToShortTimeString()}]: ") { Foreground = new SolidColorBrush(Colors.Green), BaselineAlignment = BaselineAlignment.TextTop });
                 currentParagraph.Inlines.Add(new Run(entry.Message) { Foreground = foregroundBrush, BaselineAlignment = BaselineAlignment.Bottom });
-                currentParagraph.Inlines.Add(new LineBreak());         
+                currentParagraph.Inlines.Add(new LineBreak());
             }
 
 
@@ -542,6 +542,22 @@ namespace Home
         }
 
         #endregion
+
+        private void TabExpander_Collapsed(object sender, RoutedEventArgs e)
+        {
+            if (BottomTabControl == null)
+                return;
+
+            BottomTabControl.Height = 200;
+        }
+
+        private void TabExpander_Expanded(object sender, RoutedEventArgs e)
+        {
+            if (BottomTabControl == null)
+                return;
+
+            BottomTabControl.Height = 23;
+        }
     }
 
     #region Converter
