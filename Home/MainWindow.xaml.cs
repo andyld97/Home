@@ -712,6 +712,7 @@ namespace Home
                     case OSType.Windows7: result = "Windows 7"; break;
                     case OSType.Windows8: result = "Windows 8"; break;
                     case OSType.Windows10: result = "Windows 10"; break;
+                    case OSType.Windows11: result = "Windows 11"; break;
                     case OSType.Unix: result = "Unix"; break;
                     case OSType.Other: result = "Anderes OS"; break;
                 }

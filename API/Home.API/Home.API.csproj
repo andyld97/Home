@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,7 +17,7 @@
 
   <ItemGroup>
     <Reference Include="Serialization">
-      <HintPath>F:\Andy's Dokumente\Eigene Librays\Serialization\Serialization\bin\Debug\Serialization.dll</HintPath>
+      <HintPath>..\..\External Libraries\Serialization.dll</HintPath>
     </Reference>
   </ItemGroup>
 

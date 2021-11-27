@@ -34,6 +34,7 @@
                         <ComboBoxItem Content="Windows Vista" />
                         <ComboBoxItem Content="Windows 7" />
                         <ComboBoxItem Content="Windows 10" />
+                        <ComboBoxItem Content="Windows 11" />
                         <ComboBoxItem Content="Linux" />
                         <ComboBoxItem Content="Ubuntu" />
                         <ComboBoxItem Content="Mint" />

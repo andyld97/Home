@@ -268,6 +268,7 @@ namespace Home.Model
             Windows7,
             Windows8,
             Windows10,
+            Windows11,
             Unix,
             Other
         }
@@ -302,6 +303,7 @@ namespace Home.Model
                             case OSType.Windows7: prequel += "windows_7"; break;
                             case OSType.Windows8: prequel += "windows_8"; break;
                             case OSType.Windows10: prequel += "windows_10"; break;
+                            case OSType.Windows11: prequel += "windows_11"; break;
                         }
 
                         image = prequel;

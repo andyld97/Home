@@ -183,6 +183,8 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="resources\icons\devices\desktop_windows_11.png" />
+    <Resource Include="resources\icons\devices\notebook_windows_11.png" />
     <Resource Include="resources\icons\live\offline.png" />
     <Resource Include="resources\icons\live\toggle.png" />
     <Resource Include="resources\icons\live\save.png" />

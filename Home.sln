@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31005.135
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.31911.260
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Home", "Home\Home.csproj", "{16547C2C-0E7C-4E77-8864-AD6541F819DD}"
 EndProject
@@ -32,6 +32,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External Libraries", "External Libraries", "{222CEA8C-2B0E-44D2-8738-97D1D26AAC30}"
 	ProjectSection(SolutionItems) = preProject
 		External Libraries\Serialization.dll = External Libraries\Serialization.dll
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{27651F4E-1EF6-41DA-A004-93589CDD3BBA}"
+	ProjectSection(SolutionItems) = preProject
+		Assets\Icons.sketch = Assets\Icons.sketch
 	EndProjectSection
 EndProject
 Global
