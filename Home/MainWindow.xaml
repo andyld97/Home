@@ -1,11 +1,11 @@
-﻿<fluent:RibbonWindow xmlns:fluent="urn:fluent-ribbon" x:Class="Home.MainWindow"
+﻿<Fluent:RibbonWindow  xmlns:Fluent="urn:fluent-ribbon" x:Class="Home.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Home" xmlns:controls="clr-namespace:Home.Controls" mc:Ignorable="d"
         Title="Home Network" Height="1024" Width="1280" Loaded="RibbonWindow_Loaded">
-    <fluent:RibbonWindow.Resources>
+    <Fluent:RibbonWindow.Resources>
         <local:DiskImageConverter x:Key="diskImageConverter" />
         <local:ByteToGBConverter x:Key="byteToGBConverter" />
         <local:SpaceToProgressBarConverter x:Key="spaceToProgressBarConverter" />
@@ -13,43 +13,43 @@
         <local:OS64BitConverter x:Key="os64BitConverter" />
         <local:OSNameConverter x:Key="osNameConverter" />
         <local:EmptyConverter x:Key="emptyConverter" />
-    </fluent:RibbonWindow.Resources>
+    </Fluent:RibbonWindow.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <fluent:Ribbon Background="Transparent">
-            <fluent:Ribbon.Menu>
-                <fluent:ApplicationMenu Header="Datei" MaxDropDownHeight="500" BorderBrush="Blue">
-                    <fluent:MenuItem x:Name="MenuButtonChangeTheme" Click="MenuButtonChangeTheme_Click" Header="Themenwechsel" />
-                    <fluent:MenuItem Header="Beenden" />
-                </fluent:ApplicationMenu>
-            </fluent:Ribbon.Menu>
+        <Fluent:Ribbon Background="Transparent">
+            <Fluent:Ribbon.Menu>
+                <Fluent:ApplicationMenu Header="Datei" MaxDropDownHeight="500" BorderBrush="Blue">
+                    <Fluent:MenuItem x:Name="MenuButtonChangeTheme" Click="MenuButtonChangeTheme_Click" Header="Themenwechsel" />
+                    <Fluent:MenuItem Header="Beenden" />
+                </Fluent:ApplicationMenu>
+            </Fluent:Ribbon.Menu>
 
-            <fluent:RibbonTabItem Header="Allgemein">
-                <fluent:RibbonGroupBox Header="Operationen">
-                    <fluent:Button x:Name="MenuButtonSendMessage" Click="MenuButtonSendMessage_Click" Header="Nachricht senden" LargeIcon="/resources/icons/menu/send_message.png"/>
-                    <fluent:DropDownButton Header="Herunterfahren Menü" LargeIcon="/resources/icons/menu/shutdown.png">
-                        <fluent:MenuItem x:Name="MenuButtonShutdown" Click="MenuButtonShutdown_Click"  Header="Herunterfahren" Icon="/resources/icons/menu/shutdown.png" />
-                        <fluent:MenuItem x:Name="MenuButtonReboot" Click="MenuButtonReboot_Click"  Header="Neustarten" Icon="/resources/icons/menu/reboot.png" />
-                    </fluent:DropDownButton>
-                    <fluent:Button x:Name="MenuButtonSendCommand" Click="MenuButtonSendCommand_Click"  Header="Befehl ausführen" LargeIcon="/resources/icons/menu/run.png" />
-                    <fluent:Button Header="Remote Shell" LargeIcon="/resources/icons/menu/shell.png" />
-                    <fluent:Button Header="Remote Verbindung" LargeIcon="/resources/icons/menu/rdp.png" />
-                    <fluent:Button Header="Sound Mute" LargeIcon="/resources/icons/menu/mute.png" />
-                    <fluent:Button x:Name="MenuButtonClearLog" Click="MenuButtonClearLog_Click"  Header="Log leeren" LargeIcon="/resources/icons/menu/clear_log.png" />
-                </fluent:RibbonGroupBox>
-            </fluent:RibbonTabItem>
+            <Fluent:RibbonTabItem Header="Allgemein">
+                <Fluent:RibbonGroupBox Header="Operationen">
+                    <Fluent:Button x:Name="MenuButtonSendMessage" Click="MenuButtonSendMessage_Click" Header="Nachricht senden" LargeIcon="/resources/icons/menu/send_message.png"/>
+                    <Fluent:DropDownButton Header="Herunterfahren Menü" LargeIcon="/resources/icons/menu/shutdown.png">
+                        <Fluent:MenuItem x:Name="MenuButtonShutdown" Click="MenuButtonShutdown_Click"  Header="Herunterfahren" Icon="/resources/icons/menu/shutdown.png" />
+                        <Fluent:MenuItem x:Name="MenuButtonReboot" Click="MenuButtonReboot_Click"  Header="Neustarten" Icon="/resources/icons/menu/reboot.png" />
+                    </Fluent:DropDownButton>
+                    <Fluent:Button x:Name="MenuButtonSendCommand" Click="MenuButtonSendCommand_Click"  Header="Befehl ausführen" LargeIcon="/resources/icons/menu/run.png" />
+                    <Fluent:Button Header="Remote Shell" LargeIcon="/resources/icons/menu/shell.png" />
+                    <Fluent:Button Header="Remote Verbindung" LargeIcon="/resources/icons/menu/rdp.png" />
+                    <Fluent:Button Header="Sound Mute" LargeIcon="/resources/icons/menu/mute.png" />
+                    <Fluent:Button x:Name="MenuButtonClearLog" Click="MenuButtonClearLog_Click"  Header="Log leeren" LargeIcon="/resources/icons/menu/clear_log.png" />
+                </Fluent:RibbonGroupBox>
+            </Fluent:RibbonTabItem>
 
-            <fluent:RibbonTabItem Header="Verwaltung">
-                <fluent:RibbonGroupBox Header="Werkzeuge">
-                    <fluent:Button Header="Gerät hinzufügen" LargeIcon="/resources/icons/menu/add.png" />
-                    <fluent:Button Header="Gerät löschen" LargeIcon="/resources/icons/menu/add.png" />
-                </fluent:RibbonGroupBox>
-            </fluent:RibbonTabItem>
-        </fluent:Ribbon>
+            <Fluent:RibbonTabItem Header="Verwaltung">
+                <Fluent:RibbonGroupBox Header="Werkzeuge">
+                    <Fluent:Button Header="Gerät hinzufügen" LargeIcon="/resources/icons/menu/add.png" />
+                    <Fluent:Button Header="Gerät löschen" LargeIcon="/resources/icons/menu/add.png" />
+                </Fluent:RibbonGroupBox>
+            </Fluent:RibbonTabItem>
+        </Fluent:Ribbon>
 
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
@@ -173,21 +173,31 @@
                                         </Grid.ColumnDefinitions>
 
                                         <StackPanel>
-                                            <TextBlock Text="Gerät" FontSize="25" FontWeight="Bold"/>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Source="resources/icons/device.png" Height="24" Margin="5" />
+                                                <TextBlock Text="Gerät" FontSize="25" FontWeight="Bold"/>
+                                            </StackPanel>
+                                            
                                             <Separator Margin="0,5,0,0" Foreground="{DynamicResource BlackBrush}" />
                                             <TextBlock Text="Hersteller: " />
                                             <TextBlock Text="Produkt: " />
                                             <TextBlock Text="Beschreibung: "/>
                                             <TextBlock Text="Ort:" />
                                             <TextBlock Text="Client-Version: "/>
-                                            <TextBlock Text="Hardware" FontSize="25" Margin="0,10,0,0" FontWeight="Bold" />
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Source="resources/icons/hardware.png" Height="24" Margin="5" />
+                                                <TextBlock Text="Hardware" FontSize="25" Margin="0,0,0,0" FontWeight="Bold" />
+                                            </StackPanel>
                                             <Separator Margin="0,5,0,0" />
                                             <TextBlock Text="OS:" FontWeight="Bold" />
                                             <TextBlock Text="VER:" FontWeight="Bold" />
                                             <TextBlock Text="CPU:" FontWeight="Bold" />
                                             <TextBlock Text="GRAFIK:" FontWeight="Bold" />
                                             <TextBlock Text="RAM:" FontWeight="Bold" />
-                                            <TextBlock Text="Aktivität" FontSize="25" Margin="0,10,0,0" FontWeight="Bold" />
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Source="resources/icons/activity.png" Height="24" Margin="5" />
+                                                <TextBlock Text="Aktivität" FontSize="25" Margin="0,0,0,0" FontWeight="Bold" />
+                                            </StackPanel>
                                             <Separator Margin="0,5,0,0" />
                                             <TextBlock Text="CPU (%):" FontWeight="Bold" />
                                             <TextBlock Text="RAM (%): " FontWeight="Bold"/>
@@ -204,7 +214,7 @@
                                             <TextBlock Text="{Binding Envoirnment.Description, Converter={StaticResource emptyConverter}}"/>
                                             <TextBlock Text="{Binding Location, Converter={StaticResource emptyConverter}}" />
                                             <TextBlock Text="{Binding ServiceClientVersion, Converter={StaticResource emptyConverter}}"/>
-                                            <TextBlock Margin="0,10,0,0" FontSize="25" />
+                                            <TextBlock Margin="0,1,0,0" FontSize="25" />
                                             <Separator Margin="0,5,0,0" />
                                             <TextBlock x:Name="TextOSName" ToolTip="{Binding ElementName=TextOSName, Path=Text}" >
                                                 <Run Text="{Binding OS, Converter={StaticResource osNameConverter}}" />
@@ -220,7 +230,7 @@
                                                 <Run Text="{Binding Envoirnment.TotalRAM}" />
                                                 <Run Text="GB" />
                                             </TextBlock>
-                                            <TextBlock Margin="0,10,0,0" FontSize="25" />
+                                            <TextBlock Margin="0,1,0,0" FontSize="25" />
                                             <Separator Margin="0,5,0,0" />
                                             <TextBlock x:Name="TextCPUUsage">
                                                 <Run Text="{Binding Envoirnment.CPUUsage}" ToolTip="{Binding ElementName=TextCPUUsage, Path=Text}"/>
@@ -352,4 +362,4 @@
             </Border>
         </Grid>
     </Grid>
-</fluent:RibbonWindow>
+</Fluent:RibbonWindow>
