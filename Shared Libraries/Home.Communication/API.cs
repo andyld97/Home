@@ -210,8 +210,8 @@ namespace Home.Communication
             }
         }
 
-        public async Task ShutdownOrRestartDeviceAsync(bool shutdown, Device device)
-        {          
+        public async Task<Answer<string>> ShutdownOrRestartDeviceAsync(bool shutdown, Device device)
+        {
             string parameter = string.Empty;
             string executable;
             if (device.OS == OSType.Linux || device.OS == OSType.LinuxMint || device.OS == OSType.LinuxUbuntu || device.OS == OSType.Unix || device.OS == OSType.Other)
@@ -230,7 +230,7 @@ namespace Home.Communication
                 parameter = $"/{(shutdown ? "s" : "r")} /f /t 00";
             }
 
-            await SendCommandAsync(new Data.Com.Command() { DeviceID = device.ID, Executable = executable, Parameter = parameter });
+            return await SendCommandAsync(new Data.Com.Command() { DeviceID = device.ID, Executable = executable, Parameter = parameter });
         }
 
         public async Task<Answer<string>> SendCommandAsync(Command command)
