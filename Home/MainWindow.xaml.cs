@@ -503,43 +503,21 @@ namespace Home
         {
             if (lastSelectedDevice == null)
                 return;
+            if (MessageBox.Show($"Sind Sie sich sicher, dass Sie das Gerät {lastSelectedDevice.Name} herunterfahren möchten?", "Wirklich?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+                return;
 
-            await ShutdownOrRestart(true, lastSelectedDevice);
+            await api.ShutdownOrRestartDeviceAsync(true, lastSelectedDevice);
         }
 
         private async void MenuButtonReboot_Click(object sender, RoutedEventArgs e)
         {
             if (lastSelectedDevice == null)
                 return;
-
-            await ShutdownOrRestart(false, lastSelectedDevice);
-        }
-
-        private async Task ShutdownOrRestart(bool shutdown, Device device)
-        {
-            if (MessageBox.Show($"Sind Sie sich sicher, dass Sie das Gerät {device.Name} {(shutdown ? "herunterfahren" : "neustarten")} möchten?", "Wirklich?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+            if (MessageBox.Show($"Sind Sie sich sicher, dass Sie das Gerät {lastSelectedDevice.Name} neustarten möchten?", "Wirklich?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
                 return;
 
-            string parameter = string.Empty;
-            string executable;
-            if (device.OS == OSType.Linux || device.OS == OSType.LinuxMint || device.OS == OSType.LinuxUbuntu || device.OS == OSType.Unix || device.OS == OSType.Other)
-            {
-                if (shutdown)
-                {
-                    executable = "shutdown";
-                    parameter = "-h now";
-                }
-                else
-                    executable = "reboot";
-            }
-            else
-            {
-                executable = "shutdown.exe";
-                parameter = $"/{(shutdown ? "s" : "r")} /f /t 00";
-            }
-
-            await api.SendCommandAsync(new Data.Com.Command() { DeviceID = device.ID, Executable = executable, Parameter = parameter });
-        }
+            await api.ShutdownOrRestartDeviceAsync(false, lastSelectedDevice);
+        }    
 
         #endregion
 
