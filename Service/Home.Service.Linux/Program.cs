@@ -17,7 +17,7 @@ namespace Home.Service.Linux
     public class Program
     {
         private static readonly Device currentDevice = new Device();
-        private static readonly Version ClientVersion = new Version(0, 0, 3);
+        private static readonly Version ClientVersion = new Version(0, 0, 4);
         private static readonly DateTime startTime = DateTime.Now;
         private static Home.Communication.API api;
         private static JObject jInfo = null;
@@ -32,6 +32,8 @@ namespace Home.Service.Linux
         {
             try
             {
+                // Test: ParseHardwareInfo(System.IO.File.ReadAllText(@"Test\test3.json"), new Device());
+
                 Task task = MainAsync(args);
                 task.Wait();
 
@@ -473,6 +475,14 @@ namespace Home.Service.Linux
             string childClass = child.Value<string>("class");
             string childID = child.Value<string>("id");
 
+            if (childClass == "bus" && string.IsNullOrEmpty(device.Envoirnment.Motherboard))
+            {
+                string vendor = child.Value<string>("vendor");
+                string product = child.Value<string>("product");
+
+                if (vendor != null && product != null)
+                    device.Envoirnment.Motherboard = $"{vendor} {product}";
+            }
             if (childClass == "memory")
                 device.Envoirnment.TotalRAM = child.Value<long>("size");
             else if (childClass == "processor" && string.IsNullOrEmpty(device.Envoirnment.CPUName))

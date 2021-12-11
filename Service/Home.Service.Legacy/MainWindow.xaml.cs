@@ -72,6 +72,7 @@ namespace Home.Service.Legacy
                 {
                     CPUCount = Environment.ProcessorCount,
                     CPUName = WMI.DetermineCPUName(),
+                    Motherboard = WMI.DetermineMotherboard(),
                     TotalRAM = Native.DetermineTotalRAM(),
                     OSName = ServiceData.Instance.OSName,
                     OSVersion = Environment.OSVersion.ToString(),

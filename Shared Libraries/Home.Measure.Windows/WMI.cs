@@ -57,6 +57,29 @@ namespace Home.Measure.Windows
             return string.Empty;
         }
 
+        public static string DetermineMotherboard()
+        {
+            try
+            {
+                ManagementObjectSearcher baseboardSearcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_BaseBoard");
+                ManagementObjectSearcher motherboardSearcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_MotherboardDevice");
+
+                foreach (ManagementObject queryObj in baseboardSearcher.Get())
+                {
+                    string product = queryObj["Product"].ToString();
+                    string vendor = queryObj["Manufacturer"].ToString();
+
+                    return $"{vendor} {product}";
+                }
+            }
+            catch
+            {
+                // Log
+            }
+
+            return string.Empty;
+        }
+
         /// <summary>
         /// May not be compatible with Windows XP
         /// </summary>

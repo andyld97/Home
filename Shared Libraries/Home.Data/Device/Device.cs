@@ -489,6 +489,12 @@ namespace Home.Model
 #endif
         public double CPUUsage { get; set; }
 
+        [JsonProperty("motherboard")]
+#if !LEGACY
+        [System.Text.Json.Serialization.JsonPropertyName("motherboard")]
+#endif
+        public string Motherboard { get; set; }
+
         [JsonProperty("graphics")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("graphics")]

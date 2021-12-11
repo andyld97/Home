@@ -74,6 +74,7 @@ namespace Home.Service
                     CPUName = WMI.DetermineCPUName(),
                     TotalRAM = Native.DetermineTotalRAM(),
                     OSName = ServiceData.Instance.OSName,
+                    Motherboard = WMI.DetermineMotherboard(),
                     OSVersion = Environment.OSVersion.ToString(),
                     RunningTime = now.Subtract(startTimestamp),
                     StartTimestamp = startTimestamp

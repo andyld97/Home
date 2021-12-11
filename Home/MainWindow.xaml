@@ -192,6 +192,7 @@
                                             <TextBlock Text="OS:" FontWeight="Bold" />
                                             <TextBlock Text="VER:" FontWeight="Bold" />
                                             <TextBlock Text="CPU:" FontWeight="Bold" />
+                                            <TextBlock Text="Motherboard:" FontWeight="Bold" />
                                             <TextBlock Text="GRAFIK:" FontWeight="Bold" />
                                             <TextBlock Text="RAM:" FontWeight="Bold" />
                                             <StackPanel Orientation="Horizontal">
@@ -225,6 +226,7 @@
                                                 <Run  Text="{Binding Envoirnment.CPUName}"  />
                                                 <Run Text=" x " /><Run Text="{Binding Envoirnment.CPUCount}" />
                                             </TextBlock>
+                                            <TextBlock x:Name="TextMotherboard" Text="{Binding Envoirnment.Motherboard, Converter={StaticResource emptyConverter}}" ToolTip="{Binding ElementName=TextMotherboard, Path=Text}" />
                                             <TextBlock x:Name="TextGraphics" Text="{Binding Envoirnment.Graphics, Converter={StaticResource emptyConverter}}" ToolTip="{Binding ElementName=TextGraphics, Path=Text}" />
                                             <TextBlock x:Name="TextTotalRAM" ToolTip="{Binding ElementName=TextTotalRAM, Path=Text}">
                                                 <Run Text="{Binding Envoirnment.TotalRAM}" />
