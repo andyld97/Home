@@ -39,6 +39,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{27651F
 		Assets\Icons.sketch = Assets\Icons.sketch
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Home.Service.Android", "Service\Home.Service.Android\Home.Service.Android.csproj", "{7716B99C-FC83-4755-878D-C094CC8C7649}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,12 @@ Global
 		{36F79A8A-96BF-49B5-AAA7-39D434385B44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36F79A8A-96BF-49B5-AAA7-39D434385B44}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36F79A8A-96BF-49B5-AAA7-39D434385B44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7716B99C-FC83-4755-878D-C094CC8C7649}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7716B99C-FC83-4755-878D-C094CC8C7649}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7716B99C-FC83-4755-878D-C094CC8C7649}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{7716B99C-FC83-4755-878D-C094CC8C7649}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7716B99C-FC83-4755-878D-C094CC8C7649}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7716B99C-FC83-4755-878D-C094CC8C7649}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -94,12 +102,13 @@ Global
 		{AA694400-3AE8-4160-BB47-FD5427932D36} = {04A92809-609E-48F8-B50D-3D0145657931}
 		{5A59FDA7-BD65-406F-A705-487C82D4EF5B} = {69C60DD4-2CEF-4304-A8FF-751BE53960A9}
 		{36F79A8A-96BF-49B5-AAA7-39D434385B44} = {3DDEE229-D318-4A2A-85F4-5ED070765C30}
+		{7716B99C-FC83-4755-878D-C094CC8C7649} = {69C60DD4-2CEF-4304-A8FF-751BE53960A9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {96AFC1EE-03B9-4208-AF3D-A290F2C3B875}
 	EndGlobalSection
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 10
+		SccNumberOfProjects = 11
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://dev.azure.com/code-a-software
 		SccLocalPath0 = .
@@ -138,5 +147,9 @@ Global
 		SccProjectTopLevelParentUniqueName9 = Home.sln
 		SccProjectName9 = Shared\u0020Libraries/Home.Measure.Windows
 		SccLocalPath9 = Shared\u0020Libraries\\Home.Measure.Windows
+		SccProjectUniqueName10 = Service\\Home.Service.Android\\Home.Service.Android.csproj
+		SccProjectTopLevelParentUniqueName10 = Home.sln
+		SccProjectName10 = Service/Home.Service.Android
+		SccLocalPath10 = Service\\Home.Service.Android
 	EndGlobalSection
 EndGlobal
