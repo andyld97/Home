@@ -118,6 +118,9 @@ namespace Home.API.Controllers
                 var device = Program.Devices.Where(p => p.ID == deviceID).FirstOrDefault();
                 if (device != null)
                 {
+                    if (device.OS == Device.OSType.Android)
+                        return BadRequest("Android Device doesn't support screenshots");
+
                     device.IsScreenshotRequired = true;
                     _logger.LogInformation($"Aquired screenshot from {cl?.Name} for device {device.Name}");
                 }

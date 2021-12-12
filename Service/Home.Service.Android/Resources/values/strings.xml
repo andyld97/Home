@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Home.Service.Android</string>
     <string name="action_settings">Settings</string>
+	<string-array name="device_type">
+		<item>Smartphone</item>
+		<item>SmartTV</item>
+		<item>SetTopBox</item>
+	</string-array>
 </resources>

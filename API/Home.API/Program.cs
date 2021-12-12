@@ -116,7 +116,8 @@ namespace Home.API
                     }                    
                 }
 
-                foreach (var device in Devices.Where(p => p.Status != Device.DeviceStatus.Offline))
+                // Aquiring a new screenshot for all online devices (except android devices)
+                foreach (var device in Devices.Where(p => p.Status != Device.DeviceStatus.Offline && p.OS != Device.OSType.Android))
                 {
                     if (device.IsScreenshotRequired)
                         continue;

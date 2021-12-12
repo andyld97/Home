@@ -255,11 +255,15 @@ namespace Home.Model
             MiniPC,
             Notebook,
             Desktop,
-            Server
+            Server,
+            Smartphone,
+            SmartTV,
+            SetTopBox
         }
 
         public enum OSType
         {
+            Android,
             Linux,
             LinuxMint,
             LinuxUbuntu,
@@ -569,7 +573,7 @@ namespace Home.Model
         public override string ToString()
         {
             string rn = Environment.NewLine;
-            return $"OS: {OSName}{rn}OS-VER: {OSVersion}{rn}CPU: {CPUName}{rn}CPU-COUNT: {CPUCount}{rn}RAM: {TotalRAM}{rn}FREE: {FreeRAM}{rn}Running-Time: {XmlRunningTime}";
+            return $"OS: {OSName}{rn}OS-VER: {OSVersion}{rn}CPU: {CPUName}{rn}CPU-COUNT: {CPUCount}{rn}Motherboard: {Motherboard}{rn}Graphics: {Graphics}{rn}RAM: {TotalRAM} GB{rn}FREE: {FreeRAM}{rn}Running-Time: {XmlRunningTime}";
         }
     }
 

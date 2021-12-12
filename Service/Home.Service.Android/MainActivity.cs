@@ -1,24 +1,28 @@
 ﻿using Android.App;
 using Android.OS;
-using Android.Runtime;
 using AndroidX.AppCompat.App;
-using System;
 using Java.Lang;
-using Process = Java.Lang.Process;
 using Android.Widget;
 using Android.Hardware;
-using System.Collections.Generic;
 using Android.Text.Method;
 using Java.Text;
 using Android.Opengl;
 using Javax.Microedition.Khronos.Opengles;
+using Home.Service.Android.Helper;
+using Home.Model;
 
 namespace Home.Service.Android
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
     public class MainActivity : AppCompatActivity
     {
-        private TextView tv;
+        private Button btnShowInfos;
+        private EditText textHost;
+        private EditText textLocation;
+        private EditText textGroup;
+        private Spinner spinnerDeviceType;
+
+        private Device currentDevice = new Device();
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -31,141 +35,62 @@ namespace Home.Service.Android
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
 
-            tv = FindViewById<TextView>(Resource.Id.textTest);
-            GLSurfaceView glSurfaceView = FindViewById<GLSurfaceView>(Resource.Id.test);
+
+            textHost = FindViewById<EditText>(Resource.Id.textHost);
+            textLocation = FindViewById<EditText>(Resource.Id.textLocation);
+            textGroup = FindViewById<EditText>(Resource.Id.textGroup);
+            spinnerDeviceType = FindViewById<Spinner>(Resource.Id.spinnerDeviceType);
+
+
+            btnShowInfos = FindViewById<Button>(Resource.Id.buttonShowInfos);
+            btnShowInfos.Click += BtnShowInfos_Click;
+
+            GLSurfaceView glSurfaceView = FindViewById<GLSurfaceView>(Resource.Id.surface);
             Renderer renderer = new Renderer();
             renderer.OnInfosRecieved += Renderer_OnInfosRecieved;
             glSurfaceView.SetRenderer(renderer);
 
-            string arch = Java.Lang.JavaSystem.GetProperty("os.arch");
 
-            tv.Text = "***** DEVICE Information *****" + "\n";
-            tv.Append("Model: " + Build.Model + "\n");
-            tv.Append("Board: " + Build.Board + "\n");
-            tv.Append("Brand: " + Build.Brand + "\n");
-            tv.Append("Manufacturer: " + Build.Manufacturer + "\n");
-            tv.Append("Device: " + Build.Device + "\n");
-            tv.Append("Product: " + Build.Product + "\n");
-            tv.Append("TAGS: " + Build.Tags + "\n");
-            tv.Append("Serial: " + Build.Serial + "\n");
+            currentDevice.ServiceClientVersion = "vAndroid 0.0.1";
+            currentDevice.Type = Device.DeviceType.Smartphone;
+            currentDevice.Envoirnment.OSName = $"Android {Build.VERSION.Release}";
+            currentDevice.Envoirnment.OSVersion = $"{Build.VERSION.Codename} (Sec. Patch: {Build.VERSION.SecurityPatch}) ({System.Environment.OSVersion})";
+            currentDevice.OS = Device.OSType.Android;
+            currentDevice.Envoirnment.CPUCount = DeviceInfoHelper.GetNumberOfCores();
+            currentDevice.Envoirnment.CPUName = DeviceInfoHelper.ReadCPUName();
+            currentDevice.Envoirnment.Description = Build.Model;
+            currentDevice.Envoirnment.DomainName = System.Environment.UserDomainName;
+            currentDevice.Envoirnment.Is64BitOS = System.Environment.Is64BitOperatingSystem;
+            currentDevice.Envoirnment.Product = Build.Product;
 
-            tv.Append("\n" + "***** SOC *****" + "\n");
-            tv.Append("Hardware: " + Build.Hardware + "\n");
-            tv.Append("Number of cores: " + GetNumberOfCores() + "\n");
-            tv.Append("Architecture: " + arch + "\n");
+            // Read and assign memory info
+            DeviceInfoHelper.ReadAndAssignMemoryInfo(currentDevice);
 
-            tv.Append("\n" + "***** CPU Info *****" + "\n");
-            tv.Append(ReadCPUinfo() + "\n");
+            currentDevice.Envoirnment.Vendor = Build.Brand;
+            currentDevice.Envoirnment.MachineName = System.Environment.MachineName;
+            currentDevice.Envoirnment.UserName = System.Environment.UserName;
+            currentDevice.Envoirnment.Motherboard = Build.Board;
+            currentDevice.Name = DeviceInfoHelper.GetDeviceName(ContentResolver); // System.Environment.MachineName;
+            currentDevice.IP = DeviceInfoHelper.GetIpAddress(this);
+        }
 
-            tv.Append("\n" + "***** Memory Info *****" + "\n");
-            tv.Append(ReadMemoryInfo() + "\n");
-
-            tv.Append("\n" + "***** OS Information *****" + "\n");
-            tv.Append("Build release: " + Build.VERSION.Release + "\n");
-            tv.Append("Incremental release: " + Build.VERSION.Incremental + "\n");
-            tv.Append("Base OS: " + Build.VERSION.BaseOs + "\n");
-            tv.Append("CODE Name: " + Build.VERSION.Codename + "\n");
-            tv.Append("Security patch: " + Build.VERSION.SecurityPatch + "\n");
-            tv.Append("Preview SDK: " + Build.VERSION.PreviewSdkInt + "\n");
-            tv.Append("SDK/API version: " + Build.VERSION.SdkInt + "\n");
-            tv.Append("Display build: " + Build.Display + "\n");
-            tv.Append("Finger print: " + Build.Fingerprint + "\n");
-            tv.Append("Build ID: " + Build.Id + "\n");
-
-            SimpleDateFormat sdf = new SimpleDateFormat("MMMM d, yyyy 'at' h:mm a");
-            string date = sdf.Format(Build.Time);
-
-            tv.Append("Build Time: " + date + "\n");
-            tv.Append("Build Type: " + Build.Type + "\n");
-            tv.Append("Build User: " + Build.User + "\n");
-            tv.Append("Bootloader: " + Build.Bootloader + "\n");
-            tv.Append("Kernel version: " + Java.Lang.JavaSystem.GetProperty("os.version") + "\n");
-
-            tv.Append("\n" + "***** RADIO version *****" + "\n");
-            tv.Append(Build.RadioVersion + "\n");
-
-            /* List of available sensors */
-            SensorManager sm = (SensorManager)GetSystemService("sensor");
-            var list = sm.GetSensorList(SensorType.All);
-
-            tv.Append("\n" + "***** SENSORS Information *****" + "\n");
-            foreach (Sensor s in list)
-            {
-                tv.Append(s.Name + "\n");
-            }
-
-            tv.SetHorizontallyScrolling(true);
-            tv.MovementMethod = new ScrollingMovementMethod();
+        private void BtnShowInfos_Click(object sender, System.EventArgs e)
+        {
+            Toast.MakeText(this, currentDevice.ToString(), ToastLength.Long).Show();
         }
 
         private void Renderer_OnInfosRecieved(string renderer, string vendor)
         {
-            tv.Append(renderer + "\n");
-            tv.Append(vendor + "\n");
-        }
+            currentDevice.Envoirnment.Graphics = $"{vendor} {renderer}";
 
-        public string ReadMemoryInfo()
-        {
-            Java.Lang.ProcessBuilder cmd;
-            string result = "";
-
-            try
-            {
-                string[] args = { "/system/bin/cat", "/proc/meminfo" };
-                cmd = new ProcessBuilder(args);
-
-                Java.Lang.Process process = cmd.Start();
-                using (var inputStream = process.InputStream)
-                {
-                    byte[] re = new byte[1024];
-                    int bytesRead = 0;
-                    while ((bytesRead = inputStream.Read(re, bytesRead, re.Length)) != -1)
-                    {
-                        result += System.Text.Encoding.Default.GetString(re);
-                    }
-                }
-            }
-            catch (System.Exception e)
-            {
-            }
-            return result;
-        }
-
-        
-        private string ReadCPUinfo()
-        {
-            ProcessBuilder cmd;
-            string result = "";
-
-            try
-            {
-                string[] args = { "/system/bin/cat", "/proc/cpuinfo" };
-                cmd = new ProcessBuilder(args);
-                Java.Lang.Process process = cmd.Start();
-                using (var inputStream = process.InputStream)
-                {
-                    byte[] re = new byte[1024];
-                    int bytesRead = 0;
-                    while ((bytesRead = inputStream.Read(re, bytesRead, re.Length)) != -1)
-                    {
-                        result += System.Text.Encoding.Default.GetString(re);
-                    }
-                }
-            }
-            catch (System.Exception ex)
-            {
+           
+            btnShowInfos.Post( async () => { 
                 
-            }
-            return result;
-        }
-
-        public int GetNumberOfCores()
-        {
-            if (Build.VERSION.SdkInt >= BuildVersionCodes.JellyBeanMr1)
-                return Runtime.GetRuntime().AvailableProcessors();
-
-            return -1;
-        }
+                //Home.Communication.API api = new Home.Communication.API(LocalConsts.)
+            
+            
+            });
+        }    
     }
 
     public class Renderer : Java.Lang.Object, GLSurfaceView.IRenderer

@@ -70,6 +70,7 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helper\DeviceInfoHelper.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -112,6 +113,16 @@
     <PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.2.0.5" />
     <PackageReference Include="Xamarin.Google.Android.Material" Version="1.0.0.1" />
     <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared Libraries\Home.Communication\Home.Communication.csproj">
+      <Project>{e812deee-4510-4dee-b9fe-da428abe8a1e}</Project>
+      <Name>Home.Communication</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Shared Libraries\Home.Data\Home.Data.csproj">
+      <Project>{3b6282a4-ef68-477a-b7fd-7e0f96b75862}</Project>
+      <Name>Home.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
