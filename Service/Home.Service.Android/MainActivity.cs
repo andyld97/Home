@@ -76,6 +76,7 @@ namespace Home.Service.Android
             currentDevice.IP = DeviceInfoHelper.GetIpAddress(this);
         }
 
+
         private async void ButtonRegisterDevice_Click(object sender, System.EventArgs e)
         {
             Home.Communication.API api = new Home.Communication.API(textHost.Text);
