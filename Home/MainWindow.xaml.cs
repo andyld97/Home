@@ -693,6 +693,7 @@ namespace Home
                     case OSType.Windows11: result = "Windows 11"; break;
                     case OSType.Unix: result = "Unix"; break;
                     case OSType.Other: result = "Anderes OS"; break;
+                    case OSType.Android: result = "Android"; break;
                 }
 
 

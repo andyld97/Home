@@ -17,6 +17,8 @@ namespace Home.Service.Android
     public class MainActivity : AppCompatActivity
     {
         private Button btnShowInfos;
+        private Button buttonRegisterDevice;
+
         private EditText textHost;
         private EditText textLocation;
         private EditText textGroup;
@@ -28,19 +30,19 @@ namespace Home.Service.Android
         {
             base.OnCreate(savedInstanceState);
 
-
-            // ToDo: *** Furhter implemenation and parsing
+            // ToDo: *** Further implemenation and parsing
             // Idea: Using a foreground service with a polling timer for SendAck
 
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
 
-
             textHost = FindViewById<EditText>(Resource.Id.textHost);
             textLocation = FindViewById<EditText>(Resource.Id.textLocation);
             textGroup = FindViewById<EditText>(Resource.Id.textGroup);
             spinnerDeviceType = FindViewById<Spinner>(Resource.Id.spinnerDeviceType);
-
+            
+            buttonRegisterDevice = FindViewById<Button>(Resource.Id.buttonRegisterDevice);
+            buttonRegisterDevice.Click += ButtonRegisterDevice_Click;
 
             btnShowInfos = FindViewById<Button>(Resource.Id.buttonShowInfos);
             btnShowInfos.Click += BtnShowInfos_Click;
@@ -49,7 +51,6 @@ namespace Home.Service.Android
             Renderer renderer = new Renderer();
             renderer.OnInfosRecieved += Renderer_OnInfosRecieved;
             glSurfaceView.SetRenderer(renderer);
-
 
             currentDevice.ServiceClientVersion = "vAndroid 0.0.1";
             currentDevice.Type = Device.DeviceType.Smartphone;
@@ -62,16 +63,33 @@ namespace Home.Service.Android
             currentDevice.Envoirnment.DomainName = System.Environment.UserDomainName;
             currentDevice.Envoirnment.Is64BitOS = System.Environment.Is64BitOperatingSystem;
             currentDevice.Envoirnment.Product = Build.Product;
+            currentDevice.Envoirnment.StartTimestamp = System.DateTime.Now;
 
             // Read and assign memory info
             DeviceInfoHelper.ReadAndAssignMemoryInfo(currentDevice);
 
             currentDevice.Envoirnment.Vendor = Build.Brand;
-            currentDevice.Envoirnment.MachineName = System.Environment.MachineName;
             currentDevice.Envoirnment.UserName = System.Environment.UserName;
             currentDevice.Envoirnment.Motherboard = Build.Board;
-            currentDevice.Name = DeviceInfoHelper.GetDeviceName(ContentResolver); // System.Environment.MachineName;
+            currentDevice.Envoirnment.MachineName = 
+            currentDevice.Name = DeviceInfoHelper.GetDeviceName(ContentResolver);
             currentDevice.IP = DeviceInfoHelper.GetIpAddress(this);
+        }
+
+        private async void ButtonRegisterDevice_Click(object sender, System.EventArgs e)
+        {
+            Home.Communication.API api = new Home.Communication.API(textHost.Text);
+            var client = new Home.Data.Client() { IsRealClient = true, Name = currentDevice.Name, ID = currentDevice.ID };
+            var loginResult = await api.LoginAsync(client);
+
+
+            var ackResult = await api.RegisterDeviceAsync(currentDevice);
+
+
+
+            var test = await api.LogoffAsync(client);
+
+            int debug = 0;
         }
 
         private void BtnShowInfos_Click(object sender, System.EventArgs e)
@@ -82,38 +100,6 @@ namespace Home.Service.Android
         private void Renderer_OnInfosRecieved(string renderer, string vendor)
         {
             currentDevice.Envoirnment.Graphics = $"{vendor} {renderer}";
-
-           
-            btnShowInfos.Post( async () => { 
-                
-                //Home.Communication.API api = new Home.Communication.API(LocalConsts.)
-            
-            
-            });
-        }    
-    }
-
-    public class Renderer : Java.Lang.Object, GLSurfaceView.IRenderer
-    {
-        public delegate void onInfosRecieved(string renderer, string vendor);
-        public event onInfosRecieved OnInfosRecieved;
-
-        public void OnDrawFrame(IGL10 gl)
-        {
-           
-        }
-
-        public void OnSurfaceChanged(IGL10 gl, int width, int height)
-        {
-            
-        }
-
-        public void OnSurfaceCreated(IGL10 gl, Javax.Microedition.Khronos.Egl.EGLConfig config)
-        {
-            string renderer = GLES20.GlGetString(GLES20.GlRenderer);
-            string vendor = GLES20.GlGetString(GLES20.GlVendor);
-
-            OnInfosRecieved?.Invoke(renderer, vendor);
         }
     }
 }

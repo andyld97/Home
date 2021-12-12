@@ -180,6 +180,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="resources\icons\devices\settopbox.png" />
+    <Resource Include="resources\icons\devices\smartphohne.png" />
+    <Resource Include="resources\icons\devices\smarttv.png" />
     <Resource Include="resources\icons\activity.png" />
     <Resource Include="resources\icons\device.png" />
     <Resource Include="resources\icons\hardware.png" />
