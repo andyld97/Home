@@ -56,7 +56,6 @@ namespace Home.Service.Android.Helper
             return result;
         }
 
-
         public static void ReadAndAssignMemoryInfo(Device device)
         {
             Java.Lang.ProcessBuilder cmd;
