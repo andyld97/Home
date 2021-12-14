@@ -73,7 +73,10 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AckService.cs" />
+    <Compile Include="Consts.cs" />
     <Compile Include="Helper\DeviceInfoHelper.cs" />
+    <Compile Include="Helper\NetworkHelper.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Model\Settings.cs" />
     <Compile Include="Renderer.cs" />

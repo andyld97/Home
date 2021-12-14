@@ -282,7 +282,7 @@ namespace Home.Model
             string image = string.Empty;
             switch (Type)
             {
-                case DeviceType.Smartphone: image = "smartphohne"; break;
+                case DeviceType.Smartphone: image = "smartphone"; break;
                 case DeviceType.SmartTV: image = "smarttv"; break;
                 case DeviceType.SetTopBox: image = "settopbox"; break;
                 case DeviceType.MiniPC:

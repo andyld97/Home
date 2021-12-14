@@ -15,6 +15,8 @@ namespace Home.Service.Android.Helper
     /// </summary>
     public static class DeviceInfoHelper
     {
+        private static readonly DateTime dateTimeStarted = DateTime.Now;
+
         public static string ReadCPUName()
         {
             ProcessBuilder cmd;
@@ -174,6 +176,32 @@ namespace Home.Service.Android.Helper
                 return ipAdresses.FirstOrDefault();
 
             return string.Empty;
+        }
+
+        public static void RefreshDevice(this Device currentDevice, ContentResolver cr, Context context)
+        {
+            currentDevice.ServiceClientVersion = "vAndroid 0.0.1";
+            currentDevice.Envoirnment.OSName = $"Android {Build.VERSION.Release}";
+            currentDevice.Envoirnment.OSVersion = $"{currentDevice.Envoirnment.OSName} (Sec. Patch: {Build.VERSION.SecurityPatch}) ({System.Environment.OSVersion})";
+            currentDevice.OS = Device.OSType.Android;
+            currentDevice.Envoirnment.CPUCount = DeviceInfoHelper.GetNumberOfCores();
+            currentDevice.Envoirnment.CPUName = DeviceInfoHelper.ReadCPUName();
+            currentDevice.Envoirnment.Description = Build.Model;
+            currentDevice.Envoirnment.DomainName = System.Environment.UserDomainName;
+            currentDevice.Envoirnment.Is64BitOS = System.Environment.Is64BitOperatingSystem;
+            currentDevice.Envoirnment.Product = Build.Product;
+            currentDevice.Envoirnment.StartTimestamp = System.DateTime.Now;
+
+            // Read and assign memory info
+            DeviceInfoHelper.ReadAndAssignMemoryInfo(currentDevice);
+
+            currentDevice.Envoirnment.Vendor = Build.Brand;
+            currentDevice.Envoirnment.UserName = System.Environment.UserName;
+            currentDevice.Envoirnment.Motherboard = Build.Board;
+            currentDevice.Envoirnment.MachineName =
+            currentDevice.Name = DeviceInfoHelper.GetDeviceName(cr);
+            currentDevice.IP = DeviceInfoHelper.GetIpAddress(context);
+            currentDevice.Envoirnment.RunningTime = DateTime.Now.Subtract(dateTimeStarted);
         }
     }
 }

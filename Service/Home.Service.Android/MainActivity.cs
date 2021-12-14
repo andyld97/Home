@@ -5,7 +5,7 @@ using Android.Widget;
 using Android.Opengl;
 using Home.Service.Android.Helper;
 using Home.Model;
-using System;
+using A = Android;
 
 namespace Home.Service.Android
 {
@@ -25,15 +25,10 @@ namespace Home.Service.Android
 
         private string xmlDevicePath = string.Empty;
         private string xmlSettingsPath = string.Empty;
-        private readonly DateTime dateTimeStarted = DateTime.Now;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-
-            // ToDo: *** Using a foreground service with a polling timer for SendAck
-
-            // Only start the service if device is registered (settings) + ack
 
             string baseDir = GetExternalFilesDir("device").AbsolutePath;
             if (!System.IO.Directory.Exists(baseDir))
@@ -123,7 +118,10 @@ namespace Home.Service.Android
                 glSurfaceView.SetRenderer(renderer);
             }
 
-            RefreshDeviceInfo();        
+            currentDevice.RefreshDevice(ContentResolver, this);
+
+            if (isDeviceRegistered)
+                StartAckService();
         }
 
         private void SetGuiState(bool value)
@@ -132,34 +130,19 @@ namespace Home.Service.Android
             textLocation.Enabled =
             textGroup.Enabled =
             spinnerDeviceType.Enabled =
-            spinnerDeviceType.Enabled = value;
+            spinnerDeviceType.Enabled =
+            buttonRegisterDevice.Enabled = value;
         }
 
-        private void RefreshDeviceInfo()
+        private void StartAckService()
         {
-            currentDevice.ServiceClientVersion = "vAndroid 0.0.1";
-            currentDevice.Type = Device.DeviceType.Smartphone;
-            currentDevice.Envoirnment.OSName = $"Android {Build.VERSION.Release}";
-            currentDevice.Envoirnment.OSVersion = $"{Build.VERSION.Codename} (Sec. Patch: {Build.VERSION.SecurityPatch}) ({System.Environment.OSVersion})";
-            currentDevice.OS = Device.OSType.Android;
-            currentDevice.Envoirnment.CPUCount = DeviceInfoHelper.GetNumberOfCores();
-            currentDevice.Envoirnment.CPUName = DeviceInfoHelper.ReadCPUName();
-            currentDevice.Envoirnment.Description = Build.Model;
-            currentDevice.Envoirnment.DomainName = System.Environment.UserDomainName;
-            currentDevice.Envoirnment.Is64BitOS = System.Environment.Is64BitOperatingSystem;
-            currentDevice.Envoirnment.Product = Build.Product;
-            currentDevice.Envoirnment.StartTimestamp = System.DateTime.Now;
-
-            // Read and assign memory info
-            DeviceInfoHelper.ReadAndAssignMemoryInfo(currentDevice);
-
-            currentDevice.Envoirnment.Vendor = Build.Brand;
-            currentDevice.Envoirnment.UserName = System.Environment.UserName;
-            currentDevice.Envoirnment.Motherboard = Build.Board;
-            currentDevice.Envoirnment.MachineName =
-            currentDevice.Name = DeviceInfoHelper.GetDeviceName(ContentResolver);
-            currentDevice.IP = DeviceInfoHelper.GetIpAddress(this);
-            currentDevice.Envoirnment.RunningTime = DateTime.Now.Subtract(dateTimeStarted);
+            var intent = new A.Content.Intent(this, typeof(AckService));
+            // intent.PutExtra("host", currentSettings.Host);
+            // intent.PutExtra("device_xml", Serialization.Serialization.SaveToString<Device>(currentDevice, System.Text.Encoding.Default));
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+                StartForegroundService(intent);
+            else
+                StartService(intent);
         }
 
         private async void ButtonRegisterDevice_Click(object sender, System.EventArgs e)
@@ -172,21 +155,13 @@ namespace Home.Service.Android
 
             currentDevice.DeviceGroup = group;
             currentDevice.Location = location;
-            currentDevice.Type = (Device.DeviceType)(spinnerDeviceType.SelectedItemId + 5);
+            var type = (Device.DeviceType)(spinnerDeviceType.SelectedItemId + 5);
+            currentDevice.Type = type;
 
             // 0 => Smartphone : 5
             // 1 => SmartTV    : 6
             // 2 => SetTopBox  : 7
             Home.Communication.API api = new Home.Communication.API(host);
-            var client = new Home.Data.Client() { IsRealClient = true, Name = currentDevice.Name, ID = currentDevice.ID };
-            var loginResult = await api.LoginAsync(client);
-
-            // Process loginResult first
-            if (!loginResult.Success)
-            {
-                Toast.MakeText(this, $"Fehler beim Einloggen: {loginResult.ErrorMessage}", ToastLength.Short).Show();
-                return;
-            }
 
             var registerResult = await api.RegisterDeviceAsync(currentDevice);
             if (registerResult)
@@ -211,17 +186,16 @@ namespace Home.Service.Android
                 { }
 
                 SetGuiState(false);
-                Toast.MakeText(this, $"Das Ger#t wurde erfolgreich registriert!", ToastLength.Short).Show();
+                StartAckService();
+                Toast.MakeText(this, $"Das Gerät wurde erfolgreich registriert!", ToastLength.Short).Show();
             }
             else
                 Toast.MakeText(this, $"Fehler beim Registrieren des Gerätes!", ToastLength.Short).Show();
-
-            await api.LogoffAsync(client);
         }
 
         private void BtnShowInfos_Click(object sender, System.EventArgs e)
         {
-            RefreshDeviceInfo();
+            currentDevice.RefreshDevice(ContentResolver, this);
             Toast.MakeText(this, currentDevice.ToString(), ToastLength.Long).Show();
         }
     }
