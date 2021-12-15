@@ -77,8 +77,10 @@
     <Compile Include="Consts.cs" />
     <Compile Include="Helper\DeviceInfoHelper.cs" />
     <Compile Include="Helper\NetworkHelper.cs" />
+    <Compile Include="Helper\ServiceHelper.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Model\Settings.cs" />
+    <Compile Include="OnBootBroadcastReceiver.cs" />
     <Compile Include="Renderer.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

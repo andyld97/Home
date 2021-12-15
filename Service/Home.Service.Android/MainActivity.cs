@@ -121,7 +121,7 @@ namespace Home.Service.Android
             currentDevice.RefreshDevice(ContentResolver, this);
 
             if (isDeviceRegistered)
-                StartAckService();
+                ServiceHelper.StartAckService(this);
         }
 
         private void SetGuiState(bool value)
@@ -132,18 +132,7 @@ namespace Home.Service.Android
             spinnerDeviceType.Enabled =
             spinnerDeviceType.Enabled =
             buttonRegisterDevice.Enabled = value;
-        }
-
-        private void StartAckService()
-        {
-            var intent = new A.Content.Intent(this, typeof(AckService));
-            // intent.PutExtra("host", currentSettings.Host);
-            // intent.PutExtra("device_xml", Serialization.Serialization.SaveToString<Device>(currentDevice, System.Text.Encoding.Default));
-            if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
-                StartForegroundService(intent);
-            else
-                StartService(intent);
-        }
+        }    
 
         private async void ButtonRegisterDevice_Click(object sender, System.EventArgs e)
         {
@@ -186,7 +175,7 @@ namespace Home.Service.Android
                 { }
 
                 SetGuiState(false);
-                StartAckService();
+                ServiceHelper.StartAckService(this);
                 Toast.MakeText(this, $"Das Gerät wurde erfolgreich registriert!", ToastLength.Short).Show();
             }
             else

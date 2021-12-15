@@ -89,7 +89,6 @@ namespace Home.Communication
             }
         }
 
-
         public async Task<bool> RegisterDeviceAsync(Device device)
         {
             try
@@ -212,6 +211,9 @@ namespace Home.Communication
 
         public async Task<Answer<string>> ShutdownOrRestartDeviceAsync(bool shutdown, Device device)
         {
+            if (device.OS == OSType.Android)
+                return AnswerExtensions.Fail<string>("Android devices doesn't support this command!");
+
             string parameter = string.Empty;
             string executable;
             if (device.OS == OSType.Linux || device.OS == OSType.LinuxMint || device.OS == OSType.LinuxUbuntu || device.OS == OSType.Unix || device.OS == OSType.Other)
