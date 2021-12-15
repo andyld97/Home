@@ -180,7 +180,7 @@ namespace Home.Service.Android.Helper
 
         public static void RefreshDevice(this Device currentDevice, ContentResolver cr, Context context)
         {
-            currentDevice.ServiceClientVersion = "vAndroid 0.0.1";
+            currentDevice.ServiceClientVersion = "vAndroid 0.0.2";
             currentDevice.Envoirnment.OSName = $"Android {Build.VERSION.Release}";
             currentDevice.Envoirnment.OSVersion = $"{currentDevice.Envoirnment.OSName} (Sec. Patch: {Build.VERSION.SecurityPatch}) ({System.Environment.OSVersion})";
             currentDevice.OS = Device.OSType.Android;

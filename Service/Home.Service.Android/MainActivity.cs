@@ -6,6 +6,7 @@ using Android.Opengl;
 using Home.Service.Android.Helper;
 using Home.Model;
 using A = Android;
+using System;
 
 namespace Home.Service.Android
 {
@@ -14,11 +15,20 @@ namespace Home.Service.Android
     {
         private Button btnShowInfos;
         private Button buttonRegisterDevice;
+        private Button buttonToggleService;
+        private System.Timers.Timer serviceCheckingTimer;
 
         private EditText textHost;
         private EditText textLocation;
         private EditText textGroup;
         private Spinner spinnerDeviceType;
+        private LinearLayout layoutRegisterDevice;
+
+        private ImageView ledIsServiceRunning;
+        private ImageView ledIsDeviceRegistered;
+
+        private TextView textRegister;
+        private TextView textService;
 
         private Device currentDevice;
         private Model.Settings currentSettings;
@@ -88,21 +98,31 @@ namespace Home.Service.Android
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
 
+            layoutRegisterDevice = FindViewById<LinearLayout>(Resource.Id.layoutRegisterDevice);
             textHost = FindViewById<EditText>(Resource.Id.textHost);
             textLocation = FindViewById<EditText>(Resource.Id.textLocation);
             textGroup = FindViewById<EditText>(Resource.Id.textGroup);
-            spinnerDeviceType = FindViewById<Spinner>(Resource.Id.spinnerDeviceType);
-            
-            buttonRegisterDevice = FindViewById<Button>(Resource.Id.buttonRegisterDevice);
-            buttonRegisterDevice.Click += ButtonRegisterDevice_Click;
+            spinnerDeviceType = FindViewById<Spinner>(Resource.Id.spinnerDeviceType);            
 
+            // LEDs
+            ledIsServiceRunning = FindViewById<ImageView>(Resource.Id.ledIsServiceRunning);
+            ledIsDeviceRegistered = FindViewById<ImageView>(Resource.Id.ledIsDeviceRegistered);
+
+            // Buttons
+            buttonRegisterDevice = FindViewById<Button>(Resource.Id.buttonRegisterDevice);
             btnShowInfos = FindViewById<Button>(Resource.Id.buttonShowInfos);
+            buttonToggleService = FindViewById<Button>(Resource.Id.buttonToggleService);
+
+            textRegister = FindViewById<TextView>(Resource.Id.textRegister);
+            textService = FindViewById<TextView>(Resource.Id.textService);
+
+            // Assign event handler
+            buttonRegisterDevice.Click += ButtonRegisterDevice_Click;
             btnShowInfos.Click += BtnShowInfos_Click;
+            buttonToggleService.Click += ButtonToggleService_Click;
 
             if (isDeviceRegistered)
             {
-                SetGuiState(false);
-
                 textHost.Text = currentSettings.Host;
                 textLocation.Text = currentDevice.Location;
                 textGroup.Text = currentDevice.DeviceGroup;
@@ -117,22 +137,24 @@ namespace Home.Service.Android
                 renderer.OnInfosRecieved += delegate (string vendor, string renderer) { currentDevice.Envoirnment.Graphics = $"{vendor} {renderer}"; };
                 glSurfaceView.SetRenderer(renderer);
             }
+            else
+            {
+                GLSurfaceView glSurfaceView = FindViewById<GLSurfaceView>(Resource.Id.surface);
+                glSurfaceView.Visibility = A.Views.ViewStates.Gone;
+            }
 
             currentDevice.RefreshDevice(ContentResolver, this);
 
             if (isDeviceRegistered)
                 ServiceHelper.StartAckService(this);
-        }
 
-        private void SetGuiState(bool value)
-        {
-            textHost.Enabled =
-            textLocation.Enabled =
-            textGroup.Enabled =
-            spinnerDeviceType.Enabled =
-            spinnerDeviceType.Enabled =
-            buttonRegisterDevice.Enabled = value;
-        }    
+            RefreshServiceStatus();
+
+            // Initalize serviceCheckingTimer
+            serviceCheckingTimer = new System.Timers.Timer() { Interval = TimeSpan.FromSeconds(10).TotalMilliseconds };
+            serviceCheckingTimer.Elapsed += ServiceCheckingTimer_Elapsed;
+            serviceCheckingTimer.Start();
+        }
 
         private async void ButtonRegisterDevice_Click(object sender, System.EventArgs e)
         {
@@ -173,9 +195,9 @@ namespace Home.Service.Android
                 }
                 catch
                 { }
-
-                SetGuiState(false);
+            
                 ServiceHelper.StartAckService(this);
+                RefreshServiceStatus();
                 Toast.MakeText(this, $"Das Gerät wurde erfolgreich registriert!", ToastLength.Short).Show();
             }
             else
@@ -187,5 +209,57 @@ namespace Home.Service.Android
             currentDevice.RefreshDevice(ContentResolver, this);
             Toast.MakeText(this, currentDevice.ToString(), ToastLength.Long).Show();
         }
+
+        #region Service Status
+        private void SetGuiState(bool value)
+        {
+            /*textHost.Enabled =
+            textLocation.Enabled =
+            textGroup.Enabled =
+            spinnerDeviceType.Enabled =
+            spinnerDeviceType.Enabled =
+            buttonRegisterDevice.Enabled = value; */
+            layoutRegisterDevice.Visibility = (value ? A.Views.ViewStates.Visible : A.Views.ViewStates.Gone);
+            buttonToggleService.Enabled = currentSettings.IsDeviceRegistered;
+        }
+
+        /// <summary>
+        ///  ToDo: This methods need to be called in a timer periodically
+        /// </summary>
+        private void RefreshServiceStatus()
+        {
+            bool isServiceRunning = ServiceHelper.IsMyServiceRunning(this, typeof(AckService));
+            bool isDeviceRegistered = currentSettings.IsDeviceRegistered;
+            
+            SetGuiState(!isDeviceRegistered);
+
+            // Assign leds
+            ledIsDeviceRegistered.SetImageResource(isDeviceRegistered ? Resource.Drawable.led_on : Resource.Drawable.led_off  );
+            ledIsServiceRunning.SetImageResource(isServiceRunning ? Resource.Drawable.led_on : Resource.Drawable.led_off);
+
+            // Assing texts
+            textRegister.Text = (isDeviceRegistered ? $"Das Gerät {currentDevice.Name} ist registiert!" : $"Das Gerät {currentDevice.Name} nicht ist registiert!");
+            textService.Text = (isServiceRunning ? "Home.Service.Android ist aktiv!" : "Home.Service.Android nicht ist aktiv!");
+
+            buttonToggleService.Text = (isServiceRunning ? "Service beenden" : "Service starten");
+        }
+
+        private void ButtonToggleService_Click(object sender, System.EventArgs e)
+        {
+            bool isServiceRunning = ServiceHelper.IsMyServiceRunning(this, typeof(AckService));
+
+            if (!isServiceRunning)
+                ServiceHelper.StartAckService(this);
+            else 
+                ServiceHelper.StopAckService(this); 
+
+            RefreshServiceStatus();
+        }
+
+        private void ServiceCheckingTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            RefreshServiceStatus();
+        }
+        #endregion
     }
 }

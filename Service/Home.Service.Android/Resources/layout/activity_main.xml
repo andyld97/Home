@@ -30,62 +30,134 @@
 
     </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="23dp"
-        android:layout_marginBottom="10dp"
-        android:text="Gerät registrieren" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Host:" />
-
-    <EditText
-        android:id="@+id/textHost"
+    <LinearLayout
+        android:id="@+id/layoutRegisterDevice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="http://192.168.178.38:83" />
+        android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ort:" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="23dp"
+            android:layout_marginBottom="10dp"
+            android:text="Gerät registrieren" />
 
-    <EditText
-        android:id="@+id/textLocation"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Host:" />
+
+        <EditText
+            android:id="@+id/textHost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="http://192.168.178.38:83" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ort:" />
+
+        <EditText
+            android:id="@+id/textLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gruppe:" />
+
+        <EditText
+            android:id="@+id/textGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gerät-Art:" />
+
+        <Spinner
+            android:id="@+id/spinnerDeviceType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/device_type" />
+
+        <Button
+            android:id="@+id/buttonRegisterDevice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:layout_margin="2dp"
+            android:text="Gerät registrieren" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Gruppe:" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Gerätestatus:"
+            android:textStyle="bold"
+            android:textSize="23dp"
+            android:layout_marginBottom="10dp" />
 
-    <EditText
-        android:id="@+id/textGroup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Gerät-Art:" />
+            <ImageView
+                android:id="@+id/ledIsDeviceRegistered"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/led_on" />
 
-    <Spinner
-        android:id="@+id/spinnerDeviceType"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:entries="@array/device_type" />
+            <TextView
+                android:id="@+id/textRegister"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:textStyle="bold"
+                android:text="Das Gerät B1-Max ist registriert!" />
+        </LinearLayout>
 
-    <Button
-        android:id="@+id/buttonRegisterDevice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAllCaps="false"
-        android:layout_margin="2dp"
-        android:text="Gerät registrieren" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
+            <ImageView
+                android:id="@+id/ledIsServiceRunning"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/led_on" />
+
+            <TextView
+                android:id="@+id/textService"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:textStyle="bold"
+                android:text="Home.Service.Android ist aktiv!" />
+
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/buttonToggleService"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:layout_margin="5dp"
+            android:text="Service starten" />
+    </LinearLayout>
 </LinearLayout>
