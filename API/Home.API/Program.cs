@@ -8,7 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
 using System.Timers;
+using System.Web;
 using static Home.Data.Helper.GeneralHelper;
 
 namespace Home.API
@@ -57,7 +59,7 @@ namespace Home.API
             CreateHostBuilder(args).Build().Run();
         }
 
-        private static void HealthCheckTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private static async void HealthCheckTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             lock (_lock)
             {
@@ -98,12 +100,16 @@ namespace Home.API
             }
 
             // Check devices
+            List<string> messages = new List<string>();
             lock (Devices)
             {
                 foreach (var device in Devices.Where(p => p.Status != Device.DeviceStatus.Offline && p.LastSeen.AddMinutes(3) < DateTime.Now))
                 {
                     lock (EventQueues)
                     {
+                        if (device.Type == Device.DeviceType.SingleBoardDevice || device.Type == Device.DeviceType.Server)
+                            messages.Add(HttpUtility.UrlEncode($"The {device.Name} was flagged as offline!"));
+
                         device.Status = Device.DeviceStatus.Offline;
                         device.LogEntries.Add(new LogEntry(DateTime.Now, "No activity detected ... Device was flagged as offline!", LogEntry.LogLevel.Warning));
 
@@ -168,7 +174,27 @@ namespace Home.API
                         }
                     }
                 }
+            }
 
+            if (messages.Count > 0)
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    foreach (var message in messages)
+                    {
+                        string url = $"https://code-a-software.net/bots/home/notice.php?appkey=hujio7824hrt94hbg894gtqe7235lg356&other={message}";
+
+                        try
+                        {
+                            await client.GetAsync(url);
+                        }
+                        catch
+                        {
+                            // ignore
+                        }
+
+                    }
+                }
             }
 
             // ToDo: *** Truncate device log automatically if it gets too big
