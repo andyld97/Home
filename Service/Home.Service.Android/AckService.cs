@@ -38,7 +38,9 @@ namespace Home.Service.Android
         {
             CreateNotificationChannel(ApplicationContext);
             Intent notificationIntent = new Intent(this, typeof(MainActivity));
-            PendingIntent pendingIntent = PendingIntent.GetActivity(this, 0, notificationIntent, 0);
+            // Supporting Android 12 (Immutable Pending Intent)
+            // https://developer.android.com/guide/components/intents-filters#DeclareMutabilityPendingIntent
+            PendingIntent pendingIntent = PendingIntent.GetActivity(this, 0, notificationIntent, PendingIntentFlags.Immutable);
 
             // Get settings and currentDevice
             string xmlDevicePath = string.Empty;
