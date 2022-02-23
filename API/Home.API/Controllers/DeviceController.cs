@@ -84,21 +84,19 @@ namespace Home.API.Controllers
                     var dev = Program.Devices.Where(p => p.ID == device.ID).FirstOrDefault();
                     if (dev != null)
                     {
-                        // Too many log entries (only report important log entries) and ack works fine now!
-                        // device.LogEntries.Add("Recieved ack!".FormatLogLine(now));
-                        // _logger.LogInformation($"Recieved ack from device {device}!");
+                        // Check if device was previously offline
                         if (dev.Status == Device.DeviceStatus.Offline)
                         {
-                            dev.LogEntries.Add(new LogEntry(DateTime.Now, "Device has recovered and is now online again!", LogEntry.LogLevel.Information));
+                            dev.LogEntries.Add(new LogEntry(DateTime.Now, $"Device \"{dev.Name}\" has recovered and is now online again!", LogEntry.LogLevel.Information, (device.Type == Device.DeviceType.SingleBoardDevice || device.Type == Device.DeviceType.Server)));
                             dev.IsScreenshotRequired = true;
                         }
+
+                        // Check if a newer client version is used
                         if (dev.ServiceClientVersion != device.ServiceClientVersion && !string.IsNullOrEmpty(dev.ServiceClientVersion))
                             dev.LogEntries.Add(new LogEntry(DateTime.Now, $"Detected new client version: {device.ServiceClientVersion}", LogEntry.LogLevel.Information));
 
                         isScreenshotRequired = dev.IsScreenshotRequired;
                         dev.Update(device, now, Device.DeviceStatus.Active);
-                        // dev.IsScreenshotRequired = false;
-                        // Will not be set here (only will be set if a screenshot was posted)
 
                         lock (dev.Messages)
                         {

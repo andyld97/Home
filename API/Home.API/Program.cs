@@ -1,5 +1,6 @@
 using Home.Data;
 using Home.Data.Events;
+using Home.Data.Helper;
 using Home.Model;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
@@ -100,18 +101,14 @@ namespace Home.API
             }
 
             // Check devices
-            List<string> messages = new List<string>();
             lock (Devices)
             {
                 foreach (var device in Devices.Where(p => p.Status != Device.DeviceStatus.Offline && p.LastSeen.AddMinutes(3) < DateTime.Now))
                 {
                     lock (EventQueues)
                     {
-                        if (device.Type == Device.DeviceType.SingleBoardDevice || device.Type == Device.DeviceType.Server)
-                            messages.Add(HttpUtility.UrlEncode($"The {device.Name} was flagged as offline!"));
-
                         device.Status = Device.DeviceStatus.Offline;
-                        device.LogEntries.Add(new LogEntry(DateTime.Now, "No activity detected ... Device was flagged as offline!", LogEntry.LogLevel.Warning));
+                        device.LogEntries.Add(new LogEntry(DateTime.Now, $"No activity detected ... Device \"{device.Name}\" was flagged as offline!", LogEntry.LogLevel.Warning, (device.Type == Device.DeviceType.SingleBoardDevice || device.Type == Device.DeviceType.Server)));
 
                         foreach (var queue in EventQueues)
                         {
@@ -176,26 +173,25 @@ namespace Home.API
                 }
             }
 
-            if (messages.Count > 0)
+            // Check for tg logging (extract log messages)
+            List<LogEntry> logEntries = new List<LogEntry>();
+            lock (Devices)
             {
-                using (HttpClient client = new HttpClient())
+                foreach (var device in Devices)
                 {
-                    foreach (var message in messages)
+                    foreach (var logEntry in device.LogEntries.Where(l => l.LogTelegram))
                     {
-                        string url = $"https://code-a-software.net/bots/home/notice.php?appkey=hujio7824hrt94hbg894gtqe7235lg356&other={message}";
-
-                        try
-                        {
-                            await client.GetAsync(url);
-                        }
-                        catch
-                        {
-                            // ignore
-                        }
-
+                        // Add to list and reset telegram flag
+                        logEntries.Add(logEntry);
+                        logEntry.LogTelegram = false;
                     }
+
                 }
             }
+
+            // Send log messages
+            foreach (var log in logEntries)
+                await TGLogger.LogTelegram(log.ToString());
 
             // ToDo: *** Truncate device log automatically if it gets too big
             // Delete these log lines and insert at 0, "Truncated log file of this device"

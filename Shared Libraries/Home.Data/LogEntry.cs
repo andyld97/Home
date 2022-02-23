@@ -23,6 +23,12 @@ namespace Home.Data
 #endif
         public string Message { get; set; }
 
+        [JsonIgnore]
+#if !LEGACY
+        [System.Text.Json.Serialization.JsonIgnore]
+#endif
+        public bool LogTelegram { get; set; }
+
         public enum LogLevel
         {
             Debug,
@@ -31,15 +37,15 @@ namespace Home.Data
             Error
         }
 
-
         public LogEntry()
         { }
 
-        public LogEntry(DateTime timestamp, string message, LogLevel level)
+        public LogEntry(DateTime timestamp, string message, LogLevel level, bool logTelegram = false)
         {
             Timestamp = timestamp;
             Message = message;
             Level = level;
+            LogTelegram = logTelegram;
         }
 
         public override string ToString()
