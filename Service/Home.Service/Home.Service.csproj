@@ -139,7 +139,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Management">
-      <Version>5.0.0</Version>
+      <Version>7.0.0-preview.1.22076.8</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
