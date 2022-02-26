@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Xml.Serialization;
 
 namespace Home.Data
 {
@@ -27,6 +28,7 @@ namespace Home.Data
 #if !LEGACY
         [System.Text.Json.Serialization.JsonIgnore]
 #endif
+        [XmlIgnore]
         public bool LogTelegram { get; set; }
 
         public enum LogLevel
@@ -38,6 +40,9 @@ namespace Home.Data
         }
 
         public LogEntry()
+        { }
+
+        public LogEntry(string message, LogLevel level, bool logTelegram = false) : this(DateTime.Now, message, level, logTelegram)
         { }
 
         public LogEntry(DateTime timestamp, string message, LogLevel level, bool logTelegram = false)

@@ -65,11 +65,11 @@ namespace Home.API.Controllers
         }
 
         [HttpPost("ack")]
-        public IActionResult Ack([FromBody] Device device)
+        public IActionResult Ack([FromBody] Device refreshedDevice)
         {
             var now = DateTime.Now;
 
-            if (device == null)
+            if (refreshedDevice == null)
                 return BadRequest(AnswerExtensions.Fail("Invalid device given"));
 
             bool result = false;
@@ -79,38 +79,62 @@ namespace Home.API.Controllers
 
             lock (Program.Devices)
             {
-                if (Program.Devices.Any(d => d.ID == device.ID))
+                if (Program.Devices.Any(d => d.ID == refreshedDevice.ID))
                 {
-                    var dev = Program.Devices.Where(p => p.ID == device.ID).FirstOrDefault();
-                    if (dev != null)
+                    var oldDevice = Program.Devices.Where(p => p.ID == refreshedDevice.ID).FirstOrDefault();
+                    if (oldDevice != null)
                     {
                         // Check if device was previously offline
-                        if (dev.Status == Device.DeviceStatus.Offline)
+                        if (oldDevice.Status == Device.DeviceStatus.Offline)
                         {
-                            dev.LogEntries.Add(new LogEntry(DateTime.Now, $"Device \"{dev.Name}\" has recovered and is now online again!", LogEntry.LogLevel.Information, (device.Type == Device.DeviceType.SingleBoardDevice || device.Type == Device.DeviceType.Server)));
-                            dev.IsScreenshotRequired = true;
+                            oldDevice.LogEntries.Add(new LogEntry(DateTime.Now, $"Device \"{oldDevice.Name}\" has recovered and is now online again!", LogEntry.LogLevel.Information, (refreshedDevice.Type == Device.DeviceType.SingleBoardDevice || refreshedDevice.Type == Device.DeviceType.Server)));
+                            oldDevice.IsScreenshotRequired = true;
                         }
 
                         // Check if a newer client version is used
-                        if (dev.ServiceClientVersion != device.ServiceClientVersion && !string.IsNullOrEmpty(dev.ServiceClientVersion))
-                            dev.LogEntries.Add(new LogEntry(DateTime.Now, $"Detected new client version: {device.ServiceClientVersion}", LogEntry.LogLevel.Information));
+                        if (oldDevice.ServiceClientVersion != refreshedDevice.ServiceClientVersion && !string.IsNullOrEmpty(oldDevice.ServiceClientVersion))
+                            oldDevice.LogEntries.Add(new LogEntry(DateTime.Now, $"Detected new client version: {refreshedDevice.ServiceClientVersion}", LogEntry.LogLevel.Information));
 
-                        isScreenshotRequired = dev.IsScreenshotRequired;
-                        dev.Update(device, now, Device.DeviceStatus.Active);
+                        // Detect any device changes and log them (also to Telegram)
 
-                        lock (dev.Messages)
+                        // CPU
+                        if (oldDevice.Envoirnment.CPUName != refreshedDevice.Envoirnment.CPUName && !string.IsNullOrEmpty(refreshedDevice.Envoirnment.CPUName))
+                            oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected CPU change. CPU {oldDevice.Envoirnment.CPUName} got replaced with {refreshedDevice.Envoirnment.CPUName}", LogEntry.LogLevel.Information, true));
+                        if (oldDevice.Envoirnment.CPUCount != refreshedDevice.Envoirnment.CPUCount && refreshedDevice.Envoirnment.CPUCount > 0)
+                            oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected CPU-Count change from {oldDevice.Envoirnment.CPUCount} to {refreshedDevice.Envoirnment.CPUCount}", LogEntry.LogLevel.Information, true));
+
+                        // OS (Ignore Windows Updates, just document enum chnages)
+                        if (oldDevice.OS != refreshedDevice.OS)
+                            oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected OS change from {oldDevice.OS} to {refreshedDevice.OS}", LogEntry.LogLevel.Information, true));
+
+                        // Motherboard
+                        if (oldDevice.Envoirnment.Motherboard != refreshedDevice.Envoirnment.Motherboard && !string.IsNullOrEmpty(refreshedDevice.Envoirnment.Motherboard))
+                            oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected Motherboard change from {oldDevice.Envoirnment.Motherboard} to {refreshedDevice.Envoirnment.Motherboard}", LogEntry.LogLevel.Information, true));
+
+                        // Graphics
+                        if (oldDevice.Envoirnment.Graphics != refreshedDevice.Envoirnment.Graphics && !string.IsNullOrEmpty(refreshedDevice.Envoirnment.Graphics))
+                            oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected Motherboard change from {oldDevice.Envoirnment.Graphics} to {refreshedDevice.Envoirnment.Graphics}", LogEntry.LogLevel.Information, true));
+
+                        // RAM
+                        if (oldDevice.Envoirnment.TotalRAM != refreshedDevice.Envoirnment.TotalRAM && refreshedDevice.Envoirnment.TotalRAM > 0)
+                            oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected RAM change from {oldDevice.Envoirnment.TotalRAM} GB to {refreshedDevice.Envoirnment.TotalRAM} GB", LogEntry.LogLevel.Information, true));
+
+                        isScreenshotRequired = oldDevice.IsScreenshotRequired;
+                        oldDevice.Update(refreshedDevice, now, Device.DeviceStatus.Active);
+
+                        lock (oldDevice.Messages)
                         {
-                            if (dev.Messages.Count != 0)
-                                hasMessage = dev.Messages.Dequeue();
+                            if (oldDevice.Messages.Count != 0)
+                                hasMessage = oldDevice.Messages.Dequeue();
                         }
 
                         if (hasMessage == null)
                         {
-                            lock (dev.Commands)
+                            lock (oldDevice.Commands)
                             {
                                 // Check for commands
-                                if (dev.Commands.Count != 0)
-                                    hasCommand = dev.Commands.Dequeue();
+                                if (oldDevice.Commands.Count != 0)
+                                    hasCommand = oldDevice.Commands.Dequeue();
                             }
                         }
                         
@@ -121,7 +145,7 @@ namespace Home.API.Controllers
                             foreach (var queue in Program.EventQueues)
                             {
                                 queue.LastEvent = now;
-                                queue.Events.Enqueue(new EventQueueItem() { DeviceID = device.ID, EventData = new EventData() { EventDevice = dev }, EventDescription = EventQueueItem.EventKind.ACK, EventOccured = now });
+                                queue.Events.Enqueue(new EventQueueItem() { DeviceID = refreshedDevice.ID, EventData = new EventData() { EventDevice = oldDevice }, EventDescription = EventQueueItem.EventKind.ACK, EventOccured = now });
                             }
                         }
                     }
@@ -129,14 +153,14 @@ namespace Home.API.Controllers
                 else
                 {
                     // Temporay fix if data is empty again :(
-                    Program.Devices.Add(device);
+                    Program.Devices.Add(refreshedDevice);
 
                     lock (Program.EventQueues)
                     {
                         foreach (var queue in Program.EventQueues)
                         {
                             queue.LastEvent = now;
-                            queue.Events.Enqueue(new EventQueueItem() { DeviceID = device.ID, EventData = new EventData() { EventDevice = device }, EventDescription = EventQueueItem.EventKind.NewDeviceConnected, EventOccured = now });
+                            queue.Events.Enqueue(new EventQueueItem() { DeviceID = refreshedDevice.ID, EventData = new EventData() { EventDevice = refreshedDevice }, EventDescription = EventQueueItem.EventKind.NewDeviceConnected, EventOccured = now });
                         }
                     }
                 }
