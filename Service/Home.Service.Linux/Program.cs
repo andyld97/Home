@@ -16,8 +16,9 @@ namespace Home.Service.Linux
 {
     public class Program
     {
+        #region Private Members
         private static readonly Device currentDevice = new Device();
-        private static readonly Version ClientVersion = new Version(0, 0, 4);
+        private static readonly Version ClientVersion = new Version(0, 0, 5);
         private static readonly DateTime startTime = DateTime.Now;
         private static Home.Communication.API api;
         private static JObject jInfo = null;
@@ -27,6 +28,9 @@ namespace Home.Service.Linux
         private static readonly object _lock = new object();
         private static bool isSendingAck = false;
         private static string NormalUser = string.Empty;
+        #endregion
+
+        #region Main
 
         public static void Main(string[] args)
         {
@@ -37,15 +41,15 @@ namespace Home.Service.Linux
                 Task task = MainAsync(args);
                 task.Wait();
 
-             //   if (Console.KeyAvailable)
-               //     Console.ReadKey();
-                //else
+                // if (Console.KeyAvailable)
+                // Console.ReadKey();
+                // else
+                // {
+                while (true)
                 {
-                    while (true)
-                    {
-                        System.Threading.Thread.Sleep(100);
-                    }
+                    System.Threading.Thread.Sleep(100);
                 }
+                // }
             }
             catch (Exception e)
             {
@@ -92,7 +96,6 @@ namespace Home.Service.Linux
                     isSignedIn = true;
                 }
 
-
                 try
                 {
                     System.IO.File.WriteAllText($"{CONFIG_FILENAME}.bak", configJson);
@@ -114,8 +117,10 @@ namespace Home.Service.Linux
                 // Execute on start
                 AckTimer_Elapsed(null, null);
             }
-
         }
+        #endregion
+
+        #region Ack
 
         private static async void AckTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
@@ -171,7 +176,7 @@ namespace Home.Service.Linux
                         }
 
                         Console.WriteLine("Showing message " + shellScript);
-                        ExecuteSystemCommand("sudo", $"-H -u {NormalUser} bash -c \"sh zenity.sh\"", async: true);
+                        Helper.ExecuteSystemCommand("sudo", $"-H -u {NormalUser} bash -c \"sh zenity.sh\"", async: true);
                         Console.WriteLine("Test");
                     }
                     else if (ackResult.Result.Result.HasFlag(AckResult.Ack.CommandRecieved))
@@ -180,7 +185,7 @@ namespace Home.Service.Linux
                         {
                             var command = JsonConvert.DeserializeObject<Command>(ackResult.Result.JsonData);
                             if (command != null)
-                                ExecuteSystemCommand(command.Executable, command.Parameter);
+                                Helper.ExecuteSystemCommand(command.Executable, command.Parameter);
                         }
                         catch (Exception ex)
                         {
@@ -199,12 +204,15 @@ namespace Home.Service.Linux
                 isSendingAck = false;
         }
 
+        #endregion
+
+        #region Create Screenshot
         public static async Task CreateScreenshot()
         {
             Console.WriteLine("Creating a screenshot ...");
 
             // 1) Create a screenshot (but ensure that this command will be executed as the normal user)
-            ExecuteSystemCommand("sudo", $"-H -u {NormalUser} bash -c \"sh screenshot.sh\"");
+            Helper.ExecuteSystemCommand("sudo", $"-H -u {NormalUser} bash -c \"sh screenshot.sh\"");
 
             // 2) Post screenshot to the api
             if (System.IO.File.Exists("screenshot.png"))
@@ -225,6 +233,9 @@ namespace Home.Service.Linux
                 }
             }
         }
+        #endregion
+
+        #region Refresh / Read Device Stats
 
         public static void RefreshDeviceInfo()
         {
@@ -236,37 +247,14 @@ namespace Home.Service.Linux
             currentDevice.ServiceClientVersion = $"vLinux{ClientVersion.ToString(3)}";
             currentDevice.Envoirnment.RunningTime = DateTime.Now.Subtract(startTime);
 
-            ParseHardwareInfo(ExecuteSystemCommand("lshw", "-json"), currentDevice);
+            ParseHardwareInfo(Helper.ExecuteSystemCommand("lshw", "-json"), currentDevice);
             ReadMemoryAndCPULoad();
             ReadDiskUsage();
         }
 
-        public static string ExecuteSystemCommand(string command, string parameter, bool async = false)
-        {
-            StringBuilder sb = new StringBuilder();
-            try
-            {
-                Process proc = new Process { StartInfo = new ProcessStartInfo(command, parameter) { RedirectStandardOutput = !async } };
-                proc.Start();
-                
-                while (!proc.StandardOutput.EndOfStream && !async)
-                {
-                    var line = proc.StandardOutput.ReadLine();
-                    sb.Append(line);
-                    sb.Append(Environment.NewLine);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-
-            return sb.ToString();
-        }
-
         public static void ReadDiskUsage()
         {
-            string usageInfo = ExecuteSystemCommand("iostat", "-dx");
+            string usageInfo = Helper.ExecuteSystemCommand("iostat", "-dx");
 
             string[] lines = usageInfo.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             // Device            r/s     rkB/s   rrqm/s  %rrqm r_await rareq-sz     w/s     wkB/s   wrqm/s  %wrqm w_await wareq-sz     d/s     dkB/s   drqm/s  %drqm d_await dareq-sz  aqu-sz  %util
@@ -285,15 +273,13 @@ namespace Home.Service.Linux
                     amountOfDevices++;
                 }
             }
-
             currentDevice.Envoirnment.DiskUsage = Math.Round((usageSum / (double)amountOfDevices), 2);           
         }
-
 
         public static void ReadMemoryAndCPULoad()
         {
             // execute "free" proc
-            string ramInfo = ExecuteSystemCommand("sh", "hw.sh");
+            string ramInfo = Helper.ExecuteSystemCommand("sh", "hw.sh");
 
             if (!string.IsNullOrEmpty(ramInfo))
             {
@@ -311,7 +297,6 @@ namespace Home.Service.Linux
                     currentDevice.Envoirnment.TotalRAM = Math.Round((total / 1024.0 / 1024.0), 2);
 
                     // 3GB used (75 %)
-
                     double totalInBytes = total * 1024.0;
                     double freeInBytes = free * 1024.0;
 
@@ -327,36 +312,9 @@ namespace Home.Service.Linux
                     currentDevice.Envoirnment.CPUUsage = usage;
             }
         }
+        #endregion
 
-        private static bool IsValidJson(string strInput)
-        {
-            if (string.IsNullOrWhiteSpace(strInput)) { return false; }
-            strInput = strInput.Trim();
-            if ((strInput.StartsWith("{") && strInput.EndsWith("}")) || //For object
-                (strInput.StartsWith("[") && strInput.EndsWith("]"))) //For array
-            {
-                try
-                {
-                    var obj = JToken.Parse(strInput);
-                    return true;
-                }
-                catch (JsonReaderException jex)
-                {
-                    //Exception in parsing json
-                    Console.WriteLine(jex.Message);
-                    return false;
-                }
-                catch (Exception ex) //some other exception
-                {
-                    Console.WriteLine(ex.ToString());
-                    return false;
-                }
-            }
-            else
-            {
-                return false;
-            }
-        }
+        #region Parse Hardware Info
 
         public static void ParseHardwareInfo(string json, Device device)
         {
@@ -364,7 +322,7 @@ namespace Home.Service.Linux
                 return;
              
             // Check if json is valid
-            if (!IsValidJson(json))
+            if (!Helper.IsValidJson(json))
             {
                 Console.WriteLine("Ensure that the newest lswh version is installed (https://packages.debian.org/jessie/utils/lshw). Because it seems that you're using a version with produces invalid json!");
                 Environment.Exit(-1);
@@ -410,7 +368,7 @@ namespace Home.Service.Linux
 
 
             // Get df / try to fill missing values
-            string result = ExecuteSystemCommand("df", "-H");
+            string result = Helper.ExecuteSystemCommand("df", "-H");
 
             if (!string.IsNullOrEmpty(result))
             {
@@ -465,7 +423,6 @@ namespace Home.Service.Linux
 
             return 0;
         }
-
 
         public static void ProcessJToken(JToken child, Device device)
         {
@@ -608,5 +565,6 @@ namespace Home.Service.Linux
                 }
             }
         }
+        #endregion
     }
 }
