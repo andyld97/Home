@@ -157,7 +157,7 @@ namespace Home.API
                         }
                     }
 
-                    foreach (var shot in device.ScreenshotFileNames)
+                    foreach (var shot in screenshotsToRemove)
                     {
                         device.ScreenshotFileNames.Remove(shot);
                         string path = System.IO.Path.Combine(SCREENSHOTS_PATH, device.ID, $"{shot}.png");
