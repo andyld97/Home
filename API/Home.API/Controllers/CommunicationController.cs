@@ -5,6 +5,7 @@ using Home.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Home.API.Controllers
@@ -52,14 +53,54 @@ namespace Home.API.Controllers
                     Client cl = Program.Clients.Where(p => p.ID == client.ID).FirstOrDefault();
                     if (cl != null)
                         Program.Clients.Remove(cl);
-                }
 
-                lock (Program.EventQueues)
-                {
-                    EventQueue eventQueue = Program.EventQueues.Where(p => p.ClientID == client.ID).FirstOrDefault();
-                    if (eventQueue != null)
-                        Program.EventQueues.Remove(eventQueue);
-                }              
+
+                    lock (Program.EventQueues)
+                    {
+                        EventQueue eventQueue = Program.EventQueues.Where(p => p.ClientID == client.ID).FirstOrDefault();
+                        if (eventQueue != null)
+                            Program.EventQueues.Remove(eventQueue);
+                    }
+
+                    // Clean UP liveMode Assoc
+                    if (Program.LiveModeAssoc.ContainsKey(cl))
+                    {
+                        var devices = Program.LiveModeAssoc[cl].Select(d => Program.Devices.FirstOrDefault(f => f.ID == d));
+
+                        // Check if we can set the device to false (if true),
+                        // because if this device is also used by another client, we cannot set it to false then.
+                        foreach (var partictularDevice in devices)
+                        {
+                            bool found = false;
+
+                            // Check if we can disable this device (if it is not used by any other clients)
+                            foreach (var item in Program.LiveModeAssoc.Keys)
+                            {
+                                if (item.ID == cl.ID)
+                                    continue;
+
+                                if (Program.LiveModeAssoc[item].Contains(partictularDevice.ID))
+                                {
+                                    found = true;
+                                    break;
+                                }
+                            }
+
+                            if (!found)
+                            {
+                                lock (Program.Devices)
+                                {
+                                    partictularDevice.IsLive = false;
+                                    partictularDevice.LogEntries.Add(new LogEntry($"Device \"{partictularDevice.Name}\" status changed to normal, because one or multiple clients (those that have aquired live view) have logged off!", LogEntry.LogLevel.Information, false));
+                                }
+                                
+                            }
+                        }
+
+                        Program.LiveModeAssoc.Remove(cl);
+                    }
+
+                }
 
                 _logger.LogInformation($"Client {client} has just logged off!");
             }
@@ -119,10 +160,10 @@ namespace Home.API.Controllers
                 if (device != null)
                 {
                     if (device.OS == Device.OSType.Android)
-                        return BadRequest("Android Device doesn't support screenshots");
+                        return BadRequest("Android Device doesn't support screenshots"!);
 
                     device.IsScreenshotRequired = true;
-                    _logger.LogInformation($"Aquired screenshot from {cl?.Name} for device {device.Name}");
+                    _logger.LogInformation($"Aquired screenshot from {cl?.Name} for device {device.Name}!");
                 }
             }
 
@@ -223,8 +264,44 @@ namespace Home.API.Controllers
                 }
             }
 
-
             return Ok(AnswerExtensions.Success("ok"));
+        }
+
+        [HttpGet("status/{clientId}/{deviceId}/{live:bool}")]
+        public IActionResult SetLiveStatus(string clientId, string deviceId, bool live)
+        {
+            lock (Program.Devices)
+            {
+                var device = Program.Devices.FirstOrDefault(d => d.ID == deviceId);
+                if (device == null)
+                    return BadRequest(AnswerExtensions.Fail($"Device couldn't be found: {deviceId}"));
+
+                if (device.Status == Device.DeviceStatus.Offline)
+                    return BadRequest(AnswerExtensions.Fail("Cannot set live status if device is offline!"));
+
+                lock (Program.Clients)
+                {
+                    var client = Program.Clients.FirstOrDefault(c => c.ID == clientId);
+                    if (client == null)
+                        return BadRequest(AnswerExtensions.Fail($"Client couldn't be found: {clientId}"));
+
+                    if (Program.LiveModeAssoc.ContainsKey(client))
+                    {
+                        var list = Program.LiveModeAssoc[client];
+                        if (!list.Contains(deviceId))
+                            list.Add(deviceId);
+                    }
+                    else
+                        Program.LiveModeAssoc.Add(client, new List<string>() { deviceId });
+
+                    lock (Program.Devices)
+                    {
+                        device.IsLive = live;
+                        device.LogEntries.Add(new LogEntry($"Device \"{device.Name}\" status changed to {(live ? "live" : "normal")} by client {client.Name}!", LogEntry.LogLevel.Information, false));
+                    }
+                }
+                return Ok(AnswerExtensions.Success("ok"));
+            }
         }
 
         [HttpPost("send_command")]

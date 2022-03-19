@@ -1,4 +1,4 @@
-﻿<Fluent:RibbonWindow  xmlns:Fluent="urn:fluent-ribbon" x:Class="Home.MainWindow"
+﻿<Fluent:RibbonWindow xmlns:Fluent="urn:fluent-ribbon" x:Class="Home.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -130,8 +130,8 @@
                     <Grid x:Name="DeviceInfoHint" Visibility="Visible">
                         <TextBlock Text="Kein Gerät ausgewählt!" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Foreground="{DynamicResource BlackBrush}" FontSize="33" />
                     </Grid>
-                    
-                    <Grid x:Name="DeviceInfo" Visibility="Collapsed">
+
+                    <Grid x:Name="DeviceInfo" Visibility="Hidden">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
                             <RowDefinition Height="Auto" />

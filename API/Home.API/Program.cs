@@ -21,6 +21,7 @@ namespace Home.API
         private static ILogger _logger;
         public readonly static List<EventQueue> EventQueues = new List<EventQueue>();
         public readonly static List<Client> Clients = new List<Client>();
+        public readonly static Dictionary<Client, List<string>> LiveModeAssoc = new Dictionary<Client, List<string>>();
         public static List<Device> Devices = new List<Device>();
 
         private static readonly Timer healthCheckTimer = new Timer();
@@ -108,6 +109,9 @@ namespace Home.API
                     lock (EventQueues)
                     {
                         device.Status = Device.DeviceStatus.Offline;
+
+                        // If a device turns offline, usually the user wants to end the live state if the device is shutdown for example
+                        device.IsLive = false;
                         device.LogEntries.Add(new LogEntry(DateTime.Now, $"No activity detected ... Device \"{device.Name}\" was flagged as offline!", LogEntry.LogLevel.Warning, (device.Type == Device.DeviceType.SingleBoardDevice || device.Type == Device.DeviceType.Server)));
 
                         foreach (var queue in EventQueues)
@@ -139,7 +143,6 @@ namespace Home.API
                         device.LogEntries.Add(new LogEntry(DateTime.Now, "Last screenshot was older than 12h. Aquiring a new screenshot ...", LogEntry.LogLevel.Information));
                     }
                 }
-
 
                 // Delete screenshots which are older than one day
                 foreach (var device in Devices)

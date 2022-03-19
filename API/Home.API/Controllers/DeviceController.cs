@@ -120,6 +120,11 @@ namespace Home.API.Controllers
                             oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected RAM change from {oldDevice.Envoirnment.TotalRAM} GB to {refreshedDevice.Envoirnment.TotalRAM} GB", LogEntry.LogLevel.Information, true));
 
                         isScreenshotRequired = oldDevice.IsScreenshotRequired;
+
+                        // If this device is live, ALWAYS send a screenshot on ack!
+                        if (oldDevice.IsLive.HasValue && oldDevice.IsLive.Value)
+                            isScreenshotRequired = true;
+
                         oldDevice.Update(refreshedDevice, now, Device.DeviceStatus.Active);
 
                         lock (oldDevice.Messages)

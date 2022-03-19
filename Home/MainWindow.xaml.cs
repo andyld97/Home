@@ -44,6 +44,7 @@ namespace Home
             client.ID = ClientData.Instance.ClientID;
 
             Closing += MainWindow_Closing;
+            ScreenshotViewer.PassApiAndClient(api, client);
             ScreenshotViewer.OnResize += ScreenshotViewer_OnResize;
             ScreenshotViewer.OnScreenShotAquired += ScreenshotViewer_OnScreenShotAquired;
         }
@@ -91,7 +92,7 @@ namespace Home
             if (result.Success)
                 RefreshDeviceHolder();
             else
-                MessageBox.Show(result.ErrorMessage);
+                MessageBox.Show(result.ErrorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
             updateTimer.Interval = TimeSpan.FromSeconds(5);
             updateTimer.Tick += UpdateTimer_Tick;

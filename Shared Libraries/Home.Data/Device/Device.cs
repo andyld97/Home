@@ -30,6 +30,7 @@ namespace Home.Model
         private OSType os;
         private string deviceGroup;
         private string location;
+        private bool? isLive;
 
         [JsonProperty("name")]
 #if !LEGACY
@@ -180,6 +181,30 @@ namespace Home.Model
                 {
                     location = value;
                     OnPropertyChanged(nameof(Location));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Determines if this device is beeing watched.
+        /// It's not really live, but if this property is true, the device will be forced to send a screenshot in every ack!
+        /// </summary>
+        [JsonProperty("is_live")]
+        #if !LEGACY
+        [System.Text.Json.Serialization.JsonPropertyName("is_live")]
+        #endif
+        [XmlIgnore] 
+        // Ignore (won't save) because on api start we do not know any clients which may be still using this
+        // to prevent that if there are no clients that we generate unneccessary data
+        public bool? IsLive
+        {
+            get => isLive;
+            set
+            {
+                if (value != isLive)
+                {
+                    isLive = value;
+                    OnPropertyChanged(nameof(IsLive));
                 }
             }
         }
@@ -417,6 +442,10 @@ namespace Home.Model
             Envoirnment = other.Envoirnment;
             DiskDrives = other.DiskDrives;
             ServiceClientVersion = other.ServiceClientVersion;
+
+            // Only update if value != null to keep old versions compatible (they may don't have this property yet)
+            if (other.IsLive != null)
+                IsLive = other.IsLive;
 
             foreach (var shot in other.ScreenshotFileNames)
                 ScreenshotFileNames.Add(shot);

@@ -31,6 +31,7 @@ namespace Home.Communication
         public static readonly string CLEAR_LOG = "clear_log";
         public static readonly string SEND_MESSAGE = "send_message";
         public static readonly string SEND_COMMAND = "send_command";
+        public static readonly string STATUS = "status";
 
         public API(string host)
         {
@@ -301,6 +302,29 @@ namespace Home.Communication
             {
                 // LOG
                 return AnswerExtensions.Fail<bool>(ex.Message);
+            }
+        }
+
+        public async Task<Answer<string>> SetLiveStatusAsync(Client client, Device device , bool status)
+        {
+            try
+            {
+                string url = $"{GenerateEpUrl(true, STATUS)}/{client.ID}/{device.ID}/{status}";
+                var result = await httpClient.GetAsync(url);
+
+                var content = await result.Content.ReadAsStringAsync();
+                if (!string.IsNullOrEmpty(content))
+                {
+                    var item = System.Text.Json.JsonSerializer.Deserialize<Answer<string>>(content);
+                    return item;
+                }
+                else
+                    return AnswerExtensions.Fail<string>("Empty content!");
+            }
+            catch (Exception ex)
+            {
+                // LOG
+                return AnswerExtensions.Fail<string>(ex.Message);
             }
         }
 

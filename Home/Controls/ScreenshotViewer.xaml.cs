@@ -1,4 +1,5 @@
-﻿using Home.Data;
+﻿using Home.Communication;
+using Home.Data;
 using Home.Model;
 using Microsoft.Win32;
 using System;
@@ -7,7 +8,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 
 namespace Home.Controls
 {
@@ -17,12 +17,8 @@ namespace Home.Controls
     public partial class ScreenshotViewer : UserControl
     {
         private bool isLittle = true;
-        private bool isInLiveMode = false;
         private string lastDate = string.Empty;
         private Device lastSelectedDevice = null;
-        private bool isAquiringScreenshotTimerActive = false;
-        private object sync = new object();
-        private static readonly DispatcherTimer autoRefreshTimer = new DispatcherTimer();
 
         public delegate void resizeHandler(bool isLittle);
         public event resizeHandler OnResize;
@@ -32,25 +28,6 @@ namespace Home.Controls
         public ScreenshotViewer()
         {
             InitializeComponent();
-            SetLiveMode(false, force: true);
-            autoRefreshTimer.Interval = TimeSpan.FromMinutes(1);
-            autoRefreshTimer.Tick += AutoRefreshTimer_Tick;
-        }
-
-        private void AutoRefreshTimer_Tick(object sender, EventArgs e)
-        {
-            lock (sync)
-            {
-                if (isAquiringScreenshotTimerActive)
-                    return;
-                else
-                    isAquiringScreenshotTimerActive = true;
-            }
-
-            OnScreenShotAquired?.Invoke(this, e);
-
-            lock (sync)
-                isAquiringScreenshotTimerActive = false;
         }
 
         public void SetImageSource(ImageSource bi)
@@ -62,7 +39,7 @@ namespace Home.Controls
         {
             lastDate = text;
 
-            if (isInLiveMode)
+            if (lastSelectedDevice.IsLive.HasValue && lastSelectedDevice.IsLive.Value)
                 TextLive.Text = $"Live - {text}";
             else
                 TextLive.Text = $"{text}";
@@ -74,52 +51,13 @@ namespace Home.Controls
                 return;
 
             lastSelectedDevice = device;
+            bool enabled = device.Status != Device.DeviceStatus.Offline;
+            bool status = device.IsLive ?? false;
 
-            SetLiveMode(isInLiveMode, true);
+            UpdateLiveStatus(status, enabled);
         }
 
-        public void SetLiveMode(bool live, bool force = false)
-        {
-            if (lastSelectedDevice == null && !force)
-                return;
-
-            if (lastSelectedDevice?.Status == Device.DeviceStatus.Offline && !force)
-            {
-                MessageBox.Show("Das Gerät ist offline - wechseln in den Live Modus nicht möglich!");
-                return;
-            }
-
-            MainBorder.BorderBrush =
-            SubBorder.BorderBrush = live ? new SolidColorBrush(Colors.Red) : FindResource("BlackBrush") as SolidColorBrush;            
-
-            string path = $"pack://application:,,,/Home;Component/resources/icons/live/{(live ? "toggle" : "offline")}.png";
-            BitmapImage bi = new BitmapImage();
-            bi.BeginInit();
-            bi.CacheOption = BitmapCacheOption.OnLoad;
-            bi.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
-            bi.UriSource = new Uri(path);
-            bi.EndInit();       
-
-            ImageLive.Source = bi;
-
-            UpdateLiveButton(live, lastSelectedDevice?.Status != Device.DeviceStatus.Offline);
-
-            if (live)
-            {
-                TextLive.Foreground = new SolidColorBrush(Colors.Red);
-                TextLive.Text = $"Live - {lastDate}";
-            }
-            else
-            {
-                TextLive.Foreground = FindResource("BlackBrush") as SolidColorBrush;
-                TextLive.Text = lastDate;
-            }
-            
-
-            isInLiveMode = live;
-        }
-
-        private void UpdateLiveButton(bool state, bool enabled)
+        private void UpdateToggleButton(bool state, bool enabled)
         {
             ButtonToggleLiveMode.IsEnabled = enabled;
             string image;
@@ -137,11 +75,37 @@ namespace Home.Controls
             bi.EndInit();
 
             ImageToggleLive.Source = bi;
+          
+        }
 
-            if (isInLiveMode)
-                autoRefreshTimer.Start();
+        private void UpdateLiveImage(bool state, bool enabled)
+        {
+            string path = $"pack://application:,,,/Home;Component/resources/icons/live/{(state ? "toggle" : "offline")}.png";
+            BitmapImage bi = new BitmapImage();
+            bi.BeginInit();
+            bi.CacheOption = BitmapCacheOption.OnLoad;
+            bi.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+            bi.UriSource = new Uri(path);
+            bi.EndInit();
+
+            ImageLive.Source = bi;
+        }
+
+        private void UpdateLiveStatus(bool state, bool enabled)
+        {
+            UpdateToggleButton(state, enabled);
+            UpdateLiveImage(state, enabled);       
+
+            if (state)
+            {
+                TextLive.Foreground = new SolidColorBrush(Colors.Red);
+                TextLive.Text = $"Live - {lastDate}";
+            }
             else
-                autoRefreshTimer.Stop();
+            {
+                TextLive.Foreground = FindResource("BlackBrush") as SolidColorBrush;
+                TextLive.Text = lastDate;
+            }
         }
 
         private void ButtonResize_MouseDown(object sender, MouseButtonEventArgs e)
@@ -168,7 +132,7 @@ namespace Home.Controls
                     var encoder = new PngBitmapEncoder();
                     encoder.Frames.Add(BitmapFrame.Create((BitmapSource)ImageViewer.ImageDisplay.Source));
 
-                    SaveFileDialog sfd = new SaveFileDialog { Filter = "Png Image (*.png)|*.png" };
+                    SaveFileDialog sfd = new SaveFileDialog { Filter = "Png Bild (*.png)|*.png" };
                     var result = sfd.ShowDialog();
 
                     if (result.HasValue && result.Value)
@@ -179,16 +143,34 @@ namespace Home.Controls
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Fehler beim Speichern des Bildes: {ex.Message}");
+                    MessageBox.Show($"Fehler beim Speichern des Bildes: {ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
 
-        private void ButtonToggleLiveMode_MouseDown(object sender, MouseButtonEventArgs e)
+        private API api;
+        private Client client;
+
+        public void PassApiAndClient(API api, Client client)
+        {
+            this.api = api;
+            this.client = client;
+        }
+
+        private async void ButtonToggleLiveMode_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                SetLiveMode(!isInLiveMode);
+                if (lastSelectedDevice?.Status == Device.DeviceStatus.Offline)
+                {
+                    MessageBox.Show("Das Gerät ist offline - wechseln in den Live Modus nicht möglich!", "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                if (lastSelectedDevice.IsLive.HasValue)
+                    await api.SetLiveStatusAsync(client, lastSelectedDevice, !lastSelectedDevice.IsLive.Value);
+                else
+                    await api.SetLiveStatusAsync(client, lastSelectedDevice, true);
             }
         }
     }
