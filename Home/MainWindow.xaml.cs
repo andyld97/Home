@@ -3,6 +3,7 @@ using Fluent;
 using Home.Controls;
 using Home.Controls.Dialogs;
 using Home.Data;
+using Home.Helper;
 using Home.Model;
 using System;
 using System.Collections.Generic;
@@ -148,6 +149,47 @@ namespace Home
             TextOfflineDevices.Text = $"Inaktive Geräte: {deviceList.Where(p => p.Status == DeviceStatus.Offline).Count()}";
             RefreshSelection();
             ignoreSelectionChanged = false;
+            RefreshOverview();
+        }
+
+        private void RefreshOverview()
+        {
+            PanelOverview.Children.Clear();
+
+            var groups = from device in deviceList where device.Status != DeviceStatus.Offline group device by device.Location into gr orderby gr.Count() descending select gr;
+
+            List<Device> notAssociatedDevices = new List<Device>();
+
+            foreach (var group in groups)
+            {
+                // Summarise * and string.Empty to a single group
+                if (string.IsNullOrEmpty(group.Key) || group.Key.Trim() == "*")
+                {
+                    foreach (var device in group.OrderBy(d => d.Name))
+                        notAssociatedDevices.Add(device);
+
+                    continue;
+                }
+
+                DeviceItemGroup deviceItemGroup = new DeviceItemGroup { GroupName = group.Key };
+
+                foreach (var device in group.OrderBy(d => d.Name))
+                    deviceItemGroup.Devices.Add(device);
+
+                PanelOverview.Children.Add(deviceItemGroup);
+            }
+
+            // Apply not associated device group (if there are any devices)
+            if (notAssociatedDevices.Count > 0)
+            {
+                DeviceItemGroup dig = new DeviceItemGroup
+                {
+                    GroupName = "Nicht zugeordnet",
+                    Devices = notAssociatedDevices
+                };
+
+                PanelOverview.Children.Add(dig);
+            }
         }
 
         private async void UpdateTimer_Tick(object sender, EventArgs e)
@@ -409,8 +451,7 @@ namespace Home
             foreach (var entry in lastSelectedDevice.LogEntries)
             {
                 // Get image
-                BitmapImage bi = new BitmapImage { CacheOption = BitmapCacheOption.OnLoad };
-                bi.BeginInit();
+                BitmapImage bi;
                 string resourceName = string.Empty;
                 SolidColorBrush foregroundBrush = null;
 
@@ -437,8 +478,7 @@ namespace Home
                         break;
                 }
 
-                bi.UriSource = new Uri($"pack://application:,,,/Home;Component/resources/icons/{resourceName}");
-                bi.EndInit();
+                bi = ImageHelper.LoadImage($"pack://application:,,,/Home;Component/resources/icons/{resourceName}");
 
                 currentParagraph.Inlines.Add(new InlineUIContainer(new Image() { Source = bi, Width = 20, Margin = new Thickness(0, 2, 2, 0) }) { BaselineAlignment = BaselineAlignment.Bottom });
                 currentParagraph.Inlines.Add(new Run($"[{entry.Timestamp.ToShortDateString()} {entry.Timestamp.ToShortTimeString()}]: ") { Foreground = new SolidColorBrush(Colors.Green), BaselineAlignment = BaselineAlignment.TextTop });
@@ -572,12 +612,7 @@ namespace Home
 
                 try
                 {
-                    BitmapImage bi = new BitmapImage();
-                    bi.BeginInit();
-                    bi.UriSource = new Uri($"pack://application:,,,/Home;Component/resources/icons/media/{image}.png");
-                    bi.EndInit();
-
-                    return bi;
+                    return ImageHelper.LoadImage($"pack://application:,,,/Home;Component/resources/icons/media/{image}.png");
                 }
                 catch
                 {
@@ -650,58 +685,6 @@ namespace Home
             }
 
             return new SolidColorBrush(Colors.Lime);
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class OS64BitConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is bool b && b)
-                return "64 Bit";
-
-            return "32 Bit";
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class OSNameConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is OSType type)
-            {
-                string result = string.Empty;
-                switch (type)
-                {
-                    case OSType.Linux: result = "Linux"; break;
-                    case OSType.LinuxMint: result = "Linux Mint"; break;
-                    case OSType.LinuxUbuntu: result = "Ubuntu"; break;
-                    case OSType.WindowsXP: result = "Windows XP"; break;
-                    case OSType.WindowsaVista: result = "Windows Vista"; break;
-                    case OSType.Windows7: result = "Windows 7"; break;
-                    case OSType.Windows8: result = "Windows 8"; break;
-                    case OSType.Windows10: result = "Windows 10"; break;
-                    case OSType.Windows11: result = "Windows 11"; break;
-                    case OSType.Unix: result = "Unix"; break;
-                    case OSType.Other: result = "Anderes OS"; break;
-                    case OSType.Android: result = "Android"; break;
-                }
-
-
-                return result;
-            }
-
-            return value;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

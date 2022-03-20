@@ -102,6 +102,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\DeviceItemGroup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Dialogs\ScreenshotDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -133,6 +137,9 @@
     <Compile Include="Controls\DeviceItem.xaml.cs">
       <DependentUpon>DeviceItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\DeviceItemGroup.xaml.cs">
+      <DependentUpon>DeviceItemGroup.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Dialogs\ScreenshotDialog.xaml.cs">
       <DependentUpon>ScreenshotDialog.xaml</DependentUpon>
     </Compile>
@@ -148,6 +155,9 @@
     <Compile Include="Controls\ZoomImageViewer.xaml.cs">
       <DependentUpon>ZoomImageViewer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converter\OS64BitConverter.cs" />
+    <Compile Include="Converter\OSNameConverter.cs" />
+    <Compile Include="Helper\ImageHelper.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -195,6 +205,8 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="resources\icons\devices\pi.png" />
+    <Resource Include="resources\icons\devices\server_windows_11.png" />
     <Resource Include="resources\icons\devices\settopbox.png" />
     <Resource Include="resources\icons\devices\smartphone.png" />
     <Resource Include="resources\icons\devices\smarttv.png" />
@@ -246,7 +258,7 @@
     <Resource Include="resources\icons\devices\notebook_windows_xp.png" />
     <Resource Include="resources\icons\devices\desktop_linux.png" />
     <Content Include="resources\icons\devices\desktop_mint.png" />
-    <Resource Include="resources\icons\devices\pi.png" />
+    <Resource Include="resources\icons\devices\pi.old.png" />
     <Resource Include="resources\icons\devices\desktop_ubuntu.png" />
     <Resource Include="resources\icons\devices\desktop_windows_10.png" />
     <Resource Include="resources\icons\devices\desktop_windows_7.png" />

@@ -240,7 +240,7 @@ namespace Home.Model
         public string ServiceClientVersion { get; set; }
 
 #if !LEGACY
-#region Properties for Internal API Usage
+        #region Properties for Internal API Usage
         /// <summary>
         /// Only for internal api usage
         /// </summary>

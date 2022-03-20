@@ -1,5 +1,6 @@
 ﻿using Home.Communication;
 using Home.Data;
+using Home.Helper;
 using Home.Model;
 using Microsoft.Win32;
 using System;
@@ -37,9 +38,12 @@ namespace Home.Controls
 
         public void UpdateDate(string text)
         {
+            if (lastSelectedDevice == null)
+                return;
+
             lastDate = text;
 
-            if (lastSelectedDevice.IsLive.HasValue && lastSelectedDevice.IsLive.Value)
+            if (lastSelectedDevice.IsLive != null && lastSelectedDevice.IsLive.HasValue && lastSelectedDevice.IsLive.Value)
                 TextLive.Text = $"Live - {text}";
             else
                 TextLive.Text = $"{text}";
@@ -66,29 +70,14 @@ namespace Home.Controls
             else
                 image = "offline";
 
-            string path2 = $"pack://application:,,,/Home;Component/resources/icons/live/{image}.png";
-            BitmapImage bi = new BitmapImage();
-            bi.BeginInit();
-            bi.CacheOption = BitmapCacheOption.OnLoad;
-            bi.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
-            bi.UriSource = new Uri(path2);
-            bi.EndInit();
-
-            ImageToggleLive.Source = bi;
-          
+            string path = $"pack://application:,,,/Home;Component/resources/icons/live/{image}.png";
+            ImageToggleLive.Source = ImageHelper.LoadImage(path);
         }
 
         private void UpdateLiveImage(bool state, bool enabled)
         {
             string path = $"pack://application:,,,/Home;Component/resources/icons/live/{(state ? "toggle" : "offline")}.png";
-            BitmapImage bi = new BitmapImage();
-            bi.BeginInit();
-            bi.CacheOption = BitmapCacheOption.OnLoad;
-            bi.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
-            bi.UriSource = new Uri(path);
-            bi.EndInit();
-
-            ImageLive.Source = bi;
+            ImageLive.Source = ImageHelper.LoadImage(path);
         }
 
         private void UpdateLiveStatus(bool state, bool enabled)

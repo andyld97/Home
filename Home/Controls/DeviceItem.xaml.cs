@@ -1,10 +1,10 @@
-﻿using Home.Model;
+﻿using Home.Helper;
+using Home.Model;
 using System;
 using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace Home.Controls
 {
@@ -89,20 +89,7 @@ namespace Home.Controls
             if (value is Device d)
             {
                 string path = $"pack://application:,,,/Home;Component/resources/icons/devices/{d.DetermineDeviceImage()}";
-
-                try
-                {
-                    BitmapImage bi = new BitmapImage();
-                    bi.BeginInit();
-                    bi.UriSource = new Uri(path);
-                    bi.EndInit();
-
-                    return bi;
-                }
-                catch
-                {
-                    // ToDO: Log
-                }
+                return ImageHelper.LoadImage(path);
             }
 
             return null;

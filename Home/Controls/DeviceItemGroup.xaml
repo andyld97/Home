@@ -1,0 +1,80 @@
+﻿<UserControl x:Class="Home.Controls.DeviceItemGroup"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Home.Controls" xmlns:converter="clr-namespace:Home.Converter"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.Resources>
+            <local:DeviceImageConverter x:Key="localDeviceImageConverter" />
+            <converter:OSNameConverter x:Key="osNameConverter" />
+            <converter:OS64BitConverter x:Key="os64BitConverter" />
+            <BooleanToVisibilityConverter x:Key="boolToVisibiltyConverter" />
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+            <!-- #6D77D7 -->
+            <Expander x:Name="ExpandList" IsExpanded="True">
+                <Expander.Header>
+                    <TextBlock Text="{Binding GroupName}" Foreground="{DynamicResource BlackBrush}" FontWeight="Bold" />
+                </Expander.Header>
+            </Expander>
+
+            <Border Margin="26,0,0,0" BorderBrush="{DynamicResource BlackBrush}" BorderThickness="0 0 0 1" />
+        </StackPanel>
+
+
+        <ListView Visibility="{Binding ElementName=ExpandList, Path=IsExpanded, Converter={StaticResource boolToVisibilityConverter}}" ItemsSource="{Binding Devices}" Background="{DynamicResource WhiteBrush}" BorderThickness="0" Grid.Row="1">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <!-- MinWidth="{Binding ItemWidth, RelativeSource={RelativeSource Self}}" ItemHeight="{Binding (ListView.View).ItemHeight, RelativeSource={RelativeSource AncestorType=ListView}}" -->
+                    <WrapPanel Width="{Binding (FrameworkElement.ActualWidth), RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}" ItemWidth="{Binding (ListView.View).ItemWidth, RelativeSource={RelativeSource AncestorType=ListView}}" />
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Background="Transparent" Width="300">
+                        <Grid.ToolTip>
+                            <TextBlock Text="{Binding Name}" />
+                            <!-- ToDo Show more advanced infos on tooltip -->
+                        </Grid.ToolTip>
+                        <Grid.Resources>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+                            </Style>
+                        </Grid.Resources>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Image VerticalAlignment="Top" StretchDirection="DownOnly" Height="64" Margin="2" Source="{Binding ., Converter={StaticResource localDeviceImageConverter}}" />
+                        <StackPanel Margin="5,5,0,0" Grid.Column="2" Orientation="Vertical">
+                            <TextBlock TextDecorations="Underline">
+                                <Run Text="{Binding Name}" FontWeight="Bold" />
+                                <Run Text="(" /><Run Text="{Binding Envoirnment.TotalRAM}" />
+                                <Run Text="GB)" />
+                            </TextBlock>
+                            <TextBlock Text="{Binding IP}" />
+                            <TextBlock>
+                                <Run Text="{Binding OS, Converter={StaticResource osNameConverter}}" />
+                                <Run Text="(" /><Run Text="{Binding Envoirnment.Is64BitOS, Converter={StaticResource os64BitConverter}}" /><Run Text=")" />
+                            </TextBlock>
+
+                            <TextBlock Text="{Binding Envoirnment.CPUName}" TextTrimming="CharacterEllipsis" />
+                            <TextBlock Text="{Binding Envoirnment.Motherboard}" TextTrimming="CharacterEllipsis" />
+                            <TextBlock Text="{Binding Envoirnment.Graphics}" TextTrimming="CharacterEllipsis" />
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</UserControl>
