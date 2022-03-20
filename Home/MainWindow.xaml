@@ -72,7 +72,7 @@
                 </Style>
             </Border.Resources>
 
-            <TabControl Background="{DynamicResource WhiteBrush}">
+            <TabControl SelectedIndex="1" Background="{DynamicResource WhiteBrush}">
                 <TabControl.Resources>
                     <ResourceDictionary>
                         <ResourceDictionary.MergedDictionaries>
@@ -81,6 +81,9 @@
                     </ResourceDictionary>
                 </TabControl.Resources>
 
+                <TabItem Header="Gesamtübersicht">
+                    <StackPanel x:Name="PanelOverview" />
+                </TabItem>
                 <TabItem Header="Einzelübersicht">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -390,11 +393,6 @@
                             </Grid>
                         </Border>
                     </Grid>
-                </TabItem>
-                <TabItem Header="Gesamtübersicht">
-                    <StackPanel x:Name="PanelOverview">
-                        
-                    </StackPanel>
                 </TabItem>
             </TabControl>
         </Border>
