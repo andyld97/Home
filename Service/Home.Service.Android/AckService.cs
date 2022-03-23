@@ -150,7 +150,7 @@ namespace Home.Service.Android
             Intent restartServiceIntent = new Intent(ApplicationContext, this.GetType());
             restartServiceIntent.SetPackage(ApplicationContext.PackageName);
 
-            PendingIntent restartServicePendingIntent = PendingIntent.GetService(ApplicationContext, 1, restartServiceIntent, PendingIntentFlags.OneShot);
+            PendingIntent restartServicePendingIntent = PendingIntent.GetService(ApplicationContext, 1, restartServiceIntent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
             AlarmManager alarmService = (AlarmManager)ApplicationContext.GetSystemService(Context.AlarmService);
             alarmService.Set(AlarmType.ElapsedRealtime, SystemClock.ElapsedRealtime() + 1000, restartServicePendingIntent);
 
