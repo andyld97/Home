@@ -179,7 +179,7 @@ namespace Home.API.Controllers
                 if (device != null)
                 {
                     if (device.OS == Device.OSType.Android)
-                        return BadRequest("Android Device doesn't support screenshots"!);
+                        return BadRequest(AnswerExtensions.Fail("Android Device doesn't support screenshots!"));
 
                     device.IsScreenshotRequired = true;
                     _logger.LogInformation($"Aquired screenshot from {cl?.Name} for device {device.Name}!");
@@ -208,7 +208,7 @@ namespace Home.API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(AnswerExtensions.Fail<Screenshot>(ex.Message));
+                return BadRequest(AnswerExtensions.Fail(ex.Message));
             }
         }
 

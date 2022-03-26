@@ -55,7 +55,9 @@ namespace Home
             if (lastSelectedDevice == null)
                 return;
 
-            await api.AquireScreenshotAsync(client, lastSelectedDevice);
+            var result = await api.AquireScreenshotAsync(client, lastSelectedDevice);
+            if (!result.Success)
+                MessageBox.Show(result.ErrorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
         private void ScreenshotViewer_OnResize(bool isLittle)

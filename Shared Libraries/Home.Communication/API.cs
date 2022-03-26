@@ -282,7 +282,8 @@ namespace Home.Communication
             }
         }
 
-        public async Task<Answer<bool>> AquireScreenshotAsync(Client client, Device device)
+        // MUST BE bool? (nullable), otherwise parsing to NULL causing an exception!
+        public async Task<Answer<bool?>> AquireScreenshotAsync(Client client, Device device)
         {
             try
             {
@@ -292,16 +293,16 @@ namespace Home.Communication
                 var content = await result.Content.ReadAsStringAsync();
                 if (!string.IsNullOrEmpty(content))
                 {
-                    var item = System.Text.Json.JsonSerializer.Deserialize<Answer<bool>>(content);
+                    var item = System.Text.Json.JsonSerializer.Deserialize<Answer<bool?>>(content, new System.Text.Json.JsonSerializerOptions() {  });
                     return item;
                 }
                 else
-                    return AnswerExtensions.Fail<bool>("Empty content!");
+                    return AnswerExtensions.Fail<bool?>("Empty content!");
             }
             catch (Exception ex)
             {
                 // LOG
-                return AnswerExtensions.Fail<bool>(ex.Message);
+                return AnswerExtensions.Fail<bool?>(ex.Message);
             }
         }
 

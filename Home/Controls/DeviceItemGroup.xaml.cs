@@ -22,7 +22,6 @@ namespace Home.Controls
         public delegate void onGroupSelectionChanged(string groupName);
         public event onGroupSelectionChanged OnGroupSelectionChanged;
 
-
         public string GroupName
         {
             get => groupName;
