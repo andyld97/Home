@@ -16,6 +16,7 @@ namespace Home.Controls
     public partial class DeviceItemGroup : UserControl, INotifyPropertyChanged
     {
         private string groupName;
+        private bool ignoreSelectionChanged = false;
         private List<Device> devices = new List<Device>();
 
         public delegate void onGroupSelectionChanged(string groupName);
@@ -65,12 +66,22 @@ namespace Home.Controls
 
         private void ListViewDevices_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (ignoreSelectionChanged)
+                return;
+
             OnGroupSelectionChanged?.Invoke(GroupName);
         }
 
         public void ClearSelection()
         {
+            ignoreSelectionChanged = true;
             ListViewDevices.SelectedItem = null;
+            ignoreSelectionChanged = false;
+        }
+
+        public override string ToString()
+        {
+            return GroupName;
         }
     }
 
