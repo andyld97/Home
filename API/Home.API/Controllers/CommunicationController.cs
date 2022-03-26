@@ -165,7 +165,7 @@ namespace Home.API.Controllers
             lock (Program.Clients)
             {
                 if (!Program.Clients.Any(p => p.ID == clientId))
-                    return NotFound("Client not found!");
+                    return NotFound(AnswerExtensions.Fail("Client not found!"));
                 else
                     cl = Program.Clients.Where(c => c.ID == clientId).FirstOrDefault();
             }
@@ -173,7 +173,7 @@ namespace Home.API.Controllers
             lock (Program.Devices)
             {
                 if (!Program.Devices.Any(p => p.ID == deviceID))
-                    return NotFound("Device not found!");
+                    return NotFound(AnswerExtensions.Fail("Device not found!"));
 
                 var device = Program.Devices.Where(p => p.ID == deviceID).FirstOrDefault();
                 if (device != null)
@@ -221,7 +221,7 @@ namespace Home.API.Controllers
             lock (Program.Devices)
             {
                 if (!Program.Devices.Any(p => p.ID == deviceID))
-                    return NotFound("Device not found!");
+                    return NotFound(AnswerExtensions.Fail("Device not found!"));
 
                 var device = Program.Devices.Where(p => p.ID == deviceID).FirstOrDefault();
                 if (device != null)
