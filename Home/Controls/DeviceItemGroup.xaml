@@ -30,7 +30,7 @@
         </StackPanel>
 
 
-        <ListView Visibility="{Binding ElementName=ExpandList, Path=IsExpanded, Converter={StaticResource boolToVisibilityConverter}}" ItemsSource="{Binding Devices}" Background="{DynamicResource WhiteBrush}" BorderThickness="0" Grid.Row="1">
+        <ListView x:Name="ListViewDevices" Visibility="{Binding ElementName=ExpandList, Path=IsExpanded, Converter={StaticResource boolToVisibilityConverter}}" ItemsSource="{Binding Devices}" Background="{DynamicResource WhiteBrush}" BorderThickness="0" Grid.Row="1" SelectionChanged="ListViewDevices_SelectionChanged">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <!-- MinWidth="{Binding ItemWidth, RelativeSource={RelativeSource Self}}" ItemHeight="{Binding (ListView.View).ItemHeight, RelativeSource={RelativeSource AncestorType=ListView}}" -->

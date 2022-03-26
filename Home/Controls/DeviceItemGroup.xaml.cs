@@ -18,6 +18,10 @@ namespace Home.Controls
         private string groupName;
         private List<Device> devices = new List<Device>();
 
+        public delegate void onGroupSelectionChanged(string groupName);
+        public event onGroupSelectionChanged OnGroupSelectionChanged;
+
+
         public string GroupName
         {
             get => groupName;
@@ -58,6 +62,16 @@ namespace Home.Controls
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
+
+        private void ListViewDevices_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            OnGroupSelectionChanged?.Invoke(GroupName);
+        }
+
+        public void ClearSelection()
+        {
+            ListViewDevices.SelectedItem = null;
+        }
     }
 
     #region Converter

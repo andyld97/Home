@@ -172,6 +172,11 @@ namespace Home
                 }
 
                 DeviceItemGroup deviceItemGroup = new DeviceItemGroup { GroupName = group.Key };
+                deviceItemGroup.OnGroupSelectionChanged += (string grp) =>
+                {
+                    foreach (var currentGroup in PanelOverview.Children.OfType<DeviceItemGroup>().Where(d => d.GroupName != grp))
+                        currentGroup.ClearSelection();
+                };
 
                 foreach (var device in group.OrderBy(d => d.Name))
                     deviceItemGroup.Devices.Add(device);
