@@ -157,6 +157,7 @@
     </Compile>
     <Compile Include="Converter\OS64BitConverter.cs" />
     <Compile Include="Converter\OSNameConverter.cs" />
+    <Compile Include="Converter\ScreenshotConverter.cs" />
     <Compile Include="Helper\ImageHelper.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

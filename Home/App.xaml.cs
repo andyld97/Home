@@ -1,5 +1,7 @@
 ﻿using ControlzEx.Theming;
+using System;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace Home
 {
@@ -14,6 +16,7 @@ namespace Home
             ThemeManager.Current.ThemeSyncMode = ThemeSyncMode.SyncWithAppMode;
             ThemeManager.Current.SyncTheme();
 
+            ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(Int32.MaxValue));
             base.OnStartup(e);
         }
     }

@@ -26,7 +26,7 @@ namespace Home
     /// </summary>
     public partial class MainWindow : RibbonWindow
     {
-        private static readonly string CACHE_PATH = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "cache");
+        public static readonly string CACHE_PATH = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "cache");
         private readonly Client client = new Client() { IsRealClient = true };
         private readonly Communication.API api = null;
 
@@ -154,9 +154,18 @@ namespace Home
             RefreshOverview();
         }
 
+        private int oldDeviceCount = -1;
+
         private void RefreshOverview()
         {
-            PanelOverview.Children.Clear();
+            int onlineDevices = deviceList.Sum(p => p.Status != DeviceStatus.Offline ? 1 : 0);
+
+            // Prevent refreshing when nothing was changed
+            if (oldDeviceCount != -1 && onlineDevices == oldDeviceCount)
+                return;
+            oldDeviceCount = onlineDevices;
+
+            PanelOverview.Children.Clear();     
 
             var groups = from device in deviceList where device.Status != DeviceStatus.Offline group device by device.Location into gr orderby gr.Count() descending select gr;
 

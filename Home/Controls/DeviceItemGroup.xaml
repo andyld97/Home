@@ -12,6 +12,7 @@
             <converter:OSNameConverter x:Key="osNameConverter" />
             <converter:OS64BitConverter x:Key="os64BitConverter" />
             <BooleanToVisibilityConverter x:Key="boolToVisibiltyConverter" />
+            <converter:ScreenshotConverter x:Key="deviceScreenConverter" />
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -41,20 +42,29 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid Background="Transparent" Width="300">
-                        <Grid.ToolTip>
-                            <TextBlock Text="{Binding Name}" />
-                            <!-- ToDo Show more advanced infos on tooltip -->
-                        </Grid.ToolTip>
                         <Grid.Resources>
                             <Style TargetType="{x:Type TextBlock}">
                                 <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
                             </Style>
                         </Grid.Resources>
+                        <Grid.ToolTip>
+                            <!-- <TextBlock Text="{Binding Name}" />-->
+                            <!-- I don't know why, but {Binding .} just don't work here, the converter always gets null as value :(-->
+                            <Image>
+                                <Image.Source>
+                                    <MultiBinding Converter="{StaticResource deviceScreenConverter}">
+                                        <MultiBinding.Bindings>
+                                            <Binding Path="ScreenshotFileNames" />
+                                            <Binding Path="ID" />
+                                        </MultiBinding.Bindings>
+                                    </MultiBinding>
+                                </Image.Source>
+                            </Image>
+                        </Grid.ToolTip>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-
                         <Image VerticalAlignment="Top" StretchDirection="DownOnly" Height="64" Margin="2" Source="{Binding ., Converter={StaticResource localDeviceImageConverter}}" />
                         <StackPanel Margin="5,5,0,0" Grid.Column="2" Orientation="Vertical">
                             <TextBlock TextDecorations="Underline">
