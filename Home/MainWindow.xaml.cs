@@ -26,9 +26,12 @@ namespace Home
     /// </summary>
     public partial class MainWindow : RibbonWindow
     {
+        /// <summary>
+        /// ToDo: *** Move to a Consts.cs file
+        /// </summary>
         public static readonly string CACHE_PATH = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "cache");
-        private readonly Client client = new Client() { IsRealClient = true };
-        private readonly Communication.API api = null;
+        public static Client CLIENT = new Client() { IsRealClient = true };
+        public static Communication.API API = null;
 
         private readonly DispatcherTimer updateTimer = new DispatcherTimer();
         private bool isUpdating = false;
@@ -41,11 +44,10 @@ namespace Home
         public MainWindow()
         {
             InitializeComponent();
-            api = new Communication.API("http://192.168.178.38:83");
-            client.ID = ClientData.Instance.ClientID;
+            API = new Communication.API("http://192.168.178.38:83");
+            CLIENT.ID = ClientData.Instance.ClientID;
 
             Closing += MainWindow_Closing;
-            ScreenshotViewer.PassApiAndClient(api, client);
             ScreenshotViewer.OnResize += ScreenshotViewer_OnResize;
             ScreenshotViewer.OnScreenShotAquired += ScreenshotViewer_OnScreenShotAquired;
         }
@@ -55,7 +57,7 @@ namespace Home
             if (lastSelectedDevice == null)
                 return;
 
-            var result = await api.AquireScreenshotAsync(client, lastSelectedDevice);
+            var result = await API.AquireScreenshotAsync(CLIENT, lastSelectedDevice);
             if (!result.Success)
                 MessageBox.Show(result.ErrorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
@@ -78,7 +80,7 @@ namespace Home
 
         private async void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            await api.LogoffAsync(client);
+            await API.LogoffAsync(CLIENT);
         }
 
         private async void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
@@ -88,7 +90,7 @@ namespace Home
 
         public async Task Initalize()
         {
-            var result = await api.LoginAsync(client);
+            var result = await API.LoginAsync(CLIENT);
             if (result.Result != null)
                 deviceList = result.Result;
 
@@ -219,7 +221,7 @@ namespace Home
             }
 
             // Check for event queues ...
-            var result = await api.UpdateAsync(client);
+            var result = await API.UpdateAsync(CLIENT);
             if (result.Success && result.Result != null)
             {
                 var device = result.Result;
@@ -267,7 +269,7 @@ namespace Home
                     {
                         // Add
                         deviceList.Add(device.EventData.EventDevice);
-                        MessageBox.Show("New device added!");
+                        MessageBox.Show("New device added!", "New device!", MessageBoxButton.OK, MessageBoxImage.Information);
 
                         RefreshDeviceHolder();
                     }
@@ -279,107 +281,41 @@ namespace Home
                 isUpdating = false;
             }
         }
-
+        
         private async Task GetScreenshot(Device device, string fileName = "")
         {
             byte[] data = null;
-            bool saveInCache = false;
             bool updateGui = (lastSelectedDevice?.ID == device.ID);
 
-            string cacheDevicePath = System.IO.Path.Combine(CACHE_PATH, device.ID);
-            if (!System.IO.Directory.Exists(cacheDevicePath))
+            await API.DownloadScreenshotToCache(device, CACHE_PATH, fileName);
+
+            string screenShotFileName = fileName;
+            if (string.IsNullOrEmpty(fileName))
+                screenShotFileName = device.ScreenshotFileNames.LastOrDefault();
+
+            string path = System.IO.Path.Combine(CACHE_PATH, device.ID, screenShotFileName + ".png");
+
+            if (System.IO.File.Exists(path))
             {
+                if (updateGui && DateTime.TryParseExact(screenShotFileName, Consts.SCREENSHOT_DATE_FILE_FORMAT, CultureInfo.CurrentCulture, DateTimeStyles.AssumeLocal, out DateTime result))
+                    ScreenshotViewer.UpdateDate($"{result.ToShortDateString()} @ {result.ToShortTimeString()}");
+                else
+                    ScreenshotViewer.UpdateDate(null);
+
                 try
                 {
-                    System.IO.Directory.CreateDirectory(cacheDevicePath);
+                    data = System.IO.File.ReadAllBytes(path);
                 }
                 catch
                 {
-                    // ToDO: Log
+                    // ignore
                 }
-            }
-
-            if (string.IsNullOrEmpty(fileName))
-            {
-                // Try to display last-screenshot from cache
-                var files = new System.IO.DirectoryInfo(cacheDevicePath).GetFiles();
-                System.IO.FileInfo fi = null;
-
-                if (files.Where(p => p.Name == device.ScreenshotFileNames.LastOrDefault()).Any())
-                {
-                    var file = files.Where(p => p.Name == device.ScreenshotFileNames.LastOrDefault()).LastOrDefault();
-                    fi = file;
-
-
-                    if (fi != null && updateGui)
-                    {
-                        try
-                        {
-                            data = System.IO.File.ReadAllBytes(fi.FullName);
-                            ScreenshotViewer.UpdateDate($"{fi.LastAccessTime.ToShortDateString()} @ {fi.LastWriteTime.ToShortTimeString()}");
-                        }
-                        catch
-                        {
-
-                        }
-                    }
-                    saveInCache = false;
-
-                }
-                else
-                {
-                    var fiName = device.ScreenshotFileNames.LastOrDefault();
-                    if (fiName != null)
-                    {
-                        var lastScrenshot = await api.RecieveScreenshotAsync(device, fiName);
-                        if (lastScrenshot.Success)
-                        {
-                            data = Convert.FromBase64String(lastScrenshot.Result.Data);
-                            saveInCache = true;
-                            fileName = fiName;
-
-                            // Last refresh = now
-                            if (updateGui && DateTime.TryParseExact(fileName, Consts.SCREENSHOT_DATE_FILE_FORMAT, CultureInfo.CurrentCulture, DateTimeStyles.AssumeLocal, out DateTime result))
-                                ScreenshotViewer.UpdateDate($"{result.ToShortDateString()} @ {result.ToShortTimeString()}");
-                            else
-                                ScreenshotViewer.UpdateDate(null);
-                        }
-                    }
-                    else
-                        ScreenshotViewer.UpdateDate(null);
-                }
-
             }
             else
             {
-                var recievedScreenshot = await api.RecieveScreenshotAsync(device, fileName);
-
-                if (recievedScreenshot.Success)
-                {
-                    data = Convert.FromBase64String(recievedScreenshot.Result.Data);
-                    saveInCache = true;
-
-                    // Last refresh = now
-                    if (updateGui)
-                    {
-                        var now = DateTime.Now;
-                        ScreenshotViewer.UpdateDate($"{now.ToShortDateString()} @ {now.ToShortTimeString()}");
-                    }
-                }
+                ScreenshotViewer.UpdateDate(null);
             }
 
-            // Save to cache
-            if (saveInCache)
-            {
-                try
-                {
-                    System.IO.File.WriteAllBytes(System.IO.Path.Combine(cacheDevicePath, $"{fileName}.png"), data);
-                }
-                catch
-                {
-
-                }
-            }
 
             if (!updateGui)
                 return;
@@ -395,26 +331,18 @@ namespace Home
                 try
                 {
                     BitmapImage bi = new BitmapImage();
-                    bi.BeginInit();
-                    bi.CacheOption = BitmapCacheOption.OnLoad;
-                    bi.StreamSource = ms;
-                    bi.EndInit();
 
+                    if (data != null)
+                        bi = ImageHelper.LoadImage(ms);
+                    else
+                        bi = ImageHelper.LoadImage(string.Empty, true);
 
                     if (device.Status == Device.DeviceStatus.Offline)
-                    {
-                        FormatConvertedBitmap grayBitmap = new FormatConvertedBitmap();
-                        grayBitmap.BeginInit();
-                        grayBitmap.Source = bi;
-                        grayBitmap.DestinationFormat = PixelFormats.Gray8;
-                        grayBitmap.EndInit();
-
-                        ScreenshotViewer.SetImageSource(grayBitmap);
-                    }
+                        ScreenshotViewer.SetImageSource(ImageHelper.GrayscaleBitmap(bi));
                     else
                         ScreenshotViewer.SetImageSource(bi);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     ScreenshotViewer.SetImageSource(null);
                 }
@@ -494,7 +422,7 @@ namespace Home
                         break;
                 }
 
-                bi = ImageHelper.LoadImage($"pack://application:,,,/Home;Component/resources/icons/{resourceName}");
+                bi = ImageHelper.LoadImage($"pack://application:,,,/Home;Component/resources/icons/{resourceName}", false);
 
                 currentParagraph.Inlines.Add(new InlineUIContainer(new Image() { Source = bi, Width = 20, Margin = new Thickness(0, 2, 2, 0) }) { BaselineAlignment = BaselineAlignment.Bottom });
                 currentParagraph.Inlines.Add(new Run($"[{entry.Timestamp.ToShortDateString()} {entry.Timestamp.ToShortTimeString()}]: ") { Foreground = new SolidColorBrush(Colors.Green), BaselineAlignment = BaselineAlignment.TextTop });
@@ -517,7 +445,7 @@ namespace Home
             if (lastSelectedDevice == null)
                 return;
 
-            var result = await api.AquireScreenshotAsync(client, lastSelectedDevice);
+            var result = await API.AquireScreenshotAsync(CLIENT, lastSelectedDevice);
 
         }
 
@@ -528,19 +456,19 @@ namespace Home
             if (lastSelectedDevice == null)
                 return;
 
-            var result = await api.ClearDeviceLogAsync(lastSelectedDevice);
+            var result = await API.ClearDeviceLogAsync(lastSelectedDevice);
         }
 
         private void MenuButtonSendMessage_Click(object sender, RoutedEventArgs e)
         {
             if (lastSelectedDevice != null)
-                new SendMessage(lastSelectedDevice, api).ShowDialog();
+                new SendMessage(lastSelectedDevice, API).ShowDialog();
         }
 
         private void MenuButtonSendCommand_Click(object sender, RoutedEventArgs e)
         {
             if (lastSelectedDevice != null)
-                new SendCommandDialog(lastSelectedDevice, api).ShowDialog();
+                new SendCommandDialog(lastSelectedDevice, API).ShowDialog();
         }
 
         private void LogHolder_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
@@ -563,7 +491,7 @@ namespace Home
             if (MessageBox.Show($"Sind Sie sich sicher, dass Sie das Gerät {lastSelectedDevice.Name} herunterfahren möchten?", "Wirklich?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
                 return;
 
-            await api.ShutdownOrRestartDeviceAsync(true, lastSelectedDevice);
+            await API.ShutdownOrRestartDeviceAsync(true, lastSelectedDevice);
         }
 
         private async void MenuButtonReboot_Click(object sender, RoutedEventArgs e)
@@ -573,7 +501,7 @@ namespace Home
             if (MessageBox.Show($"Sind Sie sich sicher, dass Sie das Gerät {lastSelectedDevice.Name} neustarten möchten?", "Wirklich?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
                 return;
 
-            await api.ShutdownOrRestartDeviceAsync(false, lastSelectedDevice);
+            await API.ShutdownOrRestartDeviceAsync(false, lastSelectedDevice);
         }    
 
         #endregion
@@ -628,7 +556,7 @@ namespace Home
 
                 try
                 {
-                    return ImageHelper.LoadImage($"pack://application:,,,/Home;Component/resources/icons/media/{image}.png");
+                    return ImageHelper.LoadImage($"pack://application:,,,/Home;Component/resources/icons/media/{image}.png", false);
                 }
                 catch
                 {

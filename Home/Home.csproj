@@ -206,6 +206,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="resources\images\screenshot_default.png" />
     <Resource Include="resources\icons\devices\pi.png" />
     <Resource Include="resources\icons\devices\server_windows_11.png" />
     <Resource Include="resources\icons\devices\settopbox.png" />

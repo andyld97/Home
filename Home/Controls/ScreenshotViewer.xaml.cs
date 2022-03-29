@@ -71,13 +71,13 @@ namespace Home.Controls
                 image = "offline";
 
             string path = $"pack://application:,,,/Home;Component/resources/icons/live/{image}.png";
-            ImageToggleLive.Source = ImageHelper.LoadImage(path);
+            ImageToggleLive.Source = ImageHelper.LoadImage(path, false);
         }
 
         private void UpdateLiveImage(bool state, bool enabled)
         {
             string path = $"pack://application:,,,/Home;Component/resources/icons/live/{(state ? "toggle" : "offline")}.png";
-            ImageLive.Source = ImageHelper.LoadImage(path);
+            ImageLive.Source = ImageHelper.LoadImage(path, false);
         }
 
         private void UpdateLiveStatus(bool state, bool enabled)
@@ -137,15 +137,6 @@ namespace Home.Controls
             }
         }
 
-        private API api;
-        private Client client;
-
-        public void PassApiAndClient(API api, Client client)
-        {
-            this.api = api;
-            this.client = client;
-        }
-
         private async void ButtonToggleLiveMode_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
@@ -157,9 +148,9 @@ namespace Home.Controls
                 }
 
                 if (lastSelectedDevice.IsLive.HasValue)
-                    await api.SetLiveStatusAsync(client, lastSelectedDevice, !lastSelectedDevice.IsLive.Value);
+                    await MainWindow.API.SetLiveStatusAsync(MainWindow.CLIENT, lastSelectedDevice, !lastSelectedDevice.IsLive.Value);
                 else
-                    await api.SetLiveStatusAsync(client, lastSelectedDevice, true);
+                    await MainWindow.API.SetLiveStatusAsync(MainWindow.CLIENT, lastSelectedDevice, true);
             }
         }
     }

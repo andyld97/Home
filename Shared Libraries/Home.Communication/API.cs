@@ -5,6 +5,7 @@ using Home.Model;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using static Home.Model.Device;
@@ -282,7 +283,62 @@ namespace Home.Communication
             }
         }
 
+        public async Task<bool> DownloadScreenshotToCache(Device device, string cachePath, string fileName = "")
+        {
+            if (device.OS == OSType.Android)
+                return true;
+
+            string cacheDevicePath = System.IO.Path.Combine(cachePath, device.ID);
+            if (!System.IO.Directory.Exists(cacheDevicePath))
+            {
+                try
+                {
+                    System.IO.Directory.CreateDirectory(cacheDevicePath);
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+
+            if (string.IsNullOrEmpty(fileName))
+            {
+                if (device.ScreenshotFileNames.Any())
+                {
+                    string lastFileName = device.ScreenshotFileNames.LastOrDefault();
+                    string path = System.IO.Path.Combine(cacheDevicePath, lastFileName + ".png");
+
+                    if (System.IO.File.Exists(path))
+                        return true;
+
+                    fileName = lastFileName;
+                }
+            }
+
+            if (string.IsNullOrEmpty(fileName))
+                return true;
+
+            // Download latest screenshot
+            var result = await RecieveScreenshotAsync(device, fileName);
+            if (result.Success)
+            {
+                string path = System.IO.Path.Combine(cacheDevicePath, fileName + ".png");
+                try
+                {
+                    System.IO.File.WriteAllBytes(path, Convert.FromBase64String(result.Result.Data));
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+
+            return false;
+        }
+
         // MUST BE bool? (nullable), otherwise parsing to NULL causing an exception!
+        // ToDo: *** Check for other API methods which return bool!
         public async Task<Answer<bool?>> AquireScreenshotAsync(Client client, Device device)
         {
             try

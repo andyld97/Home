@@ -42,25 +42,16 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid Background="Transparent" Width="300">
+                        <Grid.ToolTip>
+                            <ToolTip>
+                                <Image Source="{Binding ., Converter={StaticResource deviceScreenConverter}}" />
+                            </ToolTip>
+                        </Grid.ToolTip>
                         <Grid.Resources>
                             <Style TargetType="{x:Type TextBlock}">
                                 <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
                             </Style>
                         </Grid.Resources>
-                        <Grid.ToolTip>
-                            <!-- <TextBlock Text="{Binding Name}" />-->
-                            <!-- I don't know why, but {Binding .} just don't work here, the converter always gets null as value :(-->
-                            <Image>
-                                <Image.Source>
-                                    <MultiBinding Converter="{StaticResource deviceScreenConverter}">
-                                        <MultiBinding.Bindings>
-                                            <Binding Path="ScreenshotFileNames" />
-                                            <Binding Path="ID" />
-                                        </MultiBinding.Bindings>
-                                    </MultiBinding>
-                                </Image.Source>
-                            </Image>
-                        </Grid.ToolTip>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
