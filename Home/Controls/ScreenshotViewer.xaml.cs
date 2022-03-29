@@ -1,6 +1,4 @@
-﻿using Home.Communication;
-using Home.Data;
-using Home.Helper;
+﻿using Home.Helper;
 using Home.Model;
 using Microsoft.Win32;
 using System;
@@ -42,6 +40,9 @@ namespace Home.Controls
                 return;
 
             lastDate = text;
+
+            if (lastSelectedDevice.OS == Device.OSType.Android)
+                lastDate = text = $"{ lastSelectedDevice.LastSeen.ToShortDateString()} @ {lastSelectedDevice.LastSeen.ToShortTimeString()}";
 
             if (lastSelectedDevice.IsLive != null && lastSelectedDevice.IsLive.HasValue && lastSelectedDevice.IsLive.Value)
                 TextLive.Text = $"Live - {text}";

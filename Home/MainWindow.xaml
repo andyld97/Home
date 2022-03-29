@@ -82,7 +82,20 @@
                 </TabControl.Resources>
 
                 <TabItem Header="Gesamtübersicht">
-                    <StackPanel x:Name="PanelOverview" />
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0">
+                            <CheckBox x:Name="ChkOverviewShowScreenshots" Checked="ChkOverviewShowScreenshots_Checked" Unchecked="ChkOverviewShowScreenshots_Checked" Content="Screenshots anzeigen" Foreground="{DynamicResource BlackBrush}" Margin="5" />
+                        </StackPanel>
+
+                        <ScrollViewer Grid.Row="1">
+                            <StackPanel x:Name="PanelOverview" />
+                        </ScrollViewer>
+                    </Grid>
                 </TabItem>
                 <TabItem Header="Einzelübersicht">
                     <Grid>
@@ -287,7 +300,7 @@
                                                 </Grid>
 
                                                 <Grid x:Name="ScreeshotViewHolder" Grid.Column="1">
-                                                    <controls:ScreenshotViewer x:Name="ScreenshotViewer" />
+                                                    <controls:ScreenshotViewer x:Name="ScreenshotViewer" Margin="0,-3,-3,-3" />
                                                     <TextBlock Text="{Binding Envoirnment.MachineName}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                 </Grid>
                                             </Grid>

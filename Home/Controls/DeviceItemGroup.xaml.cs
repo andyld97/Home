@@ -5,8 +5,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 
 namespace Home.Controls
 {
@@ -16,6 +18,7 @@ namespace Home.Controls
     public partial class DeviceItemGroup : UserControl, INotifyPropertyChanged
     {
         private string groupName;
+        private bool isScreenshotView;
         private bool ignoreSelectionChanged = false;
         private List<Device> devices = new List<Device>();
 
@@ -43,6 +46,19 @@ namespace Home.Controls
                 if (devices != value)
                 {
                     devices = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public bool IsScreenshotView
+        {
+            get => isScreenshotView;
+            set
+            {
+                if (isScreenshotView != value)
+                {
+                    isScreenshotView = value;
                     OnPropertyChanged();
                 }
             }
@@ -82,6 +98,24 @@ namespace Home.Controls
         {
             return GroupName;
         }
+
+        /// <summary>
+        /// https://stackoverflow.com/questions/1585462/bubbling-scroll-events-from-a-listview-to-its-parent
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ListViewDevices_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        {
+            if (!e.Handled)
+            {
+                e.Handled = true;
+                var eventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta);
+                eventArg.RoutedEvent = UIElement.MouseWheelEvent;
+                eventArg.Source = sender;
+                var parent = ((Control)sender).Parent as UIElement;
+                parent.RaiseEvent(eventArg);
+            }
+        }
     }
 
     #region Converter
@@ -99,7 +133,30 @@ namespace Home.Controls
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }    
+    }
+
+    public class ScreenshotVisibiltyConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            int.TryParse(parameter.ToString(), out int i);
+            if (value is bool b)
+            {
+                if (b && i == 1)
+                    return Visibility.Visible;
+                else if (!b && i == 2)
+                    return Visibility.Visible;
+            }
+
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
+
     #endregion
 }

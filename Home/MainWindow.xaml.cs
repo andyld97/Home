@@ -184,7 +184,7 @@ namespace Home
                     continue;
                 }
 
-                DeviceItemGroup deviceItemGroup = new DeviceItemGroup { GroupName = group.Key };
+                DeviceItemGroup deviceItemGroup = new DeviceItemGroup { GroupName = group.Key, IsScreenshotView = ChkOverviewShowScreenshots.IsChecked.Value };
                 deviceItemGroup.OnGroupSelectionChanged += (string grp) =>
                 {
                     foreach (var currentGroup in PanelOverview.Children.OfType<DeviceItemGroup>().Where(d => d.GroupName != grp))
@@ -203,7 +203,8 @@ namespace Home
                 DeviceItemGroup dig = new DeviceItemGroup
                 {
                     GroupName = "Nicht zugeordnet",
-                    Devices = notAssociatedDevices
+                    Devices = notAssociatedDevices,
+                    IsScreenshotView = ChkOverviewShowScreenshots.IsChecked.Value
                 };
 
                 PanelOverview.Children.Add(dig);
@@ -520,6 +521,12 @@ namespace Home
                 return;
 
             BottomTabControl.Height = 23;
+        }
+
+        private void ChkOverviewShowScreenshots_Checked(object sender, RoutedEventArgs e)
+        {
+            foreach (var item in PanelOverview.Children.OfType<DeviceItemGroup>())
+                item.IsScreenshotView = ChkOverviewShowScreenshots.IsChecked.Value;
         }
     }
 

@@ -4,16 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Home.Controls"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Border x:Name="MainBorder" BorderBrush="Black" BorderThickness="1" CornerRadius="0">
+            mc:Ignorable="d">
+    <Border x:Name="MainBorder" BorderBrush="LightGray" BorderThickness="1" CornerRadius="0">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="40" />
+                <RowDefinition Height="42" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <Border x:Name="SubBorder" BorderBrush="Black" BorderThickness="0 0 0 1" CornerRadius="0">
+            <Border x:Name="SubBorder" BorderBrush="{DynamicResource WhiteBrush}" BorderThickness="0" CornerRadius="0">
                 <Grid>
                     <Grid HorizontalAlignment="Left">
                         <Grid>
@@ -21,28 +20,28 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            
+
                             <Image x:Name="ImageLive" Source="../resources/icons/live/toggle.png" Margin="5,10" />
                             <TextBlock x:Name="TextLive" Margin="5,0,0,0" Text="Live" Foreground="Red" FontWeight="Bold" FontSize="18" Grid.Column="1" VerticalAlignment="Center" />
                         </Grid>
                     </Grid>
-                    
+
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                         <StackPanel.Resources>
                             <Style TargetType="{x:Type Border}">
                                 <Setter Property="BorderBrush" Value="{DynamicResource BlackBrush}" />
                             </Style>
                         </StackPanel.Resources>
-                        <Border x:Name="ButtonToggleLiveMode" MouseDown="ButtonToggleLiveMode_MouseDown" Margin="5" BorderThickness="1" Cursor="Hand" ToolTip="Live View einschalten">
+                        <Border x:Name="ButtonToggleLiveMode" MouseDown="ButtonToggleLiveMode_MouseDown" Margin="5" BorderThickness="0" Cursor="Hand" ToolTip="Live View einschalten">
                             <Image x:Name="ImageToggleLive" Source="../resources/icons/live/toggle.png" />
                         </Border>
-                        <Border x:Name="ButtonSaveImage" MouseDown="ButtonSaveImage_MouseDown" Margin="5" BorderThickness="1" Cursor="Hand" ToolTip="Speichern unter ...">
+                        <Border x:Name="ButtonSaveImage" MouseDown="ButtonSaveImage_MouseDown" Margin="5" BorderThickness="0" Cursor="Hand" ToolTip="Speichern unter ...">
                             <Image Source="../resources/icons/live/save.png" />
                         </Border>
-                        <Border x:Name="ButtonRefresh" MouseDown="ButtonRefresh_MouseDown" Margin="5" BorderThickness="1" Cursor="Hand" ToolTip="Neuen Screenshot anfordern">
+                        <Border x:Name="ButtonRefresh" MouseDown="ButtonRefresh_MouseDown" Margin="5" BorderThickness="0" Cursor="Hand" ToolTip="Neuen Screenshot anfordern">
                             <Image Source="../resources/icons/live/refresh.png" />
                         </Border>
-                        <Border x:Name="ButtonResize" MouseDown="ButtonResize_MouseDown" Margin="5" BorderThickness="1" Cursor="Hand" ToolTip="Größe ändern">
+                        <Border x:Name="ButtonResize" MouseDown="ButtonResize_MouseDown" Margin="5" BorderThickness="0" Cursor="Hand" ToolTip="Größe ändern">
                             <Image Source="../resources/icons/live/maximize.png" />
                         </Border>
                     </StackPanel>
@@ -51,7 +50,7 @@
 
             <Grid Grid.Row="1">
                 <local:ZoomImageViewer x:Name="ImageViewer" />
-            </Grid>            
+            </Grid>
         </Grid>
     </Border>
 </UserControl>

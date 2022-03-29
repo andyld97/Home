@@ -9,6 +9,7 @@
     <Grid>
         <Grid.Resources>
             <local:DeviceImageConverter x:Key="localDeviceImageConverter" />
+            <local:ScreenshotVisibiltyConverter x:Key="screenshotVisiblityConverter" />
             <converter:OSNameConverter x:Key="osNameConverter" />
             <converter:OS64BitConverter x:Key="os64BitConverter" />
             <BooleanToVisibilityConverter x:Key="boolToVisibiltyConverter" />
@@ -31,7 +32,7 @@
         </StackPanel>
 
 
-        <ListView x:Name="ListViewDevices" Visibility="{Binding ElementName=ExpandList, Path=IsExpanded, Converter={StaticResource boolToVisibilityConverter}}" ItemsSource="{Binding Devices}" Background="{DynamicResource WhiteBrush}" BorderThickness="0" Grid.Row="1" SelectionChanged="ListViewDevices_SelectionChanged">
+        <ListView x:Name="ListViewDevices" Visibility="{Binding ElementName=ExpandList, Path=IsExpanded, Converter={StaticResource boolToVisibilityConverter}}" ItemsSource="{Binding Devices}" Background="{DynamicResource WhiteBrush}" BorderThickness="0" Grid.Row="1" SelectionChanged="ListViewDevices_SelectionChanged" PreviewMouseWheel="ListViewDevices_PreviewMouseWheel">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <!-- MinWidth="{Binding ItemWidth, RelativeSource={RelativeSource Self}}" ItemHeight="{Binding (ListView.View).ItemHeight, RelativeSource={RelativeSource AncestorType=ListView}}" -->
@@ -47,33 +48,46 @@
                                 <Image Source="{Binding ., Converter={StaticResource deviceScreenConverter}}" />
                             </ToolTip>
                         </Grid.ToolTip>
-                        <Grid.Resources>
-                            <Style TargetType="{x:Type TextBlock}">
-                                <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
-                            </Style>
-                        </Grid.Resources>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Image VerticalAlignment="Top" StretchDirection="DownOnly" Height="64" Margin="2" Source="{Binding ., Converter={StaticResource localDeviceImageConverter}}" />
-                        <StackPanel Margin="5,5,0,0" Grid.Column="2" Orientation="Vertical">
-                            <TextBlock TextDecorations="Underline">
+
+                        <Border Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.IsScreenshotView, Converter={StaticResource screenshotVisiblityConverter}, ConverterParameter=1}" Background="Black" Height="200">
+                            <Grid>
+                                <Image Visibility="Visible" StretchDirection="DownOnly" Source="{Binding ., Converter={StaticResource deviceScreenConverter}}" />
+                                <TextBlock Foreground="{DynamicResource BlackBrush}" Text="{Binding Envoirnment.MachineName}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                            </Grid>
+                        </Border>
+
+                        <Grid Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.IsScreenshotView, Converter={StaticResource screenshotVisiblityConverter}, ConverterParameter=2}">                           
+                            <Grid.Resources>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+                                </Style>
+                            </Grid.Resources>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Image VerticalAlignment="Top" HorizontalAlignment="Center" StretchDirection="DownOnly" Height="64" Width="64" Margin="2" Source="{Binding ., Converter={StaticResource localDeviceImageConverter}}" />
+                            <StackPanel Margin="5,5,0,0" Grid.Column="2" Orientation="Vertical">
+                                <TextBlock TextDecorations="Underline">
                                 <Run Text="{Binding Name}" FontWeight="Bold" />
                                 <Run Text="(" /><Run Text="{Binding Envoirnment.TotalRAM}" />
                                 <Run Text="GB)" />
-                            </TextBlock>
-                            <TextBlock Text="{Binding IP}" />
-                            <TextBlock>
+                                </TextBlock>
+                                <TextBlock Text="{Binding IP}" />
+                                <TextBlock>
                                 <Run Text="{Binding OS, Converter={StaticResource osNameConverter}}" />
                                 <Run Text="(" /><Run Text="{Binding Envoirnment.Is64BitOS, Converter={StaticResource os64BitConverter}}" /><Run Text=")" />
-                            </TextBlock>
+                                </TextBlock>
 
-                            <TextBlock Text="{Binding Envoirnment.CPUName}" TextTrimming="CharacterEllipsis" />
-                            <TextBlock Text="{Binding Envoirnment.Motherboard}" TextTrimming="CharacterEllipsis" />
-                            <TextBlock Text="{Binding Envoirnment.Graphics}" TextTrimming="CharacterEllipsis" />
-                        </StackPanel>
+                                <TextBlock Text="{Binding Envoirnment.CPUName}" TextTrimming="CharacterEllipsis" />
+                                <TextBlock Text="{Binding Envoirnment.Motherboard}" TextTrimming="CharacterEllipsis" />
+                                <TextBlock Text="{Binding Envoirnment.Graphics}" TextTrimming="CharacterEllipsis" />
+                            </StackPanel>
+                        </Grid>
+
                     </Grid>
+                    
+               
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
