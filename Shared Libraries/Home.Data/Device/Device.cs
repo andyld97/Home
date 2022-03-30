@@ -239,6 +239,12 @@ namespace Home.Model
 #endif
         public string ServiceClientVersion { get; set; }
 
+        [JsonProperty("usage")]
+#if !LEGACY
+        [JsonPropertyName("usage")]
+#endif
+        public DeviceUsage Usage { get; set; } = new DeviceUsage();
+
 #if !LEGACY
         #region Properties for Internal API Usage
         /// <summary>
@@ -443,10 +449,15 @@ namespace Home.Model
             DiskDrives = other.DiskDrives;
             ServiceClientVersion = other.ServiceClientVersion;
 
+            // In an API Context we should not update the usage here
+            if (isLocal)
+             Usage = other.Usage;
+
             // Only update if value != null to keep old versions compatible (they may don't have this property yet)
             if (other.IsLive != null)
                 IsLive = other.IsLive;
 
+            // ToDo: *** Only add new screenshots (to prevent duplicate entries and long lists)
             foreach (var shot in other.ScreenshotFileNames)
                 ScreenshotFileNames.Add(shot);
 
@@ -738,5 +749,60 @@ namespace Home.Model
         [JsonPropertyName("client_id")]
 #endif
         public string ClientID { get; set; }
+    }
+
+    public class DeviceUsage
+    {
+        [JsonProperty("cpu")]
+#if !LEGACY
+        [JsonPropertyName("cpu")]
+#endif
+        public List<double> CPU { get; set; } = new List<double>();
+
+        [JsonProperty("ram")]
+#if !LEGACY
+        [JsonPropertyName("ram")]
+#endif
+        public List<double> RAM { get; set; } = new List<double>();
+
+        [JsonProperty("disk")]
+#if !LEGACY
+        [JsonPropertyName("disk")]
+#endif
+        public List<double> DISK { get; set; } = new List<double>();
+
+        public void Clear()
+        {
+            CPU.Clear();
+            RAM.Clear();
+            DISK.Clear();
+        }
+
+        public void AddCPUEntry(double value)
+        {
+            EnsureListHasEnoughSpace(CPU);
+            CPU.Add(value);
+        }
+
+        public void AddRAMEntry(double value)
+        {
+            EnsureListHasEnoughSpace(RAM);
+            RAM.Add(value);
+        }
+
+        public void AddDISKEntry(double value)
+        {
+            EnsureListHasEnoughSpace(DISK);
+            DISK.Add(value);
+        }
+
+        private void EnsureListHasEnoughSpace(List<double> list)
+        {
+            if (list.Count >= 60)
+            {
+                while (list.Count != 59)
+                    list.RemoveAt(0);
+            }
+        }
     }
 }

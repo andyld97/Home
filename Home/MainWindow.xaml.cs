@@ -5,6 +5,10 @@ using Home.Controls.Dialogs;
 using Home.Data;
 using Home.Helper;
 using Home.Model;
+using LiveChartsCore;
+using LiveChartsCore.Kernel;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -50,7 +54,9 @@ namespace Home
             Closing += MainWindow_Closing;
             ScreenshotViewer.OnResize += ScreenshotViewer_OnResize;
             ScreenshotViewer.OnScreenShotAquired += ScreenshotViewer_OnScreenShotAquired;
-        }
+
+            InitalizeDeviceActivityPlot();
+        }    
 
         private async void ScreenshotViewer_OnScreenShotAquired(object sender, EventArgs e)
         {
@@ -387,7 +393,7 @@ namespace Home
         private async Task RefreshSelectedItem()
         {
             if (lastSelectedDevice == null)
-                return;
+                return;          
 
             // Generate log entries FlowDocument
             FlowDocument flowDocument = new FlowDocument { FontFamily = new FontFamily("Consolas") };
@@ -436,19 +442,98 @@ namespace Home
             LogHolder.Document = flowDocument;
             LogScrollViewer.ScrollToEnd();
 
+            RenderPlot();
+
             DeviceInfo.DataContext = null;
             DeviceInfo.DataContext = lastSelectedDevice;
             ScreenshotViewer.UpdateDevice(lastSelectedDevice);
         }
 
-        private async void HyperLinkRefreshScreenshot_Click(object sender, RoutedEventArgs e)
+        #region Activity Plot
+
+        private void RenderPlot()
         {
-            if (lastSelectedDevice == null)
-                return;
+            List<Point> cpuPoints = new List<Point>();
+            List<Point> ramPoints = new List<Point>();
+            List<Point> diskPoints = new List<Point>();
 
-            var result = await API.AquireScreenshotAsync(CLIENT, lastSelectedDevice);
+            int cpuCounter = 1;
+            foreach (var cpu in lastSelectedDevice.Usage.CPU)
+                cpuPoints.Add(new Point(cpuCounter++, cpu));
 
+            int ramCounter = 1;
+            foreach (var ram in lastSelectedDevice.Usage.RAM)
+                ramPoints.Add(new Point(ramCounter++, Math.Round((ram / lastSelectedDevice.Envoirnment.TotalRAM) * 100, 2)));
+
+            int diskCounter = 1;
+            foreach (var disk in lastSelectedDevice.Usage.DISK)
+                diskPoints.Add(new Point(diskCounter++, disk));
+
+            //  Fill = new SolidColorPaint(SkiaSharp.SKColors.LightBlue.WithAlpha(128)),
+
+            void mapping(Point s, ChartPoint e)
+            {
+                e.SecondaryValue = s.X; 
+                e.PrimaryValue = s.Y;
+            }
+
+            var cpuSeries = new LineSeries<Point>()
+            {
+                Values = cpuPoints,
+                Mapping = mapping,
+                Stroke = new SolidColorPaint(SkiaSharp.SKColors.AliceBlue, 3),
+                Fill = null,
+                GeometrySize = 0,
+                Name = "CPU Usage (%)",
+                TooltipLabelFormatter = (s) => $"CPU: {s.PrimaryValue} %",
+            };
+
+            var ramSeries = new LineSeries<Point>()
+            {
+                Values = ramPoints,
+                Mapping = mapping,
+                Stroke = new SolidColorPaint(SkiaSharp.SKColors.Violet, 3),
+                Fill = null,
+                GeometrySize = 0,
+                Name = "RAM Usage (%)",
+                TooltipLabelFormatter = (s) => $"RAM: {s.PrimaryValue} %",
+            };
+
+            var diskSeries = new LineSeries<Point>()
+            {
+                Values = diskPoints,
+                Mapping = mapping,
+                Stroke = new SolidColorPaint(SkiaSharp.SKColors.Orange, 3),
+                Fill = null,
+                GeometrySize = 0,
+                Name = "DISK Usage (%)",
+                TooltipLabelFormatter = (s) => $"DISK: {s.PrimaryValue} %",
+            };
+
+            DeviceActivityPlot.Series = new ISeries[] { cpuSeries, ramSeries, diskSeries };
         }
+
+        private void InitalizeDeviceActivityPlot()
+        {
+            // This legened is always switching colors, so I am going to use my own legend!
+            DeviceActivityPlot.LegendPosition = LiveChartsCore.Measure.LegendPosition.Hidden; // top
+            DeviceActivityPlot.LegendOrientation = LiveChartsCore.Measure.LegendOrientation.Horizontal;
+            DeviceActivityPlot.LegendBackground = FindResource("WhiteBrush") as SolidColorBrush;
+            DeviceActivityPlot.LegendTextBrush = FindResource("BlackBrush") as SolidColorBrush;
+
+            var xaxis = DeviceActivityPlot.XAxes.FirstOrDefault();
+            var yaxis = DeviceActivityPlot.YAxes.FirstOrDefault();
+            yaxis.Labeler = (y) => $"{y}%";
+            xaxis.Labeler = (x) => {
+                if (lastSelectedDevice == null)
+                    return string.Empty;
+
+                var n = lastSelectedDevice.LastSeen.AddMinutes(-(60 - x));
+                return n.ToString("HH:mm");
+            };
+        }
+
+        #endregion
 
         #region Menu
 

@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Home" xmlns:controls="clr-namespace:Home.Controls" xmlns:converter="clr-namespace:Home.Converter" mc:Ignorable="d"
+        xmlns:local="clr-namespace:Home" xmlns:controls="clr-namespace:Home.Controls" xmlns:converter="clr-namespace:Home.Converter" xmlns:wpf="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF" xmlns:skiasharpview="clr-namespace:LiveChartsCore.SkiaSharpView;assembly=LiveChartsCore.SkiaSharpView" xmlns:livechartscore="clr-namespace:LiveChartsCore;assembly=LiveChartsCore" mc:Ignorable="d"
         Title="Home Network" Height="1024" Width="1280" Loaded="RibbonWindow_Loaded">
     <Fluent:RibbonWindow.Resources>
         <local:DiskImageConverter x:Key="diskImageConverter" />
@@ -170,11 +170,11 @@
 
                         <Border Grid.Column="1" Grid.Row="1" BorderThickness="2" CornerRadius="5" BorderBrush="Gray" Margin="5">
                             <Grid>
-                                <Grid x:Name="DeviceInfoHint" Visibility="Visible">
+                                <Grid x:Name="DeviceInfoHint" Visibility="Hidden">
                                     <TextBlock Text="Kein Gerät ausgewählt!" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Foreground="{DynamicResource BlackBrush}" FontSize="33" />
                                 </Grid>
 
-                                <Grid x:Name="DeviceInfo" Visibility="Hidden">
+                                <Grid x:Name="DeviceInfo" Visibility="Visible">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*" />
                                         <RowDefinition Height="Auto" />
@@ -209,11 +209,18 @@
                                                     <ColumnDefinition Width="*" />
                                                 </Grid.ColumnDefinitions>
 
-                                                <Grid x:Name="InfoGrid">
+
+                                                <Grid x:Name="InfoGrid" Grid.Row="0">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="Auto" />
                                                         <ColumnDefinition Width="*" />
                                                     </Grid.ColumnDefinitions>
+
+
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="*" />
+                                                    </Grid.RowDefinitions>
 
                                                     <StackPanel>
                                                         <StackPanel Orientation="Horizontal">
@@ -227,6 +234,8 @@
                                                         <TextBlock Text="Beschreibung: "/>
                                                         <TextBlock Text="Ort:" />
                                                         <TextBlock Text="Client-Version: "/>
+                                                        <TextBlock Text="Start:" />
+                                                        <TextBlock Text="Online:" />
                                                         <StackPanel Orientation="Horizontal">
                                                             <Image Source="resources/icons/hardware.png" Height="24" Margin="5" />
                                                             <TextBlock Text="Hardware" FontSize="25" Margin="0,0,0,0" FontWeight="Bold" />
@@ -236,18 +245,13 @@
                                                         <TextBlock Text="VER:" FontWeight="Bold" />
                                                         <TextBlock Text="CPU:" FontWeight="Bold" />
                                                         <TextBlock Text="Motherboard:" FontWeight="Bold" />
-                                                        <TextBlock Text="GRAFIK:" FontWeight="Bold" />
+                                                        <TextBlock Text="Graphics:" FontWeight="Bold" />
                                                         <TextBlock Text="RAM:" FontWeight="Bold" />
                                                         <StackPanel Orientation="Horizontal">
                                                             <Image Source="resources/icons/activity.png" Height="24" Margin="5" />
                                                             <TextBlock Text="Aktivität" FontSize="25" Margin="0,0,0,0" FontWeight="Bold" />
                                                         </StackPanel>
                                                         <Separator Margin="0,5,0,0" />
-                                                        <TextBlock Text="CPU (%):" FontWeight="Bold" />
-                                                        <TextBlock Text="RAM (%): " FontWeight="Bold"/>
-                                                        <TextBlock Text="DISK (%): " FontWeight="Bold"/>
-                                                        <TextBlock Text="Start:" FontWeight="Bold" />
-                                                        <TextBlock Text="Online:" FontWeight="Bold" />
                                                     </StackPanel>
 
                                                     <StackPanel Grid.Column="1">
@@ -258,6 +262,16 @@
                                                         <TextBlock Text="{Binding Envoirnment.Description, Converter={StaticResource emptyConverter}}"/>
                                                         <TextBlock Text="{Binding Location, Converter={StaticResource emptyConverter}}" />
                                                         <TextBlock Text="{Binding ServiceClientVersion, Converter={StaticResource emptyConverter}}"/>
+                                                        <TextBlock x:Name="TextStartTime" Text="{Binding Envoirnment.StartTimestamp, StringFormat=dd.MM.yyyy HH:mm}" ToolTip="{Binding ElementName=TextStartTime, Path=Text}" />
+                                                        <TextBlock x:Name="TextRunningTime" ToolTip="{Binding ElementName=TextRunningTime, Path=Text}">
+                                                            <TextBlock.Text>
+                                                                <MultiBinding StringFormat="{}{0:00}:{1:00}:{2:00;00}">
+                                                                    <Binding Path="Envoirnment.RunningTime.Days" />
+                                                                    <Binding Path="Envoirnment.RunningTime.Hours" />
+                                                                    <Binding Path="Envoirnment.RunningTime.Minutes" />
+                                                                </MultiBinding>
+                                                            </TextBlock.Text>
+                                                        </TextBlock>
                                                         <TextBlock Margin="0,1,0,0" FontSize="25" />
                                                         <Separator Margin="0,5,0,0" />
                                                         <TextBlock x:Name="TextOSName" ToolTip="{Binding ElementName=TextOSName, Path=Text}" >
@@ -277,27 +291,26 @@
                                                         </TextBlock>
                                                         <TextBlock Margin="0,1,0,0" FontSize="25" />
                                                         <Separator Margin="0,5,0,0" />
-                                                        <TextBlock x:Name="TextCPUUsage">
-                                                <Run Text="{Binding Envoirnment.CPUUsage}" ToolTip="{Binding ElementName=TextCPUUsage, Path=Text}"/>
-                                                <Run Text="%"/>
-                                                        </TextBlock>
-                                                        <TextBlock x:Name="TextFreeRAM" Text="{Binding Envoirnment.FreeRAM}" ToolTip="{Binding ElementName=TextFreeRAM, Path=Text}"/>
-                                                        <TextBlock x:Name="TextDiskUsage">
-                                                <Run Text="{Binding Envoirnment.DiskUsage}" ToolTip="{Binding ElementName=TextDiskUsage, Path=Text}" />
-                                                <Run Text="%" />
-                                                        </TextBlock>
-                                                        <TextBlock x:Name="TextStartTime" Text="{Binding Envoirnment.StartTimestamp, StringFormat=dd.MM.yyyy HH:mm}" ToolTip="{Binding ElementName=TextStartTime, Path=Text}" />
-                                                        <TextBlock x:Name="TextRunningTime" ToolTip="{Binding ElementName=TextRunningTime, Path=Text}">
-                                                            <TextBlock.Text>
-                                                                <MultiBinding StringFormat="{}{0:00}:{1:00}:{2:00;00}">
-                                                                    <Binding Path="Envoirnment.RunningTime.Days" />
-                                                                    <Binding Path="Envoirnment.RunningTime.Hours" />
-                                                                    <Binding Path="Envoirnment.RunningTime.Minutes" />
-                                                                </MultiBinding>
-                                                            </TextBlock.Text>
-                                                        </TextBlock>
                                                     </StackPanel>
+
+                                                    <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto" />
+                                                            <RowDefinition Height="*" />
+                                                        </Grid.RowDefinitions>
+
+                                                        <StackPanel x:Name="Legend" Orientation="Horizontal" HorizontalAlignment="Center">
+                                                            <TextBlock Text="--- CPU" Foreground="AliceBlue" Background="Black" FontWeight="Bold" Margin="20,0,0,0" />
+                                                            <TextBlock Text="--- RAM" Foreground="Violet" FontWeight="Bold" Margin="20,0,0,0" />
+                                                            <TextBlock Text="--- DISK" Foreground="Orange" FontWeight="Bold" Margin="20,0,0,0" />
+                                                        </StackPanel>
+                                                        
+                                                        <Border Grid.Row="1">
+                                                            <wpf:CartesianChart x:Name="DeviceActivityPlot" />
+                                                        </Border>
+                                                    </Grid>
                                                 </Grid>
+
 
                                                 <Grid x:Name="ScreeshotViewHolder" Grid.Column="1">
                                                     <controls:ScreenshotViewer x:Name="ScreenshotViewer" Margin="0,-3,-3,-3" />

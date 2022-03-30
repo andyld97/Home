@@ -201,8 +201,17 @@
     <PackageReference Include="Fluent.Ribbon">
       <Version>9.0.4</Version>
     </PackageReference>
+    <PackageReference Include="LiveChartsCore.SkiaSharpView">
+      <Version>2.0.0-beta.101</Version>
+    </PackageReference>
+    <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF">
+      <Version>2.0.0-beta.101</Version>
+    </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="ScottPlot.WPF">
+      <Version>4.1.37</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

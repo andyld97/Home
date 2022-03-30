@@ -87,6 +87,10 @@ namespace Home.API.Controllers
                         // Check if device was previously offline
                         if (oldDevice.Status == Device.DeviceStatus.Offline)
                         {
+                            // Check for clearing usage stats (if the device was offline for more than one hour)
+                            if (oldDevice.LastSeen.AddHours(1) < DateTime.Now)
+                                oldDevice.Usage.Clear();
+
                             oldDevice.LogEntries.Add(new LogEntry(DateTime.Now, $"Device \"{oldDevice.Name}\" has recovered and is now online again!", LogEntry.LogLevel.Information, (refreshedDevice.Type == Device.DeviceType.SingleBoardDevice || refreshedDevice.Type == Device.DeviceType.Server)));
                             oldDevice.IsScreenshotRequired = true;
                         }
@@ -125,6 +129,17 @@ namespace Home.API.Controllers
                         if (oldDevice.IsLive.HasValue && oldDevice.IsLive.Value)
                             isScreenshotRequired = true;
 
+                        // USAGE
+                        // CPU & DISK
+                        oldDevice.Usage.AddCPUEntry(refreshedDevice.Envoirnment.CPUUsage);
+                        oldDevice.Usage.AddDISKEntry(refreshedDevice.Envoirnment.DiskUsage);
+
+                        // RAM
+                        var ram = refreshedDevice.Envoirnment.FreeRAM.Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+                        if (ram != null && double.TryParse(ram, out double res))
+                            oldDevice.Usage.AddRAMEntry(res);
+
+                        // Update device
                         oldDevice.Update(refreshedDevice, now, Device.DeviceStatus.Active);
 
                         lock (oldDevice.Messages)
