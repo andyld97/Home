@@ -210,9 +210,6 @@
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
     </PackageReference>
-    <PackageReference Include="ScottPlot.WPF">
-      <Version>4.1.37</Version>
-    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="resources\images\screenshot_default.png" />
