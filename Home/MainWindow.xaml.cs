@@ -306,7 +306,7 @@ namespace Home
             {
                 if (updateGui && DateTime.TryParseExact(screenShotFileName, Consts.SCREENSHOT_DATE_FILE_FORMAT, CultureInfo.CurrentCulture, DateTimeStyles.AssumeLocal, out DateTime result))
                     ScreenshotViewer.UpdateDate($"{result.ToShortDateString()} @ {result.ToShortTimeString()}");
-                else
+                else if (updateGui)
                     ScreenshotViewer.UpdateDate(null);
 
                 try
@@ -318,10 +318,8 @@ namespace Home
                     // ignore
                 }
             }
-            else
-            {
+            else if (updateGui)
                 ScreenshotViewer.UpdateDate(null);
-            }
 
 
             if (!updateGui)
