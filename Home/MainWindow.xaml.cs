@@ -525,12 +525,13 @@ namespace Home
             xaxis.Labeler = (x) => {
                 if (lastSelectedDevice == null)
                     return string.Empty;
-
-                var n = lastSelectedDevice.LastSeen.AddMinutes(-(60 - x));
+                
+                // 60 is not true if there are not 60 values in the list
+                // and remember that all values (cpu, ram, disk) MUST have the same amount, also if they get cleard (they get all cleard)
+                var n = lastSelectedDevice.LastSeen.AddMinutes(-(lastSelectedDevice.Usage.CPU.Count - x));
                 return n.ToString("HH:mm");
             };
         }
-
         #endregion
 
         #region Menu

@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Home" xmlns:controls="clr-namespace:Home.Controls" xmlns:converter="clr-namespace:Home.Converter" xmlns:wpf="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF" xmlns:skiasharpview="clr-namespace:LiveChartsCore.SkiaSharpView;assembly=LiveChartsCore.SkiaSharpView" xmlns:livechartscore="clr-namespace:LiveChartsCore;assembly=LiveChartsCore" mc:Ignorable="d"
-        Title="Home Network" Height="1024" Width="1280" Loaded="RibbonWindow_Loaded">
+        Title="Home" Height="1024" Width="1280" Loaded="RibbonWindow_Loaded">
     <Fluent:RibbonWindow.Resources>
         <local:DiskImageConverter x:Key="diskImageConverter" />
         <local:ByteToGBConverter x:Key="byteToGBConverter" />
