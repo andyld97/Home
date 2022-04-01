@@ -69,7 +69,7 @@ namespace Home.Controls
             if (enabled)
                 image = !state ? "toggle" : "offline";
             else
-                image = "offline";
+                image = "offline";     
 
             string path = $"pack://application:,,,/Home;Component/resources/icons/live/{image}.png";
             ImageToggleLive.Source = ImageHelper.LoadImage(path, false);
@@ -77,7 +77,11 @@ namespace Home.Controls
 
         private void UpdateLiveImage(bool state, bool enabled)
         {
-            string path = $"pack://application:,,,/Home;Component/resources/icons/live/{(state ? "toggle" : "offline")}.png";
+            string image = state ? "toggle" : "offline";
+            if (!state && lastSelectedDevice.Status == Device.DeviceStatus.Active)
+                image = "online";
+
+            string path = $"pack://application:,,,/Home;Component/resources/icons/live/{image}.png";
             ImageLive.Source = ImageHelper.LoadImage(path, false);
         }
 
