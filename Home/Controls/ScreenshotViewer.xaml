@@ -33,16 +33,16 @@
                             </Style>
                         </StackPanel.Resources>
                         <Border x:Name="ButtonToggleLiveMode" MouseDown="ButtonToggleLiveMode_MouseDown" Margin="5" BorderThickness="0" Cursor="Hand" ToolTip="Live View einschalten">
-                            <Image x:Name="ImageToggleLive" Source="../resources/icons/live/toggle.png" />
+                            <Image x:Name="ImageToggleLive" Height="32" Source="../resources/icons/live/toggle.png" />
                         </Border>
                         <Border x:Name="ButtonSaveImage" MouseDown="ButtonSaveImage_MouseDown" Margin="5" BorderThickness="0" Cursor="Hand" ToolTip="Speichern unter ...">
-                            <Image Source="../resources/icons/live/save.png" />
+                            <Image Source="../resources/icons/live/save.png" Height="32" />
                         </Border>
                         <Border x:Name="ButtonRefresh" MouseDown="ButtonRefresh_MouseDown" Margin="5" BorderThickness="0" Cursor="Hand" ToolTip="Neuen Screenshot anfordern">
-                            <Image Source="../resources/icons/live/refresh.png" />
+                            <Image Source="../resources/icons/live/refresh.png" Height="25" />
                         </Border>
                         <Border x:Name="ButtonResize" MouseDown="ButtonResize_MouseDown" Margin="5" BorderThickness="0" Cursor="Hand" ToolTip="Größe ändern">
-                            <Image Source="../resources/icons/live/maximize.png" />
+                            <Image Source="../resources/icons/live/maximize.png" Height="25" />
                         </Border>
                     </StackPanel>
                 </Grid>
