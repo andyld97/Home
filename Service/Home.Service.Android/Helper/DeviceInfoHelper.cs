@@ -180,7 +180,10 @@ namespace Home.Service.Android.Helper
 
         public static void RefreshDevice(this Device currentDevice, ContentResolver cr, Context context)
         {
-            currentDevice.ServiceClientVersion = "vAndroid 0.0.2";
+            currentDevice.ServiceClientVersion = "vAndroid 0.0.3";
+#if NOGL
+            currentDevice.ServiceClientVersion += " - NOGL";
+#endif
             currentDevice.Envoirnment.OSName = $"Android {Build.VERSION.Release}";
             currentDevice.Envoirnment.OSVersion = $"{currentDevice.Envoirnment.OSName} (Sec. Patch: {Build.VERSION.SecurityPatch}) ({System.Environment.OSVersion})";
             currentDevice.OS = Device.OSType.Android;
@@ -190,7 +193,7 @@ namespace Home.Service.Android.Helper
             currentDevice.Envoirnment.DomainName = System.Environment.UserDomainName;
             currentDevice.Envoirnment.Is64BitOS = System.Environment.Is64BitOperatingSystem;
             currentDevice.Envoirnment.Product = Build.Product;
-            currentDevice.Envoirnment.StartTimestamp = System.DateTime.Now;
+            currentDevice.Envoirnment.StartTimestamp = dateTimeStarted;
 
             // Read and assign memory info
             DeviceInfoHelper.ReadAndAssignMemoryInfo(currentDevice);

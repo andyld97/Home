@@ -10,9 +10,6 @@ using A = Android;
 
 namespace Home.Service.Android
 {
-
-    // ToDo: *** Start on Boot (using BroadcastReciever)
-
     /// <summary>
     /// Taken from https://androidwave.com/foreground-service-android-example/
     /// </summary>
@@ -38,6 +35,7 @@ namespace Home.Service.Android
         {
             CreateNotificationChannel(ApplicationContext);
             Intent notificationIntent = new Intent(this, typeof(MainActivity));
+
             // Supporting Android 12 (Immutable Pending Intent)
             // https://developer.android.com/guide/components/intents-filters#DeclareMutabilityPendingIntent
             PendingIntent pendingIntent = PendingIntent.GetActivity(this, 0, notificationIntent, PendingIntentFlags.Immutable);
@@ -45,9 +43,8 @@ namespace Home.Service.Android
             // Get settings and currentDevice
             string xmlDevicePath = string.Empty;
             string xmlSettingsPath = string.Empty;
-
-
             string baseDir = ApplicationContext.GetExternalFilesDir("device").AbsolutePath;
+
             if (!System.IO.Directory.Exists(baseDir))
             {
                 try

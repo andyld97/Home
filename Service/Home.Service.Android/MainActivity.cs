@@ -121,6 +121,8 @@ namespace Home.Service.Android
             btnShowInfos.Click += BtnShowInfos_Click;
             buttonToggleService.Click += ButtonToggleService_Click;
 
+            CheckPermissioms();
+
             if (isDeviceRegistered)
             {
                 textHost.Text = currentSettings.Host;
@@ -129,6 +131,7 @@ namespace Home.Service.Android
                 spinnerDeviceType.SetSelection((int)(currentDevice.Type - 5));
             }
 
+#if !NOGL
             // Only determine graphics when it's not set, because GLSurfaceView/a valid Open GL Context is required
             if (string.IsNullOrEmpty(currentDevice.Envoirnment.Graphics))
             {
@@ -142,6 +145,10 @@ namespace Home.Service.Android
                 GLSurfaceView glSurfaceView = FindViewById<GLSurfaceView>(Resource.Id.surface);
                 glSurfaceView.Visibility = A.Views.ViewStates.Gone;
             }
+#else
+            if (string.IsNullOrEmpty(currentDevice.Envoirnment.Graphics))
+                currentDevice.Envoirnment.Graphics = "Unknown";
+#endif
 
             currentDevice.RefreshDevice(ContentResolver, this);
 
@@ -154,6 +161,12 @@ namespace Home.Service.Android
             serviceCheckingTimer = new System.Timers.Timer() { Interval = TimeSpan.FromSeconds(10).TotalMilliseconds };
             serviceCheckingTimer.Elapsed += ServiceCheckingTimer_Elapsed;
             serviceCheckingTimer.Start();
+        }
+
+        private void CheckPermissioms()
+        {
+            if (CheckSelfPermission(A.Manifest.Permission.WriteExternalStorage) == A.Content.PM.Permission.Denied || CheckSelfPermission(A.Manifest.Permission.ReadExternalStorage) == A.Content.PM.Permission.Denied)
+                RequestPermissions(new string[] { A.Manifest.Permission.ReadExternalStorage, A.Manifest.Permission.WriteExternalStorage }, 1000);
         }
 
         private async void ButtonRegisterDevice_Click(object sender, System.EventArgs e)
@@ -211,14 +224,9 @@ namespace Home.Service.Android
         }
 
         #region Service Status
+
         private void SetGuiState(bool value)
         {
-            /*textHost.Enabled =
-            textLocation.Enabled =
-            textGroup.Enabled =
-            spinnerDeviceType.Enabled =
-            spinnerDeviceType.Enabled =
-            buttonRegisterDevice.Enabled = value; */
             layoutRegisterDevice.Visibility = (value ? A.Views.ViewStates.Visible : A.Views.ViewStates.Gone);
             buttonToggleService.Enabled = currentSettings.IsDeviceRegistered;
         }
@@ -260,6 +268,6 @@ namespace Home.Service.Android
         {
             RefreshServiceStatus();
         }
-        #endregion
+#endregion
     }
 }
