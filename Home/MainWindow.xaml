@@ -393,7 +393,7 @@
                                                     <Run Text="{Binding TotalSpace, Converter={StaticResource byteToGBConverter}}" />
                                                     <Run Text="GB" />
                                                                 </TextBlock>
-                                                                <ProgressBar Value="{Binding ., Converter={StaticResource spaceToProgressBarConverter}}" Height="10" Maximum="100" Foreground="{Binding ., Converter={StaticResource spaceToProgressBarColorConverter}}" />
+                                                                <ProgressBar Margin="0,3,0,0" Value="{Binding ., Converter={StaticResource spaceToProgressBarConverter}}" Height="10" Maximum="100" Foreground="{Binding ., Converter={StaticResource spaceToProgressBarColorConverter}}" />
                                                             </StackPanel>
                                                         </Grid>
                                                     </DataTemplate>
