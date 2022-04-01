@@ -49,17 +49,52 @@ namespace Home.Measure.Windows
 
         static Performance()
         {
-            cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total", true);
-            ramCounter = new PerformanceCounter("Memory", "Available MBytes", true);
-            diskCounter = new PerformanceCounter("PhysicalDisk", "% Disk Time", "_Total");
+            try
+            {
+                cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total", true);
+            }
+            catch
+            { }
+
+            try
+            {
+                ramCounter = new PerformanceCounter("Memory", "Available MBytes", true);
+            }
+            catch
+            {
+
+            }
+
+            try
+            {
+                diskCounter = new PerformanceCounter("PhysicalDisk", "% Disk Time", "_Total");
+            }
+            catch
+            { }
+
         }
 
-        public static double GetCPUUsage() => Math.Round(cpuCounter.NextValue(), 0);
+        public static double GetCPUUsage()
+        {
+            if (cpuCounter != null)
+                return Math.Round(cpuCounter.NextValue(), 0);
 
-        public static double GetDiskUsage() => Math.Round(diskCounter.NextValue(), 0);
+            return 0;
+        }
+
+        public static double GetDiskUsage()
+        {
+            if (ramCounter != null)
+                return Math.Round(diskCounter.NextValue(), 0);
+
+            return 0;
+        }
 
         public static string DetermineFreeRAM()
         {
+            if (ramCounter == null)
+                return string.Empty;
+
             double freeGB = ramCounter.NextValue() / 1024.0;
             double totalGB = Native.DetermineTotalRAM();
             double usedGB = totalGB - freeGB;

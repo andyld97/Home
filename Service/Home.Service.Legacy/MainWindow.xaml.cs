@@ -42,6 +42,8 @@ namespace Home.Service.Legacy
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
             if (ServiceData.Instance.HasLoggedInOnce)
             {
                 // WindowState = WindowState.Minimized;
@@ -51,6 +53,14 @@ namespace Home.Service.Legacy
                 isInitalized = true;
                 InitalizeService();
             }
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            if (e.ExceptionObject != null)
+                MessageBox.Show((e.ExceptionObject as Exception).ToString());
+
+            MessageBox.Show("test");
         }
 
         private void InitalizeService()
