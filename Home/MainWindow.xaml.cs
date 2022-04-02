@@ -612,6 +612,21 @@ namespace Home
             foreach (var item in PanelOverview.Children.OfType<DeviceItemGroup>())
                 item.IsScreenshotView = ChkOverviewShowScreenshots.IsChecked.Value;
         }
+
+        private async void MenuButtonDeleteDevice_Click(object sender, RoutedEventArgs e)
+        {
+            if (lastSelectedDevice != null)
+            {
+                if (MessageBox.Show(this, $"Sind Sie sich sicher, dass Sie das Gerät {lastSelectedDevice.Name} löschen möchte?", "Sicher?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                {
+                    var result = await API.DeleteDeviceAsync(lastSelectedDevice);
+                    if (result.Success)
+                        MessageBox.Show("Erfolg!", "Erfolg!", MessageBoxButton.OK, MessageBoxImage.Information);
+                    else
+                        MessageBox.Show(result.ErrorMessage, "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
     }
 
     #region Converter

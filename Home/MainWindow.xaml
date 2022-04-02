@@ -45,7 +45,7 @@
 
             <Fluent:RibbonTabItem Header="Verwaltung">
                 <Fluent:RibbonGroupBox Header="Werkzeuge">
-                    <Fluent:Button Header="Gerät löschen" LargeIcon="/resources/icons/menu/add.png" />
+                    <Fluent:Button x:Name="MenuButtonDeleteDevice" Click="MenuButtonDeleteDevice_Click" Header="Gerät löschen" LargeIcon="/resources/icons/menu/add.png" />
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>

@@ -323,6 +323,21 @@ namespace Home.API.Controllers
             }
         }
 
+        [HttpGet("delete/{guid}")]
+        public IActionResult DeleteDevice(string guid)
+        {
+            lock (Program.Devices)
+            {
+                var device = Program.Devices.FirstOrDefault(d => d.ID == guid);
+                Program.Devices.Remove(device);
+
+                if (device != null)
+                    return Ok(AnswerExtensions.Success("ok"));
+                else
+                    return BadRequest(AnswerExtensions.Fail("This device doesn't exists!"));
+            }
+        }
+
         [HttpPost("send_command")]
         public IActionResult SendCommnad([FromBody] Command command)
         {

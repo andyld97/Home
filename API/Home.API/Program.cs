@@ -196,14 +196,22 @@ namespace Home.API
             foreach (var log in logEntries)
                 await TGLogger.LogTelegram(log.ToString());
 
-            // ToDo: *** Truncate device log automatically if it gets too big
-            // Delete these log lines and insert at 0, "Truncated log file of this device"
-
             // Save devices (TODO: *** Only save if there are any changes recieved from the controller!)
             try
             {
                 lock (Devices)
                 {
+                    foreach (var device in Devices)
+                    {
+                        if (device.LogEntries.Count >= 200)
+                        {
+                            while (device.LogEntries.Count == 100 - 2)
+                                device.LogEntries.RemoveAt(0);
+
+                            device.LogEntries.Insert(0, new LogEntry("Truncated log file of this device!", LogEntry.LogLevel.Information));
+                        }
+                    }
+
                     Serialization.Serialization.Save<List<Device>>(DEVICE_PATH, Devices, Serialization.Serialization.Mode.Normal);
                 }
             }
