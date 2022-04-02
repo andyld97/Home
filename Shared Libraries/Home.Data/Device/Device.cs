@@ -289,7 +289,8 @@ namespace Home.Model
             Server,
             Smartphone,
             SmartTV,
-            SetTopBox
+            SetTopBox,
+            Tablet
         }
 
         public enum OSType
@@ -313,6 +314,7 @@ namespace Home.Model
             string image = string.Empty;
             switch (Type)
             {
+                case DeviceType.Tablet: image = "tablet"; break;
                 case DeviceType.Smartphone: image = "smartphone"; break;
                 case DeviceType.SmartTV: image = "smarttv"; break;
                 case DeviceType.SetTopBox: image = "settopbox"; break;
