@@ -261,9 +261,8 @@ namespace Home
                             if (lastSelectedDevice == oldDevice)
                             {
                                 // lastSelectedDevice = device.EventData.EventDevice;
-                                //RefreshSelectedItem();
+                                // RefreshSelectedItem();
                             }
-
 
                             await RefreshSelectedItem();
                             RefreshDeviceHolder();
@@ -449,6 +448,19 @@ namespace Home
 
         #region Activity Plot
 
+        private double NormalizeValue(double input)
+        {
+            // 0.19 => 19%
+            if (Math.Round(input, 0) == 0)
+                return input * 100;
+
+            // 500% => 50%
+            if (input > 100)
+                return Math.Round(input / 100, 2);
+
+            return input;
+        }
+
         private void RenderPlot()
         {
             List<Point> cpuPoints = new List<Point>();
@@ -457,7 +469,7 @@ namespace Home
 
             int cpuCounter = 1;
             foreach (var cpu in lastSelectedDevice.Usage.CPU)
-                cpuPoints.Add(new Point(cpuCounter++, cpu));
+                cpuPoints.Add(new Point(cpuCounter++, NormalizeValue(cpu)));
 
             int ramCounter = 1;
             foreach (var ram in lastSelectedDevice.Usage.RAM)
@@ -465,7 +477,7 @@ namespace Home
 
             int diskCounter = 1;
             foreach (var disk in lastSelectedDevice.Usage.DISK)
-                diskPoints.Add(new Point(diskCounter++, disk));
+                diskPoints.Add(new Point(diskCounter++, NormalizeValue(disk)));
 
             //  Fill = new SolidColorPaint(SkiaSharp.SKColors.LightBlue.WithAlpha(128)),
 
