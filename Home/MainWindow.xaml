@@ -344,14 +344,21 @@
                                                     <TextBlock Margin="5,0,0,0" Text="Benutzer" TextAlignment="Center" />
                                                 </StackPanel>
                                             </TabItem.Header>
-                                            <TextBlock>
-                                    <Run Text="{Binding Envoirnment.UserName}" />
-                                    <LineBreak />
-                                    <Run Text="{Binding Envoirnment.DomainName}" />
-                                    <LineBreak />   
-                                    <Run Text="{Binding Envoirnment.MachineName}" />
-                                    <LineBreak />
-                                            </TextBlock>
+
+                                            <ListView Background="{DynamicResource WhiteBrush}">
+                                                <ListView.Items>
+                                                    <ListViewItem>
+                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="2">
+                                                            <Image Source="resources/icons/user.png" Width="32" />
+                                                            <TextBlock VerticalAlignment="Center" Margin="5,0,0,0" Foreground="{DynamicResource BlackBrush}">
+                                                    <Run Text="{Binding Envoirnment.UserName}" />
+                                                    <LineBreak />
+                                                    <Run Text="{Binding Envoirnment.DomainName}" Typography.Capitals="AllSmallCaps" />
+                                                            </TextBlock>
+                                                        </StackPanel>
+                                                    </ListViewItem>
+                                                </ListView.Items>
+                                            </ListView>
                                         </TabItem>
                                         <TabItem>
                                             <TabItem.Header>
