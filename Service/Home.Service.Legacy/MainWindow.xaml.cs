@@ -154,7 +154,7 @@ namespace Home.Service.Legacy
             currentDevice.Envoirnment.MachineName = Environment.MachineName;
             currentDevice.Envoirnment.UserName = Environment.UserName;
             currentDevice.Envoirnment.DomainName = Environment.UserDomainName;
-            currentDevice.Envoirnment.Graphics = WMI.GetGraphics();
+            currentDevice.Envoirnment.Graphics = WMI.DetermineGraphicsCardNames();
             currentDevice.ServiceClientVersion = $"vLegacy{typeof(MainWindow).Assembly.GetName().Version.ToString(3)}";
             WMI.GetVendorInfo(out string product, out string description, out string vendor);
             currentDevice.Envoirnment.Product = product;

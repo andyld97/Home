@@ -4,15 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management;
-using System.Text;
 
 namespace Home.Measure.Windows
 {
     /// Capsels all methods available via WMI
     public static class WMI
     {
-        public static string GetGraphics()
+        public static string DetermineGraphicsCardNames()
         {
+            List<string> names = new List<string>();
             try
             {
                 ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_DisplayConfiguration");
@@ -23,9 +23,7 @@ namespace Home.Measure.Windows
                     foreach (PropertyData property in mo.Properties)
                     {
                         if (property.Name == "Description")
-                        {
-                            return property.Value.ToString();
-                        }
+                            names.Add(property.Value.ToString());
                     }
                 }
             }
@@ -34,7 +32,11 @@ namespace Home.Measure.Windows
 
             }
 
-            return string.Empty;
+            // ToDo: *** Some devices has Intel HD Graphics and a seperate graphics card for example, so then we want both cards
+            if (names.Count == 0)
+                return string.Empty;
+            else
+                return names.FirstOrDefault();
         }
 
         public static string DetermineCPUName()
