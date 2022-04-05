@@ -205,7 +205,7 @@ namespace Home.API
                     {
                         if (device.LogEntries.Count >= 200)
                         {
-                            while (device.LogEntries.Count == 100 - 2)
+                            while (device.LogEntries.Count != 100 - 2)
                                 device.LogEntries.RemoveAt(0);
 
                             device.LogEntries.Insert(0, new LogEntry("Truncated log file of this device!", LogEntry.LogLevel.Information));
