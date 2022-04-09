@@ -255,16 +255,16 @@
                                                     <StackPanel Grid.Column="1">
                                                         <TextBlock FontSize="25" />
                                                         <Separator Margin="0,5,0,0" />
-                                                        <TextBlock Text="{Binding Envoirnment.Vendor, Converter={StaticResource emptyConverter}}" />
-                                                        <TextBlock Text="{Binding Envoirnment.Product, Converter={StaticResource emptyConverter}}" />
-                                                        <TextBlock Text="{Binding Envoirnment.Description, Converter={StaticResource emptyConverter}}"/>
-                                                        <TextBlock x:Name="TextStartTime" Text="{Binding Envoirnment.StartTimestamp, StringFormat=dd.MM.yyyy HH:mm}" ToolTip="{Binding ElementName=TextStartTime, Path=Text}" />
+                                                        <TextBlock Text="{Binding Environment.Vendor, Converter={StaticResource emptyConverter}}" />
+                                                        <TextBlock Text="{Binding Environment.Product, Converter={StaticResource emptyConverter}}" />
+                                                        <TextBlock Text="{Binding Environment.Description, Converter={StaticResource emptyConverter}}"/>
+                                                        <TextBlock x:Name="TextStartTime" Text="{Binding Environment.StartTimestamp, StringFormat=dd.MM.yyyy HH:mm}" ToolTip="{Binding ElementName=TextStartTime, Path=Text}" />
                                                         <TextBlock x:Name="TextRunningTime" ToolTip="{Binding ElementName=TextRunningTime, Path=Text}">
                                                             <TextBlock.Text>
                                                                 <MultiBinding StringFormat="{}{0:00}:{1:00}:{2:00;00}">
-                                                                    <Binding Path="Envoirnment.RunningTime.Days" />
-                                                                    <Binding Path="Envoirnment.RunningTime.Hours" />
-                                                                    <Binding Path="Envoirnment.RunningTime.Minutes" />
+                                                                    <Binding Path="Environment.RunningTime.Days" />
+                                                                    <Binding Path="Environment.RunningTime.Hours" />
+                                                                    <Binding Path="Environment.RunningTime.Minutes" />
                                                                 </MultiBinding>
                                                             </TextBlock.Text>
                                                         </TextBlock>
@@ -274,17 +274,18 @@
                                                         <Separator Margin="0,5,0,0" />
                                                         <TextBlock x:Name="TextOSName" ToolTip="{Binding ElementName=TextOSName, Path=Text}" >
                                                 <Run Text="{Binding OS, Converter={StaticResource osNameConverter}}" />
-                                                <Run Text="(" /><Run Text="{Binding Envoirnment.Is64BitOS, Converter={StaticResource os64BitConverter}}" /><Run Text=")" />
+                                                <Run Text="(" /><Run Text="{Binding Environment.Is64BitOS, Converter={StaticResource os64BitConverter}}" /><Run Text=")" />
                                                         </TextBlock>
-                                                        <TextBlock Text="{Binding Envoirnment.OSVersion}" ToolTip="{Binding Envoirnment.OSVersion}" />
+                                                        <TextBlock Text="{Binding Environment.OSVersion}" ToolTip="{Binding Environment.OSVersion}" />
                                                         <TextBlock x:Name="TextCPUName" ToolTip="{Binding ElementName=TextCPUName, Path=Text}">
-                                                <Run  Text="{Binding Envoirnment.CPUName}"  />
-                                                <Run Text=" x " /><Run Text="{Binding Envoirnment.CPUCount}" />
+                                                <Run  Text="{Binding Environment.CPUName}"  />
+                                                <Run Text=" x " /><Run Text="{Binding Environment.CPUCount}" />
                                                         </TextBlock>
-                                                        <TextBlock x:Name="TextMotherboard" Text="{Binding Envoirnment.Motherboard, Converter={StaticResource emptyConverter}}" ToolTip="{Binding ElementName=TextMotherboard, Path=Text}" />
-                                                        <TextBlock x:Name="TextGraphics" Text="{Binding Envoirnment.Graphics, Converter={StaticResource emptyConverter}}" ToolTip="{Binding ElementName=TextGraphics, Path=Text}" />
+                                                        <TextBlock x:Name="TextMotherboard" Text="{Binding Environment.Motherboard, Converter={StaticResource emptyConverter}}" ToolTip="{Binding ElementName=TextMotherboard, Path=Text}" />
+<!--                                                        <TextBlock x:Name="TextGraphics" Text="{Binding Environment.Graphics, Converter={StaticResource emptyConverter}}" ToolTip="{Binding ElementName=TextGraphics, Path=Text}" /> -->
+                                                        <Fluent:ComboBox x:Name="CmbGraphics" Margin="-8,0,5,0" IsEditable="False" ItemsSource="{Binding Environment.GraphicCards}" SelectedIndex="0" />
                                                         <TextBlock x:Name="TextTotalRAM" ToolTip="{Binding ElementName=TextTotalRAM, Path=Text}">
-                                                <Run Text="{Binding Envoirnment.TotalRAM}" />
+                                                <Run Text="{Binding Environment.TotalRAM}" />
                                                 <Run Text="GB" />
                                                         </TextBlock>
                                                         <TextBlock Margin="0,1,0,0" FontSize="25" />
@@ -333,7 +334,7 @@
 
                                                 <Grid x:Name="ScreeshotViewHolder" Grid.Column="1">
                                                     <controls:ScreenshotViewer x:Name="ScreenshotViewer" Margin="0,-3,-3,-3" />
-                                                    <TextBlock Text="{Binding Envoirnment.MachineName}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="{Binding Environment.MachineName}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                 </Grid>
                                             </Grid>
                                         </TabItem>
@@ -351,9 +352,9 @@
                                                         <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="2">
                                                             <Image Source="resources/icons/user.png" Width="32" />
                                                             <TextBlock VerticalAlignment="Center" Margin="5,0,0,0" Foreground="{DynamicResource BlackBrush}">
-                                                    <Run Text="{Binding Envoirnment.UserName}" />
+                                                    <Run Text="{Binding Environment.UserName}" />
                                                     <LineBreak />
-                                                    <Run Text="{Binding Envoirnment.DomainName}" Typography.Capitals="AllSmallCaps" />
+                                                    <Run Text="{Binding Environment.DomainName}" Typography.Capitals="AllSmallCaps" />
                                                             </TextBlock>
                                                         </StackPanel>
                                                     </ListViewItem>

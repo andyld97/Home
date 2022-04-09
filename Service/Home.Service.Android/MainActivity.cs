@@ -7,6 +7,7 @@ using Home.Service.Android.Helper;
 using Home.Model;
 using A = Android;
 using System;
+using System.Collections.Generic;
 
 namespace Home.Service.Android
 {
@@ -133,11 +134,11 @@ namespace Home.Service.Android
 
 #if !NOGL
             // Only determine graphics when it's not set, because GLSurfaceView/a valid Open GL Context is required
-            if (string.IsNullOrEmpty(currentDevice.Envoirnment.Graphics))
+            if (currentDevice.Environment.GraphicCards.Count == 0)
             {
                 GLSurfaceView glSurfaceView = FindViewById<GLSurfaceView>(Resource.Id.surface);
                 Renderer renderer = new Renderer();
-                renderer.OnInfosRecieved += delegate (string vendor, string renderer) { currentDevice.Envoirnment.Graphics = $"{vendor} {renderer}"; };
+                renderer.OnInfosRecieved += delegate (string vendor, string renderer) { currentDevice.Environment.GraphicCards = new List<string> { $"{vendor} {renderer}" }; };
                 glSurfaceView.SetRenderer(renderer);
             }
             else
@@ -146,8 +147,10 @@ namespace Home.Service.Android
                 glSurfaceView.Visibility = A.Views.ViewStates.Gone;
             }
 #else
-            if (string.IsNullOrEmpty(currentDevice.Envoirnment.Graphics))
-                currentDevice.Envoirnment.Graphics = "Unknown";
+            /*if (string.IsNullOrEmpty(currentDevice.Environment.Graphics))
+                currentDevice.Environment.Graphics = "Unknown";*/
+            if (currentDevice.Environment.GraphicCards.Count == 0)
+                currentDevice.Environment.GraphicCards.Add("Unknown");
 #endif
 
             currentDevice.RefreshDevice(ContentResolver, this);

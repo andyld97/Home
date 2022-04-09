@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Home.Controls"
              mc:Ignorable="d" 
-             ToolTip="{Binding Envoirnment.MachineName}"
+             ToolTip="{Binding Environment.MachineName}"
              Width="280" Height="80" Foreground="{DynamicResource BlackBrush}">
     <UserControl.Resources>
         <local:StateToColorConverter x:Key="stateToColorConverter" />
@@ -54,7 +54,7 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <TextBlock Text="{Binding Envoirnment.MachineName}" Width="170" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" TextTrimming="CharacterEllipsis" />
+                        <TextBlock Text="{Binding Environment.MachineName}" Width="170" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" TextTrimming="CharacterEllipsis" />
                         <TextBlock TextAlignment="Left" Foreground="White">
                           <!--  <Run Text="IP:" /> -->
                             <Run Text="{Binding IP}" />

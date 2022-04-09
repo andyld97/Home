@@ -10,20 +10,19 @@ namespace Home.Measure.Windows
     /// Capsels all methods available via WMI
     public static class WMI
     {
-        public static string DetermineGraphicsCardNames()
+        public static List<string> DetermineGraphicsCardNames()
         {
-            List<string> names = new List<string>();
+            List<string> devices = new List<string>();
             try
             {
                 ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_DisplayConfiguration");
 
-                string graphicsCard = string.Empty;
                 foreach (ManagementObject mo in searcher.Get())
                 {
                     foreach (PropertyData property in mo.Properties)
                     {
                         if (property.Name == "Description")
-                            names.Add(property.Value.ToString());
+                            devices.Add(property.Value.ToString());
                     }
                 }
             }
@@ -32,11 +31,29 @@ namespace Home.Measure.Windows
 
             }
 
-            // ToDo: *** Some devices has Intel HD Graphics and a seperate graphics card for example, so then we want both cards
-            if (names.Count == 0)
-                return string.Empty;
-            else
-                return names.FirstOrDefault();
+            try
+            {
+
+                ManagementObjectSearcher searcher2 = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_DisplayControllerConfiguration");
+                foreach (ManagementObject queryObj in searcher2.Get())
+                {
+                    string name = queryObj["Name"].ToString();
+                    if (name == "Current Display Controller Configuration")
+                        continue;
+
+                    // Prevent (example: above NVIDIA GeForce GTX650, this GeForce GTX650)
+                    if (devices.Any(p => p.Contains(name)))
+                        continue;
+
+                    devices.Add(name);
+                }
+            }
+            catch
+            {
+
+            }
+
+            return devices.Distinct().OrderBy(s => s).ToList();
         }
 
         public static string DetermineCPUName()

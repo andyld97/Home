@@ -444,6 +444,7 @@ namespace Home
             DeviceInfo.DataContext = null;
             DeviceInfo.DataContext = lastSelectedDevice;
             ScreenshotViewer.UpdateDevice(lastSelectedDevice);
+            CmbGraphics.SelectedIndex = 0;
         }
 
         #region Activity Plot
@@ -473,7 +474,7 @@ namespace Home
 
             int ramCounter = 1;
             foreach (var ram in lastSelectedDevice.Usage.RAM)
-                ramPoints.Add(new Point(ramCounter++, Math.Round((ram / lastSelectedDevice.Envoirnment.TotalRAM) * 100, 2)));
+                ramPoints.Add(new Point(ramCounter++, Math.Round((ram / lastSelectedDevice.Environment.TotalRAM) * 100, 2)));
 
             int diskCounter = 1;
             foreach (var disk in lastSelectedDevice.Usage.DISK)

@@ -41,7 +41,7 @@ namespace Home.API.Controllers
                     device.LastSeen = now;
                     device.LogEntries.Clear();
                     device.LogEntries.Add(new LogEntry(now, $"Device {device.Name} was successfully added!", LogEntry.LogLevel.Information));
-                    _logger.LogInformation($"New device {device.Envoirnment.MachineName} has just logged in!");
+                    _logger.LogInformation($"New device {device.Environment.MachineName} has just logged in!");
                     device.IsScreenshotRequired = true;
                     Program.Devices.Add(device);
 
@@ -97,31 +97,43 @@ namespace Home.API.Controllers
 
                         // Check if a newer client version is used
                         if (oldDevice.ServiceClientVersion != refreshedDevice.ServiceClientVersion && !string.IsNullOrEmpty(oldDevice.ServiceClientVersion))
-                            oldDevice.LogEntries.Add(new LogEntry(DateTime.Now, $"Detected new client version: {refreshedDevice.ServiceClientVersion}", LogEntry.LogLevel.Information));
+                            oldDevice.LogEntries.Add(new LogEntry(DateTime.Now, $"Device \"{refreshedDevice.Name}\" detected new client version: {refreshedDevice.ServiceClientVersion}", LogEntry.LogLevel.Information, true));
 
                         // Detect any device changes and log them (also to Telegram)
 
                         // CPU
-                        if (oldDevice.Envoirnment.CPUName != refreshedDevice.Envoirnment.CPUName && !string.IsNullOrEmpty(refreshedDevice.Envoirnment.CPUName))
-                            oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected CPU change. CPU {oldDevice.Envoirnment.CPUName} got replaced with {refreshedDevice.Envoirnment.CPUName}", LogEntry.LogLevel.Information, true));
-                        if (oldDevice.Envoirnment.CPUCount != refreshedDevice.Envoirnment.CPUCount && refreshedDevice.Envoirnment.CPUCount > 0)
-                            oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected CPU-Count change from {oldDevice.Envoirnment.CPUCount} to {refreshedDevice.Envoirnment.CPUCount}", LogEntry.LogLevel.Information, true));
+                        if (oldDevice.Environment.CPUName != refreshedDevice.Environment.CPUName && !string.IsNullOrEmpty(refreshedDevice.Environment.CPUName))
+                            oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected CPU change. CPU {oldDevice.Environment.CPUName} got replaced with {refreshedDevice.Environment.CPUName}", LogEntry.LogLevel.Information, true));
+                        if (oldDevice.Environment.CPUCount != refreshedDevice.Environment.CPUCount && refreshedDevice.Environment.CPUCount > 0)
+                            oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected CPU-Count change from {oldDevice.Environment.CPUCount} to {refreshedDevice.Environment.CPUCount}", LogEntry.LogLevel.Information, true));
 
                         // OS (Ignore Windows Updates, just document enum chnages)
                         if (oldDevice.OS != refreshedDevice.OS)
                             oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected OS change from {oldDevice.OS} to {refreshedDevice.OS}", LogEntry.LogLevel.Information, true));
 
                         // Motherboard
-                        if (oldDevice.Envoirnment.Motherboard != refreshedDevice.Envoirnment.Motherboard && !string.IsNullOrEmpty(refreshedDevice.Envoirnment.Motherboard))
-                            oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected Motherboard change from {oldDevice.Envoirnment.Motherboard} to {refreshedDevice.Envoirnment.Motherboard}", LogEntry.LogLevel.Information, true));
+                        if (oldDevice.Environment.Motherboard != refreshedDevice.Environment.Motherboard && !string.IsNullOrEmpty(refreshedDevice.Environment.Motherboard))
+                            oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected Motherboard change from {oldDevice.Environment.Motherboard} to {refreshedDevice.Environment.Motherboard}", LogEntry.LogLevel.Information, true));
 
                         // Graphics
-                        if (oldDevice.Envoirnment.Graphics != refreshedDevice.Envoirnment.Graphics && !string.IsNullOrEmpty(refreshedDevice.Envoirnment.Graphics))
-                            oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected Motherboard change from {oldDevice.Envoirnment.Graphics} to {refreshedDevice.Envoirnment.Graphics}", LogEntry.LogLevel.Information, true));
+                        //if (oldDevice.Envoirnment.Graphics != refreshedDevice.Envoirnment.Graphics && !string.IsNullOrEmpty(refreshedDevice.Envoirnment.Graphics))
+                        //    oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected Graphics change from {oldDevice.Envoirnment.Graphics} to {refreshedDevice.Envoirnment.Graphics}", LogEntry.LogLevel.Information, true));
+                        if (oldDevice.Environment.GraphicCards.Count != refreshedDevice.Environment.GraphicCards.Count)
+                        {
+                            if (refreshedDevice.Environment.GraphicCards.Count == 0 && !string.IsNullOrEmpty(refreshedDevice.Environment.Graphics))
+                            {
+                                // ignore
+                            }
+                            else
+                            {
+                                foreach (var item in refreshedDevice.Environment.GraphicCards)
+                                    oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected Graphics change(s) ({item})", LogEntry.LogLevel.Information, true));
+                            }
+                        }
 
                         // RAM
-                        if (oldDevice.Envoirnment.TotalRAM != refreshedDevice.Envoirnment.TotalRAM && refreshedDevice.Envoirnment.TotalRAM > 0)
-                            oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected RAM change from {oldDevice.Envoirnment.TotalRAM} GB to {refreshedDevice.Envoirnment.TotalRAM} GB", LogEntry.LogLevel.Information, true));
+                        if (oldDevice.Environment.TotalRAM != refreshedDevice.Environment.TotalRAM && refreshedDevice.Environment.TotalRAM > 0)
+                            oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected RAM change from {oldDevice.Environment.TotalRAM} GB to {refreshedDevice.Environment.TotalRAM} GB", LogEntry.LogLevel.Information, true));
 
                         isScreenshotRequired = oldDevice.IsScreenshotRequired;
 
@@ -131,11 +143,11 @@ namespace Home.API.Controllers
 
                         // USAGE
                         // CPU & DISK
-                        oldDevice.Usage.AddCPUEntry(refreshedDevice.Envoirnment.CPUUsage);
-                        oldDevice.Usage.AddDISKEntry(refreshedDevice.Envoirnment.DiskUsage);
+                        oldDevice.Usage.AddCPUEntry(refreshedDevice.Environment.CPUUsage);
+                        oldDevice.Usage.AddDISKEntry(refreshedDevice.Environment.DiskUsage);
 
                         // RAM
-                        var ram = refreshedDevice.Envoirnment.FreeRAM.Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+                        var ram = refreshedDevice.Environment.FreeRAM.Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
                         if (ram != null && double.TryParse(ram, out double res))
                             oldDevice.Usage.AddRAMEntry(res);
 
@@ -269,7 +281,7 @@ namespace Home.API.Controllers
                 lock (Program.Devices)
                 {
                     deviceFound.LogEntries.Add(new LogEntry(now, "Recieved screenshot from this device!", LogEntry.LogLevel.Information));
-                    _logger.LogInformation($"Recieved screenshot from {deviceFound.Envoirnment.MachineName}");
+                    _logger.LogInformation($"Recieved screenshot from {deviceFound.Environment.MachineName}");
                     deviceFound.ScreenshotFileNames.Add(fileName);
                     deviceFound.IsScreenshotRequired = false;
                 }

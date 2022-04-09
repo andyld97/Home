@@ -52,7 +52,7 @@
                         <Border Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.IsScreenshotView, Converter={StaticResource screenshotVisiblityConverter}, ConverterParameter=1}" Background="Black" Height="200">
                             <Grid>
                                 <Image Visibility="Visible" StretchDirection="DownOnly" Source="{Binding ., Converter={StaticResource deviceScreenConverter}}" />
-                                <TextBlock Foreground="{DynamicResource BlackBrush}" Text="{Binding Envoirnment.MachineName}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                <TextBlock Foreground="{DynamicResource BlackBrush}" Text="{Binding Environment.MachineName}" VerticalAlignment="Center" HorizontalAlignment="Center" />
                             </Grid>
                         </Border>
 
@@ -70,18 +70,18 @@
                             <StackPanel Margin="5,5,0,0" Grid.Column="2" Orientation="Vertical">
                                 <TextBlock TextDecorations="Underline">
                                 <Run Text="{Binding Name}" FontWeight="Bold" />
-                                <Run Text="(" /><Run Text="{Binding Envoirnment.TotalRAM}" />
+                                <Run Text="(" /><Run Text="{Binding Environment.TotalRAM}" />
                                 <Run Text="GB)" />
                                 </TextBlock>
                                 <TextBlock Text="{Binding IP}" />
                                 <TextBlock>
                                 <Run Text="{Binding OS, Converter={StaticResource osNameConverter}}" />
-                                <Run Text="(" /><Run Text="{Binding Envoirnment.Is64BitOS, Converter={StaticResource os64BitConverter}}" /><Run Text=")" />
+                                <Run Text="(" /><Run Text="{Binding Environment.Is64BitOS, Converter={StaticResource os64BitConverter}}" /><Run Text=")" />
                                 </TextBlock>
 
-                                <TextBlock Text="{Binding Envoirnment.CPUName}" TextTrimming="CharacterEllipsis" />
-                                <TextBlock Text="{Binding Envoirnment.Motherboard}" TextTrimming="CharacterEllipsis" />
-                                <TextBlock Text="{Binding Envoirnment.Graphics}" TextTrimming="CharacterEllipsis" />
+                                <TextBlock Text="{Binding Environment.CPUName}" TextTrimming="CharacterEllipsis" />
+                                <TextBlock Text="{Binding Environment.Motherboard}" TextTrimming="CharacterEllipsis" />
+                                <!-- <TextBlock Text="{Binding Environment.Graphics}" TextTrimming="CharacterEllipsis" /> -->
                             </StackPanel>
                         </Grid>
 

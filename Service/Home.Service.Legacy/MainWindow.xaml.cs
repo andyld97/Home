@@ -78,7 +78,7 @@ namespace Home.Service.Legacy
                 OS = ServiceData.Instance.SystemType,
                 Type = ServiceData.Instance.Type,
                 DiskDrives = JsonConvert.DeserializeObject<List<DiskDrive>>(WMI.DetermineDiskDrives()),
-                Envoirnment = new DeviceEnvironment()
+                Environment = new DeviceEnvironment()
                 {
                     CPUCount = Environment.ProcessorCount,
                     CPUName = WMI.DetermineCPUName(),
@@ -143,23 +143,23 @@ namespace Home.Service.Legacy
 
             currentDevice.IP = NET.DetermineIPAddress();
             currentDevice.DiskDrives = JsonConvert.DeserializeObject<List<DiskDrive>>(WMI.DetermineDiskDrives());
-            currentDevice.Envoirnment.RunningTime = now.Subtract(startTimestamp); // Environment.TickCount?
-            currentDevice.Envoirnment.OSVersion = Environment.OSVersion.ToString();
-            currentDevice.Envoirnment.CPUCount = Environment.ProcessorCount;
-            currentDevice.Envoirnment.TotalRAM = Native.DetermineTotalRAM();
-            currentDevice.Envoirnment.FreeRAM = Performance.DetermineFreeRAM();
-            currentDevice.Envoirnment.CPUUsage = Performance.GetCPUUsage();
-            currentDevice.Envoirnment.DiskUsage = Performance.GetDiskUsage();
-            currentDevice.Envoirnment.Is64BitOS = Environment.Is64BitOperatingSystem;
-            currentDevice.Envoirnment.MachineName = Environment.MachineName;
-            currentDevice.Envoirnment.UserName = Environment.UserName;
-            currentDevice.Envoirnment.DomainName = Environment.UserDomainName;
-            currentDevice.Envoirnment.Graphics = WMI.DetermineGraphicsCardNames();
+            currentDevice.Environment.RunningTime = now.Subtract(startTimestamp); // Environment.TickCount?
+            currentDevice.Environment.OSVersion = Environment.OSVersion.ToString();
+            currentDevice.Environment.CPUCount = Environment.ProcessorCount;
+            currentDevice.Environment.TotalRAM = Native.DetermineTotalRAM();
+            currentDevice.Environment.FreeRAM = Performance.DetermineFreeRAM();
+            currentDevice.Environment.CPUUsage = Performance.GetCPUUsage();
+            currentDevice.Environment.DiskUsage = Performance.GetDiskUsage();
+            currentDevice.Environment.Is64BitOS = Environment.Is64BitOperatingSystem;
+            currentDevice.Environment.MachineName = Environment.MachineName;
+            currentDevice.Environment.UserName = Environment.UserName;
+            currentDevice.Environment.DomainName = Environment.UserDomainName;
+            currentDevice.Environment.GraphicCards = WMI.DetermineGraphicsCardNames();
             currentDevice.ServiceClientVersion = $"vLegacy{typeof(MainWindow).Assembly.GetName().Version.ToString(3)}";
             WMI.GetVendorInfo(out string product, out string description, out string vendor);
-            currentDevice.Envoirnment.Product = product;
-            currentDevice.Envoirnment.Description = description;
-            currentDevice.Envoirnment.Vendor = vendor;
+            currentDevice.Environment.Product = product;
+            currentDevice.Environment.Description = description;
+            currentDevice.Environment.Vendor = vendor;
 
             // Send ack
             var ackResult = api.SendAckAsync(currentDevice);

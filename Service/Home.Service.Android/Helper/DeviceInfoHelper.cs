@@ -93,13 +93,13 @@ namespace Home.Service.Android.Helper
                 string memFree = entries[1].ToLower().Replace("memfree:", string.Empty).Trim();
 
                 double freeRam = ParseMemoryEntryInGB(memFree);
-                device.Envoirnment.TotalRAM = ParseMemoryEntryInGB(memTotal);
+                device.Environment.TotalRAM = ParseMemoryEntryInGB(memTotal);
 
-                double totalGB = device.Envoirnment.TotalRAM;
+                double totalGB = device.Environment.TotalRAM;
                 double usedGB = totalGB - freeRam;
                 int percentage = (int)System.Math.Round((usedGB / totalGB) * 100);
 
-                device.Envoirnment.FreeRAM = $"{System.Math.Round(usedGB, 2)} GB used ({percentage} %)";
+                device.Environment.FreeRAM = $"{System.Math.Round(usedGB, 2)} GB used ({percentage} %)";
             }
         }
 
@@ -180,31 +180,31 @@ namespace Home.Service.Android.Helper
 
         public static void RefreshDevice(this Device currentDevice, ContentResolver cr, Context context)
         {
-            currentDevice.ServiceClientVersion = "vAndroid 0.0.3";
+            currentDevice.ServiceClientVersion = "vAndroid 0.0.4";
 #if NOGL
             currentDevice.ServiceClientVersion += " - NOGL";
 #endif
-            currentDevice.Envoirnment.OSName = $"Android {Build.VERSION.Release}";
-            currentDevice.Envoirnment.OSVersion = $"{currentDevice.Envoirnment.OSName} (Sec. Patch: {Build.VERSION.SecurityPatch}) ({System.Environment.OSVersion})";
+            currentDevice.Environment.OSName = $"Android {Build.VERSION.Release}";
+            currentDevice.Environment.OSVersion = $"{currentDevice.Environment.OSName} (Sec. Patch: {Build.VERSION.SecurityPatch}) ({System.Environment.OSVersion})";
             currentDevice.OS = Device.OSType.Android;
-            currentDevice.Envoirnment.CPUCount = DeviceInfoHelper.GetNumberOfCores();
-            currentDevice.Envoirnment.CPUName = DeviceInfoHelper.ReadCPUName();
-            currentDevice.Envoirnment.Description = Build.Model;
-            currentDevice.Envoirnment.DomainName = System.Environment.UserDomainName;
-            currentDevice.Envoirnment.Is64BitOS = System.Environment.Is64BitOperatingSystem;
-            currentDevice.Envoirnment.Product = Build.Product;
-            currentDevice.Envoirnment.StartTimestamp = dateTimeStarted;
+            currentDevice.Environment.CPUCount = DeviceInfoHelper.GetNumberOfCores();
+            currentDevice.Environment.CPUName = DeviceInfoHelper.ReadCPUName();
+            currentDevice.Environment.Description = Build.Model;
+            currentDevice.Environment.DomainName = System.Environment.UserDomainName;
+            currentDevice.Environment.Is64BitOS = System.Environment.Is64BitOperatingSystem;
+            currentDevice.Environment.Product = Build.Product;
+            currentDevice.Environment.StartTimestamp = dateTimeStarted;
 
             // Read and assign memory info
             DeviceInfoHelper.ReadAndAssignMemoryInfo(currentDevice);
 
-            currentDevice.Envoirnment.Vendor = Build.Brand;
-            currentDevice.Envoirnment.UserName = System.Environment.UserName;
-            currentDevice.Envoirnment.Motherboard = Build.Board;
-            currentDevice.Envoirnment.MachineName =
+            currentDevice.Environment.Vendor = Build.Brand;
+            currentDevice.Environment.UserName = System.Environment.UserName;
+            currentDevice.Environment.Motherboard = Build.Board;
+            currentDevice.Environment.MachineName =
             currentDevice.Name = DeviceInfoHelper.GetDeviceName(cr);
             currentDevice.IP = DeviceInfoHelper.GetIpAddress(context);
-            currentDevice.Envoirnment.RunningTime = DateTime.Now.Subtract(dateTimeStarted);
+            currentDevice.Environment.RunningTime = DateTime.Now.Subtract(dateTimeStarted);
         }
     }
 }

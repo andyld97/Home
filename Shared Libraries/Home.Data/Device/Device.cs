@@ -225,7 +225,7 @@ namespace Home.Model
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("environment")]
 #endif
-        public DeviceEnvironment Envoirnment { get; set; } = new DeviceEnvironment();
+        public DeviceEnvironment Environment { get; set; } = new DeviceEnvironment();
 
         [JsonProperty("disk_drives")]
 #if !LEGACY
@@ -447,13 +447,19 @@ namespace Home.Model
             OS = other.OS;
             DeviceGroup = other.DeviceGroup;
             Location = other.location;
-            Envoirnment = other.Envoirnment;
+            Environment = other.Environment;
             DiskDrives = other.DiskDrives;
             ServiceClientVersion = other.ServiceClientVersion;
 
+            if (IP.EndsWith("/24"))
+                IP = IP.Replace("/24", string.Empty);
+
+            if (Environment.GraphicCards.Count == 0 && !string.IsNullOrEmpty(other.Environment.Graphics))
+                Environment.GraphicCards.Add(other.Environment.Graphics);
+
             // In an API Context we should not update the usage here
             if (isLocal)
-             Usage = other.Usage;
+                Usage = other.Usage;
 
             // Only update if value != null to keep old versions compatible (they may don't have this property yet)
             if (other.IsLive != null)
@@ -482,7 +488,7 @@ namespace Home.Model
         public override string ToString()
         {
             string rn = System.Environment.NewLine;
-            string env = Envoirnment.ToString();
+            string env = Environment.ToString();
 
             return $"ID: {guid}{rn}Name: {name}{rn}IP: {ip}{rn}Type: {Type}{rn}Status: {Status}{rn}OS: {OS}{rn}Group: {DeviceGroup}{rn}Location: {location}{rn}{rn}{env}";
         }
@@ -544,11 +550,18 @@ namespace Home.Model
 #endif
         public string Motherboard { get; set; }
 
+        [Obsolete()]
         [JsonProperty("graphics")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("graphics")]
 #endif
         public string Graphics { get; set; }
+
+        [JsonProperty("graphic_cards")]
+#if !LEGACY
+        [System.Text.Json.Serialization.JsonPropertyName("graphic_cards")]
+#endif
+        public List<string> GraphicCards { get; set; } = new List<string>();
 
         [JsonProperty("total_ram")]
 #if !LEGACY
@@ -618,7 +631,8 @@ namespace Home.Model
         public override string ToString()
         {
             string rn = Environment.NewLine;
-            return $"OS: {OSName}{rn}OS-VER: {OSVersion}{rn}CPU: {CPUName}{rn}CPU-COUNT: {CPUCount}{rn}Motherboard: {Motherboard}{rn}Graphics: {Graphics}{rn}RAM: {TotalRAM} GB{rn}FREE: {FreeRAM}{rn}Running-Time: {XmlRunningTime}";
+            string graphics = GraphicCards.Count == 0 ? Graphics : string.Join(Environment.NewLine, GraphicCards.Count);
+            return $"OS: {OSName}{rn}OS-VER: {OSVersion}{rn}CPU: {CPUName}{rn}CPU-COUNT: {CPUCount}{rn}Motherboard: {Motherboard}{rn}Graphics: {graphics}{rn}RAM: {TotalRAM} GB{rn}FREE: {FreeRAM}{rn}Running-Time: {XmlRunningTime}";
         }
     }
 

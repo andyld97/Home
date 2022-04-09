@@ -18,7 +18,7 @@ namespace Home.Service.Linux
     {
         #region Private Members
         private static readonly Device currentDevice = new Device();
-        private static readonly Version ClientVersion = new Version(0, 0, 5);
+        private static readonly Version ClientVersion = new Version(0, 0, 6);
         private static readonly DateTime startTime = DateTime.Now;
         private static Home.Communication.API api;
         private static JObject jInfo = null;
@@ -76,9 +76,9 @@ namespace Home.Service.Linux
             currentDevice.DeviceGroup = jInfo["device_group"].ToString();
             NormalUser = jInfo["user"].ToString();
             currentDevice.OS = (OSType)jInfo["os"].Value<int>();
-            currentDevice.Envoirnment.OSName = currentDevice.OS.ToString();
+            currentDevice.Environment.OSName = currentDevice.OS.ToString();
             currentDevice.Type = (DeviceType)jInfo["type"].Value<int>();
-            currentDevice.Envoirnment.StartTimestamp = startTime;
+            currentDevice.Environment.StartTimestamp = startTime;
             RefreshDeviceInfo();
 
             if (!isSignedIn)
@@ -239,13 +239,13 @@ namespace Home.Service.Linux
 
         public static void RefreshDeviceInfo()
         {
-            currentDevice.Envoirnment.OSVersion = Environment.OSVersion.ToString();
-            currentDevice.Envoirnment.CPUCount = Environment.ProcessorCount;
-            currentDevice.Envoirnment.Is64BitOS = Environment.Is64BitOperatingSystem;
-            currentDevice.Envoirnment.UserName = Environment.UserName;
-            currentDevice.Envoirnment.DomainName = Environment.UserDomainName;
+            currentDevice.Environment.OSVersion = Environment.OSVersion.ToString();
+            currentDevice.Environment.CPUCount = Environment.ProcessorCount;
+            currentDevice.Environment.Is64BitOS = Environment.Is64BitOperatingSystem;
+            currentDevice.Environment.UserName = Environment.UserName;
+            currentDevice.Environment.DomainName = Environment.UserDomainName;
             currentDevice.ServiceClientVersion = $"vLinux{ClientVersion.ToString(3)}";
-            currentDevice.Envoirnment.RunningTime = DateTime.Now.Subtract(startTime);
+            currentDevice.Environment.RunningTime = DateTime.Now.Subtract(startTime);
 
             ParseHardwareInfo(Helper.ExecuteSystemCommand("lshw", "-json"), currentDevice);
             ReadMemoryAndCPULoad();
@@ -273,7 +273,7 @@ namespace Home.Service.Linux
                     amountOfDevices++;
                 }
             }
-            currentDevice.Envoirnment.DiskUsage = Math.Round((usageSum / (double)amountOfDevices), 2);           
+            currentDevice.Environment.DiskUsage = Math.Round((usageSum / (double)amountOfDevices), 2);           
         }
 
         public static void ReadMemoryAndCPULoad()
@@ -294,7 +294,7 @@ namespace Home.Service.Linux
 
                 if (ulong.TryParse(kbTotal, out ulong total) && ulong.TryParse(kbFree, out ulong free))
                 {
-                    currentDevice.Envoirnment.TotalRAM = Math.Round((total / 1024.0 / 1024.0), 2);
+                    currentDevice.Environment.TotalRAM = Math.Round((total / 1024.0 / 1024.0), 2);
 
                     // 3GB used (75 %)
                     double totalInBytes = total * 1024.0;
@@ -305,11 +305,11 @@ namespace Home.Service.Linux
                     double percentage = Math.Round((used / totalInBytes) * 100);
                     double usedInGB = Math.Round(used / Math.Pow(1024, 3));
 
-                    currentDevice.Envoirnment.FreeRAM = $"{usedInGB} GB used ({percentage} %)";
+                    currentDevice.Environment.FreeRAM = $"{usedInGB} GB used ({percentage} %)";
                 }
 
                 if (double.TryParse(cpuUsage, out double usage))
-                    currentDevice.Envoirnment.CPUUsage = usage;
+                    currentDevice.Environment.CPUUsage = usage;
             }
         }
         #endregion
@@ -341,13 +341,13 @@ namespace Home.Service.Linux
 
 
             device.Name =
-            device.Envoirnment.MachineName = item.Value<string>("id").ToUpper();
+            device.Environment.MachineName = item.Value<string>("id").ToUpper();
 
             if (item.Value<string>("product") != null && !item.Value<string>("product").Contains("To Be Filled By O.E.M."))
-                device.Envoirnment.Product = item.Value<string>("product");
+                device.Environment.Product = item.Value<string>("product");
 
             if (item.Value<string>("description") != null)
-                device.Envoirnment.Description = item.Value<string>("description");
+                device.Environment.Description = item.Value<string>("description");
 
             Queue<JToken> childrenQueue = new Queue<JToken>();
             childrenQueue.Enqueue(item);
@@ -432,20 +432,20 @@ namespace Home.Service.Linux
             string childClass = child.Value<string>("class");
             string childID = child.Value<string>("id");
 
-            if (childClass == "bus" && string.IsNullOrEmpty(device.Envoirnment.Motherboard))
+            if (childClass == "bus" && string.IsNullOrEmpty(device.Environment.Motherboard))
             {
                 string vendor = child.Value<string>("vendor");
                 string product = child.Value<string>("product");
 
                 if (vendor != null && product != null)
-                    device.Envoirnment.Motherboard = $"{vendor} {product}";
+                    device.Environment.Motherboard = $"{vendor} {product}";
             }
             if (childClass == "memory")
-                device.Envoirnment.TotalRAM = child.Value<long>("size");
-            else if (childClass == "processor" && string.IsNullOrEmpty(device.Envoirnment.CPUName))
-                device.Envoirnment.CPUName = child.Value<string>("product");
+                device.Environment.TotalRAM = child.Value<long>("size");
+            else if (childClass == "processor" && string.IsNullOrEmpty(device.Environment.CPUName))
+                device.Environment.CPUName = child.Value<string>("product");
             if (childClass == "display")
-                device.Envoirnment.Graphics = child.Value<string>("product");
+                device.Environment.GraphicCards = new List<string> { child.Value<string>("product") };
             else if (childClass == "network" && string.IsNullOrEmpty(device.IP))
                 device.IP = child.Value<JObject>("configuration").Value<string>("ip");
             else if (childClass == "storage" && childID != "storage")
@@ -494,7 +494,7 @@ namespace Home.Service.Linux
 
                             if (string.IsNullOrEmpty(logicalNames))
                                 logicalNames = "Unknown";
-         
+
                             string fs = volumeConfig?.Value<string>("filesystem");
 
                             dd.DiskInterface = childID;
@@ -559,7 +559,7 @@ namespace Home.Service.Linux
                     dd.FileSystem = fs?.ToUpper();
                     dd.TotalSpace = size;
                     if (logicalNames != null)
-                        dd.VolumeName = string.Join(",", logicalNames);         
+                        dd.VolumeName = string.Join(",", logicalNames);
 
                     device.DiskDrives.Add(dd);
                 }
