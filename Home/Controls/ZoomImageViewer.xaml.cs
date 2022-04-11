@@ -93,6 +93,13 @@ namespace Home.Controls
             lastCenterPositionOnTarget = scrollViewer.TranslatePoint(centerOfViewport, grid);
         }
 
+        public void Reset()
+        {
+            scaleTransform.ScaleX = scaleTransform.ScaleY = 1;
+            scrollViewer.ScrollToHorizontalOffset(0);
+            scrollViewer.ScrollToVerticalOffset(0);
+        }
+
         private void OnScrollViewerScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             if (e.ExtentHeightChange != 0 || e.ExtentWidthChange != 0)

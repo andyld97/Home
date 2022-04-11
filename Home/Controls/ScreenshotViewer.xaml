@@ -65,6 +65,14 @@
                             </Border.RenderTransform>
                             <Image Source="../resources/icons/live/maximize.png" />
                         </Border>
+
+                        <Border x:Name="ButtonResetScrollViewer" MouseDown="ButtonResetScrollViewer_MouseDown" Margin="5" BorderThickness="0" Cursor="Hand" ToolTip="Ansicht zurücksetzen" Height="25">
+                            <Border.RenderTransform>
+                                <TranslateTransform />
+                            </Border.RenderTransform>
+                            
+                            <Image Source="../resources/icons/reset_view.png" />
+                        </Border>
                     </StackPanel>
                 </Grid>
             </Border>

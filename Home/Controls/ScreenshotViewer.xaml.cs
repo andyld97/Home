@@ -171,5 +171,14 @@ namespace Home.Controls
                     await MainWindow.API.SetLiveStatusAsync(MainWindow.CLIENT, lastSelectedDevice, true);
             }
         }
+
+        private void ButtonResetScrollViewer_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                AnimateButton(sender);
+                ImageViewer.Reset();
+            }
+        }
     }
 }

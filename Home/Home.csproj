@@ -212,6 +212,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="resources\icons\reset_view.png" />
     <Resource Include="resources\icons\devices\tablet.png" />
     <Resource Include="resources\icons\live\online.png" />
     <Resource Include="resources\images\screenshot_default.png" />
