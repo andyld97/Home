@@ -22,6 +22,18 @@ namespace Home.Controls
         {
             BorderSelected.Visibility = (state ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed);
         }
+
+        private async void MenuItemReboot_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (this.DataContext is Device d)
+                await MainWindow.API.ShutdownOrRestartDeviceAsync(false, d);
+        }
+
+        private async void MenuItemShutdown_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (this.DataContext is Device d)
+                await MainWindow.API.ShutdownOrRestartDeviceAsync(true, d);
+        }
     }
 
     #region Converter
