@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 
 namespace Home.Controls
@@ -102,10 +103,17 @@ namespace Home.Controls
             }
         }
 
+        private void AnimateButton(object sender)
+        {
+            var sb = FindResource("OnClickAnimation") as Storyboard;
+            sb.Begin(sender as FrameworkElement);
+        }
+
         private void ButtonResize_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
+                AnimateButton(sender);
                 isLittle = !isLittle;
                 OnResize?.Invoke(isLittle);
             }
@@ -114,7 +122,10 @@ namespace Home.Controls
         private void ButtonRefresh_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                AnimateButton(sender);
                 OnScreenShotAquired?.Invoke(sender, EventArgs.Empty);
+            }
         }
 
         private void ButtonSaveImage_MouseDown(object sender, MouseButtonEventArgs e)
@@ -123,6 +134,7 @@ namespace Home.Controls
             {
                 try
                 {
+                    AnimateButton(sender);
                     var encoder = new PngBitmapEncoder();
                     encoder.Frames.Add(BitmapFrame.Create((BitmapSource)ImageViewer.ImageDisplay.Source));
 
@@ -146,6 +158,7 @@ namespace Home.Controls
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
+                AnimateButton(sender);
                 if (lastSelectedDevice?.Status == Device.DeviceStatus.Offline)
                 {
                     MessageBox.Show("Das Gerät ist offline - wechseln in den Live Modus nicht möglich!", "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);
