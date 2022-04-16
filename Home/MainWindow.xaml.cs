@@ -276,7 +276,6 @@ namespace Home
                         // Add
                         deviceList.Add(device.EventData.EventDevice);
                         MessageBox.Show("New device added!", "New device!", MessageBoxButton.OK, MessageBoxImage.Information);
-
                         RefreshDeviceHolder();
                     }
                 }
@@ -630,7 +629,7 @@ namespace Home
         {
             if (lastSelectedDevice != null)
             {
-                if (MessageBox.Show(this, $"Sind Sie sich sicher, dass Sie das Gerät {lastSelectedDevice.Name} löschen möchte?", "Sicher?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                if (MessageBox.Show(this, $"Sind Sie sich sicher, dass Sie das Gerät {lastSelectedDevice.Name} löschen möchten?", "Sicher?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
                     var result = await API.DeleteDeviceAsync(lastSelectedDevice);
                     if (result.Success)

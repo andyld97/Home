@@ -15,8 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Home.API", "API\Home.API\Ho
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{69C60DD4-2CEF-4304-A8FF-751BE53960A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Home.Service", "Service\Home.Service\Home.Service.csproj", "{BBA6CEE6-1D66-4F82-B179-7203D08EE44C}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Home.Communication", "Shared Libraries\Home.Communication\Home.Communication.csproj", "{E812DEEE-4510-4DEE-B9FE-DA428ABE8A1E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Home.Service.Linux", "Service\Home.Service.Linux\Home.Service.Linux.csproj", "{30B690AF-CEFA-47A2-A392-DA878E75E7C0}"
@@ -41,6 +39,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{27651F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Home.Service.Android", "Service\Home.Service.Android\Home.Service.Android.csproj", "{7716B99C-FC83-4755-878D-C094CC8C7649}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Home.Service.Windows", "Service\Home.Service.Windows\Home.Service.Windows.csproj", "{BBA6CEE6-1D66-4F82-B179-7203D08EE44C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,10 +59,6 @@ Global
 		{47A580D8-92D0-439B-A32B-A7132C165D4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47A580D8-92D0-439B-A32B-A7132C165D4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47A580D8-92D0-439B-A32B-A7132C165D4C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BBA6CEE6-1D66-4F82-B179-7203D08EE44C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BBA6CEE6-1D66-4F82-B179-7203D08EE44C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BBA6CEE6-1D66-4F82-B179-7203D08EE44C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BBA6CEE6-1D66-4F82-B179-7203D08EE44C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E812DEEE-4510-4DEE-B9FE-DA428ABE8A1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E812DEEE-4510-4DEE-B9FE-DA428ABE8A1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E812DEEE-4510-4DEE-B9FE-DA428ABE8A1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -89,6 +85,10 @@ Global
 		{7716B99C-FC83-4755-878D-C094CC8C7649}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7716B99C-FC83-4755-878D-C094CC8C7649}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7716B99C-FC83-4755-878D-C094CC8C7649}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{BBA6CEE6-1D66-4F82-B179-7203D08EE44C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBA6CEE6-1D66-4F82-B179-7203D08EE44C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBA6CEE6-1D66-4F82-B179-7203D08EE44C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBA6CEE6-1D66-4F82-B179-7203D08EE44C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,13 +96,13 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{3B6282A4-EF68-477A-B7FD-7E0F96B75862} = {3DDEE229-D318-4A2A-85F4-5ED070765C30}
 		{47A580D8-92D0-439B-A32B-A7132C165D4C} = {C584A975-1E2C-45DB-9D99-D8CE26ED6F16}
-		{BBA6CEE6-1D66-4F82-B179-7203D08EE44C} = {69C60DD4-2CEF-4304-A8FF-751BE53960A9}
 		{E812DEEE-4510-4DEE-B9FE-DA428ABE8A1E} = {3DDEE229-D318-4A2A-85F4-5ED070765C30}
 		{30B690AF-CEFA-47A2-A392-DA878E75E7C0} = {69C60DD4-2CEF-4304-A8FF-751BE53960A9}
 		{AA694400-3AE8-4160-BB47-FD5427932D36} = {04A92809-609E-48F8-B50D-3D0145657931}
 		{5A59FDA7-BD65-406F-A705-487C82D4EF5B} = {69C60DD4-2CEF-4304-A8FF-751BE53960A9}
 		{36F79A8A-96BF-49B5-AAA7-39D434385B44} = {3DDEE229-D318-4A2A-85F4-5ED070765C30}
 		{7716B99C-FC83-4755-878D-C094CC8C7649} = {69C60DD4-2CEF-4304-A8FF-751BE53960A9}
+		{BBA6CEE6-1D66-4F82-B179-7203D08EE44C} = {69C60DD4-2CEF-4304-A8FF-751BE53960A9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {96AFC1EE-03B9-4208-AF3D-A290F2C3B875}
@@ -123,33 +123,33 @@ Global
 		SccProjectTopLevelParentUniqueName3 = Home.sln
 		SccProjectName3 = API/Home.API
 		SccLocalPath3 = API\\Home.API
-		SccProjectUniqueName4 = Service\\Home.Service\\Home.Service.csproj
+		SccProjectUniqueName4 = Shared\u0020Libraries\\Home.Communication\\Home.Communication.csproj
 		SccProjectTopLevelParentUniqueName4 = Home.sln
-		SccProjectName4 = Service/Home.Service
-		SccLocalPath4 = Service\\Home.Service
-		SccProjectUniqueName5 = Shared\u0020Libraries\\Home.Communication\\Home.Communication.csproj
+		SccProjectName4 = Shared\u0020Libraries/Home.Communication
+		SccLocalPath4 = Shared\u0020Libraries\\Home.Communication
+		SccProjectUniqueName5 = Service\\Home.Service.Linux\\Home.Service.Linux.csproj
 		SccProjectTopLevelParentUniqueName5 = Home.sln
-		SccProjectName5 = Shared\u0020Libraries/Home.Communication
-		SccLocalPath5 = Shared\u0020Libraries\\Home.Communication
-		SccProjectUniqueName6 = Service\\Home.Service.Linux\\Home.Service.Linux.csproj
+		SccProjectName5 = Service/Home.Service.Linux
+		SccLocalPath5 = Service\\Home.Service.Linux
+		SccProjectUniqueName6 = Helper\u0020Applications\\Notification\\Notification.csproj
 		SccProjectTopLevelParentUniqueName6 = Home.sln
-		SccProjectName6 = Service/Home.Service.Linux
-		SccLocalPath6 = Service\\Home.Service.Linux
-		SccProjectUniqueName7 = Helper\u0020Applications\\Notification\\Notification.csproj
+		SccProjectName6 = Helper\u0020Applications/Notification
+		SccLocalPath6 = Helper\u0020Applications\\Notification
+		SccProjectUniqueName7 = Service\\Home.Service.Legacy\\Home.Service.Legacy.csproj
 		SccProjectTopLevelParentUniqueName7 = Home.sln
-		SccProjectName7 = Helper\u0020Applications/Notification
-		SccLocalPath7 = Helper\u0020Applications\\Notification
-		SccProjectUniqueName8 = Service\\Home.Service.Legacy\\Home.Service.Legacy.csproj
+		SccProjectName7 = Service/Home.Service.Legacy
+		SccLocalPath7 = Service\\Home.Service.Legacy
+		SccProjectUniqueName8 = Shared\u0020Libraries\\Home.Measure.Windows\\Home.Measure.Windows.csproj
 		SccProjectTopLevelParentUniqueName8 = Home.sln
-		SccProjectName8 = Service/Home.Service.Legacy
-		SccLocalPath8 = Service\\Home.Service.Legacy
-		SccProjectUniqueName9 = Shared\u0020Libraries\\Home.Measure.Windows\\Home.Measure.Windows.csproj
+		SccProjectName8 = Shared\u0020Libraries/Home.Measure.Windows
+		SccLocalPath8 = Shared\u0020Libraries\\Home.Measure.Windows
+		SccProjectUniqueName9 = Service\\Home.Service.Android\\Home.Service.Android.csproj
 		SccProjectTopLevelParentUniqueName9 = Home.sln
-		SccProjectName9 = Shared\u0020Libraries/Home.Measure.Windows
-		SccLocalPath9 = Shared\u0020Libraries\\Home.Measure.Windows
-		SccProjectUniqueName10 = Service\\Home.Service.Android\\Home.Service.Android.csproj
+		SccProjectName9 = Service/Home.Service.Android
+		SccLocalPath9 = Service\\Home.Service.Android
+		SccProjectUniqueName10 = Service\\Home.Service.Windows\\Home.Service.Windows.csproj
 		SccProjectTopLevelParentUniqueName10 = Home.sln
-		SccProjectName10 = Service/Home.Service.Android
-		SccLocalPath10 = Service\\Home.Service.Android
+		SccProjectName10 = Service/Home.Service.Windows
+		SccLocalPath10 = Service\\Home.Service.Windows
 	EndGlobalSection
 EndGlobal
