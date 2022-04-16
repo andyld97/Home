@@ -15,7 +15,7 @@
 
         <ContextMenu x:Key="MenuDownload">
             <MenuItem x:Name="MenuDownloadFile" Click="MenuDownloadFile_Click" Header="Datei herunterladen" />
-            <MenuItem x:Name="MenuDownloadFolder" Click="MenuDownloadFolder_Click" Header="Ornder als ZIP-Datei herunterladen" />
+            <MenuItem x:Name="MenuDownloadFolder" Click="MenuDownloadFolder_Click" Header="Ordner als ZIP-Datei herunterladen" />
         </ContextMenu>
     </UserControl.Resources>
     <Grid>
