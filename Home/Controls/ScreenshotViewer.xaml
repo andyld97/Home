@@ -5,12 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Home.Controls"
             mc:Ignorable="d">
-    <UserControl.Resources>
-        <Storyboard x:Key="OnClickAnimation" SpeedRatio="5" AutoReverse="True">
-            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)" To="1" />
-            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)" To="1" />         
-        </Storyboard>
-    </UserControl.Resources>
     <Border x:Name="MainBorder" BorderBrush="LightGray" BorderThickness="1" CornerRadius="0">
         <Grid>
             <Grid.RowDefinitions>
@@ -59,7 +53,7 @@
                             
                             <Image Source="../resources/icons/live/refresh.png" Height="25" />
                         </Border>
-                        <Border x:Name="ButtonResize" MouseDown="ButtonResize_MouseDown" Margin="5" BorderThickness="0" Cursor="Hand" ToolTip="Größe ändern"  Height="25">
+                        <Border x:Name="ButtonResize" MouseDown="ButtonResize_MouseDown" Margin="5" BorderThickness="0" Cursor="Hand" ToolTip="Größe ändern" Height="25">
                             <Border.RenderTransform>
                                 <TranslateTransform />
                             </Border.RenderTransform>

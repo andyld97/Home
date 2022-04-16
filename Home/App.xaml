@@ -7,6 +7,12 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Generic.xaml" />
+                <ResourceDictionary>
+                    <Storyboard x:Key="OnClickAnimation" SpeedRatio="5" AutoReverse="True">
+                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)" To="1" />
+                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)" To="1" />
+                    </Storyboard>
+                </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

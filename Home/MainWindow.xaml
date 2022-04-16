@@ -331,11 +331,61 @@
                                                     </Grid>
                                                 </Grid>
 
-
                                                 <Grid x:Name="ScreeshotViewHolder" Grid.Column="1">
                                                     <controls:ScreenshotViewer x:Name="ScreenshotViewer" Margin="0,-3,-3,-3" />
                                                     <TextBlock Text="{Binding Environment.MachineName}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                 </Grid>
+                                            </Grid>
+                                        </TabItem>
+                                        <TabItem>
+                                            <TabItem.Header>
+                                                <StackPanel Orientation="Horizontal" Height="20">
+                                                    <Image Source="resources/icons/hdd.png" Width="16" />
+                                                    <TextBlock Margin="5,0,0,0" Text="Datenträger" TextAlignment="Center" />
+                                                </StackPanel>
+                                            </TabItem.Header>
+                                            <Grid>
+                                                <controls:DeviceFileExplorer x:Name="DeviceExplorer" OnHomeButtonPressed="DeviceExplorer_OnHomeButtonPressed" Visibility="Hidden" />
+
+                                                <ListBox x:Name="ListHDD" Foreground="{DynamicResource BlackBrush}" Background="{DynamicResource WhiteBrush}" ItemsSource="{Binding DiskDrives}" MouseDoubleClick="ListHDD_MouseDoubleClick">
+                                                    <ListBox.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="Auto" />
+                                                                    <ColumnDefinition Width="*" />
+                                                                </Grid.ColumnDefinitions>
+
+                                                                <Grid>
+                                                                    <Grid.RowDefinitions>
+                                                                        <RowDefinition Height="*" />
+                                                                        <RowDefinition Height="Auto" />
+                                                                    </Grid.RowDefinitions>
+
+                                                                    <Image Source="{Binding ., Converter={StaticResource diskImageConverter}}" Width="48" Margin="5" />
+                                                                    <TextBlock Text="{Binding FileSystem}" FontWeight="Bold" HorizontalAlignment="Center" Grid.Row="1" />
+                                                                </Grid>
+                                                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                                    <TextBlock FontWeight="Bold">
+                                                    <Run Text="{Binding VolumeName}" />
+                                                    <Run Text="(" /><Run Text="{Binding DriveID}" /><Run Text=")" />
+                                                                    </TextBlock>
+                                                                    <TextBlock>
+                                                    <Run Text="{Binding DiskName}" />
+                                                                    </TextBlock>
+                                                                    <TextBlock>
+                                                    <Run Text="{Binding FreeSpace, Converter={StaticResource byteToGBConverter}}" />
+                                                    <Run Text="GB" />
+                                                    <Run Text="frei von" />
+                                                    <Run Text="{Binding TotalSpace, Converter={StaticResource byteToGBConverter}}" />
+                                                    <Run Text="GB" />
+                                                                    </TextBlock>
+                                                                    <ProgressBar Margin="0,3,0,0" Value="{Binding ., Converter={StaticResource spaceToProgressBarConverter}}" Height="10" Maximum="100" Foreground="{Binding ., Converter={StaticResource spaceToProgressBarColorConverter}}" />
+                                                                </StackPanel>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </ListBox.ItemTemplate>
+                                                </ListBox>
                                             </Grid>
                                         </TabItem>
                                         <TabItem>
@@ -360,53 +410,6 @@
                                                     </ListViewItem>
                                                 </ListView.Items>
                                             </ListView>
-                                        </TabItem>
-                                        <TabItem>
-                                            <TabItem.Header>
-                                                <StackPanel Orientation="Horizontal" Height="20">
-                                                    <Image Source="resources/icons/hdd.png" Width="16" />
-                                                    <TextBlock Margin="5,0,0,0" Text="Datenträger" TextAlignment="Center" />
-                                                </StackPanel>
-                                            </TabItem.Header>
-                                            <ListBox Foreground="{DynamicResource BlackBrush}" Background="{DynamicResource WhiteBrush}" ItemsSource="{Binding DiskDrives}">
-                                                <ListBox.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <Grid>
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="Auto" />
-                                                                <ColumnDefinition Width="*" />
-                                                            </Grid.ColumnDefinitions>
-
-                                                            <Grid>
-                                                                <Grid.RowDefinitions>
-                                                                    <RowDefinition Height="*" />
-                                                                    <RowDefinition Height="Auto" />
-                                                                </Grid.RowDefinitions>
-
-                                                                <Image Source="{Binding ., Converter={StaticResource diskImageConverter}}" Width="48" Margin="5" />
-                                                                <TextBlock Text="{Binding FileSystem}" FontWeight="Bold" HorizontalAlignment="Center" Grid.Row="1" />
-                                                            </Grid>
-                                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                                <TextBlock FontWeight="Bold">
-                                                    <Run Text="{Binding VolumeName}" />
-                                                    <Run Text="(" /><Run Text="{Binding DriveID}" /><Run Text=")" />
-                                                                </TextBlock>
-                                                                <TextBlock>
-                                                    <Run Text="{Binding DiskName}" />
-                                                                </TextBlock>
-                                                                <TextBlock>
-                                                    <Run Text="{Binding FreeSpace, Converter={StaticResource byteToGBConverter}}" />
-                                                    <Run Text="GB" />
-                                                    <Run Text="frei von" />
-                                                    <Run Text="{Binding TotalSpace, Converter={StaticResource byteToGBConverter}}" />
-                                                    <Run Text="GB" />
-                                                                </TextBlock>
-                                                                <ProgressBar Margin="0,3,0,0" Value="{Binding ., Converter={StaticResource spaceToProgressBarConverter}}" Height="10" Maximum="100" Foreground="{Binding ., Converter={StaticResource spaceToProgressBarColorConverter}}" />
-                                                            </StackPanel>
-                                                        </Grid>
-                                                    </DataTemplate>
-                                                </ListBox.ItemTemplate>
-                                            </ListBox>
                                         </TabItem>
                                     </TabControl>
 

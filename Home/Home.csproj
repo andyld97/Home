@@ -98,6 +98,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Controls\DeviceFileExplorer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\DeviceItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -133,6 +137,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Controls\DeviceFileExplorer.xaml.cs">
+      <DependentUpon>DeviceFileExplorer.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\DeviceItem.xaml.cs">
       <DependentUpon>DeviceItem.xaml</DependentUpon>
@@ -212,6 +219,12 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="resources\icons\explorer\home.png" />
+    <Resource Include="resources\icons\explorer\right.png" />
+    <Resource Include="resources\icons\explorer\file.png" />
+    <Resource Include="resources\icons\explorer\directory.png" />
+    <Resource Include="resources\icons\explorer\redo.png" />
+    <Resource Include="resources\icons\explorer\undo.png" />
     <Resource Include="resources\icons\reset_view.png" />
     <Resource Include="resources\icons\devices\tablet.png" />
     <Resource Include="resources\icons\live\online.png" />
@@ -299,5 +312,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

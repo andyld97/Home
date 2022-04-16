@@ -360,6 +360,7 @@ namespace Home
             if ((sender as ListBox).SelectedItem is DeviceItem dev)
             {
                 lastSelectedDevice = dev.DataContext as Device;
+                SwitchFileManager(false);
                 await RefreshSelectedItem();
                 RefreshSelection();
                 await GetScreenshot(lastSelectedDevice);
@@ -638,6 +639,44 @@ namespace Home
                         MessageBox.Show(result.ErrorMessage, "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
+        }
+
+        private void SwitchFileManager(bool state)
+        {
+            if (state)
+            {
+                ListHDD.Visibility = Visibility.Hidden;
+                DeviceExplorer.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                ListHDD.Visibility = Visibility.Visible;
+                DeviceExplorer.Visibility = Visibility.Hidden;
+            }
+        }
+
+        private async void ListHDD_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (lastSelectedDevice == null)
+                return;
+
+            if (lastSelectedDevice.OS <= OSType.Windows7)
+            {
+                MessageBox.Show("This feature is currently only supported on Windows systems (7 SP1 or newer)", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (ListHDD.SelectedItem is DiskDrive dd)
+            {
+                // Under Windows the DriveName is the path (e.g. C:, D:)
+                SwitchFileManager(true);
+                await DeviceExplorer.NavigateAsync(lastSelectedDevice, dd.DriveName);
+            }
+        }
+
+        private void DeviceExplorer_OnHomeButtonPressed()
+        {
+            SwitchFileManager(false);
         }
     }
 
