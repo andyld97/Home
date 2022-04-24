@@ -16,7 +16,7 @@ namespace Home.Communication
     {
         private readonly string host = string.Empty;
 
-        public static readonly HttpClient httpClient = new HttpClient();
+        public static readonly HttpClient httpClient = new HttpClient() { Timeout = TimeSpan.FromSeconds(5)  };
         public static readonly string BASE_URL = "{0}/api/v1/";
         public static readonly string COMMUNICATION_C = "communication";
         public static readonly string DEVICE_C = "device";
@@ -43,7 +43,7 @@ namespace Home.Communication
         public async Task<Answer<List<Device>>> LoginAsync(Client client)
         {
             try
-            {
+            { 
                 string url = GenerateEpUrl(true, LOGIN);
                 var result = await httpClient.PostAsync(url, new StringContent(JsonConvert.SerializeObject(client), System.Text.Encoding.UTF8, "application/json"));
 
@@ -58,7 +58,6 @@ namespace Home.Communication
                 }
                 else
                     return AnswerExtensions.Fail<List<Device>>("Invalid answer recieved!");
-
             }
             catch (Exception ex)
             {
@@ -110,8 +109,6 @@ namespace Home.Communication
                 }
                 else
                     return false;
-
-
             }
             catch (Exception ex)
             {

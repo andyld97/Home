@@ -44,7 +44,7 @@ namespace Home.Controls
 
             try
             {
-                using (HttpClient cl = new HttpClient())
+                using (HttpClient cl = new HttpClient() { Timeout = TimeSpan.FromSeconds(5) })
                 {
                     var rm = await System.Text.Json.JsonSerializer.DeserializeAsync<RemoteDirectory>(await cl.GetStreamAsync(url));
                     remoteDirectory = rm;
@@ -99,6 +99,9 @@ namespace Home.Controls
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 AnimateButton(sender);
+
+                if (remoteDirectory == null)
+                    return;
 
                 if (System.IO.Path.GetPathRoot(remoteDirectory.Path).TrimEnd(@"\".ToCharArray()) == remoteDirectory.Path.TrimEnd(@"\".ToCharArray()))
                     return;

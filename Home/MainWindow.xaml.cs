@@ -660,7 +660,7 @@ namespace Home
             if (lastSelectedDevice == null)
                 return;
 
-            if (lastSelectedDevice.OS <= OSType.Windows7)
+            if (lastSelectedDevice.OS < OSType.Windows7)
             {
                 MessageBox.Show("This feature is currently only supported on Windows systems (7 SP1 or newer)", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;

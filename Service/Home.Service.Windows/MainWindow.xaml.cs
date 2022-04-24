@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -20,6 +21,8 @@ namespace Home.Service.Windows
     public partial class MainWindow : Window
     {
         private Home.Communication.API api = null;
+        private APITest test = null;
+
         private readonly DateTime startTimestamp = DateTime.Now;
 
         private Device currentDevice = null;
@@ -57,6 +60,7 @@ namespace Home.Service.Windows
         private async Task InitalizeService()
         {
             api = new Communication.API(ServiceData.Instance.APIUrl);
+            test = new APITest(ServiceData.Instance.APIUrl);
             var now = DateTime.Now;
             currentDevice = new Device()
             {
@@ -86,7 +90,7 @@ namespace Home.Service.Windows
                 isInitalized = true;
 
             if (!isInitalized)
-                isInitalized = await api.RegisterDeviceAsync(currentDevice);
+                isInitalized = test.RegisterDeviceAsync(currentDevice); // await api.RegisterDeviceAsync(currentDevice);
 
             if (isInitalized)
                 await SendAck();
@@ -112,7 +116,8 @@ namespace Home.Service.Windows
             if (!isInitalized)
             {
                 // Initalize
-                isInitalized = await api.RegisterDeviceAsync(currentDevice);
+                //   isInitalized = await api.RegisterDeviceAsync(currentDevice);
+                isInitalized = test.RegisterDeviceAsync(currentDevice);
             }
             else
             {
@@ -152,7 +157,7 @@ namespace Home.Service.Windows
             currentDevice.Environment.Vendor = vendor;
 
             // Send ack
-            var ackResult = await api.SendAckAsync(currentDevice);
+            var ackResult = test.SendAckAsync(currentDevice); // await api.SendAckAsync(currentDevice);
 
             // Process ack answer
             if (ackResult != null && ackResult.Success && ackResult.Result.Result.HasFlag(Data.Com.AckResult.Ack.OK))
@@ -190,6 +195,8 @@ namespace Home.Service.Windows
 
         public async Task PostScreenshot()
         {
+            return;
+
             string fileName = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"capture{DateTime.Now.ToString(Consts.SCREENSHOT_DATE_FILE_FORMAT)}.png");
             var result = NET.CreateScreenshot(fileName);
             var apiResult = await api.SendScreenshotAsync(new Screenshot() { ClientID = ServiceData.Instance.ID, Data = Convert.ToBase64String(result) });
@@ -227,6 +234,129 @@ namespace Home.Service.Windows
             }
             else
                 MessageBox.Show("Invalid data set", "Invalid data", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    public class APITest
+    {
+        private readonly string url;
+
+        public APITest(string url)
+        {
+            this.url = url;
+        }
+
+        public bool RegisterDeviceAsync(Device d)
+        {
+            try
+            {
+                string url = $"{this.url}/api/v1/device/register";
+                var http = (HttpWebRequest)WebRequest.Create(new Uri(url));
+                http.Accept = "application/json";
+                http.ContentType = "application/json";
+                http.Method = "POST";
+
+                string parsedContent = JsonConvert.SerializeObject(d);
+                byte[] bytes = System.Text.Encoding.Default.GetBytes(parsedContent);
+
+                using (System.IO.Stream newStream = http.GetRequestStream())
+                {
+                    newStream.Write(bytes, 0, bytes.Length);
+                    newStream.Close();
+
+                    var response = http.GetResponse();
+
+                    var stream = response.GetResponseStream();
+                    var sr = new System.IO.StreamReader(stream);
+                    var content = sr.ReadToEnd();
+
+                    var obj = JsonConvert.DeserializeObject<Answer<bool>>(content);
+                    if (obj != null && obj.Status == "ok")
+                        return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to register device: {ex.Message}");
+            }
+
+            return false;
+        }
+
+
+        public bool SendScreenshotAsync(Screenshot shot)
+        {
+            try
+            {
+                string url = $"{this.url}/api/v1/device/screenshot";
+                var http = (HttpWebRequest)WebRequest.Create(new Uri(url));
+                http.Accept = "application/json";
+                http.ContentType = "application/json";
+                http.Method = "POST";
+
+                string parsedContent = JsonConvert.SerializeObject(shot);
+                byte[] bytes = System.Text.Encoding.Default.GetBytes(parsedContent);
+
+                using (System.IO.Stream newStream = http.GetRequestStream())
+                {
+                    newStream.Write(bytes, 0, bytes.Length);
+                    newStream.Close();
+
+                    var response = http.GetResponse();
+
+                    var stream = response.GetResponseStream();
+                    var sr = new System.IO.StreamReader(stream);
+                    var content = sr.ReadToEnd();
+
+                    var obj = JsonConvert.DeserializeObject<Answer<bool>>(content);
+                    if (obj != null && obj.Status == "ok")
+                        return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                // ToDo: Log
+                Console.WriteLine($"Failed to send screenshot: {ex.Message}");
+            }
+
+            return false;
+        }
+
+        public Answer<AckResult> SendAckAsync(Device d)
+        {
+            try
+            {
+                Console.WriteLine("Sending ack ...");
+
+                string url = $"{this.url}/api/v1/device/ack";
+                var http = (HttpWebRequest)WebRequest.Create(new Uri(url));
+                http.Accept = "application/json";
+                http.ContentType = "application/json";
+                http.Method = "POST";
+
+                string parsedContent = JsonConvert.SerializeObject(d);
+                Console.WriteLine(parsedContent);
+                byte[] bytes = System.Text.Encoding.Default.GetBytes(parsedContent);
+
+                using (System.IO.Stream newStream = http.GetRequestStream())
+                {
+                    newStream.Write(bytes, 0, bytes.Length);
+                    newStream.Close();
+
+                    var response = http.GetResponse();
+
+                    var stream = response.GetResponseStream();
+                    var sr = new System.IO.StreamReader(stream);
+                    var content = sr.ReadToEnd();
+
+                    return JsonConvert.DeserializeObject<Answer<AckResult>>(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to send ack: {ex.Message}");
+                return AnswerExtensions.Fail<AckResult>(ex.Message);
+            }
         }
     }
 }

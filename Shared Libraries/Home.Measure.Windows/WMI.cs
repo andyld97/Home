@@ -22,7 +22,7 @@ namespace Home.Measure.Windows
                     foreach (PropertyData property in mo.Properties)
                     {
                         if (property.Name == "Description")
-                            devices.Add(property.Value.ToString());
+                            devices.Add(property.Value.ToString().Trim());
                     }
                 }
             }
@@ -45,7 +45,7 @@ namespace Home.Measure.Windows
                     if (devices.Any(p => p.Contains(name)))
                         continue;
 
-                    devices.Add(name);
+                    devices.Add(name.Trim());
                 }
             }
             catch

@@ -192,7 +192,7 @@
                                             <TabItem.Header>
                                                 <StackPanel Orientation="Horizontal" Height="20">
                                                     <Image Source="resources/icons/info.png" Width="16" />
-                                                    <TextBlock Margin="5,0,0,0" Text="System Übersicht" TextAlignment="Center" />
+                                                    <TextBlock Margin="5,0,0,0" Text="System" TextAlignment="Center" />
                                                 </StackPanel>
                                             </TabItem.Header>
                                             <Grid>
