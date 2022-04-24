@@ -21,7 +21,7 @@ namespace Home.Service.Windows
     public partial class MainWindow : Window
     {
         private Home.Communication.API api = null;
-        private APITest test = null;
+        private LegacyAPI legacyAPI = null;
 
         private readonly DateTime startTimestamp = DateTime.Now;
 
@@ -30,6 +30,11 @@ namespace Home.Service.Windows
         private bool isInitalized = false;
         private bool isSendingAck = false;
         private readonly object _lock = new object();
+
+        // LEGACY-FLAG
+        // The legacy flag is mode for Windows 7 SP1 x86 PCs.
+        // It's using a similiar implemented API like Home.Service.Legacy,
+        // because since Home.Service.Windows stopped working on Windows 7 x86 (since .NET 6) (.NET 4.8 worked fine)
 
         public MainWindow()
         {
@@ -60,7 +65,8 @@ namespace Home.Service.Windows
         private async Task InitalizeService()
         {
             api = new Communication.API(ServiceData.Instance.APIUrl);
-            test = new APITest(ServiceData.Instance.APIUrl);
+            legacyAPI = new LegacyAPI(ServiceData.Instance.APIUrl);
+
             var now = DateTime.Now;
             currentDevice = new Device()
             {
@@ -89,8 +95,13 @@ namespace Home.Service.Windows
             if (ServiceData.Instance.HasLoggedInOnce)
                 isInitalized = true;
 
+#if LEGACY
             if (!isInitalized)
-                isInitalized = test.RegisterDeviceAsync(currentDevice); // await api.RegisterDeviceAsync(currentDevice);
+                isInitalized = legacyAPI.RegisterDeviceAsync(currentDevice);
+#else
+            if (!isInitalized)
+                isInitalized = await api.RegisterDeviceAsync(currentDevice);
+#endif
 
             if (isInitalized)
                 await SendAck();
@@ -116,8 +127,11 @@ namespace Home.Service.Windows
             if (!isInitalized)
             {
                 // Initalize
-                //   isInitalized = await api.RegisterDeviceAsync(currentDevice);
-                isInitalized = test.RegisterDeviceAsync(currentDevice);
+#if LEGACY
+                isInitalized = legacyAPI.RegisterDeviceAsync(currentDevice);
+#else
+                isInitalized = await api.RegisterDeviceAsync(currentDevice);
+#endif
             }
             else
             {
@@ -157,7 +171,13 @@ namespace Home.Service.Windows
             currentDevice.Environment.Vendor = vendor;
 
             // Send ack
-            var ackResult = test.SendAckAsync(currentDevice); // await api.SendAckAsync(currentDevice);
+            Answer<AckResult> ackResult = null;
+
+#if LEGACY
+            ackResult = legacyAPI.SendAckAsync(currentDevice);
+#else
+            ackResult = await api.SendAckAsync(currentDevice);
+#endif
 
             // Process ack answer
             if (ackResult != null && ackResult.Success && ackResult.Result.Result.HasFlag(Data.Com.AckResult.Ack.OK))
@@ -195,11 +215,14 @@ namespace Home.Service.Windows
 
         public async Task PostScreenshot()
         {
-            return;
-
             string fileName = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"capture{DateTime.Now.ToString(Consts.SCREENSHOT_DATE_FILE_FORMAT)}.png");
             var result = NET.CreateScreenshot(fileName);
+
+#if LEGACY
+            var apiResult = legacyAPI.SendScreenshotAsync(new Screenshot() { ClientID = ServiceData.Instance.ID, Data = Convert.ToBase64String(result) });
+#else
             var apiResult = await api.SendScreenshotAsync(new Screenshot() { ClientID = ServiceData.Instance.ID, Data = Convert.ToBase64String(result) });
+#endif
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -237,11 +260,11 @@ namespace Home.Service.Windows
         }
     }
 
-    public class APITest
+    public class LegacyAPI
     {
         private readonly string url;
 
-        public APITest(string url)
+        public LegacyAPI(string url)
         {
             this.url = url;
         }

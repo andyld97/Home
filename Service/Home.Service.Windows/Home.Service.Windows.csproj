@@ -33,6 +33,12 @@
   <PropertyGroup>
     <ApplicationIcon>BotIcon.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>$(DefineConstants)TRACE;</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>$(DefineConstants)TRACE;</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Serialization">
       <HintPath>..\..\External Libraries\Serialization.dll</HintPath>

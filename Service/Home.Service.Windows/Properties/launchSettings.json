@@ -3,9 +3,9 @@
     "Home.Service.Windows": {
       "commandName": "Project",
       "jsWebView2Debugging": false,
-      "remoteDebugEnabled": true,
+      "remoteDebugEnabled": false,
       "authenticationMode": "Windows",
-      "remoteDebugMachine": "ALL-IN-ONE-PC:4026",
+      "remoteDebugMachine": "192.168.178.172:4026",
       "nativeDebugging": false
     }
   }
