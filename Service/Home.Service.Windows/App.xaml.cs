@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Home.Data;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Threading;
@@ -14,7 +15,7 @@ namespace Home.Service.Windows
         public static IHostBuilder CreateHostBuilder(string[] args) => Host.CreateDefaultBuilder(args).ConfigureWebHostDefaults(webBuilder =>
         {
             webBuilder.UseStartup<Startup>();
-            webBuilder.UseUrls("http://0.0.0.0:5556");
+            webBuilder.UseUrls($"http://0.0.0.0:{Consts.API_PORT}");
         });
 
         private void Application_Startup(object sender, StartupEventArgs e)

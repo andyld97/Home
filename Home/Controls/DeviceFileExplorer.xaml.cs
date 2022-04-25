@@ -1,13 +1,13 @@
-﻿using Home.Data.Helper;
+﻿using Home.Communication;
+using Home.Data;
+using Home.Data.Helper;
 using Home.Data.Remote;
 using Home.Helper;
 using Home.Model;
 using Microsoft.Win32;
 using System;
 using System.Globalization;
-using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -23,6 +23,7 @@ namespace Home.Controls
     {
         private Device device;
         private RemoteDirectory remoteDirectory;
+        private RemoteAPI remoteAPI;
 
         public delegate void onHomeButtonPressed();
         public event onHomeButtonPressed OnHomeButtonPressed;
@@ -33,30 +34,32 @@ namespace Home.Controls
             Refresh();
         }
 
-        public async Task NavigateAsync(Device d, string path)
+        public async Task NavigateAsync(Device device, string path)
         {
-            this.device = d;
+            if (remoteAPI == null || device != this.device)
+                remoteAPI = new RemoteAPI(device.IP, Consts.API_PORT);
+
+            this.device = device;
 
             if (path.EndsWith(":"))
                 path += @"\";
 
-            string url = $"http://{d.IP}:5556/io/ls/{HttpUtility.UrlEncode(path)}";
-
-            try
+            var result = await remoteAPI.GetRemoteDirectoryAsync(path);
+            if (result != null && result.Success)
             {
-                using (HttpClient cl = new HttpClient() { Timeout = TimeSpan.FromSeconds(5) })
-                {
-                    var rm = await System.Text.Json.JsonSerializer.DeserializeAsync<RemoteDirectory>(await cl.GetStreamAsync(url));
-                    remoteDirectory = rm;
-                }
+                remoteDirectory = result.Result;
+                Refresh();
             }
-            catch (Exception ex)
+            else if (result != null)
             {
-                MessageBox.Show($"Fehler beim Abrufen des Ordners: {path}!{Environment.NewLine}{Environment.NewLine}{ex.Message}", "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
+                MessageBox.Show($"Fehler beim Abrufen des Ordners: {path}!{Environment.NewLine}{Environment.NewLine}{result.ErrorMessage}", "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);
+                OnHomeButtonPressed?.Invoke();
             }
-
-            Refresh();
+            else
+            {
+                MessageBox.Show($"Fehler beim Abrufen des Ordners: {path}!", "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);
+                OnHomeButtonPressed?.Invoke();
+            }
         }
 
         public void Refresh()
@@ -103,11 +106,27 @@ namespace Home.Controls
                 if (remoteDirectory == null)
                     return;
 
-                if (System.IO.Path.GetPathRoot(remoteDirectory.Path).TrimEnd(@"\".ToCharArray()) == remoteDirectory.Path.TrimEnd(@"\".ToCharArray()))
+                if (System.IO.Path.GetPathRoot(remoteDirectory.Path).TrimEnd(@"\/".ToCharArray()) == remoteDirectory.Path.TrimEnd(@"\/".ToCharArray()))
                     return;
 
                 string path = System.IO.Path.GetDirectoryName(remoteDirectory.Path);
+                // Linux only accepts "/"-pathes
+                if (!device.OS.IsWindows(false))
+                    path = path.Replace(@"\", "/");
+
                 await NavigateAsync(device, path);
+            }
+        }
+
+        private async void ButtonRefresh_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                AnimateButton(sender);
+                if (remoteDirectory == null)
+                    return;
+
+                await NavigateAsync(device, remoteDirectory.Path);
             }
         }
 
@@ -143,7 +162,6 @@ namespace Home.Controls
         }
         #endregion
 
-
         #region ContextMenu Download Buttons
 
         // ToDo: *** Show download progress dialog
@@ -162,20 +180,12 @@ namespace Home.Controls
                 var result = sfd.ShowDialog();
                 if (result.HasValue && result.Value)
                 {
-                    string url = $"http://{device.IP}:5556/io/download/{HttpUtility.UrlEncode(rf.Path)}";
+                    var apiResult = await remoteAPI.DownloadFileAsync(rf.Path, sfd.FileName);
 
-                    try
-                    {
-                        using (HttpClient cl = new HttpClient())
-                        {
-                            System.IO.File.WriteAllBytes(sfd.FileName, await cl.GetByteArrayAsync(url));
-                            MessageBox.Show("Erfolg!", "Erfolg!", MessageBoxButton.OK, MessageBoxImage.Information);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Fehler beim Herunterladen der Datei: {rf.Path}!{Environment.NewLine}{Environment.NewLine}{ex.Message}", "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
+                    if (apiResult != null && apiResult.Success)
+                        MessageBox.Show("Fertig!", "Erfolg!", MessageBoxButton.OK, MessageBoxImage.Information);
+                    else  
+                        MessageBox.Show($"Fehler beim Herunterladen der Datei: {rf.Path}!{Environment.NewLine}{Environment.NewLine}{apiResult.ErrorMessage}", "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
@@ -191,26 +201,34 @@ namespace Home.Controls
                 };
 
                 var result = sfd.ShowDialog();
+
                 if (result.HasValue && result.Value)
                 {
-                    string url = $"http://{device.IP}:5556/io/zip/{HttpUtility.UrlEncode(rd.Path)}";
+                    var apiResult = await remoteAPI.DownloadFolderAsync(rd.Path, sfd.FileName);
 
-                    try
-                    {
-                        using (HttpClient cl = new HttpClient())
-                        {
-                            System.IO.File.WriteAllBytes(sfd.FileName, await cl.GetByteArrayAsync(url));
-                            MessageBox.Show("Erfolg!", "Erfolg!", MessageBoxButton.OK, MessageBoxImage.Information);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Fehler beim Herunterladen der ZIP-Datei des Ordners: {rd.Path}!{Environment.NewLine}{Environment.NewLine}{ex.Message}", "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
+                    if (apiResult != null && apiResult.Success)
+                        MessageBox.Show("Fertig!", "Erfolg!", MessageBoxButton.OK, MessageBoxImage.Information);
+                    else
+                        MessageBox.Show($"Fehler beim Herunterladen der Datei: {rd.Path}!{Environment.NewLine}{Environment.NewLine}{apiResult.ErrorMessage}", "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
         #endregion
+
+        private void MenuDelete_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MenuDeleteDirectory_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MenuProperties_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 
     #region Converter

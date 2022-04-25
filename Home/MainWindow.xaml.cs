@@ -22,6 +22,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using static Home.Model.Device;
+using static Home.Data.Helper.GeneralHelper;
 
 namespace Home
 {
@@ -660,9 +661,9 @@ namespace Home
             if (lastSelectedDevice == null)
                 return;
 
-            if (lastSelectedDevice.OS < OSType.Windows7)
+            if (lastSelectedDevice.OS.IsWindowsLegacy() || lastSelectedDevice.OS.IsAndroid())
             {
-                MessageBox.Show("This feature is currently only supported on Windows systems (7 SP1 or newer)", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("This feature is currently only supported on Windows systems (7 SP1 or newer) or on Linux Systems", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -670,7 +671,19 @@ namespace Home
             {
                 // Under Windows the DriveName is the path (e.g. C:, D:)
                 SwitchFileManager(true);
-                await DeviceExplorer.NavigateAsync(lastSelectedDevice, dd.DriveName);
+
+                string driveName = string.Empty;
+                if (lastSelectedDevice.OS.IsWindows(false))
+                    driveName = dd.DriveName;
+                else if (lastSelectedDevice.OS.IsLinux())
+                {
+                    if (dd.VolumeName.Contains(","))
+                        driveName = dd.VolumeName.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+                    else
+                        driveName = dd.VolumeName;
+                }
+
+                await DeviceExplorer.NavigateAsync(lastSelectedDevice, driveName);
             }
         }
 

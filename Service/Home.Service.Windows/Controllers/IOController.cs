@@ -1,10 +1,10 @@
-﻿using Home.Data.Helper;
+﻿using Home.Data;
+using Home.Data.Helper;
 using Home.Data.Remote;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace Home.Service.Windows.Controllers
 {
@@ -12,44 +12,40 @@ namespace Home.Service.Windows.Controllers
     [ApiController()]
     public class IOController
     {
-        [HttpGet("ls/{path}")]
-        public ActionResult Ls(string path)
+        [HttpPost("ls")]
+        public ActionResult Ls([FromBody] RemotePath path)
         {
             try
             {
-                path = HttpUtility.UrlDecode(path);
+                if (string.IsNullOrEmpty(path.Path) || !System.IO.Directory.Exists(path.Path))
+                    return new NotFoundObjectResult(AnswerExtensions.Fail("Not found"));
 
-                if (string.IsNullOrEmpty(path) || !System.IO.Directory.Exists(path))
-                    return new NotFoundResult();
+                var di = new System.IO.DirectoryInfo(path.Path);
 
-                var di = new System.IO.DirectoryInfo(path);
-
-                RemoteDirectory root = new RemoteDirectory(path);
+                RemoteDirectory root = new RemoteDirectory(path.Path);
                 foreach (var item in di.EnumerateDirectories("*.*", System.IO.SearchOption.TopDirectoryOnly))
                     root.Directories.Add(new RemoteDirectory(item.FullName) { LastChange = item.LastWriteTime });
                 foreach (var item in di.EnumerateFiles("*.*", System.IO.SearchOption.TopDirectoryOnly))
                     root.Files.Add(new RemoteFile(item.FullName) { Length = item.Length, LastAccessTime = item.LastAccessTime, LastWriteTime = item.LastWriteTimeUtc });
 
-                return new OkObjectResult(root);
+                return new OkObjectResult(AnswerExtensions.Success(root));
             }
-            catch
+            catch (Exception ex)
             {
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new BadRequestObjectResult(AnswerExtensions.Fail(ex.Message));
             }
         }
 
-        [HttpGet("download/{path}")]
-        public ActionResult DownloadFile(string path)
+        [HttpPost("download")]
+        public ActionResult DownloadFile([FromBody] RemotePath path)
         {
-            path = HttpUtility.UrlDecode(path);
-
-            if (string.IsNullOrEmpty(path) || !System.IO.File.Exists(path))
+            if (string.IsNullOrEmpty(path.Path) || !System.IO.File.Exists(path.Path))
                 return new NotFoundResult();
 
             try
             {
-                var stream = new System.IO.FileStream(path, System.IO.FileMode.Open);
-                return new FileStreamResult(stream, "application/octet-stream") { FileDownloadName = System.IO.Path.GetFileName(path) };
+                var stream = new System.IO.FileStream(path.Path, System.IO.FileMode.Open);
+                return new FileStreamResult(stream, "application/octet-stream") { FileDownloadName = System.IO.Path.GetFileName(path.Path) };
             }
             catch
             {
@@ -57,12 +53,10 @@ namespace Home.Service.Windows.Controllers
             }
         }
 
-        [HttpGet("zip/{path}")]
-        public async Task<ActionResult> DownloadDirectoryAsZipFile(string path)
+        [HttpPost("zip")]
+        public async Task<ActionResult> DownloadDirectoryAsZipFile([FromBody] RemotePath path)
         {
-            path = HttpUtility.UrlDecode(path);
-
-            if (string.IsNullOrEmpty(path) || !System.IO.Directory.Exists(path))
+            if (string.IsNullOrEmpty(path.Path) || !System.IO.Directory.Exists(path.Path))
                 return new NotFoundResult();
 
             try
@@ -71,11 +65,14 @@ namespace Home.Service.Windows.Controllers
                 string tempZipFile = System.IO.Path.GetTempFileName();
 
                 // Zip folder to the temp file
-                await ZipHelper.CreateZipFileFromDirectoryAsync(path, tempZipFile);
+                await ZipHelper.CreateZipFileFromDirectoryAsync(path.Path, tempZipFile);
 
                 // Return temp file
                 var stream = new System.IO.FileStream(tempZipFile, System.IO.FileMode.Open);
-                return new FileStreamResult(stream, "application/octet-stream") { FileDownloadName = System.IO.Path.GetFileName(path) + ".zip" };
+                return new FileStreamResult(stream, "application/octet-stream")
+                {
+                    FileDownloadName = $"{System.IO.Path.GetFileName(path.Path)}.zip"
+                };
             }
             catch (Exception)
             {

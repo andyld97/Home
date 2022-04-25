@@ -39,7 +39,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{27651F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Home.Service.Android", "Service\Home.Service.Android\Home.Service.Android.csproj", "{7716B99C-FC83-4755-878D-C094CC8C7649}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Home.Service.Windows", "Service\Home.Service.Windows\Home.Service.Windows.csproj", "{BBA6CEE6-1D66-4F82-B179-7203D08EE44C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Home.Service.Windows", "Service\Home.Service.Windows\Home.Service.Windows.csproj", "{BBA6CEE6-1D66-4F82-B179-7203D08EE44C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E53E7885-932E-4DE8-98FF-87B45E3C9B4D}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

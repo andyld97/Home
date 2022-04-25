@@ -14,8 +14,11 @@
         <local:LengthConverter x:Key="lengthConverter" />
 
         <ContextMenu x:Key="MenuDownload">
+            <MenuItem x:Name="MenuDeleteFile" Click="MenuDelete_Click" Header="Datei löschen" />
+            <MenuItem x:Name="MenuDeleteDirectory" Click="MenuDeleteDirectory_Click" Header="Ordner löschen" />
             <MenuItem x:Name="MenuDownloadFile" Click="MenuDownloadFile_Click" Header="Datei herunterladen" />
             <MenuItem x:Name="MenuDownloadFolder" Click="MenuDownloadFolder_Click" Header="Ordner als ZIP-Datei herunterladen" />
+            <MenuItem x:Name="MenuProperties" Click="MenuProperties_Click" Header="Eigenschaften" />
         </ContextMenu>
     </UserControl.Resources>
     <Grid>
@@ -34,6 +37,7 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
                 <Image x:Name="ButtonHome" MouseDown="ButtonHome_MouseDown" Width="32" Height="22" Source="../resources/icons/explorer/home.png" Cursor="Hand">
@@ -48,7 +52,12 @@
                 </Image>
 
                 <TextBox x:Name="TextPath" KeyDown="TextPath_KeyDown" Background="{DynamicResource WhiteBrush}" Foreground="{DynamicResource BlackBrush}" Grid.Column="2" Margin="3" Padding="2" />
-                <Image x:Name="ButtonNavigate" MouseDown="ButtonNavigate_MouseDown" Grid.Column="3" Width="32" Height="32" Source="../resources/icons/explorer/right.png" Cursor="Hand">
+                <Image x:Name="ButtonRefresh" MouseDown="ButtonRefresh_MouseDown" Margin="2,0,2,0" Grid.Column="3" Width="24" Height="24" Source="../resources/icons/live/refresh.png" Cursor="Hand">
+                    <Image.RenderTransform>
+                        <TranslateTransform />
+                    </Image.RenderTransform>
+                </Image>
+                <Image x:Name="ButtonNavigate" MouseDown="ButtonNavigate_MouseDown" Grid.Column="4" Width="32" Height="32" Source="../resources/icons/explorer/right.png" Cursor="Hand">
                     <Image.RenderTransform>
                         <TranslateTransform />
                     </Image.RenderTransform>

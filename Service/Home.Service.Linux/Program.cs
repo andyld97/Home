@@ -1,16 +1,20 @@
-﻿using Home.Data.Com;
+﻿using Home.Data;
+using Home.Data.Com;
 using Home.Model;
+using Home.Service.Windows;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using static Home.Model.Device;
+using Timer = System.Timers.Timer;
 
 namespace Home.Service.Linux
 {
@@ -32,11 +36,23 @@ namespace Home.Service.Linux
 
         #region Main
 
+        public static IHostBuilder CreateHostBuilder(string[] args) => Host.CreateDefaultBuilder(args).ConfigureWebHostDefaults(webBuilder =>
+        {
+            webBuilder.UseStartup<Startup>();
+            webBuilder.UseUrls($"http://0.0.0.0:{Consts.API_PORT}");
+        });
+
         public static void Main(string[] args)
         {
             try
             {
-                // Test: ParseHardwareInfo(System.IO.File.ReadAllText(@"Test\test3.json"), new Device());
+                // Debug: ParseHardwareInfo(System.IO.File.ReadAllText(@"Test\test3.json"), new Device());
+                Thread apiThread = new Thread(new ParameterizedThreadStart((_) => 
+                {
+                    var args = Environment.GetCommandLineArgs();
+                    CreateHostBuilder(args).Build().Run();
+                }));
+                apiThread.Start();
 
                 Task task = MainAsync(args);
                 task.Wait();
