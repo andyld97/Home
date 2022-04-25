@@ -135,6 +135,10 @@ namespace Home.API.Controllers
                         if (oldDevice.Environment.TotalRAM != refreshedDevice.Environment.TotalRAM && refreshedDevice.Environment.TotalRAM > 0)
                             oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected RAM change from {oldDevice.Environment.TotalRAM} GB to {refreshedDevice.Environment.TotalRAM} GB", LogEntry.LogLevel.Information, true));
 
+                        // IP Change
+                        if (oldDevice.IP != refreshedDevice.IP)
+                            oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected IP change from {oldDevice.IP} to {refreshedDevice.IP}", LogEntry.LogLevel.Information, true));
+
                         isScreenshotRequired = oldDevice.IsScreenshotRequired;
 
                         // If this device is live, ALWAYS send a screenshot on ack!
