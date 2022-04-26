@@ -7,6 +7,7 @@ using Home.Model;
 using Microsoft.Win32;
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -229,6 +230,83 @@ namespace Home.Controls
         {
 
         }
+
+        private async void Data_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (Data.SelectedItems.Count == 1)
+            {
+                var selectedItem = Data.SelectedItem;
+                bool hidePreview = true;
+
+                if (selectedItem is RemoteFile rf)
+                {
+                    if (ByteUnit.FromB(rf.Length) <= ByteUnit.FromMB(10))
+                    {
+                        string ext = System.IO.Path.GetExtension(rf.Path).ToLower();
+
+                        // ToDo: *** Für HTML und HTM Dateien WebView2 zur Anzeige verwenden.
+
+                        // TEXT
+                        if (string.IsNullOrEmpty(ext) || Consts.TEXT_EXTENSIONS.Any(ex => ex == ext))
+                        {
+                            var result = await remoteAPI.DownlaodFileAsync(rf.Path);
+
+                            if (result != null && result.Success)
+                            {
+                                using (System.IO.StreamReader str = new System.IO.StreamReader(result.Result, System.Text.Encoding.UTF8))
+                                    TextFile.Text = await str.ReadToEndAsync();
+
+                                hidePreview = false;
+                            }
+                            else
+                                TextFile.Text = string.Empty;
+
+                            TextFile.Visibility = Visibility.Visible;
+                            ImageFile.Visibility = Visibility.Hidden;
+                        }
+                        else if (Consts.IMG_EXTENSIONS.Any(ex => ex == ext))
+                        {
+                            // Check for image extensions
+                            var result = await remoteAPI.DownlaodFileAsync(rf.Path);
+                            if (result != null && result.Success)
+                            {
+                                ImageFile.SetImageSource(ImageHelper.LoadImage(result.Result));
+                                ImageFile.Reset();
+                                hidePreview = false;
+                            }
+                            else
+                            {
+                                ImageFile.SetImageSource(null);
+                                ImageFile.Reset();
+                            }
+
+                            TextFile.Visibility = Visibility.Hidden;
+                            ImageFile.Visibility = Visibility.Visible;
+                        }
+                        else
+                        {
+                            TextFile.Visibility = Visibility.Hidden;
+                            ImageFile.Visibility = Visibility.Hidden;
+                        }
+
+                        if (hidePreview)
+                            ColumnPreview.Width = new GridLength(0, GridUnitType.Star);
+                        else
+                            ColumnPreview.Width = new GridLength(1, GridUnitType.Star);
+                    }
+                }
+                else
+                {
+                    // Clear Preview
+                    ColumnPreview.Width = new GridLength(0, GridUnitType.Star);
+                }
+            }
+            else
+            {
+                // Clear Preview
+                ColumnPreview.Width = new GridLength(0, GridUnitType.Star);
+            }
+        }
     }
 
     #region Converter
@@ -257,8 +335,20 @@ namespace Home.Controls
         {
             if (value is RemoteDirectory)
                 return ImageHelper.LoadImage("pack://application:,,,/Home;Component/resources/icons/explorer/directory.png", false);
-            else if (value is RemoteFile)
-                return ImageHelper.LoadImage("pack://application:,,,/Home;Component/resources/icons/explorer/file.png", false);
+            else if (value is RemoteFile rf)
+            {
+                string icon = "file";
+                string ext = System.IO.Path.GetExtension(rf.Path).ToLower();
+
+                if (string.IsNullOrEmpty(ext) || Consts.TEXT_EXTENSIONS.Any(x => x == ext))
+                    icon = "text_file";
+                else if (Consts.HTML_EXTENSIONS.Any(x => x == ext))
+                    icon = "html_file";
+                else if (Consts.IMG_EXTENSIONS.Any(x => x == ext))
+                    icon = "image_file";
+
+                return ImageHelper.LoadImage($"pack://application:,,,/Home;Component/resources/icons/explorer/{icon}.png", false);
+            }
 
             return null;
         }
@@ -323,7 +413,7 @@ namespace Home.Controls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is RemoteFile rf)
-                return ByteUnit.Calculate(rf.Length);
+                return ByteUnit.FindUnit(rf.Length);
 
             return "-";
         }

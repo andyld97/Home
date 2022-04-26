@@ -67,10 +67,10 @@
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="39*"/>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition x:Name="ColumnPreview" Width="0" />
             </Grid.ColumnDefinitions>
-            <DataGrid MouseDoubleClick="Data_MouseDoubleClick" x:Name="Data" IsReadOnly="True" BorderThickness="0" GridLinesVisibility="None" Grid.ColumnSpan="2" Background="{DynamicResource WhiteBrush}">
+            <DataGrid MouseDoubleClick="Data_MouseDoubleClick" SelectionChanged="Data_SelectionChanged" x:Name="Data" IsReadOnly="True" BorderThickness="0" GridLinesVisibility="None" Background="{DynamicResource WhiteBrush}">
                 <DataGrid.CellStyle>
                     <Style TargetType="DataGridCell">
                         <Setter Property="BorderThickness" Value="0"/>
@@ -141,6 +141,24 @@
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
+
+            <Border x:Name="GridPreview" BorderThickness="1 0 0 0" BorderBrush="Gray" Grid.Column="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Grid>
+                        <TextBlock Margin="5,2" Text="Vorschau:" FontWeight="Bold" />
+                    </Grid>
+
+                    <Grid Grid.Row="1">
+                        <TextBox x:Name="TextFile" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Foreground="{DynamicResource BlackBrush}" Background="{DynamicResource WhiteBrush}" IsReadOnly="True" />
+                        <local:ZoomImageViewer x:Name="ImageFile" Margin="3" Visibility="Hidden" />
+                    </Grid>
+                </Grid>
+            </Border>
         </Grid>
     </Grid>
 </UserControl>

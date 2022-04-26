@@ -55,6 +55,28 @@ namespace Home.Communication
         }
 
         /// <summary>
+        /// Downloads the remoteFile and returns the stream
+        /// </summary>
+        /// <param name="remoteFile"></param>
+        /// <returns></returns>
+        public async Task<Answer<System.IO.Stream>> DownlaodFileAsync(string remoteFile)
+        {
+            string url = $"http://{ip}:{port}/io/download";
+            try
+            {
+                var result = await httpClient.PostAsync(url, new StringContent(JsonSerializer.Serialize(new RemotePath(remoteFile)), Encoding.UTF8, "application/json"));
+                if (result.IsSuccessStatusCode)
+                    return AnswerExtensions.Success(await result.Content.ReadAsStreamAsync());
+                else
+                    throw new Exception($"Http Status Code: {result.StatusCode}");
+            }
+            catch (Exception ex)
+            {
+                return AnswerExtensions.Fail<System.IO.Stream>(ex.Message);
+            }
+        }
+
+        /// <summary>
         /// Downloads the zip file of the compressed remoteDirectory and stores it to localZipFile
         /// </summary>
         /// <param name="remoteDirectory"></param>

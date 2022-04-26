@@ -219,6 +219,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="resources\icons\explorer\html_file.png" />
+    <Resource Include="resources\icons\explorer\image_file.png" />
+    <Resource Include="resources\icons\explorer\text_file.png" />
     <Resource Include="resources\icons\explorer\home.png" />
     <Resource Include="resources\icons\explorer\right.png" />
     <Resource Include="resources\icons\explorer\file.png" />
