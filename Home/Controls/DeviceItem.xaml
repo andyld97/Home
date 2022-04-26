@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:Home.Controls"
              mc:Ignorable="d" 
              ToolTip="{Binding Environment.MachineName}"
+             ContextMenu="{DynamicResource DeviceMenu}"
              Width="280" Height="80" Foreground="{DynamicResource BlackBrush}">
     <UserControl.Resources>
         <local:StateToColorConverter x:Key="stateToColorConverter" />
@@ -19,20 +20,6 @@
     <UserControl.Opacity>
         <Binding Path="." Converter="{StaticResource deviceToOpacityConverter}" />
     </UserControl.Opacity>
-    <UserControl.ContextMenu>
-        <ContextMenu>
-            <MenuItem x:Name="MenuItemShutdown" Click="MenuItemShutdown_Click" Header="Herunterfahren">
-                <MenuItem.Icon>
-                    <Image Source="../resources/icons/menu/shutdown.png" />
-                </MenuItem.Icon>
-            </MenuItem>
-            <MenuItem x:Name="MenuItemReboot" Click="MenuItemReboot_Click" Header="Neustarten">
-                <MenuItem.Icon>
-                    <Image Source="../resources/icons/menu/reboot.png" />
-                </MenuItem.Icon>
-            </MenuItem>
-        </ContextMenu>
-    </UserControl.ContextMenu>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />

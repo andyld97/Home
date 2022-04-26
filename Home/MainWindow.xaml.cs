@@ -47,6 +47,7 @@ namespace Home
         private readonly List<DeviceItem> deviceItems = new List<DeviceItem>(); // gui
         private Device lastSelectedDevice = null;
         private bool ignoreSelectionChanged = false;
+        private int oldDeviceCount = -1;
 
         public MainWindow()
         {
@@ -59,7 +60,13 @@ namespace Home
             ScreenshotViewer.OnScreenShotAquired += ScreenshotViewer_OnScreenShotAquired;
 
             InitalizeDeviceActivityPlot();
-        }    
+            App.OnShutdownOrRestart += App_OnShutdownOrRestart;
+        }
+
+        private async void App_OnShutdownOrRestart(Device device, bool shutdown)
+        {
+            await ShutdownOrRestartAsync(device, shutdown);
+        }
 
         private async void ScreenshotViewer_OnScreenShotAquired(object sender, EventArgs e)
         {
@@ -171,7 +178,30 @@ namespace Home
             RefreshOverview();
         }
 
-        private int oldDeviceCount = -1;
+        private async Task ShutdownOrRestartAsync(Device d, bool shutdown)
+        {
+            if (d == null)
+                return;
+
+            if (d.OS.IsAndroid())
+            {
+                MessageBox.Show($"Ein Android Gerät kann nicht heruntergefahren oder neugestartet werden!", "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (shutdown)
+            {
+                if (MessageBox.Show($"Sind Sie sich sicher, dass Sie das Gerät {d.Name} herunterfahren möchten?", "Wirklich?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+                    return;
+            }
+            else
+            {
+                if (MessageBox.Show($"Sind Sie sich sicher, dass Sie das Gerät {d.Name} neustarten möchten?", "Wirklich?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+                    return;
+            }
+
+            await API.ShutdownOrRestartDeviceAsync(shutdown, d);
+        }
 
         private void RefreshOverview()
         {
@@ -593,22 +623,12 @@ namespace Home
 
         private async void MenuButtonShutdown_Click(object sender, RoutedEventArgs e)
         {
-            if (lastSelectedDevice == null)
-                return;
-            if (MessageBox.Show($"Sind Sie sich sicher, dass Sie das Gerät {lastSelectedDevice.Name} herunterfahren möchten?", "Wirklich?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
-                return;
-
-            await API.ShutdownOrRestartDeviceAsync(true, lastSelectedDevice);
+            await ShutdownOrRestartAsync(lastSelectedDevice, true);      
         }
 
         private async void MenuButtonReboot_Click(object sender, RoutedEventArgs e)
         {
-            if (lastSelectedDevice == null)
-                return;
-            if (MessageBox.Show($"Sind Sie sich sicher, dass Sie das Gerät {lastSelectedDevice.Name} neustarten möchten?", "Wirklich?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
-                return;
-
-            await API.ShutdownOrRestartDeviceAsync(false, lastSelectedDevice);
+            await ShutdownOrRestartAsync(lastSelectedDevice, false);   
         }    
 
         #endregion

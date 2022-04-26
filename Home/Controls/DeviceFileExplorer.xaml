@@ -155,7 +155,7 @@
                     </Grid>
 
                     <Grid Grid.Row="1">
-                        <TextBox x:Name="TextFile" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Foreground="{DynamicResource BlackBrush}" Background="{DynamicResource WhiteBrush}" IsReadOnly="True" />
+                        <TextBox x:Name="TextFile" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" FontFamily="Consolas" Foreground="{DynamicResource BlackBrush}" Background="{DynamicResource WhiteBrush}" IsReadOnly="True" />
                         <local:ZoomImageViewer x:Name="ImageFile" Margin="3" Visibility="Hidden" />
                         <wpf:WebView2 x:Name="WebViewHTML" />
                     </Grid>

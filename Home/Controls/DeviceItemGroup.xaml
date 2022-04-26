@@ -42,7 +42,7 @@
 
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Grid Background="Transparent" Width="300">
+                    <Grid Background="Transparent" Width="300" ContextMenu="{DynamicResource DeviceMenu}">
                         <Grid.ToolTip>
                             <ToolTip>
                                 <Image Source="{Binding ., Converter={StaticResource deviceScreenConverter}}" />

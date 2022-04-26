@@ -12,6 +12,20 @@
                         <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)" To="1" />
                         <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)" To="1" />
                     </Storyboard>
+
+
+                    <ContextMenu x:Key="DeviceMenu">
+                        <MenuItem x:Name="MenuItemShutdown" Click="MenuItemShutdown_Click" Header="Herunterfahren">
+                            <MenuItem.Icon>
+                                <Image Source="../resources/icons/menu/shutdown.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem x:Name="MenuItemReboot" Click="MenuItemReboot_Click"  Header="Neustarten">
+                            <MenuItem.Icon>
+                                <Image Source="../resources/icons/menu/reboot.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
