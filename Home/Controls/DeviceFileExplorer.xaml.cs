@@ -72,10 +72,10 @@ namespace Home.Controls
 
             TextPath.Text = remoteDirectory.Path;
 
-            foreach (var item in remoteDirectory.Directories)
+            foreach (var item in remoteDirectory.Directories.OrderBy(p => System.IO.Path.GetFileNameWithoutExtension(p.Path)))
                 Data.Items.Add(item);
 
-            foreach (var item in remoteDirectory.Files)
+            foreach (var item in remoteDirectory.Files.OrderBy(p => System.IO.Path.GetFileNameWithoutExtension(p.Path)))
                 Data.Items.Add(item);
         }
 
@@ -293,6 +293,11 @@ namespace Home.Controls
                             ColumnPreview.Width = new GridLength(0, GridUnitType.Star);
                         else
                             ColumnPreview.Width = new GridLength(1, GridUnitType.Star);
+                    }
+                    else
+                    {
+                        // Clear Preview (preview only shows up to 10 MB per file)
+                        ColumnPreview.Width = new GridLength(0, GridUnitType.Star);
                     }
                 }
                 else
