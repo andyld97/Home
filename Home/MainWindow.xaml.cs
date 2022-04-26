@@ -23,6 +23,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using static Home.Model.Device;
 using static Home.Data.Helper.GeneralHelper;
+using Microsoft.Web.WebView2.Core;
 
 namespace Home
 {
@@ -39,6 +40,7 @@ namespace Home
         public static Communication.API API = null;
 
         private readonly DispatcherTimer updateTimer = new DispatcherTimer();
+        private CoreWebView2Environment webView2Environment;
         private bool isUpdating = false;
         private readonly object _lock = new object();
         private List<Device> deviceList = new List<Device>();
@@ -88,6 +90,12 @@ namespace Home
         private async void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             await API.LogoffAsync(CLIENT);
+        }
+
+        protected override async void OnContentRendered(EventArgs e)
+        {
+            base.OnContentRendered(e);
+            webView2Environment = await CoreWebView2Environment.CreateAsync();
         }
 
         private async void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
@@ -683,6 +691,7 @@ namespace Home
                         driveName = dd.VolumeName;
                 }
 
+                await DeviceExplorer.PassWebView2Environment(webView2Environment);
                 await DeviceExplorer.NavigateAsync(lastSelectedDevice, driveName);
             }
         }

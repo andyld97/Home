@@ -4,6 +4,7 @@ using Home.Data.Helper;
 using Home.Data.Remote;
 using Home.Helper;
 using Home.Model;
+using Microsoft.Web.WebView2.Core;
 using Microsoft.Win32;
 using System;
 using System.Globalization;
@@ -33,6 +34,11 @@ namespace Home.Controls
         {
             InitializeComponent();
             Refresh();
+        }
+
+        public async Task PassWebView2Environment(CoreWebView2Environment env)
+        {
+            await WebViewHTML.EnsureCoreWebView2Async(env);
         }
 
         public async Task NavigateAsync(Device device, string path)
@@ -244,25 +250,31 @@ namespace Home.Controls
                     {
                         string ext = System.IO.Path.GetExtension(rf.Path).ToLower();
 
-                        // ToDo: *** Für HTML und HTM Dateien WebView2 zur Anzeige verwenden.
-
-                        // TEXT
                         if (string.IsNullOrEmpty(ext) || Consts.TEXT_EXTENSIONS.Any(ex => ex == ext))
                         {
+                            // Check for empty/text extensions
                             var result = await remoteAPI.DownlaodFileAsync(rf.Path);
 
                             if (result != null && result.Success)
                             {
-                                using (System.IO.StreamReader str = new System.IO.StreamReader(result.Result, System.Text.Encoding.UTF8))
-                                    TextFile.Text = await str.ReadToEndAsync();
+                                try
+                                {
+                                    using (System.IO.StreamReader str = new System.IO.StreamReader(result.Result, System.Text.Encoding.UTF8))
+                                        TextFile.Text = await str.ReadToEndAsync();
 
-                                hidePreview = false;
+                                    hidePreview = false;
+                                }
+                                catch
+                                {
+
+                                }
                             }
                             else
                                 TextFile.Text = string.Empty;
 
                             TextFile.Visibility = Visibility.Visible;
                             ImageFile.Visibility = Visibility.Hidden;
+                            WebViewHTML.Visibility = Visibility.Hidden;
                         }
                         else if (Consts.IMG_EXTENSIONS.Any(ex => ex == ext))
                         {
@@ -282,11 +294,37 @@ namespace Home.Controls
 
                             TextFile.Visibility = Visibility.Hidden;
                             ImageFile.Visibility = Visibility.Visible;
+                            WebViewHTML.Visibility = Visibility.Hidden;
+                        }
+                        else if (Consts.HTML_EXTENSIONS.Any(ex => ex == ext))
+                        {
+                            var result = await remoteAPI.DownlaodFileAsync(rf.Path);
+                            if (result != null && result.Success)
+                            {
+                                try
+                                {
+                                    using (System.IO.StreamReader reader = new System.IO.StreamReader(result.Result))
+                                    {
+                                        string html = reader.ReadToEnd();
+                                        WebViewHTML.NavigateToString(html);
+                                        hidePreview = false;
+                                    }
+                                }
+                                catch
+                                {
+
+                                }
+                            }
+
+                            TextFile.Visibility = Visibility.Hidden;
+                            ImageFile.Visibility = Visibility.Hidden;
+                            WebViewHTML.Visibility = Visibility.Visible;
                         }
                         else
                         {
                             TextFile.Visibility = Visibility.Hidden;
                             ImageFile.Visibility = Visibility.Hidden;
+                            WebViewHTML.Visibility = Visibility.Hidden;
                         }
 
                         if (hidePreview)
