@@ -22,7 +22,7 @@ namespace Home.Service.Linux
     {
         #region Private Members
         private static readonly Device currentDevice = new Device();
-        private static readonly Version ClientVersion = new Version(0, 0, 6);
+        private static readonly Version ClientVersion = new Version(0, 0, 7);
         private static readonly DateTime startTime = DateTime.Now;
         private static Home.Communication.API api;
         private static JObject jInfo = null;
@@ -46,8 +46,12 @@ namespace Home.Service.Linux
         {
             try
             {
-                // Debug: ParseHardwareInfo(System.IO.File.ReadAllText(@"Test\test3.json"), new Device());
-                Thread apiThread = new Thread(new ParameterizedThreadStart((_) => 
+                // Debug LSHW JSON FILES:
+                 /*var device = new Device();
+                 ParseHardwareInfo(System.IO.File.ReadAllText(@"Test\test4.json"), device);
+                 int debug = 0;*/
+
+                Thread apiThread = new Thread(new ParameterizedThreadStart((_) =>
                 {
                     var args = Environment.GetCommandLineArgs();
                     CreateHostBuilder(args).Build().Run();
@@ -69,8 +73,8 @@ namespace Home.Service.Linux
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exiting: " + e.Message);
-            }         
+                Console.WriteLine("Exiting: " + e.ToString());
+            }
         }
 
         public static async Task MainAsync(string[] args)
@@ -371,13 +375,22 @@ namespace Home.Service.Linux
             while (childrenQueue.Count > 0)
             {
                 var child = childrenQueue.Dequeue();
+                bool processButDoesntEnqueue = false;
 
-                var subChilds = child.Value<JArray>("children");
-                if (subChilds != null && subChilds.Count > 0)
+                // A Disk entry will be further processed in the ProcessJTokenMethod
+                if (child.Value<string>("class") == "disk")
+                    processButDoesntEnqueue = true;
+
+                if (!processButDoesntEnqueue)
                 {
-                    foreach (var it in subChilds)
-                        childrenQueue.Enqueue(it);
+                    var subChilds = child.Value<JArray>("children");
+                    if (subChilds != null && subChilds.Count > 0)
+                    {
+                        foreach (var it in subChilds)
+                            childrenQueue.Enqueue(it);
+                    }
                 }
+
 
                 ProcessJToken(child, device);
             }
@@ -393,7 +406,7 @@ namespace Home.Service.Linux
                 foreach (var drive in device.DiskDrives)
                 {
                     string volumeName = drive.VolumeName;
-                    if (volumeName.Contains(","))
+                    if (volumeName.Contains(','))
                         volumeName = volumeName.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
 
                     if (string.IsNullOrEmpty(volumeName))
@@ -464,122 +477,74 @@ namespace Home.Service.Linux
                 device.Environment.GraphicCards = new List<string> { child.Value<string>("product") };
             else if (childClass == "network" && string.IsNullOrEmpty(device.IP))
                 device.IP = child.Value<JObject>("configuration").Value<string>("ip");
-            else if (childClass == "storage" && childID != "storage")
+            else if (childClass == "disk" || childClass == "volume")
             {
                 string product = child.Value<string>("product");
-                string logicalName = child.Value<string>("logicalname");
-                string serial = child.Value<string>("serial");
+                string description = child.Value<string>("description");
 
-                if (logicalName != null) // := /dev/sda1 oterhwise this a controller
+                var childs = child.Value<JArray>("children");
+
+                // Volumes contain the infos directly, so simulate the children array!
+                if (childClass == "volume")
+                    childs = new JArray() { child };
+
+                if (childs != null)
                 {
-                    var namespaceChild = child.Value<JArray>("children").FirstOrDefault();
-                    if (namespaceChild != null)
+                    foreach (var volume in childs)
                     {
-                        var volumeChild = namespaceChild.Value<JArray>("children");
-                        // volumes
-                        if (volumeChild == null)
-                            return;
+                        JObject volumeConfig = volume.Value<JObject>("configuration");
+                        string fs = volumeConfig?.Value<string>("filesystem") ?? string.Empty;
 
-                        foreach (var volume in volumeChild)
+                        DiskDrive dd = new DiskDrive();
+                        var logicalName = volume.Value<JToken>("logicalname");
+                        if (logicalName is JArray arr)
+                            dd.VolumeName = string.Join(",", arr);
+                        else
+                            dd.VolumeName = volume.Value<string>("logicalname");
+
+                        dd.DriveID = dd.PhysicalName = volume.Value<string>("physid") ?? string.Empty;
+                        dd.VolumeSerial = volume.Value<string>("serial");
+                        dd.TotalSpace = volume.Value<ulong>("size");
+                        dd.FileSystem = fs.ToUpper();
+                        dd.DiskInterface = description;
+                        dd.DiskModel = product;
+                        dd.DiskName = product;
+                        dd.MediaLoaded = (volumeConfig?.Value<string>("state") == "mounted");
+
+                        // Some devices has the properties in the children array
+                        var childToken = volume.Value<JToken>("children");
+                        if (childToken != null && childToken is JArray volumeChilds)
                         {
-                            DiskDrive dd = new DiskDrive();
-                            JObject volumeConfig = volume.Value<JObject>("configuration");
-
-                            ulong size = volume.Value<ulong>("size");
-
-                            string logicalNames = string.Empty;
-
-                            try
+                            var volumeChild = volumeChilds.FirstOrDefault();
+                            if (volumeChild != null)
                             {
-                                logicalNames = string.Join(",", volume.Value<JArray>("logicalname"));
+                                volumeConfig = volumeChild.Value<JObject>("configuration");
+                                dd.FileSystem = volumeConfig.Value<string>("filesystem").ToUpper() ?? string.Empty;
+                                dd.DriveName = volumeConfig.Value<string>("label") ?? dd.DriveName;
+
+                                // LogicalNames
+                                logicalName = volume.Value<JToken>("logicalname");
+                                if (logicalName is JArray arm)
+                                    dd.VolumeName = string.Join(",", arm);
+                                else
+                                    dd.VolumeName = volume.Value<string>("logicalname");
+
+                                // Size
+                                ulong temp = volume.Value<ulong>("size");
+                                if (temp != 0)
+                                    dd.TotalSpace = temp;
+
+                                // Serial
+                                dd.VolumeSerial = volumeConfig.Value<string>("serial") ?? dd.VolumeSerial;
                             }
-                            catch
-                            {
-                                try
-                                {
-                                    logicalName = volume.Value<string>("logicalname");
-                                }
-                                catch
-                                {
-
-                                }
-                            }
-
-                            if (string.IsNullOrEmpty(logicalNames))
-                                logicalNames = logicalName;
-
-                            if (string.IsNullOrEmpty(logicalNames))
-                                logicalNames = "Unknown";
-
-                            string fs = volumeConfig?.Value<string>("filesystem");
-
-                            dd.DiskInterface = childID;
-                            dd.DiskModel = product;
-                            dd.DiskName = product;
-                            try
-                            {
-                                dd.MediaLoaded = volumeConfig?.Value<string>("state") == "mounted";
-                            }
-                            catch
-                            {
-
-                            }
-                            dd.VolumeSerial = serial;
-
-                            try
-                            {
-                                dd.VolumeName = volume.Value<string>("id");
-                            }
-                            catch
-                            {
-
-                            }
-
-                            try
-                            {
-                                dd.PhysicalName = volume.Value<string>("physid");
-                            }
-                            catch
-                            {
-
-                            }
-                            dd.FileSystem = fs?.ToUpper();
-                            dd.TotalSpace = size;
-                            dd.VolumeName = logicalNames;
-
-                            device.DiskDrives.Add(dd);
                         }
+
+                        // Only add if there is a valid volumeName to access it
+                        if (!string.IsNullOrEmpty(dd.VolumeName))
+                            device.DiskDrives.Add(dd);
                     }
                 }
-            }
-            else if (childClass == "volume")
-            {
-                string product = child.Value<string>("product");
-                if (!string.IsNullOrEmpty(product))
-                {
-                    DiskDrive dd = new DiskDrive();
-
-                    JObject volumeConfig = child.Value<JObject>("configuration");
-
-                    ulong size = child.Value<ulong>("size");
-                    JArray logicalNames = child.Value<JArray>("logicalname");
-                    string fs = child.Value<string>("filesystem");
-
-                    dd.DiskInterface = childID;
-                    dd.DiskModel = product;
-                    dd.DiskName = product;
-                    dd.MediaLoaded = volumeConfig.Value<string>("state") == "mounted";
-                    dd.VolumeSerial = child.Value<string>("serial");
-                    dd.VolumeName = child.Value<string>("id");
-                    dd.PhysicalName = child.Value<string>("physid");
-                    dd.FileSystem = fs?.ToUpper();
-                    dd.TotalSpace = size;
-                    if (logicalNames != null)
-                        dd.VolumeName = string.Join(",", logicalNames);
-
-                    device.DiskDrives.Add(dd);
-                }
-            }
+            }           
         }
         #endregion
     }
