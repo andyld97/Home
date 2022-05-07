@@ -47,9 +47,11 @@ namespace Home.Service.Linux
             try
             {
                 // Debug LSHW JSON FILES:
-                 /*var device = new Device();
-                 ParseHardwareInfo(System.IO.File.ReadAllText(@"Test\test4.json"), device);
-                 int debug = 0;*/
+#if DEBUG
+                var device = new Device();
+                 ParseHardwareInfo(System.IO.File.ReadAllText(@"Test\test6.json"), device);
+                 int debug = 0;
+#endif
 
                 Thread apiThread = new Thread(new ParameterizedThreadStart((_) =>
                 {
@@ -74,6 +76,9 @@ namespace Home.Service.Linux
             catch (Exception e)
             {
                 Console.WriteLine("Exiting: " + e.ToString());
+
+                if (e.InnerException != null)
+                    Console.WriteLine($"Inner Exception: {e.InnerException.ToString()}");
             }
         }
 

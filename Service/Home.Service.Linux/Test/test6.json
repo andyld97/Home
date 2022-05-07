@@ -1,0 +1,2078 @@
+{
+  "id" : "srv01",
+  "class" : "system",
+  "claimed" : true,
+  "handle" : "DMI:0001",
+  "description" : "Arbeitsplatzrechner",
+  "product" : "MS-7B79 (To be filled by O.E.M.)",
+  "vendor" : "Micro-Star International Co., Ltd.",
+  "version" : "4.0",
+  "serial" : "To be filled by O.E.M.",
+  "width" : 64,
+  "configuration" : {
+    "boot" : "normal",
+    "chassis" : "desktop",
+    "family" : "To be filled by O.E.M.",
+    "sku" : "To be filled by O.E.M.",
+    "uuid" : "16a98238-7596-b718-a17e-2cf05d07e72d"
+  },
+  "capabilities" : {
+    "smbios-2.8" : "SMBIOS version 2.8",
+    "dmi-2.8" : "DMI version 2.8",
+    "smp" : "Symmetric Multi-Processing",
+    "vsyscall32" : "32-Bit-Prozesse"
+  },
+  "children" : [    {
+      "id" : "core",
+      "class" : "bus",
+      "claimed" : true,
+      "handle" : "DMI:0002",
+      "description" : "Hauptplatine",
+      "product" : "X470 GAMING PRO MAX (MS-7B79)",
+      "vendor" : "Micro-Star International Co., Ltd.",
+      "physid" : "0",
+      "version" : "4.0",
+      "serial" : "K116858630",
+      "slot" : "To be filled by O.E.M.",
+      "children" : [        {
+          "id" : "firmware",
+          "class" : "memory",
+          "claimed" : true,
+          "description" : "BIOS",
+          "vendor" : "American Megatrends Inc.",
+          "physid" : "0",
+          "version" : "M.40",
+          "date" : "11/06/2019",
+          "units" : "bytes",
+          "size" : 65536,
+          "capacity" : 16777216,
+          "capabilities" : {
+            "pci" : "PCI-Bus",
+            "upgrade" : "BIOS EEPORM kann aktualisiert werden",
+            "shadowing" : "BIOS-Shadowing",
+            "cdboot" : "Starten von CD-ROM/DVD",
+            "bootselect" : "Wählbarer Boot-Pfad",
+            "socketedrom" : "BIOS ROM ist gesockelt",
+            "edd" : "Verbesserte Festplattenerweiterungen",
+            "int13floppy1200" : "»5.25\" 1.2MB«-Diskette",
+            "int13floppy720" : "»3.5\" 720KB«-Diskette",
+            "int13floppy2880" : "»3.5\" 2.88MB«-Diskette",
+            "int5printscreen" : "Bildschirmfoto-Taste",
+            "int9keyboard" : "i8042-Tastatursteuerung",
+            "int14serial" : "INT14-Steuerung für serielle Leitungen",
+            "int17printer" : "INT17-Druckersteuerung",
+            "acpi" : "ACPI",
+            "usb" : "USB-Legacy-Emulation",
+            "biosbootspecification" : "BIOS-Boot-Vorgabe",
+            "uefi" : "UEFI specification is supported"
+          }
+        },
+        {
+          "id" : "memory",
+          "class" : "memory",
+          "claimed" : true,
+          "handle" : "DMI:000F",
+          "description" : "Systemspeicher",
+          "physid" : "f",
+          "slot" : "Systemplatine oder Hauptplatine",
+          "units" : "bytes",
+          "size" : 17179869184,
+          "children" : [            {
+              "id" : "bank:0",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:0017",
+              "description" : "Project-Id-Version: lshwReport-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>PO-Revision-Date: 2012-05-30 08:16+0000Last-Translator: Hendrik Knackstedt <Unknown>Language-Team: German <de@li.org>MIME-Version: 1.0Content-Type: text/plain; charset=UTF-8Content-Transfer-Encoding: 8bitX-Launchpad-Export-Date: 2022-04-15 01:03+0000X-Generator: Launchpad (build 5cc3bd61c85a328825183f316ddd801c0f7d7ef2)Project-Id-Version: lshwReport-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>PO-Revision-Date: 2012-05-30 08:16+0000Last-Translator: Hendrik Knackstedt <Unknown>Language-Team: German <de@li.org>MIME-Version: 1.0Content-Type: text/plain; charset=UTF-8Content-Transfer-Encoding: 8bitX-Launchpad-Export-Date: 2022-04-15 01:03+0000X-Generator: Launchpad (build 5cc3bd61c85a328825183f316ddd801c0f7d7ef2) 3000 MHz (0,3 ns) [leer]",
+              "product" : "Unknown",
+              "vendor" : "Unknown",
+              "physid" : "0",
+              "serial" : "Unknown",
+              "slot" : "DIMM 0",
+              "clock" : 3000000000
+            },
+            {
+              "id" : "bank:1",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:0019",
+              "description" : "DIMM DDR4 Synchron Unbuffered (Unregistered) 3000 MHz (0,3 ns)",
+              "product" : "DDR4 3000 2OZ",
+              "vendor" : "A-DATA Technology",
+              "physid" : "1",
+              "serial" : "A47B0300",
+              "slot" : "DIMM 1",
+              "units" : "bytes",
+              "size" : 8589934592,
+              "width" : 64,
+              "clock" : 3000000000
+            },
+            {
+              "id" : "bank:2",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:001C",
+              "description" : "Project-Id-Version: lshwReport-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>PO-Revision-Date: 2012-05-30 08:16+0000Last-Translator: Hendrik Knackstedt <Unknown>Language-Team: German <de@li.org>MIME-Version: 1.0Content-Type: text/plain; charset=UTF-8Content-Transfer-Encoding: 8bitX-Launchpad-Export-Date: 2022-04-15 01:03+0000X-Generator: Launchpad (build 5cc3bd61c85a328825183f316ddd801c0f7d7ef2)Project-Id-Version: lshwReport-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>PO-Revision-Date: 2012-05-30 08:16+0000Last-Translator: Hendrik Knackstedt <Unknown>Language-Team: German <de@li.org>MIME-Version: 1.0Content-Type: text/plain; charset=UTF-8Content-Transfer-Encoding: 8bitX-Launchpad-Export-Date: 2022-04-15 01:03+0000X-Generator: Launchpad (build 5cc3bd61c85a328825183f316ddd801c0f7d7ef2) 3000 MHz (0,3 ns) [leer]",
+              "product" : "Unknown",
+              "vendor" : "Unknown",
+              "physid" : "2",
+              "serial" : "Unknown",
+              "slot" : "DIMM 0",
+              "clock" : 3000000000
+            },
+            {
+              "id" : "bank:3",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:001E",
+              "description" : "DIMM DDR4 Synchron Unbuffered (Unregistered) 3000 MHz (0,3 ns)",
+              "product" : "DDR4 3000 2OZ",
+              "vendor" : "A-DATA Technology",
+              "physid" : "3",
+              "serial" : "54870300",
+              "slot" : "DIMM 1",
+              "units" : "bytes",
+              "size" : 8589934592,
+              "width" : 64,
+              "clock" : 3000000000
+            }]
+        },
+        {
+          "id" : "cache:0",
+          "class" : "memory",
+          "claimed" : true,
+          "handle" : "DMI:0012",
+          "description" : "L1 Cache",
+          "physid" : "12",
+          "slot" : "L1 - Cache",
+          "units" : "bytes",
+          "size" : 262144,
+          "capacity" : 262144,
+          "clock" : 1000000000,
+          "configuration" : {
+            "level" : "1"
+          },
+          "capabilities" : {
+            "pipeline-burst" : "Pipeline-Bruch",
+            "internal" : "Intern",
+            "write-back" : "Write-back",
+            "unified" : "Gemeinsamer Zwischenspeicher"
+          }
+        },
+        {
+          "id" : "cache:1",
+          "class" : "memory",
+          "claimed" : true,
+          "handle" : "DMI:0013",
+          "description" : "L2 Cache",
+          "physid" : "13",
+          "slot" : "L2 - Cache",
+          "units" : "bytes",
+          "size" : 2097152,
+          "capacity" : 2097152,
+          "clock" : 1000000000,
+          "configuration" : {
+            "level" : "2"
+          },
+          "capabilities" : {
+            "pipeline-burst" : "Pipeline-Bruch",
+            "internal" : "Intern",
+            "write-back" : "Write-back",
+            "unified" : "Gemeinsamer Zwischenspeicher"
+          }
+        },
+        {
+          "id" : "cache:2",
+          "class" : "memory",
+          "claimed" : true,
+          "handle" : "DMI:0014",
+          "description" : "L3 Cache",
+          "physid" : "14",
+          "slot" : "L3 - Cache",
+          "units" : "bytes",
+          "size" : 16777216,
+          "capacity" : 16777216,
+          "clock" : 1000000000,
+          "configuration" : {
+            "level" : "3"
+          },
+          "capabilities" : {
+            "pipeline-burst" : "Pipeline-Bruch",
+            "internal" : "Intern",
+            "write-back" : "Write-back",
+            "unified" : "Gemeinsamer Zwischenspeicher"
+          }
+        },
+        {
+          "id" : "cpu",
+          "class" : "processor",
+          "claimed" : true,
+          "handle" : "DMI:0015",
+          "description" : "CPU",
+          "product" : "AMD Ryzen 3 3100 4-Core Processor",
+          "vendor" : "Advanced Micro Devices [AMD]",
+          "physid" : "15",
+          "businfo" : "cpu@0",
+          "version" : "23.113.0",
+          "serial" : "Unknown",
+          "slot" : "AM4",
+          "units" : "Hz",
+          "size" : 1942323000,
+          "capacity" : 3905859000,
+          "width" : 64,
+          "clock" : 100000000,
+          "configuration" : {
+            "cores" : "4",
+            "enabledcores" : "4",
+            "microcode" : "141561875",
+            "threads" : "8"
+          },
+          "capabilities" : {
+            "lm" : "64bits extensions (x86-64)",
+            "fpu" : "mathematical co-processor",
+            "fpu_exception" : "FPU exceptions reporting",
+            "wp" : true,
+            "vme" : "virtual mode extensions",
+            "de" : "debugging extensions",
+            "pse" : "page size extensions",
+            "tsc" : "time stamp counter",
+            "msr" : "model-specific registers",
+            "pae" : "4GB+ memory addressing (Physical Address Extension)",
+            "mce" : "machine check exceptions",
+            "cx8" : "compare and exchange 8-byte",
+            "apic" : "on-chip advanced programmable interrupt controller (APIC)",
+            "sep" : "fast system calls",
+            "mtrr" : "memory type range registers",
+            "pge" : "page global enable",
+            "mca" : "machine check architecture",
+            "cmov" : "conditional move instruction",
+            "pat" : "page attribute table",
+            "pse36" : "36-bit page size extensions",
+            "clflush" : true,
+            "mmx" : "multimedia extensions (MMX)",
+            "fxsr" : "fast floating point save/restore",
+            "sse" : "streaming SIMD extensions (SSE)",
+            "sse2" : "streaming SIMD extensions (SSE2)",
+            "ht" : "HyperThreading",
+            "syscall" : "fast system calls",
+            "nx" : "no-execute bit (NX)",
+            "mmxext" : "multimedia extensions (MMXExt)",
+            "fxsr_opt" : true,
+            "pdpe1gb" : true,
+            "rdtscp" : true,
+            "x86-64" : "64bits extensions (x86-64)",
+            "constant_tsc" : true,
+            "rep_good" : true,
+            "nopl" : true,
+            "nonstop_tsc" : true,
+            "cpuid" : true,
+            "extd_apicid" : true,
+            "aperfmperf" : true,
+            "rapl" : true,
+            "pni" : true,
+            "pclmulqdq" : true,
+            "monitor" : true,
+            "ssse3" : true,
+            "fma" : true,
+            "cx16" : true,
+            "sse4_1" : true,
+            "sse4_2" : true,
+            "movbe" : true,
+            "popcnt" : true,
+            "aes" : true,
+            "xsave" : true,
+            "avx" : true,
+            "f16c" : true,
+            "rdrand" : true,
+            "lahf_lm" : true,
+            "cmp_legacy" : true,
+            "svm" : true,
+            "extapic" : true,
+            "cr8_legacy" : true,
+            "abm" : true,
+            "sse4a" : true,
+            "misalignsse" : true,
+            "3dnowprefetch" : true,
+            "osvw" : true,
+            "ibs" : true,
+            "skinit" : true,
+            "wdt" : true,
+            "tce" : true,
+            "topoext" : true,
+            "perfctr_core" : true,
+            "perfctr_nb" : true,
+            "bpext" : true,
+            "perfctr_llc" : true,
+            "mwaitx" : true,
+            "cpb" : true,
+            "cat_l3" : true,
+            "cdp_l3" : true,
+            "hw_pstate" : true,
+            "ssbd" : true,
+            "mba" : true,
+            "ibpb" : true,
+            "stibp" : true,
+            "vmmcall" : true,
+            "fsgsbase" : true,
+            "bmi1" : true,
+            "avx2" : true,
+            "smep" : true,
+            "bmi2" : true,
+            "cqm" : true,
+            "rdt_a" : true,
+            "rdseed" : true,
+            "adx" : true,
+            "smap" : true,
+            "clflushopt" : true,
+            "clwb" : true,
+            "sha_ni" : true,
+            "xsaveopt" : true,
+            "xsavec" : true,
+            "xgetbv1" : true,
+            "xsaves" : true,
+            "cqm_llc" : true,
+            "cqm_occup_llc" : true,
+            "cqm_mbm_total" : true,
+            "cqm_mbm_local" : true,
+            "clzero" : true,
+            "irperf" : true,
+            "xsaveerptr" : true,
+            "rdpru" : true,
+            "wbnoinvd" : true,
+            "arat" : true,
+            "npt" : true,
+            "lbrv" : true,
+            "svm_lock" : true,
+            "nrip_save" : true,
+            "tsc_scale" : true,
+            "vmcb_clean" : true,
+            "flushbyasid" : true,
+            "decodeassists" : true,
+            "pausefilter" : true,
+            "pfthreshold" : true,
+            "avic" : true,
+            "v_vmsave_vmload" : true,
+            "vgif" : true,
+            "v_spec_ctrl" : true,
+            "umip" : true,
+            "rdpid" : true,
+            "overflow_recov" : true,
+            "succor" : true,
+            "smca" : true,
+            "sme" : true,
+            "sev" : true,
+            "sev_es" : true,
+            "cpufreq" : "CPU Frequency scaling"
+          }
+        },
+        {
+          "id" : "pci:0",
+          "class" : "bridge",
+          "claimed" : true,
+          "handle" : "PCIBUS:0000:00",
+          "description" : "Host bridge",
+          "product" : "Starship/Matisse Root Complex",
+          "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+          "physid" : "100",
+          "businfo" : "pci@0000:00:00.0",
+          "version" : "00",
+          "width" : 32,
+          "clock" : 33000000,
+          "children" : [            {
+              "id" : "generic",
+              "class" : "generic",
+              "handle" : "PCI:0000:00:00.2",
+              "description" : "IOMMU",
+              "product" : "Starship/Matisse IOMMU",
+              "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+              "physid" : "0.2",
+              "businfo" : "pci@0000:00:00.2",
+              "version" : "00",
+              "width" : 32,
+              "clock" : 33000000,
+              "configuration" : {
+                "latency" : "0"
+              },
+              "capabilities" : {
+                "msi" : "Message Signalled Interrupts",
+                "ht" : "HyperTransport",
+                "cap_list" : "PCI capabilities listing"
+              }
+            },
+            {
+              "id" : "pci:0",
+              "class" : "bridge",
+              "claimed" : true,
+              "handle" : "PCIBUS:0000:01",
+              "description" : "PCI bridge",
+              "product" : "Starship/Matisse GPP Bridge",
+              "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+              "physid" : "1.1",
+              "businfo" : "pci@0000:00:01.1",
+              "version" : "00",
+              "width" : 32,
+              "clock" : 33000000,
+              "configuration" : {
+                "driver" : "pcieport"
+              },
+              "capabilities" : {
+                "pci" : true,
+                "pm" : "Power Management",
+                "pciexpress" : "PCI Express",
+                "msi" : "Message Signalled Interrupts",
+                "ht" : "HyperTransport",
+                "normal_decode" : true,
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              },
+              "children" : [                {
+                  "id" : "nvme",
+                  "class" : "storage",
+                  "claimed" : true,
+                  "handle" : "PCI:0000:01:00.0",
+                  "description" : "NVMe device",
+                  "product" : "Samsung SSD 970 EVO Plus 500GB",
+                  "vendor" : "Samsung Electronics Co Ltd",
+                  "physid" : "0",
+                  "businfo" : "pci@0000:01:00.0",
+                  "logicalname" : "/dev/nvme0",
+                  "version" : "2B2QEXM7",
+                  "serial" : "S4EVNS0N702770A",
+                  "width" : 64,
+                  "clock" : 33000000,
+                  "configuration" : {
+                    "driver" : "nvme",
+                    "latency" : "0",
+                    "nqn" : "nqn.2014.08.org.nvmexpress:144d144dS4EVNS0N702770A     Samsung SSD 970 EVO Plus 500GB",
+                    "state" : "live"
+                  },
+                  "capabilities" : {
+                    "nvme" : true,
+                    "pm" : "Power Management",
+                    "msi" : "Message Signalled Interrupts",
+                    "pciexpress" : "PCI Express",
+                    "msix" : "MSI-X",
+                    "nvm_express" : true,
+                    "bus_master" : "bus mastering",
+                    "cap_list" : "PCI capabilities listing"
+                  },
+                  "children" : [                    {
+                      "id" : "namespace:0",
+                      "class" : "disk",
+                      "claimed" : true,
+                      "description" : "NVMe disk",
+                      "physid" : "0",
+                      "logicalname" : "hwmon0"
+                    },
+                    {
+                      "id" : "namespace:1",
+                      "class" : "disk",
+                      "claimed" : true,
+                      "description" : "NVMe disk",
+                      "physid" : "2",
+                      "logicalname" : "/dev/ng0n1"
+                    },
+                    {
+                      "id" : "namespace:2",
+                      "class" : "disk",
+                      "claimed" : true,
+                      "handle" : "GUID:75b2f945-1d6b-462c-a48f-2d3644c81e86",
+                      "description" : "NVMe disk",
+                      "physid" : "1",
+                      "businfo" : "nvme@0:1",
+                      "logicalname" : "/dev/nvme0n1",
+                      "units" : "bytes",
+                      "size" : 500107862016,
+                      "configuration" : {
+                        "guid" : "75b2f945-1d6b-462c-a48f-2d3644c81e86",
+                        "logicalsectorsize" : "512",
+                        "sectorsize" : "512",
+                        "wwid" : "eui.0025385701402345"
+                      },
+                      "capabilities" : {
+                        "gpt-1.00" : "GUID Partition Table version 1.00",
+                        "partitioned" : "Partitioned disk",
+                        "partitioned:gpt" : "GUID partition table"
+                      },
+                      "children" : [                        {
+                          "id" : "volume:0",
+                          "class" : "volume",
+                          "handle" : "GUID:f9e1d330-62f7-4752-8519-b81f0051dbe0",
+                          "description" : "Windows FAT Laufwerk",
+                          "vendor" : "mkfs.fat",
+                          "physid" : "1",
+                          "businfo" : "nvme@0:1,1",
+                          "version" : "FAT32",
+                          "serial" : "e102-7936",
+                          "size" : 535805952,
+                          "capacity" : 536870400,
+                          "configuration" : {
+                            "FATs" : "2",
+                            "filesystem" : "fat",
+                            "name" : "EFI System Partition"
+                          },
+                          "capabilities" : {
+                            "boot" : "Contains boot code",
+                            "fat" : "Windows FAT",
+                            "initialized" : "Initialisiertes Laufwerk"
+                          }
+                        },
+                        {
+                          "id" : "volume:1",
+                          "class" : "volume",
+                          "claimed" : true,
+                          "handle" : "GUID:ca536ecb-fd9e-4f59-bbea-bd96eda36624",
+                          "description" : "EXT4-Laufwerk",
+                          "vendor" : "Linux",
+                          "physid" : "2",
+                          "businfo" : "nvme@0:1,2",
+                          "logicalname" : ["/dev/nvme0n1p2", "/"],
+                          "dev" : "259:2",
+                          "version" : "1.0",
+                          "serial" : "2a3ef0d1-2021-419d-9e63-b68301041c90",
+                          "size" : 499568869376,
+                          "configuration" : {
+                            "created" : "2020-10-02 13:25:04",
+                            "filesystem" : "ext4",
+                            "lastmountpoint" : "/",
+                            "modified" : "2022-05-07 10:49:00",
+                            "mount.fstype" : "ext4",
+                            "mount.options" : "rw,relatime,errors=remount-ro",
+                            "mounted" : "2022-05-07 10:49:00",
+                            "state" : "mounted"
+                          },
+                          "capabilities" : {
+                            "journaled" : true,
+                            "extended_attributes" : "Erweiterte Eigenschaften",
+                            "large_files" : "4GB+ Dateien",
+                            "huge_files" : "16TB+ Dateien",
+                            "dir_nlink" : "Verzeichnisse mit 65000+ Unterverzeichnissen",
+                            "recover" : "Benötigt Reparatur",
+                            "64bit" : "64bit-Dateisystem",
+                            "extents" : "Ausdehnungbasierte Zuordnung",
+                            "ext4" : true,
+                            "ext2" : "EXT2/EXT3",
+                            "initialized" : "Initialisiertes Laufwerk"
+                          }
+                        }]
+                    }]
+                }]
+            },
+            {
+              "id" : "pci:1",
+              "class" : "bridge",
+              "claimed" : true,
+              "handle" : "PCIBUS:0000:03",
+              "description" : "PCI bridge",
+              "product" : "Starship/Matisse GPP Bridge",
+              "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+              "physid" : "1.3",
+              "businfo" : "pci@0000:00:01.3",
+              "version" : "00",
+              "width" : 32,
+              "clock" : 33000000,
+              "configuration" : {
+                "driver" : "pcieport"
+              },
+              "capabilities" : {
+                "pci" : true,
+                "pm" : "Power Management",
+                "pciexpress" : "PCI Express",
+                "msi" : "Message Signalled Interrupts",
+                "ht" : "HyperTransport",
+                "normal_decode" : true,
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              },
+              "children" : [                {
+                  "id" : "usb",
+                  "class" : "bus",
+                  "claimed" : true,
+                  "handle" : "PCI:0000:03:00.0",
+                  "description" : "USB controller",
+                  "product" : "Advanced Micro Devices, Inc. [AMD]",
+                  "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+                  "physid" : "0",
+                  "businfo" : "pci@0000:03:00.0",
+                  "version" : "01",
+                  "width" : 64,
+                  "clock" : 33000000,
+                  "configuration" : {
+                    "driver" : "xhci_hcd",
+                    "latency" : "0"
+                  },
+                  "capabilities" : {
+                    "msi" : "Message Signalled Interrupts",
+                    "pm" : "Power Management",
+                    "pciexpress" : "PCI Express",
+                    "xhci" : true,
+                    "bus_master" : "bus mastering",
+                    "cap_list" : "PCI capabilities listing"
+                  },
+                  "children" : [                    {
+                      "id" : "usbhost:0",
+                      "class" : "bus",
+                      "claimed" : true,
+                      "handle" : "USB:1:1",
+                      "product" : "xHCI Host Controller",
+                      "vendor" : "Linux 5.15.0-27-generic xhci-hcd",
+                      "physid" : "0",
+                      "businfo" : "usb@1",
+                      "logicalname" : "usb1",
+                      "version" : "5.15",
+                      "configuration" : {
+                        "driver" : "hub",
+                        "slots" : "14",
+                        "speed" : "480Mbit/s"
+                      },
+                      "capabilities" : {
+                        "usb-2.00" : "USB 2.0"
+                      },
+                      "children" : [                        {
+                          "id" : "usb:0",
+                          "class" : "input",
+                          "claimed" : true,
+                          "handle" : "USB:1:2",
+                          "description" : "Tastatur",
+                          "product" : "USB Receiver",
+                          "vendor" : "Logitech",
+                          "physid" : "c",
+                          "businfo" : "usb@1:c",
+                          "version" : "30.07",
+                          "configuration" : {
+                            "driver" : "usbhid",
+                            "maxpower" : "98mA",
+                            "speed" : "1Mbit/s"
+                          },
+                          "capabilities" : {
+                            "usb-1.10" : "USB 1.1"
+                          }
+                        },
+                        {
+                          "id" : "usb:1",
+                          "class" : "input",
+                          "claimed" : true,
+                          "handle" : "USB:1:3",
+                          "description" : "Tastatur",
+                          "product" : "Microsoft",
+                          "vendor" : "Microsoft",
+                          "physid" : "d",
+                          "businfo" : "usb@1:d",
+                          "version" : "2.00",
+                          "configuration" : {
+                            "driver" : "usbhid",
+                            "maxpower" : "100mA",
+                            "speed" : "1Mbit/s"
+                          },
+                          "capabilities" : {
+                            "usb-2.00" : "USB 2.0"
+                          }
+                        }]
+                    },
+                    {
+                      "id" : "usbhost:1",
+                      "class" : "bus",
+                      "claimed" : true,
+                      "handle" : "USB:2:1",
+                      "product" : "xHCI Host Controller",
+                      "vendor" : "Linux 5.15.0-27-generic xhci-hcd",
+                      "physid" : "1",
+                      "businfo" : "usb@2",
+                      "logicalname" : "usb2",
+                      "version" : "5.15",
+                      "configuration" : {
+                        "driver" : "hub",
+                        "slots" : "8",
+                        "speed" : "10000Mbit/s"
+                      },
+                      "capabilities" : {
+                        "usb-3.10" : true
+                      }
+                    }]
+                },
+                {
+                  "id" : "sata",
+                  "class" : "storage",
+                  "claimed" : true,
+                  "handle" : "PCI:0000:03:00.1",
+                  "description" : "SATA controller",
+                  "product" : "400 Series Chipset SATA Controller",
+                  "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+                  "physid" : "0.1",
+                  "businfo" : "pci@0000:03:00.1",
+                  "logicalname" : ["scsi0", "scsi1", "scsi3"],
+                  "version" : "01",
+                  "width" : 32,
+                  "clock" : 33000000,
+                  "configuration" : {
+                    "driver" : "ahci",
+                    "latency" : "0"
+                  },
+                  "capabilities" : {
+                    "sata" : true,
+                    "msi" : "Message Signalled Interrupts",
+                    "pm" : "Power Management",
+                    "pciexpress" : "PCI Express",
+                    "ahci_1.0" : true,
+                    "bus_master" : "bus mastering",
+                    "cap_list" : "PCI capabilities listing",
+                    "rom" : "extension ROM",
+                    "emulated" : "Emulated device"
+                  },
+                  "children" : [                    {
+                      "id" : "disk:0",
+                      "class" : "disk",
+                      "claimed" : true,
+                      "handle" : "SCSI:00:00:00:00",
+                      "description" : "ATA Disk",
+                      "product" : "WDC WD10EZEX-08M",
+                      "vendor" : "Western Digital",
+                      "physid" : "0",
+                      "businfo" : "scsi@0:0.0.0",
+                      "logicalname" : "/dev/sda",
+                      "dev" : "8:0",
+                      "version" : "1A01",
+                      "serial" : "WD-WCC3F3308966",
+                      "units" : "bytes",
+                      "size" : 1000204886016,
+                      "configuration" : {
+                        "ansiversion" : "5",
+                        "logicalsectorsize" : "512",
+                        "sectorsize" : "4096",
+                        "signature" : "9519ecd5"
+                      },
+                      "capabilities" : {
+                        "partitioned" : "Partitioned disk",
+                        "partitioned:dos" : "MS-DOS partition table"
+                      },
+                      "children" : [                        {
+                          "id" : "volume",
+                          "class" : "volume",
+                          "claimed" : true,
+                          "description" : "EXT4-Laufwerk",
+                          "vendor" : "Linux",
+                          "physid" : "1",
+                          "businfo" : "scsi@0:0.0.0,1",
+                          "logicalname" : ["/dev/sda1", "/media/CAM"],
+                          "dev" : "8:1",
+                          "version" : "1.0",
+                          "serial" : "5c0cd243-4d6a-442b-87e9-fd82cd512128",
+                          "size" : 1000203091968,
+                          "capacity" : 1000203091968,
+                          "configuration" : {
+                            "created" : "2020-07-11 04:03:31",
+                            "filesystem" : "ext4",
+                            "label" : "DATA",
+                            "lastmountpoint" : "/media/CAM",
+                            "modified" : "2022-05-07 10:49:00",
+                            "mount.fstype" : "ext4",
+                            "mount.options" : "rw,nosuid,nodev,relatime",
+                            "mounted" : "2022-05-07 10:49:00",
+                            "state" : "mounted"
+                          },
+                          "capabilities" : {
+                            "primary" : "Primary partition",
+                            "journaled" : true,
+                            "extended_attributes" : "Erweiterte Eigenschaften",
+                            "large_files" : "4GB+ Dateien",
+                            "huge_files" : "16TB+ Dateien",
+                            "dir_nlink" : "Verzeichnisse mit 65000+ Unterverzeichnissen",
+                            "recover" : "Benötigt Reparatur",
+                            "64bit" : "64bit-Dateisystem",
+                            "extents" : "Ausdehnungbasierte Zuordnung",
+                            "ext4" : true,
+                            "ext2" : "EXT2/EXT3",
+                            "initialized" : "Initialisiertes Laufwerk"
+                          }
+                        }]
+                    },
+                    {
+                      "id" : "disk:1",
+                      "class" : "disk",
+                      "claimed" : true,
+                      "handle" : "GUID:0ef2e048-b337-4943-8dda-936ec610367e",
+                      "description" : "ATA Disk",
+                      "product" : "ST33000651AS",
+                      "physid" : "1",
+                      "businfo" : "scsi@1:0.0.0",
+                      "logicalname" : "/dev/sdb",
+                      "dev" : "8:16",
+                      "version" : "CC44",
+                      "serial" : "Z290JY6G",
+                      "units" : "bytes",
+                      "size" : 3000592982016,
+                      "configuration" : {
+                        "ansiversion" : "5",
+                        "guid" : "0ef2e048-b337-4943-8dda-936ec610367e",
+                        "logicalsectorsize" : "512",
+                        "sectorsize" : "512"
+                      },
+                      "capabilities" : {
+                        "gpt-1.00" : "GUID Partition Table version 1.00",
+                        "partitioned" : "Partitioned disk",
+                        "partitioned:gpt" : "GUID partition table"
+                      },
+                      "children" : [                        {
+                          "id" : "volume",
+                          "class" : "volume",
+                          "claimed" : true,
+                          "handle" : "GUID:8bea0db3-0753-4ba3-8ac4-fea15635cf5f",
+                          "description" : "EXT4-Laufwerk",
+                          "vendor" : "Linux",
+                          "physid" : "1",
+                          "businfo" : "scsi@1:0.0.0,1",
+                          "logicalname" : ["/dev/sdb1", "/media/server/AddData"],
+                          "dev" : "8:17",
+                          "version" : "1.0",
+                          "serial" : "cb31c1c5-4dc0-4d73-be9a-6ec6ff879ed3",
+                          "size" : 3000591450112,
+                          "configuration" : {
+                            "created" : "2021-06-10 11:42:54",
+                            "filesystem" : "ext4",
+                            "lastmountpoint" : "/media/server/AddData",
+                            "modified" : "2022-05-07 10:49:00",
+                            "mount.fstype" : "ext4",
+                            "mount.options" : "rw,nosuid,nodev,relatime",
+                            "mounted" : "2022-05-07 10:49:00",
+                            "state" : "mounted"
+                          },
+                          "capabilities" : {
+                            "journaled" : true,
+                            "extended_attributes" : "Erweiterte Eigenschaften",
+                            "large_files" : "4GB+ Dateien",
+                            "huge_files" : "16TB+ Dateien",
+                            "dir_nlink" : "Verzeichnisse mit 65000+ Unterverzeichnissen",
+                            "recover" : "Benötigt Reparatur",
+                            "extents" : "Ausdehnungbasierte Zuordnung",
+                            "ext4" : true,
+                            "ext2" : "EXT2/EXT3",
+                            "initialized" : "Initialisiertes Laufwerk"
+                          }
+                        }]
+                    },
+                    {
+                      "id" : "disk:2",
+                      "class" : "volume",
+                      "claimed" : true,
+                      "handle" : "SCSI:03:00:00:00",
+                      "description" : "EXT4-Laufwerk",
+                      "product" : "ST4000VX000-1F41",
+                      "vendor" : "Linux",
+                      "physid" : "0.0.0",
+                      "businfo" : "scsi@3:0.0.0",
+                      "logicalname" : ["/dev/sdc", "/media/server/Server"],
+                      "dev" : "8:32",
+                      "version" : "1.0",
+                      "serial" : "65697543-8d29-4b10-ad8b-38974c34e0a0",
+                      "size" : 4000787030016,
+                      "configuration" : {
+                        "ansiversion" : "5",
+                        "created" : "2016-11-29 17:05:08",
+                        "filesystem" : "ext4",
+                        "label" : "Server",
+                        "lastmountpoint" : "/media/server/Server",
+                        "logicalsectorsize" : "512",
+                        "modified" : "2022-05-07 10:49:00",
+                        "mount.fstype" : "ext4",
+                        "mount.options" : "rw,nosuid,nodev,relatime",
+                        "mounted" : "2022-05-07 10:49:00",
+                        "sectorsize" : "4096",
+                        "state" : "mounted"
+                      },
+                      "capabilities" : {
+                        "journaled" : true,
+                        "extended_attributes" : "Erweiterte Eigenschaften",
+                        "large_files" : "4GB+ Dateien",
+                        "huge_files" : "16TB+ Dateien",
+                        "dir_nlink" : "Verzeichnisse mit 65000+ Unterverzeichnissen",
+                        "recover" : "Benötigt Reparatur",
+                        "extents" : "Ausdehnungbasierte Zuordnung",
+                        "ext4" : true,
+                        "ext2" : "EXT2/EXT3",
+                        "initialized" : "Initialisiertes Laufwerk"
+                      }
+                    }]
+                },
+                {
+                  "id" : "pci",
+                  "class" : "bridge",
+                  "claimed" : true,
+                  "handle" : "PCIBUS:0000:20",
+                  "description" : "PCI bridge",
+                  "product" : "400 Series Chipset PCIe Bridge",
+                  "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+                  "physid" : "0.2",
+                  "businfo" : "pci@0000:03:00.2",
+                  "version" : "01",
+                  "width" : 32,
+                  "clock" : 33000000,
+                  "configuration" : {
+                    "driver" : "pcieport"
+                  },
+                  "capabilities" : {
+                    "pci" : true,
+                    "msi" : "Message Signalled Interrupts",
+                    "pm" : "Power Management",
+                    "pciexpress" : "PCI Express",
+                    "normal_decode" : true,
+                    "bus_master" : "bus mastering",
+                    "cap_list" : "PCI capabilities listing"
+                  },
+                  "children" : [                    {
+                      "id" : "pci:0",
+                      "class" : "bridge",
+                      "claimed" : true,
+                      "handle" : "PCIBUS:0000:21",
+                      "description" : "PCI bridge",
+                      "product" : "400 Series Chipset PCIe Port",
+                      "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+                      "physid" : "0",
+                      "businfo" : "pci@0000:20:00.0",
+                      "version" : "01",
+                      "width" : 32,
+                      "clock" : 33000000,
+                      "configuration" : {
+                        "driver" : "pcieport"
+                      },
+                      "capabilities" : {
+                        "pci" : true,
+                        "msi" : "Message Signalled Interrupts",
+                        "pm" : "Power Management",
+                        "pciexpress" : "PCI Express",
+                        "normal_decode" : true,
+                        "bus_master" : "bus mastering",
+                        "cap_list" : "PCI capabilities listing"
+                      }
+                    },
+                    {
+                      "id" : "pci:1",
+                      "class" : "bridge",
+                      "claimed" : true,
+                      "handle" : "PCIBUS:0000:22",
+                      "description" : "PCI bridge",
+                      "product" : "400 Series Chipset PCIe Port",
+                      "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+                      "physid" : "1",
+                      "businfo" : "pci@0000:20:01.0",
+                      "version" : "01",
+                      "width" : 32,
+                      "clock" : 33000000,
+                      "configuration" : {
+                        "driver" : "pcieport"
+                      },
+                      "capabilities" : {
+                        "pci" : true,
+                        "msi" : "Message Signalled Interrupts",
+                        "pm" : "Power Management",
+                        "pciexpress" : "PCI Express",
+                        "normal_decode" : true,
+                        "bus_master" : "bus mastering",
+                        "cap_list" : "PCI capabilities listing"
+                      },
+                      "children" : [                        {
+                          "id" : "network",
+                          "class" : "network",
+                          "claimed" : true,
+                          "handle" : "PCI:0000:22:00.0",
+                          "description" : "Ethernet interface",
+                          "product" : "RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller",
+                          "vendor" : "Realtek Semiconductor Co., Ltd.",
+                          "physid" : "0",
+                          "businfo" : "pci@0000:22:00.0",
+                          "logicalname" : "enp34s0",
+                          "version" : "15",
+                          "serial" : "2c:f0:5d:07:e7:2d",
+                          "units" : "bit/s",
+                          "size" : 1000000000,
+                          "capacity" : 1000000000,
+                          "width" : 64,
+                          "clock" : 33000000,
+                          "configuration" : {
+                            "autonegotiation" : "on",
+                            "broadcast" : "yes",
+                            "driver" : "r8169",
+                            "driverversion" : "5.15.0-27-generic",
+                            "duplex" : "full",
+                            "firmware" : "rtl8168h-2_0.0.2 02/26/15",
+                            "ip" : "192.168.178.38",
+                            "latency" : "0",
+                            "link" : "yes",
+                            "multicast" : "yes",
+                            "port" : "twisted pair",
+                            "speed" : "1Gbit/s"
+                          },
+                          "capabilities" : {
+                            "pm" : "Power Management",
+                            "msi" : "Message Signalled Interrupts",
+                            "pciexpress" : "PCI Express",
+                            "msix" : "MSI-X",
+                            "bus_master" : "bus mastering",
+                            "cap_list" : "PCI capabilities listing",
+                            "ethernet" : true,
+                            "physical" : "Physische Schnittstelle",
+                            "tp" : "Verdrillte Zweidrahtleitung",
+                            "mii" : "Media Independent Interface",
+                            "10bt" : "10Mbit/s",
+                            "10bt-fd" : "10Mbit/s (Vollduplex)",
+                            "100bt" : "100Mbit/s",
+                            "100bt-fd" : "100Mbit/s (Vollduplex)",
+                            "1000bt-fd" : "1Gbit/s (Vollduplex)",
+                            "autonegotiation" : "Auto-verhandeln"
+                          }
+                        }]
+                    },
+                    {
+                      "id" : "pci:2",
+                      "class" : "bridge",
+                      "claimed" : true,
+                      "handle" : "PCIBUS:0000:23",
+                      "description" : "PCI bridge",
+                      "product" : "400 Series Chipset PCIe Port",
+                      "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+                      "physid" : "2",
+                      "businfo" : "pci@0000:20:02.0",
+                      "version" : "01",
+                      "width" : 32,
+                      "clock" : 33000000,
+                      "configuration" : {
+                        "driver" : "pcieport"
+                      },
+                      "capabilities" : {
+                        "pci" : true,
+                        "msi" : "Message Signalled Interrupts",
+                        "pm" : "Power Management",
+                        "pciexpress" : "PCI Express",
+                        "normal_decode" : true,
+                        "bus_master" : "bus mastering",
+                        "cap_list" : "PCI capabilities listing"
+                      }
+                    },
+                    {
+                      "id" : "pci:3",
+                      "class" : "bridge",
+                      "claimed" : true,
+                      "handle" : "PCIBUS:0000:24",
+                      "description" : "PCI bridge",
+                      "product" : "400 Series Chipset PCIe Port",
+                      "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+                      "physid" : "3",
+                      "businfo" : "pci@0000:20:03.0",
+                      "version" : "01",
+                      "width" : 32,
+                      "clock" : 33000000,
+                      "configuration" : {
+                        "driver" : "pcieport"
+                      },
+                      "capabilities" : {
+                        "pci" : true,
+                        "msi" : "Message Signalled Interrupts",
+                        "pm" : "Power Management",
+                        "pciexpress" : "PCI Express",
+                        "normal_decode" : true,
+                        "bus_master" : "bus mastering",
+                        "cap_list" : "PCI capabilities listing"
+                      }
+                    },
+                    {
+                      "id" : "pci:4",
+                      "class" : "bridge",
+                      "claimed" : true,
+                      "handle" : "PCIBUS:0000:25",
+                      "description" : "PCI bridge",
+                      "product" : "400 Series Chipset PCIe Port",
+                      "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+                      "physid" : "4",
+                      "businfo" : "pci@0000:20:04.0",
+                      "version" : "01",
+                      "width" : 32,
+                      "clock" : 33000000,
+                      "configuration" : {
+                        "driver" : "pcieport"
+                      },
+                      "capabilities" : {
+                        "pci" : true,
+                        "msi" : "Message Signalled Interrupts",
+                        "pm" : "Power Management",
+                        "pciexpress" : "PCI Express",
+                        "normal_decode" : true,
+                        "bus_master" : "bus mastering",
+                        "cap_list" : "PCI capabilities listing"
+                      }
+                    },
+                    {
+                      "id" : "pci:5",
+                      "class" : "bridge",
+                      "claimed" : true,
+                      "handle" : "PCIBUS:0000:26",
+                      "description" : "PCI bridge",
+                      "product" : "400 Series Chipset PCIe Port",
+                      "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+                      "physid" : "8",
+                      "businfo" : "pci@0000:20:08.0",
+                      "version" : "01",
+                      "width" : 32,
+                      "clock" : 33000000,
+                      "configuration" : {
+                        "driver" : "pcieport"
+                      },
+                      "capabilities" : {
+                        "pci" : true,
+                        "msi" : "Message Signalled Interrupts",
+                        "pm" : "Power Management",
+                        "pciexpress" : "PCI Express",
+                        "normal_decode" : true,
+                        "bus_master" : "bus mastering",
+                        "cap_list" : "PCI capabilities listing"
+                      },
+                      "children" : [                        {
+                          "id" : "usb",
+                          "class" : "bus",
+                          "claimed" : true,
+                          "handle" : "PCI:0000:26:00.0",
+                          "description" : "USB controller",
+                          "product" : "ASM1142 USB 3.1 Host Controller",
+                          "vendor" : "ASMedia Technology Inc.",
+                          "physid" : "0",
+                          "businfo" : "pci@0000:26:00.0",
+                          "version" : "00",
+                          "width" : 64,
+                          "clock" : 33000000,
+                          "configuration" : {
+                            "driver" : "xhci_hcd",
+                            "latency" : "0"
+                          },
+                          "capabilities" : {
+                            "msi" : "Message Signalled Interrupts",
+                            "msix" : "MSI-X",
+                            "pm" : "Power Management",
+                            "pciexpress" : "PCI Express",
+                            "xhci" : true,
+                            "bus_master" : "bus mastering",
+                            "cap_list" : "PCI capabilities listing"
+                          },
+                          "children" : [                            {
+                              "id" : "usbhost:0",
+                              "class" : "bus",
+                              "claimed" : true,
+                              "handle" : "USB:3:1",
+                              "product" : "xHCI Host Controller",
+                              "vendor" : "Linux 5.15.0-27-generic xhci-hcd",
+                              "physid" : "0",
+                              "businfo" : "usb@3",
+                              "logicalname" : "usb3",
+                              "version" : "5.15",
+                              "configuration" : {
+                                "driver" : "hub",
+                                "slots" : "2",
+                                "speed" : "480Mbit/s"
+                              },
+                              "capabilities" : {
+                                "usb-2.00" : "USB 2.0"
+                              }
+                            },
+                            {
+                              "id" : "usbhost:1",
+                              "class" : "bus",
+                              "claimed" : true,
+                              "handle" : "USB:4:1",
+                              "product" : "xHCI Host Controller",
+                              "vendor" : "Linux 5.15.0-27-generic xhci-hcd",
+                              "physid" : "1",
+                              "businfo" : "usb@4",
+                              "logicalname" : "usb4",
+                              "version" : "5.15",
+                              "configuration" : {
+                                "driver" : "hub",
+                                "slots" : "2",
+                                "speed" : "10000Mbit/s"
+                              },
+                              "capabilities" : {
+                                "usb-3.10" : true
+                              }
+                            }]
+                        }]
+                    }]
+                }]
+            },
+            {
+              "id" : "pci:2",
+              "class" : "bridge",
+              "claimed" : true,
+              "handle" : "PCIBUS:0000:27",
+              "description" : "PCI bridge",
+              "product" : "Starship/Matisse GPP Bridge",
+              "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+              "physid" : "3.1",
+              "businfo" : "pci@0000:00:03.1",
+              "version" : "00",
+              "width" : 32,
+              "clock" : 33000000,
+              "configuration" : {
+                "driver" : "pcieport"
+              },
+              "capabilities" : {
+                "pci" : true,
+                "pm" : "Power Management",
+                "pciexpress" : "PCI Express",
+                "msi" : "Message Signalled Interrupts",
+                "ht" : "HyperTransport",
+                "normal_decode" : true,
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              },
+              "children" : [                {
+                  "id" : "display",
+                  "class" : "display",
+                  "claimed" : true,
+                  "handle" : "PCI:0000:27:00.0",
+                  "description" : "VGA compatible controller",
+                  "product" : "Caicos [Radeon HD 6450/7450/8450 / R5 230 OEM]",
+                  "vendor" : "Advanced Micro Devices, Inc. [AMD/ATI]",
+                  "physid" : "0",
+                  "businfo" : "pci@0000:27:00.0",
+                  "logicalname" : "/dev/fb0",
+                  "version" : "00",
+                  "width" : 64,
+                  "clock" : 33000000,
+                  "configuration" : {
+                    "depth" : "32",
+                    "driver" : "radeon",
+                    "latency" : "0",
+                    "resolution" : "2048,1152"
+                  },
+                  "capabilities" : {
+                    "pm" : "Power Management",
+                    "pciexpress" : "PCI Express",
+                    "msi" : "Message Signalled Interrupts",
+                    "vga_controller" : true,
+                    "bus_master" : "bus mastering",
+                    "cap_list" : "PCI capabilities listing",
+                    "rom" : "extension ROM",
+                    "fb" : "framebuffer"
+                  }
+                },
+                {
+                  "id" : "multimedia",
+                  "class" : "multimedia",
+                  "claimed" : true,
+                  "handle" : "PCI:0000:27:00.1",
+                  "description" : "Audio device",
+                  "product" : "Caicos HDMI Audio [Radeon HD 6450 / 7450/8450/8490 OEM / R5 230/235/235X OEM]",
+                  "vendor" : "Advanced Micro Devices, Inc. [AMD/ATI]",
+                  "physid" : "0.1",
+                  "businfo" : "pci@0000:27:00.1",
+                  "logicalname" : ["card0", "/dev/snd/controlC0", "/dev/snd/hwC0D0", "/dev/snd/pcmC0D3p"],
+                  "version" : "00",
+                  "width" : 64,
+                  "clock" : 33000000,
+                  "configuration" : {
+                    "driver" : "snd_hda_intel",
+                    "latency" : "0"
+                  },
+                  "capabilities" : {
+                    "pm" : "Power Management",
+                    "pciexpress" : "PCI Express",
+                    "msi" : "Message Signalled Interrupts",
+                    "bus_master" : "bus mastering",
+                    "cap_list" : "PCI capabilities listing"
+                  },
+                  "children" : [                    {
+                      "id" : "input",
+                      "class" : "input",
+                      "claimed" : true,
+                      "product" : "HDA ATI HDMI HDMI/DP,pcm=3",
+                      "physid" : "0",
+                      "logicalname" : ["input6", "/dev/input/event6"]
+                    }]
+                }]
+            },
+            {
+              "id" : "pci:3",
+              "class" : "bridge",
+              "claimed" : true,
+              "handle" : "PCIBUS:0000:28",
+              "description" : "PCI bridge",
+              "product" : "Starship/Matisse Internal PCIe GPP Bridge 0 to bus[E:B]",
+              "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+              "physid" : "7.1",
+              "businfo" : "pci@0000:00:07.1",
+              "version" : "00",
+              "width" : 32,
+              "clock" : 33000000,
+              "configuration" : {
+                "driver" : "pcieport"
+              },
+              "capabilities" : {
+                "pci" : true,
+                "pm" : "Power Management",
+                "pciexpress" : "PCI Express",
+                "msi" : "Message Signalled Interrupts",
+                "ht" : "HyperTransport",
+                "normal_decode" : true,
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              },
+              "children" : [                {
+                  "id" : "generic",
+                  "class" : "generic",
+                  "handle" : "PCI:0000:28:00.0",
+                  "description" : "Non-Essential Instrumentation",
+                  "product" : "Starship/Matisse PCIe Dummy Function",
+                  "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+                  "physid" : "0",
+                  "businfo" : "pci@0000:28:00.0",
+                  "version" : "00",
+                  "width" : 32,
+                  "clock" : 33000000,
+                  "configuration" : {
+                    "latency" : "0"
+                  },
+                  "capabilities" : {
+                    "pm" : "Power Management",
+                    "pciexpress" : "PCI Express",
+                    "cap_list" : "PCI capabilities listing"
+                  }
+                }]
+            },
+            {
+              "id" : "pci:4",
+              "class" : "bridge",
+              "claimed" : true,
+              "handle" : "PCIBUS:0000:29",
+              "description" : "PCI bridge",
+              "product" : "Starship/Matisse Internal PCIe GPP Bridge 0 to bus[E:B]",
+              "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+              "physid" : "8.1",
+              "businfo" : "pci@0000:00:08.1",
+              "version" : "00",
+              "width" : 32,
+              "clock" : 33000000,
+              "configuration" : {
+                "driver" : "pcieport"
+              },
+              "capabilities" : {
+                "pci" : true,
+                "pm" : "Power Management",
+                "pciexpress" : "PCI Express",
+                "msi" : "Message Signalled Interrupts",
+                "ht" : "HyperTransport",
+                "normal_decode" : true,
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              },
+              "children" : [                {
+                  "id" : "generic:0",
+                  "class" : "generic",
+                  "handle" : "PCI:0000:29:00.0",
+                  "description" : "Non-Essential Instrumentation",
+                  "product" : "Starship/Matisse Reserved SPP",
+                  "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+                  "physid" : "0",
+                  "businfo" : "pci@0000:29:00.0",
+                  "version" : "00",
+                  "width" : 32,
+                  "clock" : 33000000,
+                  "configuration" : {
+                    "latency" : "0"
+                  },
+                  "capabilities" : {
+                    "pm" : "Power Management",
+                    "pciexpress" : "PCI Express",
+                    "cap_list" : "PCI capabilities listing"
+                  }
+                },
+                {
+                  "id" : "generic:1",
+                  "class" : "generic",
+                  "claimed" : true,
+                  "handle" : "PCI:0000:29:00.1",
+                  "description" : "Encryption controller",
+                  "product" : "Starship/Matisse Cryptographic Coprocessor PSPCPP",
+                  "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+                  "physid" : "0.1",
+                  "businfo" : "pci@0000:29:00.1",
+                  "version" : "00",
+                  "width" : 32,
+                  "clock" : 33000000,
+                  "configuration" : {
+                    "driver" : "ccp",
+                    "latency" : "0"
+                  },
+                  "capabilities" : {
+                    "pm" : "Power Management",
+                    "pciexpress" : "PCI Express",
+                    "msi" : "Message Signalled Interrupts",
+                    "msix" : "MSI-X",
+                    "bus_master" : "bus mastering",
+                    "cap_list" : "PCI capabilities listing"
+                  }
+                },
+                {
+                  "id" : "usb",
+                  "class" : "bus",
+                  "claimed" : true,
+                  "handle" : "PCI:0000:29:00.3",
+                  "description" : "USB controller",
+                  "product" : "Matisse USB 3.0 Host Controller",
+                  "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+                  "physid" : "0.3",
+                  "businfo" : "pci@0000:29:00.3",
+                  "version" : "00",
+                  "width" : 64,
+                  "clock" : 33000000,
+                  "configuration" : {
+                    "driver" : "xhci_hcd",
+                    "latency" : "0"
+                  },
+                  "capabilities" : {
+                    "pm" : "Power Management",
+                    "pciexpress" : "PCI Express",
+                    "msi" : "Message Signalled Interrupts",
+                    "msix" : "MSI-X",
+                    "xhci" : true,
+                    "bus_master" : "bus mastering",
+                    "cap_list" : "PCI capabilities listing"
+                  },
+                  "children" : [                    {
+                      "id" : "usbhost:0",
+                      "class" : "bus",
+                      "claimed" : true,
+                      "handle" : "USB:5:1",
+                      "product" : "xHCI Host Controller",
+                      "vendor" : "Linux 5.15.0-27-generic xhci-hcd",
+                      "physid" : "0",
+                      "businfo" : "usb@5",
+                      "logicalname" : "usb5",
+                      "version" : "5.15",
+                      "configuration" : {
+                        "driver" : "hub",
+                        "slots" : "4",
+                        "speed" : "480Mbit/s"
+                      },
+                      "capabilities" : {
+                        "usb-2.00" : "USB 2.0"
+                      }
+                    },
+                    {
+                      "id" : "usbhost:1",
+                      "class" : "bus",
+                      "claimed" : true,
+                      "handle" : "USB:6:1",
+                      "product" : "xHCI Host Controller",
+                      "vendor" : "Linux 5.15.0-27-generic xhci-hcd",
+                      "physid" : "1",
+                      "businfo" : "usb@6",
+                      "logicalname" : "usb6",
+                      "version" : "5.15",
+                      "configuration" : {
+                        "driver" : "hub",
+                        "slots" : "4",
+                        "speed" : "10000Mbit/s"
+                      },
+                      "capabilities" : {
+                        "usb-3.10" : true
+                      }
+                    }]
+                },
+                {
+                  "id" : "multimedia",
+                  "class" : "multimedia",
+                  "claimed" : true,
+                  "handle" : "PCI:0000:29:00.4",
+                  "description" : "Audio device",
+                  "product" : "Starship/Matisse HD Audio Controller",
+                  "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+                  "physid" : "0.4",
+                  "businfo" : "pci@0000:29:00.4",
+                  "logicalname" : ["card1", "/dev/snd/controlC1", "/dev/snd/hwC1D0", "/dev/snd/pcmC1D0c", "/dev/snd/pcmC1D0p", "/dev/snd/pcmC1D1p", "/dev/snd/pcmC1D2c"],
+                  "version" : "00",
+                  "width" : 32,
+                  "clock" : 33000000,
+                  "configuration" : {
+                    "driver" : "snd_hda_intel",
+                    "latency" : "0"
+                  },
+                  "capabilities" : {
+                    "pm" : "Power Management",
+                    "pciexpress" : "PCI Express",
+                    "msi" : "Message Signalled Interrupts",
+                    "bus_master" : "bus mastering",
+                    "cap_list" : "PCI capabilities listing"
+                  },
+                  "children" : [                    {
+                      "id" : "input:0",
+                      "class" : "input",
+                      "claimed" : true,
+                      "product" : "HD-Audio Generic Line Out Front",
+                      "physid" : "0",
+                      "logicalname" : ["input10", "/dev/input/event10"]
+                    },
+                    {
+                      "id" : "input:1",
+                      "class" : "input",
+                      "claimed" : true,
+                      "product" : "HD-Audio Generic Line Out Surround",
+                      "physid" : "1",
+                      "logicalname" : ["input11", "/dev/input/event11"]
+                    },
+                    {
+                      "id" : "input:2",
+                      "class" : "input",
+                      "claimed" : true,
+                      "product" : "HD-Audio Generic Line Out CLFE",
+                      "physid" : "2",
+                      "logicalname" : ["input12", "/dev/input/event12"]
+                    },
+                    {
+                      "id" : "input:3",
+                      "class" : "input",
+                      "claimed" : true,
+                      "product" : "HD-Audio Generic Front Headphone",
+                      "physid" : "3",
+                      "logicalname" : ["input13", "/dev/input/event13"]
+                    },
+                    {
+                      "id" : "input:4",
+                      "class" : "input",
+                      "claimed" : true,
+                      "product" : "HD-Audio Generic Front Mic",
+                      "physid" : "4",
+                      "logicalname" : ["input7", "/dev/input/event7"]
+                    },
+                    {
+                      "id" : "input:5",
+                      "class" : "input",
+                      "claimed" : true,
+                      "product" : "HD-Audio Generic Rear Mic",
+                      "physid" : "5",
+                      "logicalname" : ["input8", "/dev/input/event8"]
+                    },
+                    {
+                      "id" : "input:6",
+                      "class" : "input",
+                      "claimed" : true,
+                      "product" : "HD-Audio Generic Line",
+                      "physid" : "6",
+                      "logicalname" : ["input9", "/dev/input/event9"]
+                    }]
+                }]
+            },
+            {
+              "id" : "pci:5",
+              "class" : "bridge",
+              "claimed" : true,
+              "handle" : "PCIBUS:0000:30",
+              "description" : "PCI bridge",
+              "product" : "Starship/Matisse Internal PCIe GPP Bridge 0 to bus[E:B]",
+              "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+              "physid" : "8.2",
+              "businfo" : "pci@0000:00:08.2",
+              "version" : "00",
+              "width" : 32,
+              "clock" : 33000000,
+              "configuration" : {
+                "driver" : "pcieport"
+              },
+              "capabilities" : {
+                "pci" : true,
+                "pm" : "Power Management",
+                "pciexpress" : "PCI Express",
+                "msi" : "Message Signalled Interrupts",
+                "ht" : "HyperTransport",
+                "normal_decode" : true,
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              },
+              "children" : [                {
+                  "id" : "sata",
+                  "class" : "storage",
+                  "claimed" : true,
+                  "handle" : "PCI:0000:30:00.0",
+                  "description" : "SATA controller",
+                  "product" : "FCH SATA Controller [AHCI mode]",
+                  "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+                  "physid" : "0",
+                  "businfo" : "pci@0000:30:00.0",
+                  "version" : "51",
+                  "width" : 32,
+                  "clock" : 33000000,
+                  "configuration" : {
+                    "driver" : "ahci",
+                    "latency" : "0"
+                  },
+                  "capabilities" : {
+                    "sata" : true,
+                    "pm" : "Power Management",
+                    "pciexpress" : "PCI Express",
+                    "msi" : "Message Signalled Interrupts",
+                    "ahci_1.0" : true,
+                    "bus_master" : "bus mastering",
+                    "cap_list" : "PCI capabilities listing"
+                  }
+                }]
+            },
+            {
+              "id" : "pci:6",
+              "class" : "bridge",
+              "claimed" : true,
+              "handle" : "PCIBUS:0000:31",
+              "description" : "PCI bridge",
+              "product" : "Starship/Matisse Internal PCIe GPP Bridge 0 to bus[E:B]",
+              "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+              "physid" : "8.3",
+              "businfo" : "pci@0000:00:08.3",
+              "version" : "00",
+              "width" : 32,
+              "clock" : 33000000,
+              "configuration" : {
+                "driver" : "pcieport"
+              },
+              "capabilities" : {
+                "pci" : true,
+                "pm" : "Power Management",
+                "pciexpress" : "PCI Express",
+                "msi" : "Message Signalled Interrupts",
+                "ht" : "HyperTransport",
+                "normal_decode" : true,
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              },
+              "children" : [                {
+                  "id" : "sata",
+                  "class" : "storage",
+                  "claimed" : true,
+                  "handle" : "PCI:0000:31:00.0",
+                  "description" : "SATA controller",
+                  "product" : "FCH SATA Controller [AHCI mode]",
+                  "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+                  "physid" : "0",
+                  "businfo" : "pci@0000:31:00.0",
+                  "version" : "51",
+                  "width" : 32,
+                  "clock" : 33000000,
+                  "configuration" : {
+                    "driver" : "ahci",
+                    "latency" : "0"
+                  },
+                  "capabilities" : {
+                    "sata" : true,
+                    "pm" : "Power Management",
+                    "pciexpress" : "PCI Express",
+                    "msi" : "Message Signalled Interrupts",
+                    "ahci_1.0" : true,
+                    "bus_master" : "bus mastering",
+                    "cap_list" : "PCI capabilities listing"
+                  }
+                }]
+            },
+            {
+              "id" : "serial",
+              "class" : "bus",
+              "claimed" : true,
+              "handle" : "PCI:0000:00:14.0",
+              "description" : "SMBus",
+              "product" : "FCH SMBus Controller",
+              "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+              "physid" : "14",
+              "businfo" : "pci@0000:00:14.0",
+              "version" : "61",
+              "width" : 32,
+              "clock" : 66000000,
+              "configuration" : {
+                "driver" : "piix4_smbus",
+                "latency" : "0"
+              }
+            },
+            {
+              "id" : "isa",
+              "class" : "bridge",
+              "claimed" : true,
+              "handle" : "PCI:0000:00:14.3",
+              "description" : "ISA bridge",
+              "product" : "FCH LPC Bridge",
+              "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+              "physid" : "14.3",
+              "businfo" : "pci@0000:00:14.3",
+              "version" : "51",
+              "width" : 32,
+              "clock" : 66000000,
+              "configuration" : {
+                "latency" : "0"
+              },
+              "capabilities" : {
+                "isa" : true,
+                "bus_master" : "bus mastering"
+              },
+              "children" : [                {
+                  "id" : "pnp00:00",
+                  "class" : "system",
+                  "claimed" : true,
+                  "product" : "PnP device PNP0c01",
+                  "physid" : "0",
+                  "configuration" : {
+                    "driver" : "system"
+                  },
+                  "capabilities" : {
+                    "pnp" : true
+                  }
+                },
+                {
+                  "id" : "pnp00:01",
+                  "class" : "system",
+                  "claimed" : true,
+                  "product" : "PnP device PNP0c02",
+                  "physid" : "1",
+                  "configuration" : {
+                    "driver" : "system"
+                  },
+                  "capabilities" : {
+                    "pnp" : true
+                  }
+                },
+                {
+                  "id" : "pnp00:02",
+                  "class" : "system",
+                  "claimed" : true,
+                  "product" : "PnP device PNP0b00",
+                  "physid" : "2",
+                  "configuration" : {
+                    "driver" : "rtc_cmos"
+                  },
+                  "capabilities" : {
+                    "pnp" : true
+                  }
+                },
+                {
+                  "id" : "pnp00:03",
+                  "class" : "system",
+                  "claimed" : true,
+                  "product" : "PnP device PNP0c02",
+                  "physid" : "3",
+                  "configuration" : {
+                    "driver" : "system"
+                  },
+                  "capabilities" : {
+                    "pnp" : true
+                  }
+                },
+                {
+                  "id" : "pnp00:04",
+                  "class" : "printer",
+                  "claimed" : true,
+                  "product" : "PnP device PNP0400",
+                  "physid" : "4",
+                  "configuration" : {
+                    "driver" : "parport_pc"
+                  },
+                  "capabilities" : {
+                    "pnp" : true
+                  }
+                },
+                {
+                  "id" : "pnp00:05",
+                  "class" : "communication",
+                  "claimed" : true,
+                  "product" : "PnP device PNP0501",
+                  "physid" : "5",
+                  "configuration" : {
+                    "driver" : "serial"
+                  },
+                  "capabilities" : {
+                    "pnp" : true
+                  }
+                },
+                {
+                  "id" : "pnp00:06",
+                  "class" : "system",
+                  "claimed" : true,
+                  "product" : "PnP device PNP0c02",
+                  "physid" : "6",
+                  "configuration" : {
+                    "driver" : "system"
+                  },
+                  "capabilities" : {
+                    "pnp" : true
+                  }
+                }]
+            }]
+        },
+        {
+          "id" : "pci:1",
+          "class" : "bridge",
+          "claimed" : true,
+          "handle" : "PCIBUS:0000:00",
+          "description" : "Host bridge",
+          "product" : "Starship/Matisse PCIe Dummy Host Bridge",
+          "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+          "physid" : "101",
+          "businfo" : "pci@0000:00:01.0",
+          "version" : "00",
+          "width" : 32,
+          "clock" : 33000000
+        },
+        {
+          "id" : "pci:2",
+          "class" : "bridge",
+          "claimed" : true,
+          "handle" : "PCIBUS:0000:00",
+          "description" : "Host bridge",
+          "product" : "Starship/Matisse PCIe Dummy Host Bridge",
+          "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+          "physid" : "102",
+          "businfo" : "pci@0000:00:02.0",
+          "version" : "00",
+          "width" : 32,
+          "clock" : 33000000
+        },
+        {
+          "id" : "pci:3",
+          "class" : "bridge",
+          "claimed" : true,
+          "handle" : "PCIBUS:0000:00",
+          "description" : "Host bridge",
+          "product" : "Starship/Matisse PCIe Dummy Host Bridge",
+          "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+          "physid" : "103",
+          "businfo" : "pci@0000:00:03.0",
+          "version" : "00",
+          "width" : 32,
+          "clock" : 33000000
+        },
+        {
+          "id" : "pci:4",
+          "class" : "bridge",
+          "claimed" : true,
+          "handle" : "PCIBUS:0000:00",
+          "description" : "Host bridge",
+          "product" : "Starship/Matisse PCIe Dummy Host Bridge",
+          "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+          "physid" : "104",
+          "businfo" : "pci@0000:00:04.0",
+          "version" : "00",
+          "width" : 32,
+          "clock" : 33000000
+        },
+        {
+          "id" : "pci:5",
+          "class" : "bridge",
+          "claimed" : true,
+          "handle" : "PCIBUS:0000:00",
+          "description" : "Host bridge",
+          "product" : "Starship/Matisse PCIe Dummy Host Bridge",
+          "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+          "physid" : "105",
+          "businfo" : "pci@0000:00:05.0",
+          "version" : "00",
+          "width" : 32,
+          "clock" : 33000000
+        },
+        {
+          "id" : "pci:6",
+          "class" : "bridge",
+          "claimed" : true,
+          "handle" : "PCIBUS:0000:00",
+          "description" : "Host bridge",
+          "product" : "Starship/Matisse PCIe Dummy Host Bridge",
+          "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+          "physid" : "106",
+          "businfo" : "pci@0000:00:07.0",
+          "version" : "00",
+          "width" : 32,
+          "clock" : 33000000
+        },
+        {
+          "id" : "pci:7",
+          "class" : "bridge",
+          "claimed" : true,
+          "handle" : "PCIBUS:0000:00",
+          "description" : "Host bridge",
+          "product" : "Starship/Matisse PCIe Dummy Host Bridge",
+          "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+          "physid" : "107",
+          "businfo" : "pci@0000:00:08.0",
+          "version" : "00",
+          "width" : 32,
+          "clock" : 33000000
+        },
+        {
+          "id" : "pci:8",
+          "class" : "bridge",
+          "claimed" : true,
+          "handle" : "PCIBUS:0000:00",
+          "description" : "Host bridge",
+          "product" : "Matisse/Vermeer Data Fabric: Device 18h; Function 0",
+          "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+          "physid" : "108",
+          "businfo" : "pci@0000:00:18.0",
+          "version" : "00",
+          "width" : 32,
+          "clock" : 33000000
+        },
+        {
+          "id" : "pci:9",
+          "class" : "bridge",
+          "claimed" : true,
+          "handle" : "PCIBUS:0000:00",
+          "description" : "Host bridge",
+          "product" : "Matisse/Vermeer Data Fabric: Device 18h; Function 1",
+          "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+          "physid" : "109",
+          "businfo" : "pci@0000:00:18.1",
+          "version" : "00",
+          "width" : 32,
+          "clock" : 33000000
+        },
+        {
+          "id" : "pci:10",
+          "class" : "bridge",
+          "claimed" : true,
+          "handle" : "PCIBUS:0000:00",
+          "description" : "Host bridge",
+          "product" : "Matisse/Vermeer Data Fabric: Device 18h; Function 2",
+          "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+          "physid" : "10a",
+          "businfo" : "pci@0000:00:18.2",
+          "version" : "00",
+          "width" : 32,
+          "clock" : 33000000
+        },
+        {
+          "id" : "pci:11",
+          "class" : "bridge",
+          "claimed" : true,
+          "handle" : "PCIBUS:0000:00",
+          "description" : "Host bridge",
+          "product" : "Matisse/Vermeer Data Fabric: Device 18h; Function 3",
+          "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+          "physid" : "10b",
+          "businfo" : "pci@0000:00:18.3",
+          "version" : "00",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "driver" : "k10temp"
+          }
+        },
+        {
+          "id" : "pci:12",
+          "class" : "bridge",
+          "claimed" : true,
+          "handle" : "PCIBUS:0000:00",
+          "description" : "Host bridge",
+          "product" : "Matisse/Vermeer Data Fabric: Device 18h; Function 4",
+          "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+          "physid" : "10c",
+          "businfo" : "pci@0000:00:18.4",
+          "version" : "00",
+          "width" : 32,
+          "clock" : 33000000
+        },
+        {
+          "id" : "pci:13",
+          "class" : "bridge",
+          "claimed" : true,
+          "handle" : "PCIBUS:0000:00",
+          "description" : "Host bridge",
+          "product" : "Matisse/Vermeer Data Fabric: Device 18h; Function 5",
+          "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+          "physid" : "10d",
+          "businfo" : "pci@0000:00:18.5",
+          "version" : "00",
+          "width" : 32,
+          "clock" : 33000000
+        },
+        {
+          "id" : "pci:14",
+          "class" : "bridge",
+          "claimed" : true,
+          "handle" : "PCIBUS:0000:00",
+          "description" : "Host bridge",
+          "product" : "Matisse/Vermeer Data Fabric: Device 18h; Function 6",
+          "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+          "physid" : "10e",
+          "businfo" : "pci@0000:00:18.6",
+          "version" : "00",
+          "width" : 32,
+          "clock" : 33000000
+        },
+        {
+          "id" : "pci:15",
+          "class" : "bridge",
+          "claimed" : true,
+          "handle" : "PCIBUS:0000:00",
+          "description" : "Host bridge",
+          "product" : "Matisse/Vermeer Data Fabric: Device 18h; Function 7",
+          "vendor" : "Advanced Micro Devices, Inc. [AMD]",
+          "physid" : "10f",
+          "businfo" : "pci@0000:00:18.7",
+          "version" : "00",
+          "width" : 32,
+          "clock" : 33000000
+        }]
+    },
+    {
+      "id" : "input:0",
+      "class" : "input",
+      "claimed" : true,
+      "product" : "Power Button",
+      "physid" : "1",
+      "logicalname" : ["input0", "/dev/input/event0"],
+      "capabilities" : {
+        "platform" : true
+      }
+    },
+    {
+      "id" : "input:1",
+      "class" : "input",
+      "claimed" : true,
+      "product" : "Power Button",
+      "physid" : "2",
+      "logicalname" : ["input1", "/dev/input/event1"],
+      "capabilities" : {
+        "platform" : true
+      }
+    },
+    {
+      "id" : "input:2",
+      "class" : "input",
+      "claimed" : true,
+      "product" : "Microsoft Microsoft® Digital Media Keyboard 3000",
+      "physid" : "3",
+      "logicalname" : ["input2", "/dev/input/event2", "input2::capslock", "input2::misc", "input2::numlock", "input2::scrolllock"],
+      "capabilities" : {
+        "usb" : "USB"
+      }
+    },
+    {
+      "id" : "input:3",
+      "class" : "input",
+      "claimed" : true,
+      "product" : "Logitech USB Receiver",
+      "physid" : "4",
+      "logicalname" : ["input3", "/dev/input/event3", "input3::capslock", "input3::compose", "input3::kana", "input3::misc", "input3::numlock", "input3::scrolllock"],
+      "capabilities" : {
+        "usb" : "USB"
+      }
+    },
+    {
+      "id" : "input:4",
+      "class" : "input",
+      "claimed" : true,
+      "product" : "Microsoft Microsoft® Digital Media Keyboard 3000",
+      "physid" : "5",
+      "logicalname" : ["input4", "/dev/input/event4"],
+      "capabilities" : {
+        "usb" : "USB"
+      }
+    },
+    {
+      "id" : "input:5",
+      "class" : "input",
+      "claimed" : true,
+      "product" : "Logitech USB Receiver",
+      "physid" : "6",
+      "logicalname" : ["input5", "/dev/input/event5", "input5::misc", "/dev/input/js0", "/dev/input/mouse0"],
+      "capabilities" : {
+        "usb" : "USB"
+      }
+    }]
+}
