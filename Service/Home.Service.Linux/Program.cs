@@ -1,5 +1,6 @@
 ﻿using Home.Data;
 using Home.Data.Com;
+using Home.Data.Helper;
 using Home.Model;
 using Home.Service.Windows;
 using Microsoft.AspNetCore.Hosting;
@@ -414,7 +415,7 @@ namespace Home.Service.Linux
 
             // If nothing was found return "/"- as a diskdrive!
             if (device.DiskDrives.Count == 0)
-                device.DiskDrives.Add(new DiskDrive() { VolumeName = "/", DriveName = "/", DriveID = "/" });
+                device.DiskDrives.Add(new DiskDrive() { VolumeName = "/", DriveName = "/", DriveID = "linux_default_storage", PhysicalName = "linux_default_storage" });
 
             // Get df / try to fill missing values
             string result = Helper.ExecuteSystemCommand("df", "-H");
@@ -445,34 +446,13 @@ namespace Home.Service.Linux
                         // linesValue[4] := Verw% (82%)
                         // linesValue[5] := Eingehängt auf (/media/server/Server)
 
-                        drive.TotalSpace = ParseDFEntry(lineValues[1]);
-                        drive.FreeSpace = ParseDFEntry(lineValues[3]);
+                        drive.TotalSpace = GeneralHelper.ParseDFEntry(lineValues[1]);
+                        drive.FreeSpace = GeneralHelper.ParseDFEntry(lineValues[3]);
                     }
                 }
             }
 
             return true;
-        }
-
-        public static ulong ParseDFEntry(string entry)
-        {
-            // entry might be 3,3T, 449G, 500M or 123k
-            string value = entry.Substring(0, entry.Length - 1);
-            int factor = 0;
-
-            if (entry.EndsWith("k"))
-                factor = 1;
-            else if (entry.EndsWith("M"))
-                factor = 2;
-            else if (entry.EndsWith("G"))
-                factor = 3;
-            else if (entry.EndsWith("T"))
-                factor = 4;
-
-            if (double.TryParse(value, out double entryValue))
-                return (ulong)Math.Round(entryValue * Math.Pow(1024, factor));
-
-            return 0;
         }
 
         public static void ProcessJToken(JToken child, Device device)

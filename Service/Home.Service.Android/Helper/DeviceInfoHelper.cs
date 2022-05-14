@@ -1,12 +1,15 @@
 ﻿using Android.Content;
 using Android.Net;
 using Android.OS;
+using Home.Data.Helper;
 using Home.Model;
 using Java.Lang;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using static Android.Provider.Settings;
+using Exception = Java.Lang.Exception;
 
 namespace Home.Service.Android.Helper
 {
@@ -17,26 +20,59 @@ namespace Home.Service.Android.Helper
     {
         private static readonly DateTime dateTimeStarted = DateTime.Now;
 
-        public static string ReadCPUName()
+        private static string ExecuteProcess(string[] args)
         {
-            ProcessBuilder cmd;
-            string result = "";
+            ProcessBuilder cmd = new ProcessBuilder(args);
+            string result = string.Empty;
 
             try
             {
-                string[] args = { "/system/bin/cat", "/proc/cpuinfo" };
-                cmd = new ProcessBuilder(args);
-                Java.Lang.Process process = cmd.Start();
-                using (var inputStream = process.InputStream)
+                var proc = cmd.Start();
+                using (var inputStream = proc.InputStream)
+                using (StreamReader sr = new StreamReader(inputStream))
                 {
-                    byte[] buffer = new byte[4096];
-                    int bytesRead = 0;
-                    while ((bytesRead = inputStream.Read(buffer, bytesRead, buffer.Length)) != -1)
-                        result += System.Text.Encoding.Default.GetString(buffer);
+                    result = sr.ReadToEnd();
                 }
             }
-            catch
-            { }
+            catch (Exception)
+            {
+           
+            }
+
+            return result;
+        }
+
+        public static void ReadDF(DiskDrive drive, string volumeName = "/storage/emulated")
+        {
+            string dfData = ExecuteProcess(new[] { "df", "-h" });
+
+            if (string.IsNullOrEmpty(dfData) || drive == null)
+                return;
+
+            string[] lines = dfData.Split(new string[] { System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+
+
+            if (lines.Any(l => l.StartsWith(volumeName) || l.EndsWith(volumeName)))
+            {
+                string line = lines.Where(l => l.StartsWith(volumeName) || l.EndsWith(volumeName)).FirstOrDefault();
+
+                string[] lineValues = line.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+
+                // lineValues[0] := Dateisysstem (/dev/sda1)
+                // lineValues[1] := Größe (4,0T)
+                // lineValues[2] := Benutzt (3,3T)
+                // lineValues[3] := Verfügbar (449G)
+                // linesValue[4] := Verw% (82%)
+                // linesValue[5] := Eingehängt auf (/media/server/Server)
+
+                drive.TotalSpace = GeneralHelper.ParseDFEntry(lineValues[1]);
+                drive.FreeSpace = GeneralHelper.ParseDFEntry(lineValues[3]);
+            }
+        }
+
+        public static string ReadCPUName()
+        {
+            string result = ExecuteProcess(new[] { "/system/bin/cat", "/proc/cpuinfo" });
 
             if (string.IsNullOrEmpty(result))
                 return string.Empty;
@@ -60,25 +96,7 @@ namespace Home.Service.Android.Helper
 
         public static void ReadAndAssignMemoryInfo(Device device)
         {
-            Java.Lang.ProcessBuilder cmd;
-            string result = "";
-
-            try
-            {
-                string[] args = { "/system/bin/cat", "/proc/meminfo" };
-                cmd = new ProcessBuilder(args);
-
-                Java.Lang.Process process = cmd.Start();
-                using (var inputStream = process.InputStream)
-                {
-                    byte[] buffer = new byte[4096];
-                    int bytesRead = 0;
-                    while ((bytesRead = inputStream.Read(buffer, bytesRead, buffer.Length)) != -1)
-                        result += System.Text.Encoding.Default.GetString(buffer);
-                }
-            }
-            catch
-            { }
+            string result = ExecuteProcess(new[] { "/system/bin/cat", "/proc/meminfo" }); 
 
             if (string.IsNullOrEmpty(result))
                 return;
@@ -118,7 +136,7 @@ namespace Home.Service.Android.Helper
                 long lValue = long.Parse(entries[0]);
 
                 int unit = 0;
-                string unitValue = entries[1].Trim();
+                string unitValue = entries[1].Trim().ToLower();
                 if (unitValue == "b")
                     unit = 1;
                 else if (unitValue == "kb")
@@ -140,7 +158,6 @@ namespace Home.Service.Android.Helper
 
             return -1;
         }
-
 
         public static string GetDeviceName(ContentResolver cr)
         {
@@ -180,7 +197,7 @@ namespace Home.Service.Android.Helper
 
         public static void RefreshDevice(this Device currentDevice, ContentResolver cr, Context context)
         {
-            currentDevice.ServiceClientVersion = "vAndroid 0.0.4";
+            currentDevice.ServiceClientVersion = "vAndroid 0.0.5";
 #if NOGL
             currentDevice.ServiceClientVersion += " - NOGL";
 #endif
@@ -206,54 +223,9 @@ namespace Home.Service.Android.Helper
             currentDevice.IP = DeviceInfoHelper.GetIpAddress(context);
             currentDevice.Environment.RunningTime = DateTime.Now.Subtract(dateTimeStarted);
 
-            currentDevice.DiskDrives = new List<DiskDrive>() { new DiskDrive() { VolumeName = "/", DriveName = "/", DriveID = "/" } };
+            var dd = new DiskDrive() { VolumeName = "/", DriveName = "/", DriveID = "android_default_storage", PhysicalName = "android_default_storage" };
+            ReadDF(dd);
+            currentDevice.DiskDrives = new List<DiskDrive>() { dd };
         }
     }
 }
-
-/*
- * 
- *  string arch = Java.Lang.JavaSystem.GetProperty("os.arch");
-
-            tv.Text = "***** DEVICE Information *****" + "\n";
-            tv.Append("Model: " + Build.Model + "\n");
-            tv.Append("Board: " + Build.Board + "\n");
-            tv.Append("Brand: " + Build.Brand + "\n");
-            tv.Append("Manufacturer: " + Build.Manufacturer + "\n");
-            tv.Append("Device: " + Build.Device + "\n");
-            tv.Append("Product: " + Build.Product + "\n");
-            tv.Append("TAGS: " + Build.Tags + "\n");
-            tv.Append("Serial: " + Build.Serial + "\n");
-
-            tv.Append("\n" + "***** SOC *****" + "\n");
-            tv.Append("Hardware: " + Build.Hardware + "\n");
-            tv.Append("Number of cores: " +  DeviceInfoHelper. GetNumberOfCores() + "\n");
-            tv.Append("Architecture: " + arch + "\n");
-
-            tv.Append("\n" + "***** CPU Info *****" + "\n");
-            tv.Append(DeviceInfoHelper.ReadCPUName() + "\n");
-
-            tv.Append("\n" + "***** Memory Info *****" + "\n");
-            tv.Append(DeviceInfoHelper.ReadMemoryInfo() + "\n");
-
-            tv.Append("\n" + "***** OS Information *****" + "\n");
-            tv.Append("Build release: " + Build.VERSION.Release + "\n");
-            tv.Append("Incremental release: " + Build.VERSION.Incremental + "\n");
-            tv.Append("Base OS: " + Build.VERSION.BaseOs + "\n");
-            tv.Append("CODE Name: " + Build.VERSION.Codename + "\n");
-            tv.Append("Security patch: " + Build.VERSION.SecurityPatch + "\n");
-            tv.Append("Preview SDK: " + Build.VERSION.PreviewSdkInt + "\n");
-            tv.Append("SDK/API version: " + Build.VERSION.SdkInt + "\n");
-            tv.Append("Display build: " + Build.Display + "\n");
-            tv.Append("Finger print: " + Build.Fingerprint + "\n");
-            tv.Append("Build ID: " + Build.Id + "\n");
-
-            SimpleDateFormat sdf = new SimpleDateFormat("MMMM d, yyyy 'at' h:mm a");
-            string date = sdf.Format(Build.Time);
-
-            tv.Append("Build Time: " + date + "\n");
-            tv.Append("Build Type: " + Build.Type + "\n");
-            tv.Append("Build User: " + Build.User + "\n");
-            tv.Append("Bootloader: " + Build.Bootloader + "\n");
-            tv.Append("Kernel version: " + Java.Lang.JavaSystem.GetProperty("os.version") + "\n");
- * */
