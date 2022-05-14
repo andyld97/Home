@@ -111,7 +111,7 @@ namespace Home.Data.Helper
         /// </summary>
         /// <param name="bytes"></param>
         /// <returns></returns>
-        public static ByteUnit FromB(long bytes)
+        public static ByteUnit FromB(ulong bytes)
         {
             return new ByteUnit(bytes, Unit.B);
         }
@@ -121,7 +121,7 @@ namespace Home.Data.Helper
         /// </summary>
         /// <param name="bytes"></param>
         /// <returns></returns>
-        public static ByteUnit FromKB(long bytes)
+        public static ByteUnit FromKB(ulong bytes)
         {
             return new ByteUnit(bytes, Unit.KB);
         }
@@ -131,7 +131,7 @@ namespace Home.Data.Helper
         /// </summary>
         /// <param name="bytes"></param>
         /// <returns></returns>
-        public static ByteUnit FromMB(long bytes)
+        public static ByteUnit FromMB(ulong bytes)
         {
             return new ByteUnit(bytes, Unit.MB);
         }
@@ -141,7 +141,7 @@ namespace Home.Data.Helper
         /// </summary>
         /// <param name="bytes"></param>
         /// <returns></returns>
-        public static ByteUnit FromGB(long bytes)
+        public static ByteUnit FromGB(ulong bytes)
         {
             return new ByteUnit(bytes, Unit.GB);
         }
@@ -151,7 +151,7 @@ namespace Home.Data.Helper
         /// </summary>
         /// <param name="bytes"></param>
         /// <returns></returns>
-        public static ByteUnit FromTB(long bytes)
+        public static ByteUnit FromTB(ulong bytes)
         {
             return new ByteUnit(bytes, Unit.TB);
         }

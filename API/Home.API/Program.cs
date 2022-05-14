@@ -58,6 +58,24 @@ namespace Home.API
             CreateHostBuilder(args).Build().Run();
         }
 
+        /// <summary>
+        /// Notifies all active client queues that there is a new event for the device
+        /// </summary>
+        /// <param name="eventKind"></param>
+        /// <param name="device"></param>
+        private static void NotifyClientQueues(EventQueueItem.EventKind eventKind, Device device)
+        {
+            lock (EventQueues)
+            {
+                foreach (var queue in EventQueues)
+                {
+                    var now = DateTime.Now;
+                    queue.LastEvent = now;
+                    queue.Events.Enqueue(new EventQueueItem() { DeviceID = device.ID, EventDescription = eventKind, EventOccured = now, EventData = new EventData(device) });
+                }
+            }
+        }
+
         private static async void HealthCheckTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             lock (_lock)
@@ -103,21 +121,13 @@ namespace Home.API
             {
                 foreach (var device in Devices.Where(p => p.Status != Device.DeviceStatus.Offline && p.LastSeen.AddMinutes(3) < DateTime.Now))
                 {
-                    lock (EventQueues)
-                    {
-                        device.Status = Device.DeviceStatus.Offline;
+                    device.Status = Device.DeviceStatus.Offline;
 
-                        // If a device turns offline, usually the user wants to end the live state if the device is shutdown for example
-                        device.IsLive = false;
-                        device.LogEntries.Add(new LogEntry(DateTime.Now, $"No activity detected ... Device \"{device.Name}\" was flagged as offline!", LogEntry.LogLevel.Warning, (device.Type == Device.DeviceType.SingleBoardDevice || device.Type == Device.DeviceType.Server)));
+                    // If a device turns offline, usually the user wants to end the live state if the device is shutdown for example
+                    device.IsLive = false;
+                    device.LogEntries.Add(new LogEntry(DateTime.Now, $"No activity detected ... Device \"{device.Name}\" was flagged as offline!", LogEntry.LogLevel.Warning, (device.Type == Device.DeviceType.SingleBoardDevice || device.Type == Device.DeviceType.Server)));
 
-                        foreach (var queue in EventQueues)
-                        {
-                            var now = DateTime.Now;
-                            queue.LastEvent = now;
-                            queue.Events.Enqueue(new EventQueueItem() { DeviceID = device.ID, EventDescription = EventQueueItem.EventKind.DeviceChangedState, EventOccured = now, EventData = new EventData(device) });
-                        }
-                    }                    
+                    NotifyClientQueues(EventQueueItem.EventKind.DeviceChangedState, device);
                 }
 
                 // Aquiring a new screenshot for all online devices (except android devices)
@@ -138,6 +148,7 @@ namespace Home.API
                     {
                         device.IsScreenshotRequired = true;
                         device.LogEntries.Add(new LogEntry(DateTime.Now, "Last screenshot was older than 12h. Aquiring a new screenshot ...", LogEntry.LogLevel.Information));
+                        NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
                     }
                 }
 
@@ -170,6 +181,32 @@ namespace Home.API
                             _logger.LogError($"Failed to remove screenshot {ex.Message}");
                         }
                     }
+                }
+
+                // Check for obsolete storage warnings
+                foreach (var device in Devices)
+                {
+                    if (device.StorageWarnings.Count == 0)
+                        continue;
+
+                    List<StorageWarning> toRemove = new List<StorageWarning>();
+                    foreach (var warning in device.StorageWarnings)
+                    {
+                        var associatedDisk = device.DiskDrives.FirstOrDefault(d => d.UniqueID == warning.StorageID);
+                        if (associatedDisk == null)
+                            continue;
+
+                        if (warning.CanBeRemoved(associatedDisk))
+                        {
+                            // Add log entry
+                            toRemove.Add(warning);
+                            device.LogEntries.Add(new LogEntry($"[Storage Warning]: Removed for DISK \"{associatedDisk}\"", LogEntry.LogLevel.Information, true));
+                            NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
+                        }
+                    }
+
+                    foreach (var warning in toRemove)
+                        device.StorageWarnings.Remove(warning);
                 }
             }
 
@@ -206,6 +243,7 @@ namespace Home.API
                                 device.LogEntries.RemoveAt(0);
 
                             device.LogEntries.Insert(0, new LogEntry("Truncated log file of this device!", LogEntry.LogLevel.Information));
+                            NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
                         }
                     }
 

@@ -205,6 +205,8 @@ namespace Home.Service.Android.Helper
             currentDevice.Name = DeviceInfoHelper.GetDeviceName(cr);
             currentDevice.IP = DeviceInfoHelper.GetIpAddress(context);
             currentDevice.Environment.RunningTime = DateTime.Now.Subtract(dateTimeStarted);
+
+            currentDevice.DiskDrives = new List<DiskDrive>() { new DiskDrive() { VolumeName = "/", DriveName = "/", DriveID = "/" } };
         }
     }
 }

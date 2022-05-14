@@ -11,9 +11,11 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 #if !LEGACY
 using System.Text.Json.Serialization;
+using Home.Data.Helper;
 #endif
 using System.Xml.Serialization;
 using JsonIgnoreAttribute = Newtonsoft.Json.JsonIgnoreAttribute;
+using System.Text;
 
 namespace Home.Model
 {
@@ -271,6 +273,10 @@ namespace Home.Model
         public Queue<Command> Commands { get; set; } = new Queue<Command>();
 
         #endregion
+
+
+        [JsonPropertyName("storage_warnings")]
+        public List<StorageWarning> StorageWarnings { get; set; } = new List<StorageWarning>();
 #endif
 
         public enum DeviceStatus
@@ -290,7 +296,8 @@ namespace Home.Model
             Smartphone,
             SmartTV,
             SetTopBox,
-            Tablet
+            Tablet,
+            VirtualMachine
         }
 
         public enum OSType
@@ -440,7 +447,9 @@ namespace Home.Model
         public void Update(Device other, DateTime lastSeen, DeviceStatus state, bool isLocal = false)
         {
             Name = other.Name;
-            IP = other.IP;
+            // Only update if IP isn't empty
+            if (!string.IsNullOrEmpty(other.IP))
+                IP = other.IP;
             LastSeen = lastSeen;
             Type = other.Type;
             Status = state;
@@ -450,6 +459,10 @@ namespace Home.Model
             Environment = other.Environment;
             DiskDrives = other.DiskDrives;
             ServiceClientVersion = other.ServiceClientVersion;
+
+            // Don't update StorageWarnings because it will only be set via api and not via clients - except it is used locally in Home GUI App
+            if (isLocal)
+                StorageWarnings = other.StorageWarnings;
 
             if (IP.EndsWith("/24"))
                 IP = IP.Replace("/24", string.Empty);
@@ -638,6 +651,8 @@ namespace Home.Model
 
     public class DiskDrive
     {
+        private string cachedId = string.Empty;
+
         [JsonProperty("physical_name")]
 #if !LEGACY
         [JsonPropertyName("physical_name")]
@@ -746,6 +761,81 @@ namespace Home.Model
 #endif
         public string VolumeSerial { get; set; }
 
+#if !LEGACY
+        /// <summary>
+        /// A unique id for this disk (hash) calculated by all "non-changing" properties
+        /// </summary>
+        [JsonIgnore()]
+        public string UniqueID
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(cachedId))
+                    return cachedId;
+
+                // Useful properties for a unique id:
+                /*  PhysicalName,
+                    DiskName,
+                    DiskModel,
+                    DiskInterface,
+                    MediaType,
+                    MediaSignature,
+                    DriveName,
+                    DriveID,
+                    DriveType,
+                    FileSystem,
+                    TotalSpace,
+                    DriveMediaType,
+                    VolumeName,
+                    VolumeSerial
+                */
+                StringBuilder builder = new StringBuilder();
+                builder.Append(PhysicalName);
+                builder.Append(DiskName);
+                builder.Append(DiskModel);
+                builder.Append(DiskInterface);
+                builder.Append(MediaType);
+                builder.Append(MediaSignature);
+                builder.Append(DriveName);
+                builder.Append(DriveID);
+                builder.Append(DriveType);
+                builder.Append(FileSystem);
+                builder.Append(TotalSpace);
+                builder.Append(DriveMediaType);
+                builder.Append(VolumeName);
+                builder.Append(VolumeSerial);
+
+                cachedId = builder.ToString().BuildSHA1Hash();
+                return cachedId;
+            }
+        }
+#endif
+
+
+#if !LEGACY
+        /// <summary>
+        /// Determines if the disk is full
+        /// </summary>
+        /// <param name="percentageFree"></param>
+        /// <returns>true if the disk is full according to percentageFree</returns>
+        public bool? IsFull(double percentageFree = 5)
+        {
+            if (TotalSpace == 0)
+                return null;
+
+            if (FreeSpace == 0)
+                return false;
+
+            if (percentageFree == 0.0)
+                return FreeSpace == 0.0;
+
+            var total = ByteUnit.FromB(TotalSpace);
+            var free = ByteUnit.FromB(FreeSpace);
+
+            return free.Length <= (total.Length * (percentageFree / 100.0));
+        }
+#endif
+
         public override string ToString()
         {
             return $"{PhysicalName}: {VolumeName}";
@@ -821,4 +911,62 @@ namespace Home.Model
             }
         }
     }
+
+
+#if !LEGACY
+    public class StorageWarning
+    {
+        /// <summary>
+        /// The id of the related DiskDrive
+        /// </summary>
+        [JsonPropertyName("storage_id")]
+        public string StorageID { get; set; }
+
+        /// <summary>
+        /// The timestamp when this warning firstly occoured
+        /// </summary>
+        [JsonPropertyName("warning_occoured")]
+        public DateTime WarningOccoured { get; set; }
+
+        [JsonPropertyName("text")]
+        public string Text { get; set; }
+
+        public LogEntry ConvertToLogEntry()
+        {
+            string message = $"[Storage Warning]: \"{Text}\"";
+            return new LogEntry(WarningOccoured, message, LogEntry.LogLevel.Warning, true);
+        }
+
+        /// <summary>
+        /// Creates a storage warning with the given text at exactly THIS moment (timestamp)
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static StorageWarning Create(string text)
+        {
+            StorageWarning storageWarning = new StorageWarning();
+            storageWarning.Text = text;
+            storageWarning.WarningOccoured = DateTime.Now;
+            return storageWarning;
+        }
+
+        /// <summary>
+        /// Checks if the storage warning is obsolete
+        /// </summary>
+        /// <param name="dd"></param>
+        /// <returns></returns>
+        public bool CanBeRemoved(DiskDrive dd)
+        {
+            if (dd == null)
+                throw new ArgumentNullException("dd");
+
+            if (dd.UniqueID != StorageID)
+                throw new ArgumentException("DiskDrive with the wrong id specified!");
+
+            var result = dd.IsFull();
+            return (result == null || result.HasValue && !result.Value);
+        }
+    }
+
+#endif
 }

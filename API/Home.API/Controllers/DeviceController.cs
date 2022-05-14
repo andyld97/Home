@@ -1,6 +1,7 @@
 ﻿using Home.Data;
 using Home.Data.Com;
 using Home.Data.Events;
+using Home.Data.Helper;
 using Home.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -81,44 +82,44 @@ namespace Home.API.Controllers
             {
                 if (Program.Devices.Any(d => d.ID == refreshedDevice.ID))
                 {
-                    var oldDevice = Program.Devices.Where(p => p.ID == refreshedDevice.ID).FirstOrDefault();
-                    if (oldDevice != null)
+                    var currentDevice = Program.Devices.Where(p => p.ID == refreshedDevice.ID).FirstOrDefault();
+                    if (currentDevice != null)
                     {
                         // Check if device was previously offline
-                        if (oldDevice.Status == Device.DeviceStatus.Offline)
+                        if (currentDevice.Status == Device.DeviceStatus.Offline)
                         {
                             // Check for clearing usage stats (if the device was offline for more than one hour)
-                            if (oldDevice.LastSeen.AddHours(1) < DateTime.Now)
-                                oldDevice.Usage.Clear();
+                            if (currentDevice.LastSeen.AddHours(1) < DateTime.Now)
+                                currentDevice.Usage.Clear();
 
-                            oldDevice.LogEntries.Add(new LogEntry(DateTime.Now, $"Device \"{oldDevice.Name}\" has recovered and is now online again!", LogEntry.LogLevel.Information, (refreshedDevice.Type == Device.DeviceType.SingleBoardDevice || refreshedDevice.Type == Device.DeviceType.Server)));
-                            oldDevice.IsScreenshotRequired = true;
+                            currentDevice.LogEntries.Add(new LogEntry(DateTime.Now, $"Device \"{currentDevice.Name}\" has recovered and is now online again!", LogEntry.LogLevel.Information, (refreshedDevice.Type == Device.DeviceType.SingleBoardDevice || refreshedDevice.Type == Device.DeviceType.Server)));
+                            currentDevice.IsScreenshotRequired = true;
                         }
 
                         // Check if a newer client version is used
-                        if (oldDevice.ServiceClientVersion != refreshedDevice.ServiceClientVersion && !string.IsNullOrEmpty(oldDevice.ServiceClientVersion))
-                            oldDevice.LogEntries.Add(new LogEntry(DateTime.Now, $"Device \"{refreshedDevice.Name}\" detected new client version: {refreshedDevice.ServiceClientVersion}", LogEntry.LogLevel.Information, true));
+                        if (currentDevice.ServiceClientVersion != refreshedDevice.ServiceClientVersion && !string.IsNullOrEmpty(currentDevice.ServiceClientVersion))
+                            currentDevice.LogEntries.Add(new LogEntry(DateTime.Now, $"Device \"{refreshedDevice.Name}\" detected new client version: {refreshedDevice.ServiceClientVersion}", LogEntry.LogLevel.Information, true));
 
                         // Detect any device changes and log them (also to Telegram)
 
                         // CPU
-                        if (oldDevice.Environment.CPUName != refreshedDevice.Environment.CPUName && !string.IsNullOrEmpty(refreshedDevice.Environment.CPUName))
-                            oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected CPU change. CPU {oldDevice.Environment.CPUName} got replaced with {refreshedDevice.Environment.CPUName}", LogEntry.LogLevel.Information, true));
-                        if (oldDevice.Environment.CPUCount != refreshedDevice.Environment.CPUCount && refreshedDevice.Environment.CPUCount > 0)
-                            oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected CPU-Count change from {oldDevice.Environment.CPUCount} to {refreshedDevice.Environment.CPUCount}", LogEntry.LogLevel.Information, true));
+                        if (currentDevice.Environment.CPUName != refreshedDevice.Environment.CPUName && !string.IsNullOrEmpty(refreshedDevice.Environment.CPUName))
+                            currentDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected CPU change. CPU {currentDevice.Environment.CPUName} got replaced with {refreshedDevice.Environment.CPUName}", LogEntry.LogLevel.Information, true));
+                        if (currentDevice.Environment.CPUCount != refreshedDevice.Environment.CPUCount && refreshedDevice.Environment.CPUCount > 0)
+                            currentDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected CPU-Count change from {currentDevice.Environment.CPUCount} to {refreshedDevice.Environment.CPUCount}", LogEntry.LogLevel.Information, true));
 
                         // OS (Ignore Windows Updates, just document enum chnages)
-                        if (oldDevice.OS != refreshedDevice.OS)
-                            oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected OS change from {oldDevice.OS} to {refreshedDevice.OS}", LogEntry.LogLevel.Information, true));
+                        if (currentDevice.OS != refreshedDevice.OS)
+                            currentDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected OS change from {currentDevice.OS} to {refreshedDevice.OS}", LogEntry.LogLevel.Information, true));
 
                         // Motherboard
-                        if (oldDevice.Environment.Motherboard != refreshedDevice.Environment.Motherboard && !string.IsNullOrEmpty(refreshedDevice.Environment.Motherboard))
-                            oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected Motherboard change from {oldDevice.Environment.Motherboard} to {refreshedDevice.Environment.Motherboard}", LogEntry.LogLevel.Information, true));
+                        if (currentDevice.Environment.Motherboard != refreshedDevice.Environment.Motherboard && !string.IsNullOrEmpty(refreshedDevice.Environment.Motherboard))
+                            currentDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected Motherboard change from {currentDevice.Environment.Motherboard} to {refreshedDevice.Environment.Motherboard}", LogEntry.LogLevel.Information, true));
 
                         // Graphics
                         //if (oldDevice.Envoirnment.Graphics != refreshedDevice.Envoirnment.Graphics && !string.IsNullOrEmpty(refreshedDevice.Envoirnment.Graphics))
                         //    oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected Graphics change from {oldDevice.Envoirnment.Graphics} to {refreshedDevice.Envoirnment.Graphics}", LogEntry.LogLevel.Information, true));
-                        if (oldDevice.Environment.GraphicCards.Count != refreshedDevice.Environment.GraphicCards.Count)
+                        if (currentDevice.Environment.GraphicCards.Count != refreshedDevice.Environment.GraphicCards.Count)
                         {
                             if (refreshedDevice.Environment.GraphicCards.Count == 0 && !string.IsNullOrEmpty(refreshedDevice.Environment.Graphics))
                             {
@@ -127,50 +128,72 @@ namespace Home.API.Controllers
                             else
                             {
                                 foreach (var item in refreshedDevice.Environment.GraphicCards)
-                                    oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected Graphics change(s) ({item})", LogEntry.LogLevel.Information, true));
+                                    currentDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected Graphics change(s) ({item})", LogEntry.LogLevel.Information, true));
                             }
                         }
 
                         // RAM
-                        if (oldDevice.Environment.TotalRAM != refreshedDevice.Environment.TotalRAM && refreshedDevice.Environment.TotalRAM > 0)
-                            oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected RAM change from {oldDevice.Environment.TotalRAM} GB to {refreshedDevice.Environment.TotalRAM} GB", LogEntry.LogLevel.Information, true));
+                        if (currentDevice.Environment.TotalRAM != refreshedDevice.Environment.TotalRAM && refreshedDevice.Environment.TotalRAM > 0)
+                            currentDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected RAM change from {currentDevice.Environment.TotalRAM} GB to {refreshedDevice.Environment.TotalRAM} GB", LogEntry.LogLevel.Information, true));
 
                         // IP Change
-                        if (oldDevice.IP.Replace("/24", string.Empty) != refreshedDevice.IP.Replace("/24", string.Empty))
-                            oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected IP change from {oldDevice.IP} to {refreshedDevice.IP}", LogEntry.LogLevel.Information, true));
+                        if (currentDevice.IP.Replace("/24", string.Empty) != refreshedDevice.IP.Replace("/24", string.Empty) && !string.IsNullOrEmpty(refreshedDevice.IP))
+                            currentDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected IP change from {currentDevice.IP} to {refreshedDevice.IP}", LogEntry.LogLevel.Information, true));
 
-                        isScreenshotRequired = oldDevice.IsScreenshotRequired;
+                        isScreenshotRequired = currentDevice.IsScreenshotRequired;
 
                         // If this device is live, ALWAYS send a screenshot on ack!
-                        if (oldDevice.IsLive.HasValue && oldDevice.IsLive.Value)
+                        if (currentDevice.IsLive.HasValue && currentDevice.IsLive.Value)
                             isScreenshotRequired = true;
 
                         // USAGE
                         // CPU & DISK
-                        oldDevice.Usage.AddCPUEntry(refreshedDevice.Environment.CPUUsage);
-                        oldDevice.Usage.AddDISKEntry(refreshedDevice.Environment.DiskUsage);
+                        currentDevice.Usage.AddCPUEntry(refreshedDevice.Environment.CPUUsage);
+                        currentDevice.Usage.AddDISKEntry(refreshedDevice.Environment.DiskUsage);
 
                         // RAM
                         var ram = refreshedDevice.Environment.FreeRAM.Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
                         if (ram != null && double.TryParse(ram, out double res))
-                            oldDevice.Usage.AddRAMEntry(res);
+                            currentDevice.Usage.AddRAMEntry(res);
 
                         // Update device
-                        oldDevice.Update(refreshedDevice, now, Device.DeviceStatus.Active);
+                        currentDevice.Update(refreshedDevice, now, Device.DeviceStatus.Active);                        
 
-                        lock (oldDevice.Messages)
+                        if (currentDevice.DiskDrives.Count > 0)
                         {
-                            if (oldDevice.Messages.Count != 0)
-                                hasMessage = oldDevice.Messages.Dequeue();
+                            var dds = currentDevice.DiskDrives.Where(d => d.IsFull().HasValue && d.IsFull().Value).ToList();
+                            
+                            // Add storage warning
+                            // But ensure that the warning is only once per device and will be added again if dismissed by the user
+                            if (dds.Count > 0)
+                            {
+                                foreach (var disk in dds)
+                                {
+                                    // Check for already existing storage warnings       
+                                    if (currentDevice.StorageWarnings.Any(s => s.StorageID == disk.UniqueID))
+                                        continue;
+
+                                    // Add storage warning
+                                    var warning = StorageWarning.Create($"DISK: {disk} is low on storage. Free space left: {ByteUnit.FindUnit(disk.FreeSpace)}");
+                                    currentDevice.StorageWarnings.Add(warning);
+                                    currentDevice.LogEntries.Add(warning.ConvertToLogEntry());
+                                }
+                            }
+                        }
+
+                        lock (currentDevice.Messages)
+                        {
+                            if (currentDevice.Messages.Count != 0)
+                                hasMessage = currentDevice.Messages.Dequeue();
                         }
 
                         if (hasMessage == null)
                         {
-                            lock (oldDevice.Commands)
+                            lock (currentDevice.Commands)
                             {
                                 // Check for commands
-                                if (oldDevice.Commands.Count != 0)
-                                    hasCommand = oldDevice.Commands.Dequeue();
+                                if (currentDevice.Commands.Count != 0)
+                                    hasCommand = currentDevice.Commands.Dequeue();
                             }
                         }
                         
@@ -181,7 +204,7 @@ namespace Home.API.Controllers
                             foreach (var queue in Program.EventQueues)
                             {
                                 queue.LastEvent = now;
-                                queue.Events.Enqueue(new EventQueueItem() { DeviceID = refreshedDevice.ID, EventData = new EventData() { EventDevice = oldDevice }, EventDescription = EventQueueItem.EventKind.ACK, EventOccured = now });
+                                queue.Events.Enqueue(new EventQueueItem() { DeviceID = refreshedDevice.ID, EventData = new EventData() { EventDevice = currentDevice }, EventDescription = EventQueueItem.EventKind.ACK, EventOccured = now });
                             }
                         }
                     }

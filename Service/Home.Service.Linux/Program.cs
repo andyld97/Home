@@ -49,8 +49,8 @@ namespace Home.Service.Linux
                 // Debug LSHW JSON FILES:
 #if DEBUG
                 var device = new Device();
-                 ParseHardwareInfo(System.IO.File.ReadAllText(@"Test\test6.json"), device);
-                 int debug = 0;
+                ParseHardwareInfo(System.IO.File.ReadAllText(@"Test\test6.json"), device);
+                int debug = 0;
 #endif
 
                 Thread apiThread = new Thread(new ParameterizedThreadStart((_) =>
@@ -272,7 +272,10 @@ namespace Home.Service.Linux
             currentDevice.ServiceClientVersion = $"vLinux{ClientVersion.ToString(3)}";
             currentDevice.Environment.RunningTime = DateTime.Now.Subtract(startTime);
 
-            ParseHardwareInfo(Helper.ExecuteSystemCommand("lshw", "-json"), currentDevice);
+            bool result = ParseHardwareInfo(Helper.ExecuteSystemCommand("lshw", "-json"), currentDevice);
+            if (!result)
+                throw new Exception("No hardware info provided ... Exiting ...");
+
             ReadMemoryAndCPULoad();
             ReadDiskUsage();
         }
@@ -341,11 +344,11 @@ namespace Home.Service.Linux
 
         #region Parse Hardware Info
 
-        public static void ParseHardwareInfo(string json, Device device)
+        public static bool ParseHardwareInfo(string json, Device device)
         {
             if (string.IsNullOrEmpty(json))
-                return;
-             
+                return false;
+
             // Check if json is valid
             if (!Helper.IsValidJson(json))
             {
@@ -354,52 +357,64 @@ namespace Home.Service.Linux
             }
 
             currentDevice.DiskDrives.Clear();
-            JToken item = null;
 
-            if (json.StartsWith("["))
+            try
             {
-                var value = JsonConvert.DeserializeObject<JArray>(json);
-                item = value[0]; // class = system
-            }
-            else
-                item = JsonConvert.DeserializeObject<JObject>(json);
+                JToken item = null;
 
-
-            device.Name =
-            device.Environment.MachineName = item.Value<string>("id").ToUpper();
-
-            if (item.Value<string>("product") != null && !item.Value<string>("product").Contains("To Be Filled By O.E.M."))
-                device.Environment.Product = item.Value<string>("product");
-
-            if (item.Value<string>("description") != null)
-                device.Environment.Description = item.Value<string>("description");
-
-            Queue<JToken> childrenQueue = new Queue<JToken>();
-            childrenQueue.Enqueue(item);
-
-            while (childrenQueue.Count > 0)
-            {
-                var child = childrenQueue.Dequeue();
-                bool processButDoesntEnqueue = false;
-
-                // A Disk entry will be further processed in the ProcessJTokenMethod
-                if (child.Value<string>("class") == "disk")
-                    processButDoesntEnqueue = true;
-
-                if (!processButDoesntEnqueue)
+                if (json.StartsWith("["))
                 {
-                    var subChilds = child.Value<JArray>("children");
-                    if (subChilds != null && subChilds.Count > 0)
-                    {
-                        foreach (var it in subChilds)
-                            childrenQueue.Enqueue(it);
-                    }
+                    var value = JsonConvert.DeserializeObject<JArray>(json);
+                    item = value[0]; // class = system
                 }
+                else
+                    item = JsonConvert.DeserializeObject<JObject>(json);
 
 
-                ProcessJToken(child, device);
+                device.Name =
+                device.Environment.MachineName = item.Value<string>("id").ToUpper();
+
+                if (item.Value<string>("product") != null && !item.Value<string>("product").Contains("To Be Filled By O.E.M."))
+                    device.Environment.Product = item.Value<string>("product");
+
+                if (item.Value<string>("description") != null)
+                    device.Environment.Description = item.Value<string>("description");
+
+                Queue<JToken> childrenQueue = new Queue<JToken>();
+                childrenQueue.Enqueue(item);
+
+                while (childrenQueue.Count > 0)
+                {
+                    var child = childrenQueue.Dequeue();
+                    bool processButDoesntEnqueue = false;
+
+                    // A Disk entry will be further processed in the ProcessJTokenMethod
+                    if (child.Value<string>("class") == "disk")
+                        processButDoesntEnqueue = true;
+
+                    if (!processButDoesntEnqueue)
+                    {
+                        var subChilds = child.Value<JArray>("children");
+                        if (subChilds != null && subChilds.Count > 0)
+                        {
+                            foreach (var it in subChilds)
+                                childrenQueue.Enqueue(it);
+                        }
+                    }
+
+
+                    ProcessJToken(child, device);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Write($"Failed to parse hwinfo: {ex}");
+                return false;
             }
 
+            // If nothing was found return "/"- as a diskdrive!
+            if (device.DiskDrives.Count == 0)
+                device.DiskDrives.Add(new DiskDrive() { VolumeName = "/", DriveName = "/", DriveID = "/" });
 
             // Get df / try to fill missing values
             string result = Helper.ExecuteSystemCommand("df", "-H");
@@ -435,6 +450,8 @@ namespace Home.Service.Linux
                     }
                 }
             }
+
+            return true;
         }
 
         public static ulong ParseDFEntry(string entry)

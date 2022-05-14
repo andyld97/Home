@@ -246,7 +246,7 @@ namespace Home.Controls
 
                 if (selectedItem is RemoteFile rf)
                 {
-                    if (ByteUnit.FromB(rf.Length) <= ByteUnit.FromMB(10))
+                    if (ByteUnit.FromB((ulong)rf.Length) <= ByteUnit.FromMB(10))
                     {
                         string ext = System.IO.Path.GetExtension(rf.Path).ToLower();
 

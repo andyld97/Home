@@ -689,9 +689,15 @@ namespace Home
             if (lastSelectedDevice == null)
                 return;
 
+            if (lastSelectedDevice.Status == DeviceStatus.Offline)
+            {
+                MessageBox.Show("This devices is currently offline! No io operations can be executed!", "Offline-Mode", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             if (lastSelectedDevice.OS.IsWindowsLegacy() || lastSelectedDevice.OS.IsAndroid())
             {
-                MessageBox.Show("This feature is currently only supported on Windows systems (7 SP1 or newer) or on Linux Systems", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("This feature is currently only supported on newer Windows systems (Windows 7 SP1 or newer) or on Linux Systems", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
