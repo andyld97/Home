@@ -942,11 +942,12 @@ namespace Home.Model
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public static StorageWarning Create(string text)
+        public static StorageWarning Create(string text, string storageID)
         {
             StorageWarning storageWarning = new StorageWarning();
-            storageWarning.Text = text;
+            storageWarning.StorageID = storageID;
             storageWarning.WarningOccoured = DateTime.Now;
+            storageWarning.Text = text;
             return storageWarning;
         }
 

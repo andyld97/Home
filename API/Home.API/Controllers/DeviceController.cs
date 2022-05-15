@@ -174,7 +174,7 @@ namespace Home.API.Controllers
                                         continue;
 
                                     // Add storage warning
-                                    var warning = StorageWarning.Create($"DISK: {disk} is low on storage. Free space left: {ByteUnit.FindUnit(disk.FreeSpace)}");
+                                    var warning = StorageWarning.Create($"DISK: {disk} is low on storage. Free space left: {ByteUnit.FindUnit(disk.FreeSpace)}", disk.UniqueID);
                                     currentDevice.StorageWarnings.Add(warning);
                                     currentDevice.LogEntries.Add(warning.ConvertToLogEntry());
                                 }
