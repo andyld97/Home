@@ -16,3 +16,7 @@ To Install:
 
 sudo apt install scrot
 sudo apt install sysstat
+
+
+To fix black screenshots with scrot on Ubuntu >= 21.10 see:
+https://askubuntu.com/a/1347651/692902
