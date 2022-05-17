@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using static Android.Provider.Settings;
 using Exception = Java.Lang.Exception;
+using A = Android;
 
 namespace Home.Service.Android.Helper
 {
@@ -159,6 +160,33 @@ namespace Home.Service.Android.Helper
             return -1;
         }
 
+        /// <summary>
+        /// https://stackoverflow.com/a/42327441/6237448
+        /// </summary>
+        /// <returns></returns>
+        public static Battery GetBatteryPercentage(Context context)
+        {
+            try
+            {
+                BatteryManager bm = (BatteryManager)context.GetSystemService(Context.BatteryService);
+
+                Battery battery = new Battery();
+                battery.IsCharging = bm.IsCharging;
+
+                var status = (A.OS.BatteryHealth)bm.GetIntProperty((int)A.OS.BatteryProperty.Status);            
+                battery.BatteryLevelInPercent =  bm.GetIntProperty((int)A.OS.BatteryProperty.Capacity);
+
+                if (battery.BatteryLevelInPercent == int.MinValue || battery.BatteryLevelInPercent == int.MaxValue || status == BatteryHealth.Unknown)
+                    return null;
+
+                return battery;
+            }
+            catch
+            {
+                return null; // probably no battery
+            }            
+        }
+
         public static string GetDeviceName(ContentResolver cr)
         {
             string userDeviceName = Global.GetString(cr, "device_name");
@@ -197,7 +225,7 @@ namespace Home.Service.Android.Helper
 
         public static void RefreshDevice(this Device currentDevice, ContentResolver cr, Context context)
         {
-            currentDevice.ServiceClientVersion = "vAndroid 0.0.5";
+            currentDevice.ServiceClientVersion = "vAndroid 0.0.6";
 #if NOGL
             currentDevice.ServiceClientVersion += " - NOGL";
 #endif
@@ -211,6 +239,9 @@ namespace Home.Service.Android.Helper
             currentDevice.Environment.Is64BitOS = System.Environment.Is64BitOperatingSystem;
             currentDevice.Environment.Product = Build.Product;
             currentDevice.Environment.StartTimestamp = dateTimeStarted;
+
+            // Read and assign battery info
+            currentDevice.BatteryInfo = GetBatteryPercentage(context);
 
             // Read and assign memory info
             DeviceInfoHelper.ReadAndAssignMemoryInfo(currentDevice);

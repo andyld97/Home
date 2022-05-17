@@ -277,7 +277,17 @@ namespace Home.Model
 
         [JsonPropertyName("storage_warnings")]
         public List<StorageWarning> StorageWarnings { get; set; } = new List<StorageWarning>();
+
 #endif
+
+        /// <summary>
+        /// The battery info for this device (if null there is no battery)
+        /// </summary>
+        [JsonProperty("battery_info")]
+#if !LEGACY
+        [JsonPropertyName("battery_info")]
+#endif
+        public Battery BatteryInfo { get; set; }
 
         public enum DeviceStatus
         {
@@ -459,6 +469,7 @@ namespace Home.Model
             Environment = other.Environment;
             DiskDrives = other.DiskDrives;
             ServiceClientVersion = other.ServiceClientVersion;
+            BatteryInfo = other.BatteryInfo;
 
             // Don't update StorageWarnings because it will only be set via api and not via clients - except it is used locally in Home GUI App
             if (isLocal)
@@ -910,6 +921,27 @@ namespace Home.Model
                     list.RemoveAt(0);
             }
         }
+    }
+
+    public class Battery
+    {
+        /// <summary>
+        /// Determines if the device is currently charging
+        /// </summary>
+        [JsonProperty("is_charging")]
+#if !LEGACY
+        [JsonPropertyName("is_charging")]
+#endif
+        public bool IsCharging { get; set; }
+
+        /// <summary>
+        /// Determines the remaing battery percetange 
+        /// </summary>
+        [JsonProperty("battery_level")]
+#if !LEGACY
+        [JsonPropertyName("battery_level")]
+#endif
+        public int BatteryLevelInPercent { get; set; }
     }
 
 
