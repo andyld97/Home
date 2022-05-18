@@ -326,6 +326,11 @@
                                                                 <Path Data="{StaticResource ActivityGraph}" Fill="Orange" />
                                                             </Viewbox>
                                                             <TextBlock Text="DISK" FontWeight="Bold" Margin="10,0,0,0" />
+
+                                                            <Viewbox Height="20" Margin="50,0,0,0">
+                                                                <Path Data="{StaticResource ActivityGraph}" Fill="Green" />
+                                                            </Viewbox>
+                                                            <TextBlock Text="Battery" FontWeight="Bold" Margin="10,0,0,0" />
                                                         </StackPanel>
                                                         
                                                         <Border Grid.Row="1">
