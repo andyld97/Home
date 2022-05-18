@@ -888,11 +888,18 @@ namespace Home.Model
 #endif
         public List<double> DISK { get; set; } = new List<double>();
 
+        [JsonProperty("battery")]
+#if !LEGACY
+        [JsonPropertyName("battery")]
+#endif
+        public List<int> Battery { get; set; } = new List<int>(); // percentage
+
         public void Clear()
         {
             CPU.Clear();
             RAM.Clear();
             DISK.Clear();
+            Battery.Clear();
         }
 
         public void AddCPUEntry(double value)
@@ -913,7 +920,15 @@ namespace Home.Model
             DISK.Add(value);
         }
 
-        private void EnsureListHasEnoughSpace(List<double> list)
+        public void AddBatteryEntry(int value)
+        {
+            EnsureListHasEnoughSpace(Battery);
+            Battery.Add(value);
+            // Notice: for example a smartphone sometimes doesn't sends the ack, due to engery savings.
+            // So, the values might not be fully accurate on android (to be so, an ack timestamp is required, but it is currently not supported)
+        }
+
+        private void EnsureListHasEnoughSpace<T>(List<T> list)
         {
             if (list.Count >= 60)
             {

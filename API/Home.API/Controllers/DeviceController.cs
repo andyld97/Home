@@ -156,6 +156,10 @@ namespace Home.API.Controllers
                         if (ram != null && double.TryParse(ram, out double res))
                             currentDevice.Usage.AddRAMEntry(res);
 
+                        // Battery (if any)
+                        if (currentDevice.BatteryInfo != null)
+                            currentDevice.Usage.AddBatteryEntry(currentDevice.BatteryInfo.BatteryLevelInPercent);
+
                         // Update device
                         currentDevice.Update(refreshedDevice, now, Device.DeviceStatus.Active);                        
 

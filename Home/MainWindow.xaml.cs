@@ -45,7 +45,7 @@ namespace Home
         private readonly object _lock = new object();
         private List<Device> deviceList = new List<Device>();
         private readonly List<DeviceItem> deviceItems = new List<DeviceItem>(); // gui
-        private Device lastSelectedDevice = null;
+        private Device currentDevice = null;
         private bool ignoreSelectionChanged = false;
         private int oldDeviceCount = -1;
 
@@ -70,10 +70,10 @@ namespace Home
 
         private async void ScreenshotViewer_OnScreenShotAquired(object sender, EventArgs e)
         {
-            if (lastSelectedDevice == null)
+            if (currentDevice == null)
                 return;
 
-            var result = await API.AquireScreenshotAsync(CLIENT, lastSelectedDevice);
+            var result = await API.AquireScreenshotAsync(CLIENT, currentDevice);
             if (!result.Success)
                 MessageBox.Show(result.ErrorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
@@ -155,17 +155,17 @@ namespace Home
                 }
             }
 
-            if (lastSelectedDevice != null)
+            if (currentDevice != null)
             {
-                int allIndex = deviceList.IndexOf(lastSelectedDevice);
+                int allIndex = deviceList.IndexOf(currentDevice);
                 if (allIndex != -1)
                     DeviceHolderAll.SelectedIndex = allIndex;
 
-                int activeIndex = deviceList.Where(p => p.Status != DeviceStatus.Offline).ToList().IndexOf(lastSelectedDevice);
+                int activeIndex = deviceList.Where(p => p.Status != DeviceStatus.Offline).ToList().IndexOf(currentDevice);
                 if (activeIndex != -1)
                     DeviceHolderActive.SelectedIndex = activeIndex;
 
-                int offIndex = deviceList.Where(p => p.Status == DeviceStatus.Offline).ToList().IndexOf(lastSelectedDevice);
+                int offIndex = deviceList.Where(p => p.Status == DeviceStatus.Offline).ToList().IndexOf(currentDevice);
                 if (offIndex != -1)
                     DeviceHolderActive.SelectedIndex = offIndex;
             }
@@ -297,7 +297,7 @@ namespace Home
                             // deviceList[deviceList.IndexOf(oldDevice)] = device.EventData.EventDevice;
                             oldDevice.Update(device.EventData.EventDevice, device.EventData.EventDevice.LastSeen, device.EventData.EventDevice.Status, true);
 
-                            if (lastSelectedDevice == oldDevice)
+                            if (currentDevice == oldDevice)
                             {
                                 // lastSelectedDevice = device.EventData.EventDevice;
                                 // RefreshSelectedItem();
@@ -329,7 +329,7 @@ namespace Home
         private async Task GetScreenshot(Device device, string fileName = "")
         {
             byte[] data = null;
-            bool updateGui = (lastSelectedDevice?.ID == device.ID);
+            bool updateGui = (currentDevice?.ID == device.ID);
 
             await API.DownloadScreenshotToCache(device, CACHE_PATH, fileName);
 
@@ -398,11 +398,11 @@ namespace Home
 
             if ((sender as ListBox).SelectedItem is DeviceItem dev)
             {
-                lastSelectedDevice = dev.DataContext as Device;
+                currentDevice = dev.DataContext as Device;
                 SwitchFileManager(false);
                 await RefreshSelectedItem();
                 RefreshSelection();
-                await GetScreenshot(lastSelectedDevice);
+                await GetScreenshot(currentDevice);
 
                 DeviceInfo.Visibility = Visibility.Visible;
                 DeviceInfoHint.Visibility = Visibility.Collapsed;
@@ -410,7 +410,7 @@ namespace Home
             }
             else
             {
-                lastSelectedDevice = null;
+                currentDevice = null;
                 MenuButtonSendMessage.IsEnabled = false;
                 DeviceInfo.Visibility = Visibility.Collapsed;
                 DeviceInfoHint.Visibility = Visibility.Visible;
@@ -422,20 +422,20 @@ namespace Home
             foreach (var item in deviceItems)
             {
                 var ctx = item.DataContext as Device;
-                item.SetSelected(lastSelectedDevice?.ID == ctx.ID);
+                item.SetSelected(currentDevice?.ID == ctx.ID);
             }
         }
 
         private async Task RefreshSelectedItem()
         {
-            if (lastSelectedDevice == null)
+            if (currentDevice == null)
                 return;          
 
             // Generate log entries FlowDocument
             FlowDocument flowDocument = new FlowDocument { FontFamily = new FontFamily("Consolas") };
             Paragraph currentParagraph = new Paragraph();
 
-            foreach (var entry in lastSelectedDevice.LogEntries)
+            foreach (var entry in currentDevice.LogEntries)
             {
                 // Get image
                 BitmapImage bi;
@@ -481,8 +481,8 @@ namespace Home
             RenderPlot();
 
             DeviceInfo.DataContext = null;
-            DeviceInfo.DataContext = lastSelectedDevice;
-            ScreenshotViewer.UpdateDevice(lastSelectedDevice);
+            DeviceInfo.DataContext = currentDevice;
+            ScreenshotViewer.UpdateDevice(currentDevice);
             CmbGraphics.SelectedIndex = 0;
         }
 
@@ -506,18 +506,26 @@ namespace Home
             List<Point> cpuPoints = new List<Point>();
             List<Point> ramPoints = new List<Point>();
             List<Point> diskPoints = new List<Point>();
+            List<Point> batteryPoints = new List<Point>();
 
             int cpuCounter = 1;
-            foreach (var cpu in lastSelectedDevice.Usage.CPU)
+            foreach (var cpu in currentDevice.Usage.CPU)
                 cpuPoints.Add(new Point(cpuCounter++, NormalizeValue(cpu)));
 
             int ramCounter = 1;
-            foreach (var ram in lastSelectedDevice.Usage.RAM)
-                ramPoints.Add(new Point(ramCounter++, Math.Round((ram / lastSelectedDevice.Environment.TotalRAM) * 100, 2)));
+            foreach (var ram in currentDevice.Usage.RAM)
+                ramPoints.Add(new Point(ramCounter++, Math.Round((ram / currentDevice.Environment.TotalRAM) * 100, 2)));
 
             int diskCounter = 1;
-            foreach (var disk in lastSelectedDevice.Usage.DISK)
+            foreach (var disk in currentDevice.Usage.DISK)
                 diskPoints.Add(new Point(diskCounter++, NormalizeValue(disk)));
+
+            if (currentDevice.BatteryInfo != null)
+            {
+                int batteryCounter = 1;
+                foreach (var bPercent in currentDevice.Usage.Battery)
+                    batteryPoints.Add(new Point(batteryCounter++, bPercent));
+            }
 
             //  Fill = new SolidColorPaint(SkiaSharp.SKColors.LightBlue.WithAlpha(128)),
 
@@ -560,7 +568,22 @@ namespace Home
                 TooltipLabelFormatter = (s) => $"DISK: {s.PrimaryValue} %",
             };
 
-            DeviceActivityPlot.Series = new ISeries[] { cpuSeries, ramSeries, diskSeries };
+            var batterySeries = new LineSeries<Point>()
+            {
+                Values = batteryPoints,
+                Mapping = mapping,
+                Stroke = new SolidColorPaint(SkiaSharp.SKColors.Green, 3),
+                Fill = null,
+                GeometrySize = 0,
+                Name = "Battery Remaning (%)",
+                TooltipLabelFormatter = (s) => $"Battery Remaning: {s.PrimaryValue} %"
+            };
+
+            List<ISeries> series = new List<ISeries>() { cpuSeries, ramSeries, diskSeries };
+            if (currentDevice.BatteryInfo != null)
+                series.Add(batterySeries);
+
+            DeviceActivityPlot.Series = series;
         }
 
         private void InitalizeDeviceActivityPlot()
@@ -575,12 +598,12 @@ namespace Home
             var yaxis = DeviceActivityPlot.YAxes.FirstOrDefault();
             yaxis.Labeler = (y) => $"{y}%";
             xaxis.Labeler = (x) => {
-                if (lastSelectedDevice == null)
+                if (currentDevice == null)
                     return string.Empty;
                 
                 // 60 is not true if there are not 60 values in the list
                 // and remember that all values (cpu, ram, disk) MUST have the same amount, also if they get cleard (they get all cleard)
-                var n = lastSelectedDevice.LastSeen.AddMinutes(-(lastSelectedDevice.Usage.CPU.Count - x));
+                var n = currentDevice.LastSeen.AddMinutes(-(currentDevice.Usage.CPU.Count - x));
                 return n.ToString("HH:mm");
             };
         }
@@ -590,22 +613,22 @@ namespace Home
 
         private async void MenuButtonClearLog_Click(object sender, RoutedEventArgs e)
         {
-            if (lastSelectedDevice == null)
+            if (currentDevice == null)
                 return;
 
-            var result = await API.ClearDeviceLogAsync(lastSelectedDevice);
+            var result = await API.ClearDeviceLogAsync(currentDevice);
         }
 
         private void MenuButtonSendMessage_Click(object sender, RoutedEventArgs e)
         {
-            if (lastSelectedDevice != null)
-                new SendMessage(lastSelectedDevice, API).ShowDialog();
+            if (currentDevice != null)
+                new SendMessage(currentDevice, API).ShowDialog();
         }
 
         private void MenuButtonSendCommand_Click(object sender, RoutedEventArgs e)
         {
-            if (lastSelectedDevice != null)
-                new SendCommandDialog(lastSelectedDevice, API).ShowDialog();
+            if (currentDevice != null)
+                new SendCommandDialog(currentDevice, API).ShowDialog();
         }
 
         private void LogHolder_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
@@ -623,12 +646,12 @@ namespace Home
 
         private async void MenuButtonShutdown_Click(object sender, RoutedEventArgs e)
         {
-            await ShutdownOrRestartAsync(lastSelectedDevice, true);      
+            await ShutdownOrRestartAsync(currentDevice, true);      
         }
 
         private async void MenuButtonReboot_Click(object sender, RoutedEventArgs e)
         {
-            await ShutdownOrRestartAsync(lastSelectedDevice, false);   
+            await ShutdownOrRestartAsync(currentDevice, false);   
         }    
 
         #endregion
@@ -657,11 +680,11 @@ namespace Home
 
         private async void MenuButtonDeleteDevice_Click(object sender, RoutedEventArgs e)
         {
-            if (lastSelectedDevice != null)
+            if (currentDevice != null)
             {
-                if (MessageBox.Show(this, $"Sind Sie sich sicher, dass Sie das Gerät {lastSelectedDevice.Name} löschen möchten?", "Sicher?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                if (MessageBox.Show(this, $"Sind Sie sich sicher, dass Sie das Gerät {currentDevice.Name} löschen möchten?", "Sicher?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
-                    var result = await API.DeleteDeviceAsync(lastSelectedDevice);
+                    var result = await API.DeleteDeviceAsync(currentDevice);
                     if (result.Success)
                         MessageBox.Show("Erfolg!", "Erfolg!", MessageBoxButton.OK, MessageBoxImage.Information);
                     else
@@ -686,16 +709,16 @@ namespace Home
 
         private async void ListHDD_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (lastSelectedDevice == null)
+            if (currentDevice == null)
                 return;
 
-            if (lastSelectedDevice.Status == DeviceStatus.Offline)
+            if (currentDevice.Status == DeviceStatus.Offline)
             {
                 MessageBox.Show("This devices is currently offline! No io operations can be executed!", "Offline-Mode", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            if (lastSelectedDevice.OS.IsWindowsLegacy() || lastSelectedDevice.OS.IsAndroid())
+            if (currentDevice.OS.IsWindowsLegacy() || currentDevice.OS.IsAndroid())
             {
                 MessageBox.Show("This feature is currently only supported on newer Windows systems (Windows 7 SP1 or newer) or on Linux Systems", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -707,9 +730,9 @@ namespace Home
                 SwitchFileManager(true);
 
                 string driveName = string.Empty;
-                if (lastSelectedDevice.OS.IsWindows(false))
+                if (currentDevice.OS.IsWindows(false))
                     driveName = dd.DriveName;
-                else if (lastSelectedDevice.OS.IsLinux())
+                else if (currentDevice.OS.IsLinux())
                 {
                     if (dd.VolumeName.Contains(","))
                         driveName = dd.VolumeName.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
@@ -718,7 +741,7 @@ namespace Home
                 }
 
                 await DeviceExplorer.PassWebView2Environment(webView2Environment);
-                await DeviceExplorer.NavigateAsync(lastSelectedDevice, driveName);
+                await DeviceExplorer.NavigateAsync(currentDevice, driveName);
             }
         }
 
