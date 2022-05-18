@@ -481,12 +481,14 @@ namespace Home.Model
             ServiceClientVersion = other.ServiceClientVersion;
             BatteryInfo = other.BatteryInfo;
 
+#if !LEGACY
             // Don't update StorageWarnings because it will only be set via api and not via clients - except it is used locally in Home GUI App
             if (isLocal)
             {
                 StorageWarnings = other.StorageWarnings;
                 BatteryWarning = other.BatteryWarning;
             }
+#endif
 
             if (IP.EndsWith("/24"))
                 IP = IP.Replace("/24", string.Empty);
@@ -534,7 +536,7 @@ namespace Home.Model
     public class DeviceEnvironment
     {
         [JsonProperty("product")]
-        #if !LEGACY
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("product")]
 #endif
         public string Product { get; set; }
