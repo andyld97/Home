@@ -600,6 +600,9 @@ namespace Home
             xaxis.Labeler = (x) => {
                 if (currentDevice == null)
                     return string.Empty;
+
+                if (currentDevice.LastSeen == DateTime.MinValue)
+                    return String.Empty;
                 
                 // 60 is not true if there are not 60 values in the list
                 // and remember that all values (cpu, ram, disk) MUST have the same amount, also if they get cleard (they get all cleard)

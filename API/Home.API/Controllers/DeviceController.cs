@@ -158,15 +158,34 @@ namespace Home.API.Controllers
 
                         // Battery (if any)
                         if (currentDevice.BatteryInfo != null)
+                        {
                             currentDevice.Usage.AddBatteryEntry(currentDevice.BatteryInfo.BatteryLevelInPercent);
 
+                            // Check for battery warning
+                            if (currentDevice.BatteryInfo.BatteryLevelInPercent <= 10)
+                            {
+                                if (currentDevice.BatteryWarning != null)
+                                {
+                                    // Create battery warning
+                                    var batteryWarning = BatteryWarning.Create(currentDevice.BatteryInfo.BatteryLevelInPercent);
+                                    currentDevice.BatteryWarning = batteryWarning;
+                                    currentDevice.LogEntries.Add(batteryWarning.ConvertToLogEntry());
+                                }
+                                else if (currentDevice.BatteryWarning == null)
+                                {
+                                    // Update battery warning (no log due to the fact that the warning should be displayed in the gui)
+                                    currentDevice.BatteryWarning.Value = currentDevice.BatteryInfo.BatteryLevelInPercent;
+                                }
+                            }
+                        }
+
                         // Update device
-                        currentDevice.Update(refreshedDevice, now, Device.DeviceStatus.Active);                        
+                        currentDevice.Update(refreshedDevice, now, Device.DeviceStatus.Active);
 
                         if (currentDevice.DiskDrives.Count > 0)
                         {
                             var dds = currentDevice.DiskDrives.Where(d => d.IsFull().HasValue && d.IsFull().Value).ToList();
-                            
+
                             // Add storage warning
                             // But ensure that the warning is only once per device and will be added again if dismissed by the user
                             if (dds.Count > 0)
@@ -175,10 +194,16 @@ namespace Home.API.Controllers
                                 {
                                     // Check for already existing storage warnings       
                                     if (currentDevice.StorageWarnings.Any(s => s.StorageID == disk.UniqueID))
+                                    {
+                                        // Refresh this storage warning (if freeSpace changed)                                        
+                                        var oldWarning = currentDevice.StorageWarnings.FirstOrDefault(sw => sw.StorageID == disk.UniqueID);
+                                        if (oldWarning.Value != disk.FreeSpace)
+                                            oldWarning.Value = disk.FreeSpace;
                                         continue;
+                                    }
 
                                     // Add storage warning
-                                    var warning = StorageWarning.Create($"DISK: {disk} is low on storage. Free space left: {ByteUnit.FindUnit(disk.FreeSpace)}", disk.UniqueID);
+                                    var warning = StorageWarning.Create(disk.ToString(), disk.UniqueID, disk.FreeSpace);
                                     currentDevice.StorageWarnings.Add(warning);
                                     currentDevice.LogEntries.Add(warning.ConvertToLogEntry());
                                 }
@@ -200,7 +225,7 @@ namespace Home.API.Controllers
                                     hasCommand = currentDevice.Commands.Dequeue();
                             }
                         }
-                        
+
                         result = true;
 
                         lock (Program.EventQueues)
@@ -212,7 +237,7 @@ namespace Home.API.Controllers
                             }
                         }
                     }
-                }  
+                }
                 else
                 {
                     // Temporay fix if data is empty again :(
@@ -227,41 +252,42 @@ namespace Home.API.Controllers
                         }
                     }
                 }
-            }
 
-            if (result)
-            {
-                // isScreenshotRequired
-                AckResult ackResult = new AckResult();
-                AckResult.Ack ack = AckResult.Ack.OK;
 
-                if (isScreenshotRequired)
-                    ack |= AckResult.Ack.ScreenshotRequired;
-
-                if (hasMessage != null)
+                if (result)
                 {
-                    ack |= AckResult.Ack.MessageRecieved;
-                    ackResult.JsonData = JsonConvert.SerializeObject(hasMessage);
+                    // isScreenshotRequired
+                    AckResult ackResult = new AckResult();
+                    AckResult.Ack ack = AckResult.Ack.OK;
+
+                    if (isScreenshotRequired)
+                        ack |= AckResult.Ack.ScreenshotRequired;
+
+                    if (hasMessage != null)
+                    {
+                        ack |= AckResult.Ack.MessageRecieved;
+                        ackResult.JsonData = JsonConvert.SerializeObject(hasMessage);
+                    }
+
+                    if (hasCommand != null)
+                    {
+                        ack |= AckResult.Ack.CommandRecieved;
+                        ackResult.JsonData = JsonConvert.SerializeObject(hasCommand);
+                    }
+
+                    ackResult.Result = ack;
+                    return Ok(AnswerExtensions.Success(ackResult));
                 }
 
-                if (hasCommand != null)
-                {
-                    ack |= AckResult.Ack.CommandRecieved;
-                    ackResult.JsonData = JsonConvert.SerializeObject(hasCommand);
-                }
-
-                ackResult.Result = ack;
-                return Ok(AnswerExtensions.Success(ackResult));
+                return BadRequest(new Answer<AckResult>("fail", new AckResult(AckResult.Ack.Invalid)) { ErrorMessage = "Device-ACK couldn't be processed. This device was not logged in before!" });
             }
-
-            return BadRequest(new Answer<AckResult>("fail", new AckResult(AckResult.Ack.Invalid)) { ErrorMessage = "Device-ACK couldn't be processed. This device was not logged in before!" });
         }
 
         [HttpPost("screenshot")]
         public async Task<IActionResult> PostScreenshot([FromBody] Screenshot shot)
         {
             var now = DateTime.Now;
-            string fileName = now.ToString(Consts.SCREENSHOT_DATE_FILE_FORMAT);                             
+            string fileName = now.ToString(Consts.SCREENSHOT_DATE_FILE_FORMAT);
 
             if (shot == null)
                 return BadRequest(AnswerExtensions.Fail("screenshot is null!"));

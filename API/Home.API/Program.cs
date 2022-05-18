@@ -183,9 +183,17 @@ namespace Home.API
                     }
                 }
 
-                // Check for obsolete storage warnings
+                // Check for obsolete warnings
                 foreach (var device in Devices)
                 {
+                    // Battery Warnings
+                    if (device.BatteryWarning != null && device.BatteryWarning.CanBeRemoved(device))
+                    {
+                        device.BatteryWarning = null;
+                        device.LogEntries.Add(new LogEntry("[Battery Warning]: Removed!", LogEntry.LogLevel.Information, true));
+                    }
+
+                    // Storage Warnings
                     if (device.StorageWarnings.Count == 0)
                         continue;
 

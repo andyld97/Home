@@ -278,6 +278,15 @@ namespace Home.Model
         [JsonPropertyName("storage_warnings")]
         public List<StorageWarning> StorageWarnings { get; set; } = new List<StorageWarning>();
 
+        /// <summary>
+        /// The battery warning for this device (if null there is no warning)
+        /// </summary>
+        [JsonProperty("battery_warning")]
+#if !LEGACY
+        [JsonPropertyName("battery_warning")]
+#endif
+        public BatteryWarning BatteryWarning { get; set; } = null;
+
 #endif
 
         /// <summary>
@@ -288,6 +297,7 @@ namespace Home.Model
         [JsonPropertyName("battery_info")]
 #endif
         public Battery BatteryInfo { get; set; }
+
 
         public enum DeviceStatus
         {
@@ -473,7 +483,10 @@ namespace Home.Model
 
             // Don't update StorageWarnings because it will only be set via api and not via clients - except it is used locally in Home GUI App
             if (isLocal)
+            {
                 StorageWarnings = other.StorageWarnings;
+                BatteryWarning = other.BatteryWarning;
+            }
 
             if (IP.EndsWith("/24"))
                 IP = IP.Replace("/24", string.Empty);
@@ -829,7 +842,7 @@ namespace Home.Model
         /// </summary>
         /// <param name="percentageFree"></param>
         /// <returns>true if the disk is full according to percentageFree</returns>
-        public bool? IsFull(double percentageFree = 5)
+        public bool? IsFull(double percentageFree = 10)
         {
             if (TotalSpace == 0)
                 return null;
@@ -961,49 +974,61 @@ namespace Home.Model
 
 
 #if !LEGACY
-    public class StorageWarning
-    {
-        /// <summary>
-        /// The id of the related DiskDrive
-        /// </summary>
-        [JsonPropertyName("storage_id")]
-        public string StorageID { get; set; }
 
+    public abstract class Warning<T>
+    {
         /// <summary>
         /// The timestamp when this warning firstly occoured
         /// </summary>
         [JsonPropertyName("warning_occoured")]
         public DateTime WarningOccoured { get; set; }
 
+        [XmlIgnore]
         [JsonPropertyName("text")]
-        public string Text { get; set; }
+        public abstract string Text { get; }
 
-        public LogEntry ConvertToLogEntry()
-        {
-            string message = $"[Storage Warning]: \"{Text}\"";
-            return new LogEntry(WarningOccoured, message, LogEntry.LogLevel.Warning, true);
-        }
-
-        /// <summary>
-        /// Creates a storage warning with the given text at exactly THIS moment (timestamp)
-        /// </summary>
-        /// <param name="text"></param>
-        /// <returns></returns>
-        public static StorageWarning Create(string text, string storageID)
-        {
-            StorageWarning storageWarning = new StorageWarning();
-            storageWarning.StorageID = storageID;
-            storageWarning.WarningOccoured = DateTime.Now;
-            storageWarning.Text = text;
-            return storageWarning;
-        }
+        [JsonIgnore()]
+        public abstract string Name { get; }
 
         /// <summary>
         /// Checks if the storage warning is obsolete
         /// </summary>
         /// <param name="dd"></param>
+        /// <returns>ture if the warning is obsolete</returns>
+        public abstract bool CanBeRemoved(T param);
+
+        /// <summary>
+        /// Create a log entry of this warning
+        /// </summary>
         /// <returns></returns>
-        public bool CanBeRemoved(DiskDrive dd)
+        public LogEntry ConvertToLogEntry()
+        {
+            string message = $"[{Name} Warning]: \"{Text}\"";
+            return new LogEntry(WarningOccoured, message, LogEntry.LogLevel.Warning, true);
+        }
+    }
+
+    public class StorageWarning : Warning<DiskDrive>
+    {
+        /// <summary>
+        /// The id of the related DiskDrive
+        /// </summary>
+        [JsonPropertyName("storage_id")]
+        public string StorageID { get; set; }  
+
+        [JsonPropertyName("value")]
+        public ulong Value { get; set; }
+
+        [JsonPropertyName("disk_name")]
+        public string DiskName { get; set; }
+
+        [JsonIgnore()]
+        public override string Name => "Storage";
+
+        [XmlIgnore]
+        public override string Text => $"DISK: \"{DiskName}\" is low on storage. Free space left: {ByteUnit.FindUnit(Value)}";
+
+        public override bool CanBeRemoved(DiskDrive dd)
         {
             if (dd == null)
                 throw new ArgumentNullException("dd");
@@ -1013,6 +1038,59 @@ namespace Home.Model
 
             var result = dd.IsFull();
             return (result == null || result.HasValue && !result.Value);
+        }
+
+        /// <summary>
+        /// Creates a storage warning with the given text at exactly THIS moment (timestamp)
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static StorageWarning Create(string diskName, string storageID, ulong value)
+        {
+            StorageWarning storageWarning = new StorageWarning();
+            storageWarning.StorageID = storageID;
+            storageWarning.WarningOccoured = DateTime.Now;
+            storageWarning.Value = value;
+            storageWarning.DiskName = diskName;
+
+            return storageWarning;
+        }
+    }
+
+    public class BatteryWarning : Warning<Device>
+    {
+        [JsonIgnore()]
+        public override string Name => "Battery";
+
+        [JsonPropertyName("value")]
+        public int Value { get; set; }
+
+        [XmlIgnore]
+        public override string Text => $"Battery is low: {Value}% left!";
+
+        public override bool CanBeRemoved(Device param)
+        {
+            if (param.BatteryInfo == null)
+                return true;
+
+            if (param.BatteryInfo.IsCharging)
+                return true;
+
+            return param.BatteryInfo.BatteryLevelInPercent > 10;
+        }
+
+        /// <summary>
+        /// Creates a battery warning with the given text at exactly THIS moment (timestamp)
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static BatteryWarning Create(int value)
+        {
+            BatteryWarning batteryWarning = new BatteryWarning();
+            batteryWarning.WarningOccoured = DateTime.Now;
+            batteryWarning.Value = value;
+
+            return batteryWarning;
         }
     }
 
