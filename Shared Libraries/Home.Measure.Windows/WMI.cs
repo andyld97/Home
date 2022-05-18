@@ -33,7 +33,6 @@ namespace Home.Measure.Windows
 
             try
             {
-
                 ManagementObjectSearcher searcher2 = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_DisplayControllerConfiguration");
                 foreach (ManagementObject queryObj in searcher2.Get())
                 {

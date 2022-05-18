@@ -170,6 +170,10 @@ namespace Home.Service.Windows
             currentDevice.Environment.Description = description;
             currentDevice.Environment.Vendor = vendor;
 
+            bool batteryResult = Home.Measure.Windows.NET.DetermineBatteryInfo(out int batteryPercentage, out bool isCharging);
+            if (batteryResult)
+                currentDevice.BatteryInfo = new Battery() { BatteryLevelInPercent = batteryPercentage, IsCharging = isCharging };
+
             // Send ack
             Answer<AckResult> ackResult = null;
 

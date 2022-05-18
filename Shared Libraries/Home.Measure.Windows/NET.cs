@@ -52,6 +52,30 @@ namespace Home.Measure.Windows
             return returnAddress;
         }
 
+
+        /// <summary>
+        /// Determines battery info related to the device!
+        /// </summary>
+        /// <param name="percentage"></param>
+        /// <param name="isCharging"></param>
+        /// <returns>false; if there is no battery available</returns>
+        public static bool DetermineBatteryInfo(out int percentage, out bool isCharging)
+        {
+            var powerStatus = System.Windows.Forms.SystemInformation.PowerStatus;
+
+            if (powerStatus.BatteryChargeStatus == System.Windows.Forms.BatteryChargeStatus.NoSystemBattery)
+            {
+                percentage = -1;
+                isCharging = false;
+                return false;
+            }
+
+            percentage = (int)Math.Round(powerStatus.BatteryLifePercent * 100, 0);
+            isCharging = (powerStatus.PowerLineStatus == System.Windows.Forms.PowerLineStatus.Online || powerStatus.BatteryChargeStatus == System.Windows.Forms.BatteryChargeStatus.Charging);
+
+            return true;
+        }
+
         public static byte[] CreateScreenshot(string fileName)
         {
             try
