@@ -503,6 +503,9 @@ namespace Home
 
         private void RenderPlot()
         {
+            if (currentDevice == null)
+                return;
+
             List<Point> cpuPoints = new List<Point>();
             List<Point> ramPoints = new List<Point>();
             List<Point> diskPoints = new List<Point>();
@@ -579,8 +582,18 @@ namespace Home
                 TooltipLabelFormatter = (s) => $"Battery Remaning: {s.PrimaryValue} %"
             };
 
-            List<ISeries> series = new List<ISeries>() { cpuSeries, ramSeries, diskSeries };
-            if (currentDevice.BatteryInfo != null)
+            List<ISeries> series = new List<ISeries>(); // { cpuSeries, ramSeries, diskSeries };
+
+            if (ChkCPULegend.IsChecked.Value)
+                series.Add(cpuSeries);
+
+            if (ChkRAMLegend.IsChecked.Value)
+                series.Add(ramSeries);
+
+            if (ChkDiskLegend.IsChecked.Value)
+                series.Add(diskSeries);
+
+            if (ChkBatteryLegend.IsChecked.Value && currentDevice.BatteryInfo != null)
                 series.Add(batterySeries);
 
             DeviceActivityPlot.Series = series;
@@ -751,6 +764,26 @@ namespace Home
         private void DeviceExplorer_OnHomeButtonPressed()
         {
             SwitchFileManager(false);
+        }
+
+        private void ChkCPULegend_Checked(object sender, RoutedEventArgs e)
+        {
+            RenderPlot();
+        }
+
+        private void ChkRAMLegend_Checked(object sender, RoutedEventArgs e)
+        {
+            RenderPlot();
+        }
+
+        private void ChkDiskLegend_Checked(object sender, RoutedEventArgs e)
+        {
+            RenderPlot();
+        }
+
+        private void ChkBatteryLegend_Checked(object sender, RoutedEventArgs e)
+        {
+            RenderPlot();
         }
     }
 
