@@ -50,19 +50,19 @@
     <ProjectReference Include="..\..\Shared Libraries\Home.Measure.Windows\Home.Measure.Windows.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="DotnetRuntimeBootstrapper" Version="2.2.0">
+    <PackageReference Include="DotnetRuntimeBootstrapper" Version="2.3.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.6.0-preview3.19128.7" />
     <PackageReference Include="System.Management">
-      <Version>7.0.0-preview.3.22175.4</Version>
+      <Version>7.0.0-preview.5.22301.12</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.3.310801">
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.3.330701">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.0-preview.3.22175.4" />
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.0-preview.5.22301.12" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.8">

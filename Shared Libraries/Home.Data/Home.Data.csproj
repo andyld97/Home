@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="System.Text.Json" Version="7.0.0-preview.2.22152.2" />
+    <PackageReference Include="System.Text.Json" Version="7.0.0-preview.5.22301.12" />
   </ItemGroup>
 
 </Project>

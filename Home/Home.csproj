@@ -41,17 +41,17 @@
       <Version>9.0.4</Version>
     </PackageReference>
     <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF">
-      <Version>2.0.0-beta.101</Version>
+      <Version>2.0.0-beta.300</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Web.WebView2">
-      <Version>1.0.1222-prerelease</Version>
+      <Version>1.0.1248-prerelease</Version>
     </PackageReference>
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.6.0-preview3.19128.7" />
-    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.3.310801">
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.3.330701">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.0-preview.3.22175.4" />
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.0-preview.5.22301.12" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="resources\icons\explorer\html_file.png" />
