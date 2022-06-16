@@ -100,8 +100,8 @@ https://user-images.githubusercontent.com/10423894/174055660-a2b4c4a1-4a06-48bf-
 }
 ```
 - The default configuration is already working, you don't need to modify it, if you're using the same port (localhost)
-- This configuration requires a reverse proxy (see https://docs.microsoft.com/en-US/aspnet/core/host-and-deploy/linux-nginx?view=aspnetcore-6.0)
-But if you can also use ``http://0.0.0.0:5250`` otherwise!
+- This configuration requires a reverse proxy (see https://docs.microsoft.com/en-US/aspnet/core/host-and-deploy/linux-nginx?view=aspnetcore-6.0)   
+But you can also use ``http://0.0.0.0:5250`` otherwise!
 
 ## Setup
 1. Locate your ``dotnet`` installation (.NET Core 6.0.x and ASP.NET Core 6.0.x is both required!)
