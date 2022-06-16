@@ -1,3 +1,4 @@
+using Home.API.Model;
 using Home.Data;
 using Home.Data.Events;
 using Home.Data.Helper;
@@ -5,6 +6,7 @@ using Home.Model;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.PlatformAbstractions;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -25,8 +27,7 @@ namespace Home.API
         private static bool isHealthCheckTimerActive = false;
         private static readonly object _lock = new object();
 
-        public static readonly string DEVICE_PATH = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "devices.xml");
-        public static readonly string SCREENSHOTS_PATH = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "screenshots");
+        public static Config GlobalConfig;
 
         public static void Main(string[] args)
         { 
@@ -35,11 +36,11 @@ namespace Home.API
             _logger = loggerFactory.CreateLogger<Startup>();
 
             // Load devices
-            if (System.IO.File.Exists(DEVICE_PATH))
+            if (System.IO.File.Exists(Config.DEVICE_PATH))
             {
                 try
                 {
-                    Devices = Serialization.Serialization.Read<List<Device>>(DEVICE_PATH, Serialization.Serialization.Mode.Normal);
+                    Devices = Serialization.Serialization.Read<List<Device>>(Config.DEVICE_PATH, Serialization.Serialization.Mode.Normal);
                 }
                 catch (Exception ex)
                 {
@@ -49,9 +50,31 @@ namespace Home.API
                 if (Devices == null)
                     Devices = new List<Device>();
             }
-                    
+
+            // Initalize config.json to GlobalConfig
+            // Read config json (if any) [https://stackoverflow.com/a/28700387/6237448]
+            string configPath = System.IO.Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "config.json");
+            if (System.IO.File.Exists(configPath))
+            {
+                try
+                {
+                    string configJson = System.IO.File.ReadAllText(configPath);
+                    GlobalConfig = System.Text.Json.JsonSerializer.Deserialize<Config>(configJson);
+                    _logger.LogInformation("Successfully initalized config file!");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Failed to read logfile: {ex.Message}");
+                }
+            }
+            else
+            {
+                _logger.LogInformation("No config file found ...");
+                GlobalConfig = new Config();
+            }
+
             // Initalize health check timer
-            healthCheckTimer.Interval = TimeSpan.FromSeconds(5).TotalMilliseconds;
+            healthCheckTimer.Interval = GlobalConfig.HealthCheckTimerInterval.TotalMilliseconds;
             healthCheckTimer.Elapsed += HealthCheckTimer_Elapsed;
             healthCheckTimer.Start();
 
@@ -90,7 +113,7 @@ namespace Home.API
             List<string> clientIDsToRemove = new List<string>();
             lock (EventQueues)
             {
-                var deadEventQueues = EventQueues.Where(e => e.LastClientRequest.AddMinutes(10) < DateTime.Now).ToList();
+                var deadEventQueues = EventQueues.Where(e => e.LastClientRequest.Add(GlobalConfig.RemoveInactiveGUIClients) < DateTime.Now).ToList();
                 foreach (var deq in deadEventQueues)
                 {
                     EventQueues.Remove(deq);
@@ -119,7 +142,7 @@ namespace Home.API
             // Check devices
             lock (Devices)
             {
-                foreach (var device in Devices.Where(p => p.Status != Device.DeviceStatus.Offline && p.LastSeen.AddMinutes(3) < DateTime.Now))
+                foreach (var device in Devices.Where(p => p.Status != Device.DeviceStatus.Offline && p.LastSeen.Add(GlobalConfig.RemoveInactiveClients) < DateTime.Now))
                 {
                     device.Status = Device.DeviceStatus.Offline;
 
@@ -144,10 +167,10 @@ namespace Home.API
                         continue;
 
                     // Check age of this screenshot
-                    if (DateTime.TryParseExact(screenshotFileName, Consts.SCREENSHOT_DATE_FILE_FORMAT, System.Globalization.CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime result) && result.AddHours(12) < DateTime.Now)
+                    if (DateTime.TryParseExact(screenshotFileName, Consts.SCREENSHOT_DATE_FILE_FORMAT, System.Globalization.CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime result) && result.Add(GlobalConfig.AquireNewScreenshot) < DateTime.Now)
                     {
                         device.IsScreenshotRequired = true;
-                        device.LogEntries.Add(new LogEntry(DateTime.Now, "Last screenshot was older than 12h. Aquiring a new screenshot ...", LogEntry.LogLevel.Information));
+                        device.LogEntries.Add(new LogEntry(DateTime.Now, $"Last screenshot was older than {GlobalConfig.AquireNewScreenshot.TotalHours}h. Aquiring a new screenshot ...", LogEntry.LogLevel.Information));
                         NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
                     }
                 }
@@ -161,7 +184,7 @@ namespace Home.API
                     List<string> screenshotsToRemove = new List<string>();
                     foreach (var shot in device.ScreenshotFileNames.Take(device.ScreenshotFileNames.Count - 1))
                     {
-                        if (DateTime.TryParseExact(shot, Consts.SCREENSHOT_DATE_FILE_FORMAT, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime result) && result.AddDays(1) < DateTime.Now)
+                        if (DateTime.TryParseExact(shot, Consts.SCREENSHOT_DATE_FILE_FORMAT, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime result) && result.Add(GlobalConfig.RemoveOldScreenshots) < DateTime.Now)
                         {
                             screenshotsToRemove.Add(shot);
                             _logger.LogInformation($"Deleted screenshot {shot} from device {device.Name}, because it is older than one day!");
@@ -171,7 +194,7 @@ namespace Home.API
                     foreach (var shot in screenshotsToRemove)
                     {
                         device.ScreenshotFileNames.Remove(shot);
-                        string path = System.IO.Path.Combine(SCREENSHOTS_PATH, device.ID, $"{shot}.png");
+                        string path = System.IO.Path.Combine(Config.SCREENSHOTS_PATH, device.ID, $"{shot}.png");
                         try
                         {
                             System.IO.File.Delete(path);
@@ -187,7 +210,7 @@ namespace Home.API
                 foreach (var device in Devices)
                 {
                     // Battery Warnings
-                    if (device.BatteryWarning != null && device.BatteryWarning.CanBeRemoved(device))
+                    if (device.BatteryWarning != null && device.BatteryWarning.CanBeRemoved(device, GlobalConfig.BatteryWarningPercentage))
                     {
                         device.BatteryWarning = null;
                         device.LogEntries.Add(new LogEntry("[Battery Warning]: Removed!", LogEntry.LogLevel.Information, true));
@@ -204,7 +227,7 @@ namespace Home.API
                         if (associatedDisk == null)
                             continue;
 
-                        if (warning.CanBeRemoved(associatedDisk))
+                        if (warning.CanBeRemoved(associatedDisk, GlobalConfig.StorageWarningPercentage))
                         {
                             // Add log entry
                             toRemove.Add(warning);
@@ -218,27 +241,30 @@ namespace Home.API
                 }
             }
 
-            // Check for tg logging (extract log messages)
-            List<LogEntry> logEntries = new List<LogEntry>();
-            lock (Devices)
+            if (GlobalConfig.UseWebHook)
             {
-                foreach (var device in Devices)
+                // Check for tg logging (extract log messages)
+                List<LogEntry> notifyWebHookLogEntries = new List<LogEntry>();
+                lock (Devices)
                 {
-                    foreach (var logEntry in device.LogEntries.Where(l => l.LogTelegram))
+                    foreach (var device in Devices)
                     {
-                        // Add to list and reset telegram flag
-                        logEntries.Add(logEntry);
-                        logEntry.LogTelegram = false;
-                    }
+                        foreach (var logEntry in device.LogEntries.Where(l => l.NotifyWebHook))
+                        {
+                            // Add to list and reset webhook flag
+                            notifyWebHookLogEntries.Add(logEntry);
+                            logEntry.NotifyWebHook = false;
+                        }
 
+                    }
                 }
+
+                // Send log messages
+                foreach (var log in notifyWebHookLogEntries)
+                    await WebHook.NotifyWebHookAsync(GlobalConfig.WebHookUrl, log.ToString());
             }
 
-            // Send log messages
-            foreach (var log in logEntries)
-                await TGLogger.LogTelegram(log.ToString());
-
-            // Save devices (TODO: *** Only save if there are any changes recieved from the controller!)
+            // Save devices (ToDo: *** Only save if there are any changes recieved from the controller!)
             try
             {
                 lock (Devices)
@@ -255,7 +281,7 @@ namespace Home.API
                         }
                     }
 
-                    Serialization.Serialization.Save<List<Device>>(DEVICE_PATH, Devices, Serialization.Serialization.Mode.Normal);
+                    Serialization.Serialization.Save<List<Device>>(Config.DEVICE_PATH, Devices, Serialization.Serialization.Mode.Normal);
                 }
             }
             catch
@@ -272,7 +298,7 @@ namespace Home.API
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls("http://localhost:5250");
+                    webBuilder.UseUrls(GlobalConfig.HostUrl);
                 });
     }
 }

@@ -1,4 +1,5 @@
-﻿using Home.Data;
+﻿using Home.API.Model;
+using Home.Data;
 using Home.Data.Com;
 using Home.Data.Events;
 using Home.Model;
@@ -197,7 +198,7 @@ namespace Home.API.Controllers
 
             try
             {
-                string screenshotFilePath = System.IO.Path.Combine(Program.SCREENSHOTS_PATH, deviceId, $"{fileName}.png");
+                string screenshotFilePath = System.IO.Path.Combine(Config.SCREENSHOTS_PATH, deviceId, $"{fileName}.png");
                 Screenshot screenshot = new Screenshot()
                 {
                     ClientID = null,

@@ -29,7 +29,7 @@ namespace Home.Data
         [System.Text.Json.Serialization.JsonIgnore]
 #endif
         [XmlIgnore]
-        public bool LogTelegram { get; set; }
+        public bool NotifyWebHook { get; set; }
 
         public enum LogLevel
         {
@@ -45,12 +45,12 @@ namespace Home.Data
         public LogEntry(string message, LogLevel level, bool logTelegram = false) : this(DateTime.Now, message, level, logTelegram)
         { }
 
-        public LogEntry(DateTime timestamp, string message, LogLevel level, bool logTelegram = false)
+        public LogEntry(DateTime timestamp, string message, LogLevel level, bool notifyWebHook = false)
         {
             Timestamp = timestamp;
             Message = message;
             Level = level;
-            LogTelegram = logTelegram;
+            NotifyWebHook = notifyWebHook;
         }
 
         public override string ToString()

@@ -996,8 +996,9 @@ namespace Home.Model
         /// Checks if the storage warning is obsolete
         /// </summary>
         /// <param name="dd"></param>
-        /// <returns>ture if the warning is obsolete</returns>
-        public abstract bool CanBeRemoved(T param);
+        /// <param name="percentage">Percentage</param>
+        /// <returns>true if the warning is obsolete</returns>
+        public abstract bool CanBeRemoved(T param, int percentage);
 
         /// <summary>
         /// Create a log entry of this warning
@@ -1030,7 +1031,7 @@ namespace Home.Model
         [XmlIgnore]
         public override string Text => $"DISK: \"{DiskName}\" is low on storage. Free space left: {ByteUnit.FindUnit(Value)}";
 
-        public override bool CanBeRemoved(DiskDrive dd)
+        public override bool CanBeRemoved(DiskDrive dd, int percentage)
         {
             if (dd == null)
                 throw new ArgumentNullException("dd");
@@ -1038,7 +1039,7 @@ namespace Home.Model
             if (dd.UniqueID != StorageID)
                 throw new ArgumentException("DiskDrive with the wrong id specified!");
 
-            var result = dd.IsFull();
+            var result = dd.IsFull(percentage);
             return (result == null || result.HasValue && !result.Value);
         }
 
@@ -1070,7 +1071,7 @@ namespace Home.Model
         [XmlIgnore]
         public override string Text => $"Battery is low: {Value}% left!";
 
-        public override bool CanBeRemoved(Device param)
+        public override bool CanBeRemoved(Device param, int percentage)
         {
             if (param.BatteryInfo == null)
                 return true;
@@ -1078,7 +1079,7 @@ namespace Home.Model
             if (param.BatteryInfo.IsCharging)
                 return true;
 
-            return param.BatteryInfo.BatteryLevelInPercent > 10;
+            return param.BatteryInfo.BatteryLevelInPercent > percentage;
         }
 
         /// <summary>

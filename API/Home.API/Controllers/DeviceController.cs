@@ -1,4 +1,5 @@
-﻿using Home.Data;
+﻿using Home.API.Model;
+using Home.Data;
 using Home.Data.Com;
 using Home.Data.Events;
 using Home.Data.Helper;
@@ -89,6 +90,7 @@ namespace Home.API.Controllers
                         if (currentDevice.Status == Device.DeviceStatus.Offline)
                         {
                             // Check for clearing usage stats (if the device was offline for more than one hour)
+                            // Usage is currently not avaiable to configure, because it is fixed to one hour!
                             if (currentDevice.LastSeen.AddHours(1) < DateTime.Now)
                                 currentDevice.Usage.Clear();
 
@@ -162,7 +164,7 @@ namespace Home.API.Controllers
                             currentDevice.Usage.AddBatteryEntry(currentDevice.BatteryInfo.BatteryLevelInPercent);
 
                             // Check for battery warning
-                            if (currentDevice.BatteryInfo.BatteryLevelInPercent <= 10)
+                            if (currentDevice.BatteryInfo.BatteryLevelInPercent <= Program.GlobalConfig.BatteryWarningPercentage)
                             {
                                 if (currentDevice.BatteryWarning != null)
                                 {
@@ -184,7 +186,11 @@ namespace Home.API.Controllers
 
                         if (currentDevice.DiskDrives.Count > 0)
                         {
-                            var dds = currentDevice.DiskDrives.Where(d => d.IsFull().HasValue && d.IsFull().Value).ToList();
+                            var dds = currentDevice.DiskDrives.Where(d =>
+                            {
+                                var result = d.IsFull(Program.GlobalConfig.StorageWarningPercentage);
+                                return result.HasValue && result.Value;
+                            }).ToList();
 
                             // Add storage warning
                             // But ensure that the warning is only once per device and will be added again if dismissed by the user
@@ -310,7 +316,7 @@ namespace Home.API.Controllers
                 using (Stream stream = new System.IO.MemoryStream(data))
                 {
                     // Perform necessary actions with file stream
-                    string clientPath = System.IO.Path.Combine(Program.SCREENSHOTS_PATH, deviceFound.ID);
+                    string clientPath = System.IO.Path.Combine(Config.SCREENSHOTS_PATH, deviceFound.ID);
 
                     // Create folder
                     if (!System.IO.Directory.Exists(clientPath))
