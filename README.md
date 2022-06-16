@@ -59,6 +59,7 @@ Screenshot
 - Low storage warning (<= 10% left) per disk
 - Low battery warning (<= 10% left)
 - Device Log for each device
+- Device can have a location and a group (the location is used to group them in the overview by location)
 - Can be used to monitor linux servers (``Home.Service.Linux`` is implemented as ``CLI``)
 - A screenshot will be aquired (if supported) if no screenshot is available or if the last screenshot is older than 12h (old screenshots will be removed by the ``HealthCheck-Timer``)
 - Home has a ``WPF-Client`` for displaying all devices
