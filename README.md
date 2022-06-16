@@ -145,6 +145,7 @@ Commands/Tools used:
 - ``sudo apt install scrot``
 - ``sudo apt install sysstat``
 - ``lshw`` (make sure the version installed generates valid ``json``-data)
+- Ensure that both scripts ``screenshot.sh`` and ``hw.sh`` are executable (using ``chmod -x``)
 
 ### Setup
 1. Locate your ``dotnet`` installation (.NET Core 6.0.x and ASP.NET Core 6.0.x is both required!)
