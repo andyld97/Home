@@ -25,7 +25,7 @@ namespace Home.API.Model
         public bool UseWebHook { get; set; } = false;
 
         /// <summary>
-        /// The url which will be trigger your webhook (e.g. http://my-url.de/webhook.php/message?=)<br/>
+        /// The url which will be trigger your webhook (e.g. http://my-url.de/webhook.php/message?param=)<br/>
         /// The message will be appended directly onto this url, so make sure your url provides a parameter and looks like the example above!
         /// </summary>
         [JsonPropertyName("webhook_url")]
@@ -44,13 +44,13 @@ namespace Home.API.Model
         /// <summary>
         /// The interval when inactive Home.WPF client queues should be removed
         /// </summary>
-        [JsonPropertyName("remove_inative_gui_clients")]
+        [JsonPropertyName("remove_inactive_gui_clients")]
         public TimeSpan RemoveInactiveGUIClients { get; set; } = TimeSpan.FromMinutes(10);
 
         /// <summary>
         /// Describes how much time must elapse after the last ACK for the client to be recognised as offline.
         /// </summary>
-        [JsonPropertyName("remove_inative_clients")]
+        [JsonPropertyName("remove_inactive_clients")]
         public TimeSpan RemoveInactiveClients { get; set; } = TimeSpan.FromMinutes(3);
 
         /// <summary>

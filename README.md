@@ -78,24 +78,102 @@ Screenshot
 ## Preview-Video
 https://user-images.githubusercontent.com/10423894/174055660-a2b4c4a1-4a06-48bf-88a7-d0abbce7b3b7.mp4
 
+--- 
 ## Setup
 
-##API
+## API
 
 ### ``config.json``
 
+```json
+{
+  "host": "http://localhost:5250",
+  "use_webhook": false,
+  "webhook_url": null,
+  "health_check_timer_interval": "00:00:05",
+  "remove_inactive_gui_clients": "00:10:00",
+  "remove_inactive_clients": "00:03:00",
+  "aquire_new_screenshot": "12:00:00",
+  "remove_old_screenshots": "1.00:00:00",
+  "storage_warning_percentage": 10,
+  "battery_warning_percentage": 10
+}
+```
+- The default configuration is already working, you don't need to modify it, if you're using the same port (localhost)
 
-## Home.Service.Windows
-### Additional Information
-### Setup
+## Setup
+1. Locate your ``dotnet`` installation (.NET Core 6.0.x and ASP.NET Core 6.0.x is both required!)
+2. Create a service file at ``/etc/systemd/system/homeapi.service``:
 
-## Home.Service.Linux
-### Additional Information
-### Setup
+```
+[Unit]
+Description=HomeAPI Service
 
-## Home.Service.Android
-### Additional Information
+[Service]
+WorkingDirectory=/media/server/Server/andy/home
+ExecStart=/usr/bin/dotnet /media/server/Server/andy/home/Home.API.dll
+Restart=always
+# Restart service after 10 seconds if the dotnet service crashes:
+RestartSec=10
+SyslogIdentifier=homeapi
+User=root
+
+[Install]
+WantedBy=multi-user.target
+```
+- Make sure you're pathes are correctly setuped!
+3. Enable service: ``sudo systemctl enable homeapi.service``
+4. Start service: ``sudo systemctl start homeapi.service``
+
+- You can also maintain the service with ``sudo service homeapi status``!
+
+## Home.Service.Windows - Client
 ### Setup
+1. Download and extract all files
+2. Open ``Home.Service.Windows.exe`` and follow the instructions!
+3. Copy a link to ``shell:startup`` (to enable autostart)
+
+## Home.Service.Linux - Client
+### Additional Information
+
+To fix black screenshots with scrot on Ubuntu >= 21.10 see:
+https://askubuntu.com/a/1347651/692902
+
+Commands/Tools used:
+- ``sudo apt install scrot``
+- ``sudo apt install sysstat``
+- ``lshw`` (make sure the version installed generates valid ``json``-data)
+
+### Setup
+1. Locate your ``dotnet`` installation (.NET Core 6.0.x and ASP.NET Core 6.0.x is both required!)
+2. Create a service file at ``/etc/systemd/system/home.service``:
+
+```
+Description=HomeClient Service
+
+[Service]
+WorkingDirectory=/media/server/Server/andy/home.client
+ExecStart=/usr/bin/dotnet /media/server/Server/andy/home.client/Home.Service.Linux.dll
+Restart=always
+# Restart service after 10 seconds if the dotnet service crashes:
+RestartSec=10
+SyslogIdentifier=homeclient
+User=root
+
+[Install]
+WantedBy=multi-user.target
+```
+- Make sure you're pathes are correctly setuped!
+3. Enable service: ``sudo systemctl enable home.service``
+4. Start service: ``sudo systemctl start home.service``
+
+- You can also maintain the service with ``sudo service home status``!
+
+## Home.Service.Android - Client
+- Deploy via Visual Studio or
+- Install the APK and follow the instructions on your device.
+
+---
 
 ## Build
-To build this solution you need to have ``VS 2019``. Once it is setuped and builded there you can continue using ``VS 2022``. This is related to the fact, that ``VS 2022`` doesn't supports ``.NET 4.0`` and older, but obviously for older Windows versions (legacy) it is required to use ``.NET Framework 4.0`` or even ``.NET Framework 2.0``.
+To build this solution you need to have ``VS 2019`` installed. Once it is installed and builded there you can continue using ``VS 2022``. This is related to the fact, that ``VS 2022`` doesn't supports ``.NET 4.0`` and older, but obviously for older Windows versions (legacy) it is required to use ``.NET Framework 4.0`` or even ``.NET Framework 2.0``.
