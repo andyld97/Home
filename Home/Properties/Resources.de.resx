@@ -1,0 +1,315 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="strNoDeviceSelected" xml:space="preserve">
+    <value>Kein Gerät ausgewählt!</value>
+  </data>
+  <data name="strOverview" xml:space="preserve">
+    <value>Gesamtübersicht</value>
+  </data>
+  <data name="strTools" xml:space="preserve">
+    <value>Werkzeuge</value>
+  </data>
+  <data name="strFile" xml:space="preserve">
+    <value>Datei</value>
+  </data>
+  <data name="strGeneral" xml:space="preserve">
+    <value>Allgemein</value>
+  </data>
+  <data name="strManagment" xml:space="preserve">
+    <value>Verwaltung</value>
+  </data>
+  <data name="strIndividualOverview" xml:space="preserve">
+    <value>Einzelübersicht</value>
+  </data>
+  <data name="strClearLog" xml:space="preserve">
+    <value>Log leeren</value>
+  </data>
+  <data name="strDeleteDevice" xml:space="preserve">
+    <value>Gerät löschen</value>
+  </data>
+  <data name="strExecuteCommand" xml:space="preserve">
+    <value>Befehl ausführen</value>
+  </data>
+  <data name="strMuteSound" xml:space="preserve">
+    <value>Sound Mute</value>
+  </data>
+  <data name="strReboot" xml:space="preserve">
+    <value>Neustarten</value>
+  </data>
+  <data name="strRemoteConnection" xml:space="preserve">
+    <value>Remote Verbindung</value>
+  </data>
+  <data name="strRemoteShell" xml:space="preserve">
+    <value>Remote Konsole</value>
+  </data>
+  <data name="strSendMessage" xml:space="preserve">
+    <value>Nachricht senden</value>
+  </data>
+  <data name="strShutdown" xml:space="preserve">
+    <value>Herunterfahren</value>
+  </data>
+  <data name="strDisk" xml:space="preserve">
+    <value>Datenträger</value>
+  </data>
+  <data name="strUser" xml:space="preserve">
+    <value>Benutzer</value>
+  </data>
+  <data name="strShutdownMenu" xml:space="preserve">
+    <value>Herunterfahren Menü</value>
+  </data>
+  <data name="strDevice" xml:space="preserve">
+    <value>Gerät</value>
+  </data>
+  <data name="strManufacturer" xml:space="preserve">
+    <value>Hersteller: </value>
+  </data>
+  <data name="strProduct" xml:space="preserve">
+    <value>Produkt: </value>
+  </data>
+  <data name="strDeviceDescription" xml:space="preserve">
+    <value>Beschreibung: </value>
+  </data>
+  <data name="strDeviceClientVersion" xml:space="preserve">
+    <value>Client-Version: </value>
+  </data>
+  <data name="strDeviceOnlineTime" xml:space="preserve">
+    <value>Online: </value>
+  </data>
+  <data name="strDeviceStart" xml:space="preserve">
+    <value>Start: </value>
+  </data>
+  <data name="strLocation" xml:space="preserve">
+    <value>Ort: </value>
+  </data>
+  <data name="strActivity" xml:space="preserve">
+    <value>Aktivität</value>
+  </data>
+  <data name="strHDD_FreeOf" xml:space="preserve">
+    <value>frei von</value>
+  </data>
+  <data name="strDeviceLog" xml:space="preserve">
+    <value>Geräte Log</value>
+  </data>
+  <data name="strActiveDevicesTab" xml:space="preserve">
+    <value>Aktive Geräte: {0}</value>
+  </data>
+  <data name="strAllDevicesTab" xml:space="preserve">
+    <value>Alle Geräte: {0}</value>
+  </data>
+  <data name="strOfflineDevicesTab" xml:space="preserve">
+    <value>Inaktive Geräte: {0}</value>
+  </data>
+  <data name="strShowScreenshots" xml:space="preserve">
+    <value>Screenshots anzeigen</value>
+  </data>
+  <data name="strFileExplorerDateOfChange" xml:space="preserve">
+    <value>Änderungsdatum</value>
+  </data>
+  <data name="strFileExplorerName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="strFileExplorerSize" xml:space="preserve">
+    <value>Größe</value>
+  </data>
+  <data name="strFileExplorerType" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="strFileExplorerMenu_DeleteFile" xml:space="preserve">
+    <value>Datei löschen</value>
+  </data>
+  <data name="strFileExplorerMenu_DeleteFolder" xml:space="preserve">
+    <value>Ordner löschen</value>
+  </data>
+  <data name="strFileExplorerMenu_DownloadFile" xml:space="preserve">
+    <value>Datei herunterladen</value>
+  </data>
+  <data name="strFileExplorerMenu_DownloadFolderAsZIP" xml:space="preserve">
+    <value>Ordner als ZIP-Datei herunterladen</value>
+  </data>
+  <data name="strFileExplorerMenu_Properties" xml:space="preserve">
+    <value>Eigenschaften</value>
+  </data>
+  <data name="strFolder" xml:space="preserve">
+    <value>Verzeichnis</value>
+  </data>
+  <data name="strUnkown" xml:space="preserve">
+    <value>Unbekannt</value>
+  </data>
+  <data name="strToggleTheme" xml:space="preserve">
+    <value>Thema umschalten</value>
+  </data>
+  <data name="strExit" xml:space="preserve">
+    <value>Beenden</value>
+  </data>
+  <data name="strScreenshotViewer_ViewScreenshot" xml:space="preserve">
+    <value>Ansicht zurücksetzen</value>
+  </data>
+  <data name="strScreenshotViewer_ChangeSize" xml:space="preserve">
+    <value>Größe ändern</value>
+  </data>
+  <data name="strScreenshotViewer_AquireNewScreenshot" xml:space="preserve">
+    <value>Neuen Screenshot anfordern</value>
+  </data>
+  <data name="strScreenshotViewer_ToggleLiveView" xml:space="preserve">
+    <value>Live View umschalten</value>
+  </data>
+  <data name="strScreenshotViewer_SaveAs" xml:space="preserve">
+    <value>Speichern unter ...</value>
+  </data>
+  <data name="strScreenshotDialog_ShowScreenshot" xml:space="preserve">
+    <value>Screenshot anzeigen</value>
+  </data>
+  <data name="strOK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="strSendCommandDialog_Title" xml:space="preserve">
+    <value>Befehl senden</value>
+  </data>
+  <data name="strSendCommandDialog_App" xml:space="preserve">
+    <value>Anwendung:</value>
+  </data>
+  <data name="strSendCommandDialog_Parameter" xml:space="preserve">
+    <value>Paramter:</value>
+  </data>
+  <data name="strTo" xml:space="preserve">
+    <value>an</value>
+  </data>
+  <data name="strSendMessageDialog_Title" xml:space="preserve">
+    <value>Nachricht senden</value>
+  </data>
+  <data name="strSendMessageDialog_MessageTitle" xml:space="preserve">
+    <value>Titel:</value>
+  </data>
+  <data name="strSendMessageDialog_MessageContent" xml:space="preserve">
+    <value>Nachricht:</value>
+  </data>
+  <data name="strSendMessageDialog_LogLevel" xml:space="preserve">
+    <value>Level:</value>
+  </data>
+  <data name="strSendMessageDialog_LogLevel_Information" xml:space="preserve">
+    <value>Information</value>
+  </data>
+  <data name="strSendMessageDialog_LogLevel_Warning" xml:space="preserve">
+    <value>Warnung</value>
+  </data>
+  <data name="strSendMessageDialog_LogLevel_Error" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
+</root>

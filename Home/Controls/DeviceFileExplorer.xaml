@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:Home.Controls"
              mc:Ignorable="d" 
              xmlns:wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+             xmlns:res="clr-namespace:Home.Properties"
              d:DesignHeight="450" d:DesignWidth="800" Background="{DynamicResource WhiteBrush}">
     <UserControl.Resources>
         <local:ImageTypeConverter x:Key="imageConverter" />
@@ -15,11 +16,11 @@
         <local:LengthConverter x:Key="lengthConverter" />
 
         <ContextMenu x:Key="MenuDownload">
-            <MenuItem x:Name="MenuDeleteFile" Click="MenuDelete_Click" Header="Datei löschen" />
-            <MenuItem x:Name="MenuDeleteDirectory" Click="MenuDeleteDirectory_Click" Header="Ordner löschen" />
-            <MenuItem x:Name="MenuDownloadFile" Click="MenuDownloadFile_Click" Header="Datei herunterladen" />
-            <MenuItem x:Name="MenuDownloadFolder" Click="MenuDownloadFolder_Click" Header="Ordner als ZIP-Datei herunterladen" />
-            <MenuItem x:Name="MenuProperties" Click="MenuProperties_Click" Header="Eigenschaften" />
+            <MenuItem x:Name="MenuDeleteFile" Click="MenuDelete_Click" Header="{x:Static res:Resources.strFileExplorerMenu_DeleteFile}" IsEnabled="False" />
+            <MenuItem x:Name="MenuDeleteDirectory" Click="MenuDeleteDirectory_Click" Header="{x:Static res:Resources.strFileExplorerMenu_DeleteFolder}" IsEnabled="False" />
+            <MenuItem x:Name="MenuDownloadFile" Click="MenuDownloadFile_Click" Header="{x:Static res:Resources.strFileExplorerMenu_DownloadFile}" />
+            <MenuItem x:Name="MenuDownloadFolder" Click="MenuDownloadFolder_Click" Header="{x:Static res:Resources.strFileExplorerMenu_DownloadFolderAsZIP}" />
+            <MenuItem x:Name="MenuProperties" Click="MenuProperties_Click" Header="{x:Static res:Resources.strFileExplorerMenu_Properties}" IsEnabled="False" />
         </ContextMenu>
     </UserControl.Resources>
     <Grid>
@@ -109,7 +110,7 @@
                     </Style>
                 </DataGrid.RowHeaderStyle>
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn Header="Name" Width="*">
+                    <DataGridTemplateColumn Header="{x:Static res:Resources.strFileExplorerName}" Width="*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
@@ -119,21 +120,21 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Änderungsdatum" Width="120">
+                    <DataGridTemplateColumn Header="{x:Static res:Resources.strFileExplorerDateOfChange}" Width="120">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding .,Converter={StaticResource dateConverter}}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Typ" Width="100">
+                    <DataGridTemplateColumn Header="{x:Static res:Resources.strFileExplorerType}" Width="100">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding .,Converter={StaticResource typeConverter}}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Größe" Width="100">
+                    <DataGridTemplateColumn Header="{x:Static res:Resources.strFileExplorerSize}" Width="100">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding .,Converter={StaticResource lengthConverter}}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />

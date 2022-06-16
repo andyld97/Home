@@ -17,13 +17,13 @@ namespace Home.Controls.Dialogs
             InitializeComponent();
             this.device = device;
             this.apiAccess = apiAccess;
-
-            Title += $" an {device.Name}";
+            
+            Title += $" {Properties.Resources.strTo} {device.Name}";
         }
 
         private async void ButtonSend_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(TextExecutable.Text)) // || string.IsNullOrEmpty(TextParameter.Text))
+            if (string.IsNullOrEmpty(TextExecutable.Text))
             {
                 MessageBox.Show(this, "Bitte geben Sie gültige Werte ein!", "Ungültige Werte", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;

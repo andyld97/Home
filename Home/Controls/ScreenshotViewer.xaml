@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Home.Controls"
+             xmlns:res="clr-namespace:Home.Properties"
             mc:Ignorable="d">
     <Border x:Name="MainBorder" BorderBrush="LightGray" BorderThickness="1" CornerRadius="0">
         <Grid>
@@ -32,35 +33,35 @@
                                 <Setter Property="BorderBrush" Value="{DynamicResource BlackBrush}" />
                             </Style>
                         </StackPanel.Resources>
-                        <Border x:Name="ButtonToggleLiveMode" MouseDown="ButtonToggleLiveMode_MouseDown" Margin="5" BorderThickness="0" Cursor="Hand" ToolTip="Live View einschalten">
+                        <Border x:Name="ButtonToggleLiveMode" MouseDown="ButtonToggleLiveMode_MouseDown" Margin="5" BorderThickness="0" Cursor="Hand" ToolTip="{x:Static res:Resources.strScreenshotViewer_ToggleLiveView}">
                             <Border.RenderTransform>
                                 <TranslateTransform />
                             </Border.RenderTransform>
                             
                             <Image x:Name="ImageToggleLive" Height="32" Source="../resources/icons/live/toggle.png" />
                         </Border>
-                        <Border x:Name="ButtonSaveImage" MouseDown="ButtonSaveImage_MouseDown" Margin="5" BorderThickness="0" Cursor="Hand" ToolTip="Speichern unter ...">
+                        <Border x:Name="ButtonSaveImage" MouseDown="ButtonSaveImage_MouseDown" Margin="5" BorderThickness="0" Cursor="Hand" ToolTip="{x:Static res:Resources.strScreenshotViewer_SaveAs}">
                             <Border.RenderTransform>
                                 <TranslateTransform />
                             </Border.RenderTransform>
                             
                             <Image Source="../resources/icons/live/save.png" Height="32" />
                         </Border>
-                        <Border x:Name="ButtonRefresh" MouseDown="ButtonRefresh_MouseDown" Margin="5" BorderThickness="0" Cursor="Hand" ToolTip="Neuen Screenshot anfordern">
+                        <Border x:Name="ButtonRefresh" MouseDown="ButtonRefresh_MouseDown" Margin="5" BorderThickness="0" Cursor="Hand" ToolTip="{x:Static res:Resources.strScreenshotViewer_AquireNewScreenshot}">
                             <Border.RenderTransform>
                                 <TranslateTransform />
                             </Border.RenderTransform>
                             
                             <Image Source="../resources/icons/live/refresh.png" Height="25" />
                         </Border>
-                        <Border x:Name="ButtonResize" MouseDown="ButtonResize_MouseDown" Margin="5" BorderThickness="0" Cursor="Hand" ToolTip="Größe ändern" Height="25">
+                        <Border x:Name="ButtonResize" MouseDown="ButtonResize_MouseDown" Margin="5" BorderThickness="0" Cursor="Hand" ToolTip="{x:Static res:Resources.strScreenshotViewer_ChangeSize}" Height="25">
                             <Border.RenderTransform>
                                 <TranslateTransform />
                             </Border.RenderTransform>
                             <Image Source="../resources/icons/live/maximize.png" />
                         </Border>
 
-                        <Border x:Name="ButtonResetScrollViewer" MouseDown="ButtonResetScrollViewer_MouseDown" Margin="5" BorderThickness="0" Cursor="Hand" ToolTip="Ansicht zurücksetzen" Height="25">
+                        <Border x:Name="ButtonResetScrollViewer" MouseDown="ButtonResetScrollViewer_MouseDown" Margin="5" BorderThickness="0" Cursor="Hand" ToolTip="{x:Static res:Resources.strScreenshotViewer_ViewScreenshot}" Height="25">
                             <Border.RenderTransform>
                                 <TranslateTransform />
                             </Border.RenderTransform>

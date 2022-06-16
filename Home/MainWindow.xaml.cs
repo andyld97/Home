@@ -170,9 +170,11 @@ namespace Home
                     DeviceHolderActive.SelectedIndex = offIndex;
             }
 
-            TextAllDevices.Text = $"Alle Geräte: {deviceList.Count}";
-            TextActiveDevices.Text = $"Aktive Geräte {deviceList.Where(p => p.Status != DeviceStatus.Offline).Count()}";
-            TextOfflineDevices.Text = $"Inaktive Geräte: {deviceList.Where(p => p.Status == DeviceStatus.Offline).Count()}";
+            // Update left tab headers
+            TextAllDevices.Text = string.Format(Properties.Resources.strAllDevicesTab, deviceList.Count);
+            TextActiveDevices.Text = string.Format(Properties.Resources.strActiveDevicesTab, deviceList.Where(p => p.Status != DeviceStatus.Offline).Count());
+            TextOfflineDevices.Text = string.Format(Properties.Resources.strOfflineDevicesTab, deviceList.Where(p => p.Status == DeviceStatus.Offline).Count());
+
             RefreshSelection();
             ignoreSelectionChanged = false;
             RefreshOverview();
@@ -638,7 +640,7 @@ namespace Home
         private void MenuButtonSendMessage_Click(object sender, RoutedEventArgs e)
         {
             if (currentDevice != null)
-                new SendMessage(currentDevice, API).ShowDialog();
+                new SendMessageDialog(currentDevice, API).ShowDialog();
         }
 
         private void MenuButtonSendCommand_Click(object sender, RoutedEventArgs e)
@@ -906,7 +908,7 @@ namespace Home
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (string.IsNullOrEmpty(value?.ToString()))
-                return "Unbekannt";
+                return Properties.Resources.strUnkown;
 
             return value;
         }

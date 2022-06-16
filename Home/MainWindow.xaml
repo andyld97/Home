@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Home" xmlns:controls="clr-namespace:Home.Controls" xmlns:converter="clr-namespace:Home.Converter" xmlns:wpf="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF" xmlns:skiasharpview="clr-namespace:LiveChartsCore.SkiaSharpView;assembly=LiveChartsCore.SkiaSharpView" xmlns:livechartscore="clr-namespace:LiveChartsCore;assembly=LiveChartsCore" mc:Ignorable="d"
+        xmlns:res="clr-namespace:Home.Properties"
         Title="Home" Height="1024" Width="1280" WindowStartupLocation="CenterScreen" Loaded="RibbonWindow_Loaded">
     <Fluent:RibbonWindow.Resources>
         <local:DiskImageConverter x:Key="diskImageConverter" />
@@ -23,30 +24,30 @@
 
         <Fluent:Ribbon Background="Transparent">
             <Fluent:Ribbon.Menu>
-                <Fluent:ApplicationMenu Header="Datei" MaxDropDownHeight="500" BorderBrush="Blue">
-                    <Fluent:MenuItem x:Name="MenuButtonChangeTheme" Click="MenuButtonChangeTheme_Click" Header="Themenwechsel" />
-                    <Fluent:MenuItem Header="Beenden" />
+                <Fluent:ApplicationMenu Header="{x:Static res:Resources.strFile}" MaxDropDownHeight="500" BorderBrush="Blue">
+                    <Fluent:MenuItem x:Name="MenuButtonChangeTheme" Click="MenuButtonChangeTheme_Click" Header="{x:Static res:Resources.strToggleTheme}" />
+                    <Fluent:MenuItem Header="{x:Static res:Resources.strExit}" />
                 </Fluent:ApplicationMenu>
             </Fluent:Ribbon.Menu>
 
-            <Fluent:RibbonTabItem Header="Allgemein">
+            <Fluent:RibbonTabItem Header="{x:Static res:Resources.strGeneral}">
                 <Fluent:RibbonGroupBox Header="Operationen">
-                    <Fluent:Button x:Name="MenuButtonSendMessage" Click="MenuButtonSendMessage_Click" Header="Nachricht senden" LargeIcon="/resources/icons/menu/send_message.png"/>
-                    <Fluent:DropDownButton Header="Herunterfahren Menü" LargeIcon="/resources/icons/menu/shutdown.png">
-                        <Fluent:MenuItem x:Name="MenuButtonShutdown" Click="MenuButtonShutdown_Click"  Header="Herunterfahren" Icon="/resources/icons/menu/shutdown.png" />
-                        <Fluent:MenuItem x:Name="MenuButtonReboot" Click="MenuButtonReboot_Click"  Header="Neustarten" Icon="/resources/icons/menu/reboot.png" />
+                    <Fluent:Button x:Name="MenuButtonSendMessage" Click="MenuButtonSendMessage_Click" Header="{x:Static res:Resources.strSendMessage}" LargeIcon="/resources/icons/menu/send_message.png"/>
+                    <Fluent:DropDownButton Header="{x:Static res:Resources.strShutdownMenu}" LargeIcon="/resources/icons/menu/shutdown.png">
+                        <Fluent:MenuItem x:Name="MenuButtonShutdown" Click="MenuButtonShutdown_Click" Header="{x:Static res:Resources.strShutdown}" Icon="/resources/icons/menu/shutdown.png" />
+                        <Fluent:MenuItem x:Name="MenuButtonReboot" Click="MenuButtonReboot_Click" Header="{x:Static res:Resources.strReboot}" Icon="/resources/icons/menu/reboot.png" />
                     </Fluent:DropDownButton>
-                    <Fluent:Button x:Name="MenuButtonSendCommand" Click="MenuButtonSendCommand_Click"  Header="Befehl ausführen" LargeIcon="/resources/icons/menu/run.png" />
-                    <Fluent:Button Header="Remote Shell" LargeIcon="/resources/icons/menu/shell.png" />
-                    <Fluent:Button Header="Remote Verbindung" LargeIcon="/resources/icons/menu/rdp.png" />
-                    <Fluent:Button Header="Sound Mute" LargeIcon="/resources/icons/menu/mute.png" />
-                    <Fluent:Button x:Name="MenuButtonClearLog" Click="MenuButtonClearLog_Click"  Header="Log leeren" LargeIcon="/resources/icons/menu/clear_log.png" />
+                    <Fluent:Button x:Name="MenuButtonSendCommand" Click="MenuButtonSendCommand_Click" Header="{x:Static res:Resources.strExecuteCommand}" LargeIcon="/resources/icons/menu/run.png" />
+                    <Fluent:Button Header="{x:Static res:Resources.strRemoteShell}" LargeIcon="/resources/icons/menu/shell.png" IsEnabled="False" />
+                    <Fluent:Button Header="{x:Static res:Resources.strRemoteConnection}" LargeIcon="/resources/icons/menu/rdp.png" IsEnabled="False" />
+                    <Fluent:Button Header="{x:Static res:Resources.strMuteSound}" LargeIcon="/resources/icons/menu/mute.png" IsEnabled="False" />
+                    <Fluent:Button x:Name="MenuButtonClearLog" Click="MenuButtonClearLog_Click" Header="{x:Static res:Resources.strClearLog}" LargeIcon="/resources/icons/menu/clear_log.png" />
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
 
-            <Fluent:RibbonTabItem Header="Verwaltung">
-                <Fluent:RibbonGroupBox Header="Werkzeuge">
-                    <Fluent:Button x:Name="MenuButtonDeleteDevice" Click="MenuButtonDeleteDevice_Click" Header="Gerät löschen" LargeIcon="/resources/icons/menu/add.png" />
+            <Fluent:RibbonTabItem Header="{x:Static res:Resources.strManagment}">
+                <Fluent:RibbonGroupBox Header="{x:Static res:Resources.strTools}">
+                    <Fluent:Button x:Name="MenuButtonDeleteDevice" Click="MenuButtonDeleteDevice_Click" Header="{x:Static res:Resources.strDeleteDevice}" LargeIcon="/resources/icons/menu/add.png" />
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
@@ -82,7 +83,7 @@
                     </ResourceDictionary>
                 </TabControl.Resources>
 
-                <TabItem Header="Gesamtübersicht">
+                <TabItem Header="{x:Static res:Resources.strOverview}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -90,7 +91,7 @@
                         </Grid.RowDefinitions>
 
                         <StackPanel Grid.Row="0">
-                            <CheckBox x:Name="ChkOverviewShowScreenshots" Checked="ChkOverviewShowScreenshots_Checked" Unchecked="ChkOverviewShowScreenshots_Checked" Content="Screenshots anzeigen" Foreground="{DynamicResource BlackBrush}" Margin="5" />
+                            <CheckBox x:Name="ChkOverviewShowScreenshots" Checked="ChkOverviewShowScreenshots_Checked" Unchecked="ChkOverviewShowScreenshots_Checked" Content="{x:Static res:Resources.strShowScreenshots}" Foreground="{DynamicResource BlackBrush}" Margin="5" />
                         </StackPanel>
 
                         <ScrollViewer Grid.Row="1">
@@ -98,7 +99,7 @@
                         </ScrollViewer>
                     </Grid>
                 </TabItem>
-                <TabItem Header="Einzelübersicht">
+                <TabItem Header="{x:Static res:Resources.strIndividualOverview}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -172,7 +173,7 @@
                         <Border Grid.Column="1" Grid.Row="1" BorderThickness="2" CornerRadius="5" BorderBrush="Gray" Margin="5">
                             <Grid>
                                 <Grid x:Name="DeviceInfoHint" Visibility="Visible">
-                                    <TextBlock Text="Kein Gerät ausgewählt!" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Foreground="{DynamicResource BlackBrush}" FontSize="33" />
+                                    <TextBlock Text="{x:Static res:Resources.strNoDeviceSelected}" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Foreground="{DynamicResource BlackBrush}" FontSize="33" />
                                 </Grid>
 
                                 <Grid x:Name="DeviceInfo" Visibility="Hidden">
@@ -224,17 +225,17 @@
                                                     <StackPanel>
                                                         <StackPanel Orientation="Horizontal">
                                                             <Image Source="resources/icons/device.png" Height="24" Margin="5" />
-                                                            <TextBlock Text="Gerät" FontSize="25" FontWeight="Bold"/>
+                                                            <TextBlock Text="{x:Static res:Resources.strDevice}" FontSize="25" FontWeight="Bold"/>
                                                         </StackPanel>
 
                                                         <Separator Margin="0,5,0,0" Foreground="{DynamicResource BlackBrush}" />
-                                                        <TextBlock Text="Hersteller: " />
-                                                        <TextBlock Text="Produkt: " />
-                                                        <TextBlock Text="Beschreibung: "/>
-                                                        <TextBlock Text="Start:" />
-                                                        <TextBlock Text="Online:" />
-                                                        <TextBlock Text="Ort:" />
-                                                        <TextBlock Text="Client-Version: "/>
+                                                        <TextBlock Text="{x:Static res:Resources.strManufacturer}" />
+                                                        <TextBlock Text="{x:Static res:Resources.strProduct}" />
+                                                        <TextBlock Text="{x:Static res:Resources.strDeviceDescription}"/>
+                                                        <TextBlock Text="{x:Static res:Resources.strDeviceStart}" />
+                                                        <TextBlock Text="{x:Static res:Resources.strDeviceOnlineTime}" />
+                                                        <TextBlock Text="{x:Static res:Resources.strLocation}" />
+                                                        <TextBlock Text="{x:Static res:Resources.strDeviceClientVersion}"/>
                                                         <StackPanel Orientation="Horizontal">
                                                             <Image Source="resources/icons/hardware.png" Height="24" Margin="5" />
                                                             <TextBlock Text="Hardware" FontSize="25" Margin="0,0,0,0" FontWeight="Bold" />
@@ -249,7 +250,7 @@
                                                         <TextBlock Text="Battery:" FontWeight="Bold" />
                                                         <StackPanel Orientation="Horizontal">
                                                             <Image Source="resources/icons/activity.png" Height="24" Margin="5" />
-                                                            <TextBlock Text="Aktivität" FontSize="25" Margin="0,0,0,0" FontWeight="Bold" />
+                                                            <TextBlock Text="{x:Static res:Resources.strActivity}" FontSize="25" Margin="0,0,0,0" FontWeight="Bold" />
                                                         </StackPanel>
                                                         <Separator Margin="0,5,0,0" />
                                                     </StackPanel>
@@ -284,7 +285,6 @@
                                                 <Run Text=" x " /><Run Text="{Binding Environment.CPUCount}" />
                                                         </TextBlock>
                                                         <TextBlock x:Name="TextMotherboard" Text="{Binding Environment.Motherboard, Converter={StaticResource emptyConverter}}" ToolTip="{Binding ElementName=TextMotherboard, Path=Text}" />
-<!--                                                        <TextBlock x:Name="TextGraphics" Text="{Binding Environment.Graphics, Converter={StaticResource emptyConverter}}" ToolTip="{Binding ElementName=TextGraphics, Path=Text}" /> -->
                                                         <Fluent:ComboBox x:Name="CmbGraphics" Margin="-8,0,5,0" IsEditable="False" ItemsSource="{Binding Environment.GraphicCards}" SelectedIndex="0" />
                                                         <TextBlock x:Name="TextTotalRAM" ToolTip="{Binding ElementName=TextTotalRAM, Path=Text}">
                                                 <Run Text="{Binding Environment.TotalRAM}" />
@@ -352,7 +352,7 @@
                                             <TabItem.Header>
                                                 <StackPanel Orientation="Horizontal" Height="20">
                                                     <Image Source="resources/icons/hdd.png" Width="16" />
-                                                    <TextBlock Margin="5,0,0,0" Text="Datenträger" TextAlignment="Center" />
+                                                    <TextBlock Margin="5,0,0,0" Text="{x:Static res:Resources.strDisk}" TextAlignment="Center" />
                                                 </StackPanel>
                                             </TabItem.Header>
                                             <Grid>
@@ -387,7 +387,7 @@
                                                                     <TextBlock>
                                                     <Run Text="{Binding FreeSpace, Converter={StaticResource byteToGBConverter}}" />
                                                     <Run Text="GB" />
-                                                    <Run Text="frei von" />
+                                                    <Run Text="{x:Static res:Resources.strHDD_FreeOf}" />
                                                     <Run Text="{Binding TotalSpace, Converter={StaticResource byteToGBConverter}}" />
                                                     <Run Text="GB" />
                                                                     </TextBlock>
@@ -403,7 +403,7 @@
                                             <TabItem.Header>
                                                 <StackPanel Orientation="Horizontal" Height="20">
                                                     <Image Source="resources/icons/user.png" Width="16" />
-                                                    <TextBlock Margin="5,0,0,0" Text="Benutzer" TextAlignment="Center" />
+                                                    <TextBlock Margin="5,0,0,0" Text="{x:Static res:Resources.strUser}" TextAlignment="Center" />
                                                 </StackPanel>
                                             </TabItem.Header>
 
@@ -413,9 +413,9 @@
                                                         <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="2">
                                                             <Image Source="resources/icons/user.png" Width="32" />
                                                             <TextBlock VerticalAlignment="Center" Margin="5,0,0,0" Foreground="{DynamicResource BlackBrush}">
-                                                    <Run Text="{Binding Environment.UserName}" />
-                                                    <LineBreak />
-                                                    <Run Text="{Binding Environment.DomainName}" Typography.Capitals="AllSmallCaps" />
+                                                                <Run Text="{Binding Environment.UserName}" />
+                                                                <LineBreak />
+                                                                <Run Text="{Binding Environment.DomainName}" Typography.Capitals="AllSmallCaps" />
                                                             </TextBlock>
                                                         </StackPanel>
                                                     </ListViewItem>
@@ -438,7 +438,7 @@
                                                 <TabItem.Header>
                                                     <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Center">
                                                         <Image Source="resources/icons/log.png" Width="16" />
-                                                        <TextBlock Margin="5,0,0,0" Text="Geräte Log" TextAlignment="Center" />
+                                                        <TextBlock Margin="5,0,0,0" Text="{x:Static res:Resources.strDeviceLog}" TextAlignment="Center" />
                                                     </StackPanel>
                                                 </TabItem.Header>
                                                 <ScrollViewer x:Name="LogScrollViewer">

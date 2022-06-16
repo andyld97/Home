@@ -407,7 +407,7 @@ namespace Home.Controls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is RemoteDirectory)
-                return "Verzeichnis";
+                return Properties.Resources.strFolder;
             else if (value is RemoteFile rf)
             {
                 string ext = System.IO.Path.GetExtension(rf.Path).ToUpper();
@@ -415,9 +415,9 @@ namespace Home.Controls
                     ext = ext.Substring(1);
 
                 if (!string.IsNullOrEmpty(ext))
-                    return $"{ext}-Datei";
+                    return $"{ext}-{Properties.Resources.strFile}";
                 else
-                    return "Datei";
+                    return Properties.Resources.strFile;
             }
 
             return "-";
