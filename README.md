@@ -129,11 +129,11 @@ WantedBy=multi-user.target
 
 - You can also maintain the service with ``sudo service homeapi status``!
 
-## Home.Service.Windows - Client
+## Home.Service.Windows/Legacy - Client
 ### Setup
 1. Download and extract all files
-2. Open ``Home.Service.Windows.exe`` and follow the instructions!
-3. Copy a link to ``shell:startup`` (to enable autostart)
+2. Open ``Home.Service.Windows.exe`` or ``Home.Service.Legacy.exe`` and follow the instructions!
+3. Copy a link to the executable file to ``shell:startup`` (to enable autostart)
 
 ## Home.Service.Linux - Client
 ### Additional Information
