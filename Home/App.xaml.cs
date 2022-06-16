@@ -16,11 +16,12 @@ namespace Home
 
         protected override void OnStartup(StartupEventArgs e)
         {
-
+#if DEBUG
             // Change lang to en to debug
             System.Globalization.CultureInfo ci = new System.Globalization.CultureInfo("en-US");
             System.Threading.Thread.CurrentThread.CurrentCulture =
             System.Threading.Thread.CurrentThread.CurrentUICulture = ci;
+#endif
 
             ThemeManager.Current.ThemeSyncMode = ThemeSyncMode.SyncWithAppMode;
             ThemeManager.Current.SyncTheme();
