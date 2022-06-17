@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Timers;
 
 namespace Home.API
@@ -72,7 +73,7 @@ namespace Home.API
                 _logger.LogInformation("No config file found ...");
                 GlobalConfig = new Config();
             }
-
+            
             // Initalize health check timer
             healthCheckTimer.Interval = GlobalConfig.HealthCheckTimerInterval.TotalMilliseconds;
             healthCheckTimer.Elapsed += HealthCheckTimer_Elapsed;

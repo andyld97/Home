@@ -12,7 +12,7 @@ namespace Home.API
                 using (HttpClient client = new HttpClient())
                 {
                     string nUrl = $"{url}{message}";
-                    await client.GetAsync(url);
+                    await client.GetAsync(nUrl);
                 }
             }
             catch
