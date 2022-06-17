@@ -37,7 +37,7 @@ Screenshot
 ## Features
 | Feature                   | Windows (legacy)   | Windows            | Linux                  | Android            |
 |---------------------------|--------------------|--------------------|------------------------|--------------------|
-| Remote File Access        | :x: (1)                | :heavy_check_mark: (1) | :heavy_check_mark: (1)     | :x:                |
+| Remote File Access        | :x:                | :heavy_check_mark: (1) | :heavy_check_mark: (1)     | :x:                |
 | Screenshots               | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: (2) | :x:                |
 | Hardware Info             | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: (2) | :heavy_check_mark: |
 | Performance Counters      | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:     | Only RAM           |
@@ -137,6 +137,8 @@ WantedBy=multi-user.target
 2. Open ``Home.Service.Windows.exe`` or ``Home.Service.Legacy.exe`` and follow the instructions!
 3. Copy a link to the executable file to ``shell:startup`` (to enable autostart)
 
+![Home.Service.Windows-Screenshot](https://github.com/andyld97/Home/blob/dev/Assets/screenshots/Home.Service.Windows.png)
+   
 ## Home.Service.Linux - Client
 ### Additional Information
 
@@ -191,6 +193,7 @@ WantedBy=multi-user.target
 - Deploy via Visual Studio or
 - Install the APK and follow the instructions on your device.
 
+![Home.Service.Android-Screenshot](https://github.com/andyld97/Home/blob/dev/Assets/screenshots/Home.Service.Android.jpg)
 ---
 
 ## Build
