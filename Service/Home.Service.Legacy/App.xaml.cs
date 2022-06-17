@@ -15,7 +15,6 @@ namespace Home.Service.Legacy
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en-US");
         }
     }
 }
