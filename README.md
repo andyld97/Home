@@ -31,9 +31,6 @@ To get this working you need to setup `Home.API` as a self-hosted API on your lo
 
 ``ASP.NET Core 6.0.x`` is required for remote file access API!
 
-Screenshot
-
-
 ## Features
 | Feature                   | Windows (legacy)   | Windows            | Linux                  | Android            |
 |---------------------------|--------------------|--------------------|------------------------|--------------------|
@@ -106,7 +103,7 @@ https://user-images.githubusercontent.com/10423894/174055660-a2b4c4a1-4a06-48bf-
 But you can also use ``http://0.0.0.0:5250`` otherwise!
 
 ## Setup
-1. Locate your ``dotnet`` installation (.NET Core 6.0.x and ASP.NET Core 6.0.x is both required!)
+1. Locate your ``dotnet`` installation (.NET Core 6.0.x and ASP.NET Core 6.0.x are both required!)
 2. Create a service file at ``/etc/systemd/system/homeapi.service``:
 
 ```
