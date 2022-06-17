@@ -162,7 +162,7 @@ Commands/Tools used:
   "is_signed_in": false /* should be false on first start! */
 }
 ```
-2. Locate your ``dotnet`` installation (.NET Core 6.0.x and ASP.NET Core 6.0.x is both required!)
+2. Locate your ``dotnet`` installation (.NET Core 6.0.x and ASP.NET Core 6.0.x are both required!)
 3. Create a service file at ``/etc/systemd/system/home.service``:
 
 ```
