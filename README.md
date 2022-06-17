@@ -37,16 +37,18 @@ Screenshot
 ## Features
 | Feature                   | Windows (legacy)   | Windows            | Linux                  | Android            |
 |---------------------------|--------------------|--------------------|------------------------|--------------------|
-| Remote File Access        | :x:                | :heavy_check_mark: | :heavy_check_mark:     | :x:                |
-| Screenshots               | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: (*) | :x:                |
-| Hardware Info             | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: (*) | :heavy_check_mark: |
+| Remote File Access        | :x: (1)                | :heavy_check_mark: (1) | :heavy_check_mark: (1)     | :x:                |
+| Screenshots               | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: (2) | :x:                |
+| Hardware Info             | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: (2) | :heavy_check_mark: |
 | Performance Counters      | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:     | Only RAM           |
 | Battery Info              | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:     | :heavy_check_mark: |
 | Shutdown/Restart Commands | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:     | :x:                |
 | Message/Execute Command   | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:     | :x:                |
 | Remote Shell              | Not implemented    | Not implemented    | Not implemented        | :x:                |
 
-(*) For ``Home.Service.Linux`` some additional tools are required to successfully gather all information and there may be some additional steps required to make screenshots working on Ubuntu > 21.04 (due to Wayland securitiy restrictions).
+(1) Each ack service has an integrated ``ASP.NET Core``-Service which is hosted within the service itself (for Windows you need to permit firewall permissons!). It is hosted on http://0.0.0.0:5556 to make it accessible via network (the port can be changed: ``Home.Data.Consts.API_PORT``). This is used for remote file access!
+
+(2) For ``Home.Service.Linux`` some additional tools are required to successfully gather all information and there may be some additional steps required to make screenshots working on Ubuntu > 21.04 (due to Wayland securitiy restrictions).
 
 ### Additonal Features
 - Access hardware info (cpu, ram, graphics, performance)
@@ -148,8 +150,21 @@ Commands/Tools used:
 - Ensure that both scripts ``screenshot.sh`` and ``hw.sh`` are executable (using ``chmod -x``)
 
 ### Setup
-1. Locate your ``dotnet`` installation (.NET Core 6.0.x and ASP.NET Core 6.0.x is both required!)
-2. Create a service file at ``/etc/systemd/system/home.service``:
+1. Edit config.json (comments should be removed!):
+```json
+{
+  "id": null, /* Will be set automatically */
+  "user": "server", /* Should not be root, but can be like pi */
+  "api": "http://192.168.178.38:83",
+  "location": "Room 518",
+  "device_group": null,
+  "os": 1, /* Android = 0 | Linux = 1 | LinuxMint = 2 | LinuxUbuntu = 3 | Windows = 4-9 | Unix = 10 | Other = 11 */
+  "type": 0, /* SingleBoardDevice = 0 | MiniPC = 1 | Notebook = 2 | Desktop = 3 | Server = 4 */
+  "is_signed_in": false /* should be false on first start! */
+}
+```
+2. Locate your ``dotnet`` installation (.NET Core 6.0.x and ASP.NET Core 6.0.x is both required!)
+3. Create a service file at ``/etc/systemd/system/home.service``:
 
 ```
 Description=HomeClient Service
@@ -167,8 +182,8 @@ User=root
 WantedBy=multi-user.target
 ```
 - Make sure you're pathes are correctly setuped!
-3. Enable service: ``sudo systemctl enable home.service``
-4. Start service: ``sudo systemctl start home.service``
+4. Enable service: ``sudo systemctl enable home.service``
+5. Start service: ``sudo systemctl start home.service``
 
 - You can also maintain the service with ``sudo service home status``!
 
@@ -179,4 +194,4 @@ WantedBy=multi-user.target
 ---
 
 ## Build
-To build this solution you need to have ``VS 2019`` installed. Once it is installed and builded there you can continue using ``VS 2022``. This is related to the fact, that ``VS 2022`` doesn't supports ``.NET 4.0`` and older, but obviously for older Windows versions (legacy) it is required to use ``.NET Framework 4.0`` or even ``.NET Framework 2.0``.
+To build this solution you need to have ``VS 2019`` installed. Once it is installed and builded you can continue using ``VS 2022``. This is related to the fact, that ``VS 2022`` doesn't supports ``.NET 4.0`` and older, but obviously for older Windows versions (legacy) it is required to use ``.NET Framework 4.0`` or even ``.NET Framework 2.0``.

@@ -133,6 +133,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nicht zugeordnet.
+        /// </summary>
+        public static string strDeviceLocationNotAssigend {
+            get {
+                return ResourceManager.GetString("strDeviceLocationNotAssigend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Device Log.
         /// </summary>
         public static string strDeviceLog {

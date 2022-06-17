@@ -225,7 +225,7 @@ namespace Home.Service.Android.Helper
 
         public static void RefreshDevice(this Device currentDevice, ContentResolver cr, Context context)
         {
-            currentDevice.ServiceClientVersion = "vAndroid 0.0.6";
+            currentDevice.ServiceClientVersion = "vAndroid 0.0.7";
 #if NOGL
             currentDevice.ServiceClientVersion += " - NOGL";
 #endif

@@ -214,10 +214,10 @@ namespace Home.Service.Android
             
                 ServiceHelper.StartAckService(this);
                 RefreshServiceStatus();
-                Toast.MakeText(this, $"Das Gerät wurde erfolgreich registriert!", ToastLength.Short).Show();
+                Toast.MakeText(this, $"The device was registered succuessfully!", ToastLength.Short).Show();
             }
             else
-                Toast.MakeText(this, $"Fehler beim Registrieren des Gerätes!", ToastLength.Short).Show();
+                Toast.MakeText(this, $"Failed to register device!", ToastLength.Short).Show();
         }
 
         private void BtnShowInfos_Click(object sender, System.EventArgs e)
@@ -234,9 +234,6 @@ namespace Home.Service.Android
             buttonToggleService.Enabled = currentSettings.IsDeviceRegistered;
         }
 
-        /// <summary>
-        ///  ToDo: This methods need to be called in a timer periodically
-        /// </summary>
         private void RefreshServiceStatus()
         {
             bool isServiceRunning = ServiceHelper.IsMyServiceRunning(this, typeof(AckService));
@@ -245,14 +242,14 @@ namespace Home.Service.Android
             SetGuiState(!isDeviceRegistered);
 
             // Assign leds
-            ledIsDeviceRegistered.SetImageResource(isDeviceRegistered ? Resource.Drawable.led_on : Resource.Drawable.led_off  );
+            ledIsDeviceRegistered.SetImageResource(isDeviceRegistered ? Resource.Drawable.led_on : Resource.Drawable.led_off);
             ledIsServiceRunning.SetImageResource(isServiceRunning ? Resource.Drawable.led_on : Resource.Drawable.led_off);
 
             // Assing texts
-            textRegister.Text = (isDeviceRegistered ? $"Das Gerät {currentDevice.Name} ist registiert!" : $"Das Gerät {currentDevice.Name} nicht ist registiert!");
-            textService.Text = (isServiceRunning ? "Home.Service.Android ist aktiv!" : "Home.Service.Android nicht ist aktiv!");
+            textRegister.Text = (isDeviceRegistered ? string.Format(GetString(Resource.String.strDeviceRegisteredText), currentDevice.Name) : string.Format(GetString(Resource.String.strDeviceNotRegisteredText), currentDevice.Name));
+            textService.Text = (isServiceRunning ? GetString(Resource.String.strServiceActiveText) : GetString(Resource.String.strServiceInActiveText));
 
-            buttonToggleService.Text = (isServiceRunning ? "Service beenden" : "Service starten");
+            buttonToggleService.Text = (isServiceRunning ? GetString(Resource.String.strStopService) : GetString(Resource.String.strStartService));
         }
 
         private void ButtonToggleService_Click(object sender, System.EventArgs e)
@@ -271,6 +268,6 @@ namespace Home.Service.Android
         {
             RefreshServiceStatus();
         }
-#endregion
+        #endregion
     }
 }

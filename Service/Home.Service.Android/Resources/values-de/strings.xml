@@ -1,0 +1,23 @@
+﻿<resources>
+	<string name="app_name">Home.Service.Android</string>
+	<string name="action_settings">Einstellungen</string>
+	<string name="strShowDeviceSpecs">Geräte Spezifikationen anzeigen</string>
+	<string name="strRegisterDevice">Gerät registrieren</string>
+	<string name="strHost">Host:</string>
+	<string name="strLocation">Ort:</string>
+	<string name="strGroup">Gruppe:</string>
+	<string name="strDeviceType">Geräte Art:</string>
+	<string name="strDeviceStatus">Gerätestatus:</string>
+	<string name="strStartService">Service starten</string>
+	<string name="strStopService">Service beenden</string>
+	<string name="strServiceActiveText">Home.Service.Android ist aktiv!</string>
+	<string name="strServiceInActiveText">Home.Service.Android nicht ist aktiv!</string>
+	<string name="strDeviceRegisteredText">Das Gerät {0} ist nicht registriert!</string>
+	<string name="strDeviceNotRegisteredText">Das Gerät {0} ist nicht registriert!</string>
+	<string-array name="device_type">
+		<item>Smartphone</item>
+		<item>SmartTV</item>
+		<item>SetTopBox</item>
+		<item>Tablet</item>
+	</string-array>
+</resources>

@@ -114,4 +114,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="strOS" xml:space="preserve">
+    <value>OS:</value>
+  </data>
+  <data name="strAPIUrl" xml:space="preserve">
+    <value>API Url:</value>
+  </data>
+  <data name="strDeviceGroup" xml:space="preserve">
+    <value>Group:</value>
+  </data>
+  <data name="strDeviceSettings" xml:space="preserve">
+    <value>Device Settings</value>
+  </data>
+  <data name="strDeviceType" xml:space="preserve">
+    <value>Device Type:</value>
+  </data>
+  <data name="strInitalize" xml:space="preserve">
+    <value>Initalize</value>
+  </data>
+  <data name="strLocation" xml:space="preserve">
+    <value>Location:</value>
+  </data>
 </root>

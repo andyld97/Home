@@ -10417,6 +10417,45 @@ namespace Home.Service.Android
 			// aapt resource value: 0x7F0F007F
 			public const int status_bar_notification_info_overflow = 2131689599;
 			
+			// aapt resource value: 0x7F0F0080
+			public const int strDeviceNotRegisteredText = 2131689600;
+			
+			// aapt resource value: 0x7F0F0081
+			public const int strDeviceRegisteredText = 2131689601;
+			
+			// aapt resource value: 0x7F0F0082
+			public const int strDeviceStatus = 2131689602;
+			
+			// aapt resource value: 0x7F0F0083
+			public const int strDeviceType = 2131689603;
+			
+			// aapt resource value: 0x7F0F0084
+			public const int strGroup = 2131689604;
+			
+			// aapt resource value: 0x7F0F0085
+			public const int strHost = 2131689605;
+			
+			// aapt resource value: 0x7F0F0086
+			public const int strLocation = 2131689606;
+			
+			// aapt resource value: 0x7F0F0087
+			public const int strRegisterDevice = 2131689607;
+			
+			// aapt resource value: 0x7F0F0088
+			public const int strServiceActiveText = 2131689608;
+			
+			// aapt resource value: 0x7F0F0089
+			public const int strServiceInActiveText = 2131689609;
+			
+			// aapt resource value: 0x7F0F008A
+			public const int strShowDeviceSpecs = 2131689610;
+			
+			// aapt resource value: 0x7F0F008B
+			public const int strStartService = 2131689611;
+			
+			// aapt resource value: 0x7F0F008C
+			public const int strStopService = 2131689612;
+			
 			static String()
 			{
 				global::Android.Runtime.ResourceIdManager.UpdateIdValues();

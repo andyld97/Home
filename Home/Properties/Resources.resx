@@ -345,4 +345,7 @@
     <value>Error</value>
     <comment>SendMessageDialog</comment>
   </data>
+  <data name="strDeviceLocationNotAssigend" xml:space="preserve">
+    <value>Nicht zugeordnet</value>
+  </data>
 </root>

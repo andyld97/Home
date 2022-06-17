@@ -249,7 +249,7 @@ namespace Home
             {
                 DeviceItemGroup dig = new DeviceItemGroup
                 {
-                    GroupName = "Nicht zugeordnet",
+                    GroupName = Properties.Resources.strDeviceLocationNotAssigend,
                     Devices = notAssociatedDevices,
                     IsScreenshotView = ChkOverviewShowScreenshots.IsChecked.Value
                 };

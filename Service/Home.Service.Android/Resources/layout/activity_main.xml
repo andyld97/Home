@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:textAllCaps="false"
             android:layout_margin="2dp"
-            android:text="Geräte Spezifikationen anzeigen" />
+            android:text="@string/strShowDeviceSpecs" />
 
         <android.opengl.GLSurfaceView
             android:id="@+id/surface"
@@ -42,12 +42,12 @@
             android:textStyle="bold"
             android:textSize="23dp"
             android:layout_marginBottom="10dp"
-            android:text="Gerät registrieren" />
+            android:text="@string/strRegisterDevice" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Host:" />
+            android:text="@string/strHost" />
 
         <EditText
             android:id="@+id/textHost"
@@ -58,7 +58,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ort:" />
+            android:text="@string/strLocation" />
 
         <EditText
             android:id="@+id/textLocation"
@@ -68,7 +68,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Gruppe:" />
+            android:text="@string/strGroup" />
 
         <EditText
             android:id="@+id/textGroup"
@@ -78,7 +78,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Gerät-Art:" />
+            android:text="@string/strDeviceType" />
 
         <Spinner
             android:id="@+id/spinnerDeviceType"
@@ -92,7 +92,7 @@
             android:layout_height="wrap_content"
             android:textAllCaps="false"
             android:layout_margin="2dp"
-            android:text="Gerät registrieren" />
+            android:text="@string/strRegisterDevice" />
 
     </LinearLayout>
 
@@ -104,7 +104,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Gerätestatus:"
+            android:text="@string/strDeviceStatus"
             android:textStyle="bold"
             android:textSize="23dp"
             android:layout_marginBottom="10dp" />
@@ -126,7 +126,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:textStyle="bold"
-                android:text="Das Gerät B1-Max ist registriert!" />
+                android:text="@string/strDeviceRegisteredText" />
         </LinearLayout>
 
         <LinearLayout
@@ -147,10 +147,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:textStyle="bold"
-                android:text="Home.Service.Android ist aktiv!" />
+                android:text="@string/strServiceActiveText" />
 
         </LinearLayout>
-
 
         <Button
             android:id="@+id/buttonToggleService"
@@ -158,6 +157,6 @@
             android:layout_height="wrap_content"
             android:textAllCaps="false"
             android:layout_margin="5dp"
-            android:text="Service starten" />
+            android:text="@string/strStartService" />
     </LinearLayout>
 </LinearLayout>

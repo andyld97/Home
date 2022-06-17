@@ -48,6 +48,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "screenshots", "screenshots", "{05E800C3-AC14-414E-9523-14ABC121588F}"
+	ProjectSection(SolutionItems) = preProject
+		Assets\screenshots\Home.Service.Android.jpg = Assets\screenshots\Home.Service.Android.jpg
+		Assets\screenshots\Home.Service.Windows.png = Assets\screenshots\Home.Service.Windows.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -110,6 +116,7 @@ Global
 		{36F79A8A-96BF-49B5-AAA7-39D434385B44} = {3DDEE229-D318-4A2A-85F4-5ED070765C30}
 		{7716B99C-FC83-4755-878D-C094CC8C7649} = {69C60DD4-2CEF-4304-A8FF-751BE53960A9}
 		{BBA6CEE6-1D66-4F82-B179-7203D08EE44C} = {69C60DD4-2CEF-4304-A8FF-751BE53960A9}
+		{05E800C3-AC14-414E-9523-14ABC121588F} = {27651F4E-1EF6-41DA-A004-93589CDD3BBA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {96AFC1EE-03B9-4208-AF3D-A290F2C3B875}
