@@ -122,7 +122,7 @@ User=root
 [Install]
 WantedBy=multi-user.target
 ```
-- Make sure you're pathes are correctly setuped!
+- Make sure your pathes are correctly setuped!
 3. Enable service: ``sudo systemctl enable homeapi.service``
 4. Start service: ``sudo systemctl start homeapi.service``
 
@@ -180,7 +180,7 @@ User=root
 [Install]
 WantedBy=multi-user.target
 ```
-- Make sure you're pathes are correctly setuped!
+- Make sure your pathes are correctly setuped!
 4. Enable service: ``sudo systemctl enable home.service``
 5. Start service: ``sudo systemctl start home.service``
 
