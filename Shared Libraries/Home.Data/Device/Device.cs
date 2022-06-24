@@ -322,17 +322,40 @@ namespace Home.Model
 
         public enum OSType
         {
+            [Description("Android")]
             Android,
+
+            [Description("Linux")]
             Linux,
+
+            [Description("Mint (Linux)")]
             LinuxMint,
+
+            [Description("Ubuntu (Linux)")]
             LinuxUbuntu,
+
+            [Description("Windows XP")]
             WindowsXP,
+
+            [Description("Windows Vista")]
             WindowsaVista,
+
+            [Description("Windows 7")]
             Windows7,
+
+            [Description("Windows 8")]
             Windows8,
+
+            [Description("Windows 10")]
             Windows10,
+
+            [Description("Windows 11")]
             Windows11,
+
+            [Description("Unix")]
             Unix,
+
+            [Description("Other")]
             Other
         }
 

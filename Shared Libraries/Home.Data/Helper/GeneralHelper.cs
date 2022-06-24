@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using static Home.Model.Device;
@@ -50,6 +52,32 @@ namespace Home.Data.Helper
         {
             // Theoretically Android OS is also based on Linux, but in this case it doesn't count as Linux
             return (value == OSType.Linux || value == OSType.LinuxUbuntu || value == OSType.LinuxMint);
+        }
+
+        /// <summary>
+        /// Gets the descriptions of an enum value (https://stackoverflow.com/a/1415187/6237448)
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string GetDescription(this Enum value)
+        {
+            Type type = value.GetType();
+            string name = Enum.GetName(type, value);
+            if (name != null)
+            {
+                FieldInfo field = type.GetField(name);
+                if (field != null)
+                {
+                    DescriptionAttribute attr =
+                           Attribute.GetCustomAttribute(field,
+                             typeof(DescriptionAttribute)) as DescriptionAttribute;
+                    if (attr != null)
+                    {
+                        return attr.Description;
+                    }
+                }
+            }
+            return null;
         }
 
         public static string BuildSHA1Hash(this string input)

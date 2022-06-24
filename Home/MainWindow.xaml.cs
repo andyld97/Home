@@ -24,6 +24,9 @@ using System.Windows.Threading;
 using static Home.Model.Device;
 using static Home.Data.Helper.GeneralHelper;
 using Microsoft.Web.WebView2.Core;
+using Home.Data.Helper;
+using Model;
+using Microsoft.Win32;
 
 namespace Home
 {
@@ -103,6 +106,8 @@ namespace Home
         {
             base.OnContentRendered(e);
             webView2Environment = await CoreWebView2Environment.CreateAsync();
+
+            await webViewReport.EnsureCoreWebView2Async(webView2Environment);
         }
 
         private async void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
@@ -214,7 +219,7 @@ namespace Home
                 return;
             oldDeviceCount = onlineDevices;
 
-            PanelOverview.Children.Clear();     
+            PanelOverview.Children.Clear();
 
             var groups = from device in deviceList where device.Status != DeviceStatus.Offline group device by device.Location into gr orderby gr.Count() descending select gr;
 
@@ -327,7 +332,7 @@ namespace Home
                 isUpdating = false;
             }
         }
-        
+
         private async Task GetScreenshot(Device device, string fileName = "")
         {
             byte[] data = null;
@@ -409,6 +414,9 @@ namespace Home
                 DeviceInfo.Visibility = Visibility.Visible;
                 DeviceInfoHint.Visibility = Visibility.Collapsed;
                 MenuButtonSendMessage.IsEnabled = true;
+
+                await webViewReport.EnsureCoreWebView2Async(webView2Environment);
+                webViewReport.NavigateToString(Report.GenerateHtmlDeviceReport(currentDevice));
             }
             else
             {
@@ -431,7 +439,7 @@ namespace Home
         private async Task RefreshSelectedItem()
         {
             if (currentDevice == null)
-                return;          
+                return;
 
             // Generate log entries FlowDocument
             FlowDocument flowDocument = new FlowDocument { FontFamily = new FontFamily("Consolas") };
@@ -536,7 +544,7 @@ namespace Home
 
             void mapping(Point s, ChartPoint e)
             {
-                e.SecondaryValue = s.X; 
+                e.SecondaryValue = s.X;
                 e.PrimaryValue = s.Y;
             }
 
@@ -612,13 +620,14 @@ namespace Home
             var xaxis = DeviceActivityPlot.XAxes.FirstOrDefault();
             var yaxis = DeviceActivityPlot.YAxes.FirstOrDefault();
             yaxis.Labeler = (y) => $"{y}%";
-            xaxis.Labeler = (x) => {
+            xaxis.Labeler = (x) =>
+            {
                 if (currentDevice == null)
                     return string.Empty;
 
                 if (currentDevice.LastSeen == DateTime.MinValue)
                     return String.Empty;
-                
+
                 // 60 is not true if there are not 60 values in the list
                 // and remember that all values (cpu, ram, disk) MUST have the same amount, also if they get cleard (they get all cleard)
                 var n = currentDevice.LastSeen.AddMinutes(-(currentDevice.Usage.CPU.Count - x));
@@ -664,13 +673,13 @@ namespace Home
 
         private async void MenuButtonShutdown_Click(object sender, RoutedEventArgs e)
         {
-            await ShutdownOrRestartAsync(currentDevice, true);      
+            await ShutdownOrRestartAsync(currentDevice, true);
         }
 
         private async void MenuButtonReboot_Click(object sender, RoutedEventArgs e)
         {
-            await ShutdownOrRestartAsync(currentDevice, false);   
-        }    
+            await ShutdownOrRestartAsync(currentDevice, false);
+        }
 
         #endregion
 
@@ -786,6 +795,30 @@ namespace Home
         private void ChkBatteryLegend_Checked(object sender, RoutedEventArgs e)
         {
             RenderPlot();
+        }
+
+        private async void MenuButtonGenerateReport_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentDevice == null)
+                return;
+
+            var report = Report.GenerateHtmlDeviceReport(currentDevice);
+
+            SaveFileDialog sfd = new SaveFileDialog() { Filter = "HTML Report File (*.html)|*.html" };
+            sfd.FileName = $"{currentDevice.Name}.html";
+            var result = sfd.ShowDialog();
+
+            if (result.HasValue && result.Value)
+            {
+                try
+                {
+                    await System.IO.File.WriteAllTextAsync(sfd.FileName, report);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(this, $"{Home.Properties.Resources.strFailedToSaveReport}{Environment.NewLine}{ex.Message}", Home.Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
     }
 

@@ -88,11 +88,29 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bits.
+        /// </summary>
+        public static string strBit {
+            get {
+                return ResourceManager.GetString("strBit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Clear Log.
         /// </summary>
         public static string strClearLog {
             get {
                 return ResourceManager.GetString("strClearLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Days.
+        /// </summary>
+        public static string strDays {
+            get {
+                return ResourceManager.GetString("strDays", resourceCulture);
             }
         }
         
@@ -133,7 +151,7 @@ namespace Home.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Nicht zugeordnet.
+        ///   Looks up a localized string similar to Not associated.
         /// </summary>
         public static string strDeviceLocationNotAssigend {
             get {
@@ -178,6 +196,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error!.
+        /// </summary>
+        public static string strError {
+            get {
+                return ResourceManager.GetString("strError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Execute Command.
         /// </summary>
         public static string strExecuteCommand {
@@ -192,6 +219,15 @@ namespace Home.Properties {
         public static string strExit {
             get {
                 return ResourceManager.GetString("strExit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to save the report!.
+        /// </summary>
+        public static string strFailedToSaveReport {
+            get {
+                return ResourceManager.GetString("strFailedToSaveReport", resourceCulture);
             }
         }
         
@@ -313,6 +349,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hours.
+        /// </summary>
+        public static string strHours {
+            get {
+                return ResourceManager.GetString("strHours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Individual Overview.
         /// </summary>
         public static string strIndividualOverview {
@@ -349,6 +394,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Minutes.
+        /// </summary>
+        public static string strMinutes {
+            get {
+                return ResourceManager.GetString("strMinutes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Mute Sound.
         /// </summary>
         public static string strMuteSound {
@@ -358,11 +412,29 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No.
+        /// </summary>
+        public static string strNo {
+            get {
+                return ResourceManager.GetString("strNo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No device selected!.
         /// </summary>
         public static string strNoDeviceSelected {
             get {
                 return ResourceManager.GetString("strNoDeviceSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No warnings!.
+        /// </summary>
+        public static string strNoWarnings {
+            get {
+                return ResourceManager.GetString("strNoWarnings", resourceCulture);
             }
         }
         
@@ -403,6 +475,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Property.
+        /// </summary>
+        public static string strProperty {
+            get {
+                return ResourceManager.GetString("strProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reboot.
         /// </summary>
         public static string strReboot {
@@ -426,6 +507,348 @@ namespace Home.Properties {
         public static string strRemoteShell {
             get {
                 return ResourceManager.GetString("strRemoteShell", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Report.
+        /// </summary>
+        public static string strReport {
+            get {
+                return ResourceManager.GetString("strReport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Battery.
+        /// </summary>
+        public static string strReport_Battery {
+            get {
+                return ResourceManager.GetString("strReport_Battery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Available.
+        /// </summary>
+        public static string strReport_BatteryExists {
+            get {
+                return ResourceManager.GetString("strReport_BatteryExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remaining percent.
+        /// </summary>
+        public static string strReport_BatteryRemaningPercentage {
+            get {
+                return ResourceManager.GetString("strReport_BatteryRemaningPercentage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CPU.
+        /// </summary>
+        public static string strReport_CPU {
+            get {
+                return ResourceManager.GetString("strReport_CPU", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string strReport_Description {
+            get {
+                return ResourceManager.GetString("strReport_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Device-ID.
+        /// </summary>
+        public static string strReport_DeviceID {
+            get {
+                return ResourceManager.GetString("strReport_DeviceID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Devices Log.
+        /// </summary>
+        public static string strReport_DeviceLog {
+            get {
+                return ResourceManager.GetString("strReport_DeviceLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Device-Type.
+        /// </summary>
+        public static string strReport_DeviceType {
+            get {
+                return ResourceManager.GetString("strReport_DeviceType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disk.
+        /// </summary>
+        public static string strReport_Disk {
+            get {
+                return ResourceManager.GetString("strReport_Disk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Device Name.
+        /// </summary>
+        public static string strReport_DiskDeviceName {
+            get {
+                return ResourceManager.GetString("strReport_DiskDeviceName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filesystem.
+        /// </summary>
+        public static string strReport_DiskFilesystem {
+            get {
+                return ResourceManager.GetString("strReport_DiskFilesystem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Free Space.
+        /// </summary>
+        public static string strReport_DiskFreeSpace {
+            get {
+                return ResourceManager.GetString("strReport_DiskFreeSpace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Storage.
+        /// </summary>
+        public static string strReport_DiskStorage {
+            get {
+                return ResourceManager.GetString("strReport_DiskStorage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parititon.
+        /// </summary>
+        public static string strReport_DiskVolumeName {
+            get {
+                return ResourceManager.GetString("strReport_DiskVolumeName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Domain.
+        /// </summary>
+        public static string strReport_Domain {
+            get {
+                return ResourceManager.GetString("strReport_Domain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Graphics.
+        /// </summary>
+        public static string strReport_Graphics {
+            get {
+                return ResourceManager.GetString("strReport_Graphics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group.
+        /// </summary>
+        public static string strReport_Group {
+            get {
+                return ResourceManager.GetString("strReport_Group", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hardware.
+        /// </summary>
+        public static string strReport_Hardware {
+            get {
+                return ResourceManager.GetString("strReport_Hardware", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Home.Client-Version.
+        /// </summary>
+        public static string strReport_HomeClientVersion {
+            get {
+                return ResourceManager.GetString("strReport_HomeClientVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IP address.
+        /// </summary>
+        public static string strReport_IPAddress {
+            get {
+                return ResourceManager.GetString("strReport_IPAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading.
+        /// </summary>
+        public static string strReport_IsCharging {
+            get {
+                return ResourceManager.GetString("strReport_IsCharging", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Location.
+        /// </summary>
+        public static string strReport_Location {
+            get {
+                return ResourceManager.GetString("strReport_Location", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Motherboard.
+        /// </summary>
+        public static string strReport_Motherboard {
+            get {
+                return ResourceManager.GetString("strReport_Motherboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operating System.
+        /// </summary>
+        public static string strReport_OS {
+            get {
+                return ResourceManager.GetString("strReport_OS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string strReport_OsName {
+            get {
+                return ResourceManager.GetString("strReport_OsName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Product.
+        /// </summary>
+        public static string strReport_Product {
+            get {
+                return ResourceManager.GetString("strReport_Product", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RAM.
+        /// </summary>
+        public static string strReport_RAM {
+            get {
+                return ResourceManager.GetString("strReport_RAM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start Timestamp.
+        /// </summary>
+        public static string strReport_StartTimestamp {
+            get {
+                return ResourceManager.GetString("strReport_StartTimestamp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uptime.
+        /// </summary>
+        public static string strReport_Uptime {
+            get {
+                return ResourceManager.GetString("strReport_Uptime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User.
+        /// </summary>
+        public static string strReport_User {
+            get {
+                return ResourceManager.GetString("strReport_User", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vendor.
+        /// </summary>
+        public static string strReport_Vendor {
+            get {
+                return ResourceManager.GetString("strReport_Vendor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version.
+        /// </summary>
+        public static string strReport_Version {
+            get {
+                return ResourceManager.GetString("strReport_Version", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message.
+        /// </summary>
+        public static string strReport_WarningMessage {
+            get {
+                return ResourceManager.GetString("strReport_WarningMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning occured.
+        /// </summary>
+        public static string strReport_WarningOccured {
+            get {
+                return ResourceManager.GetString("strReport_WarningOccured", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warnings.
+        /// </summary>
+        public static string strReport_Warnings {
+            get {
+                return ResourceManager.GetString("strReport_Warnings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string strReport_WarningType {
+            get {
+                return ResourceManager.GetString("strReport_WarningType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save report.
+        /// </summary>
+        public static string strSaveReport {
+            get {
+                return ResourceManager.GetString("strSaveReport", resourceCulture);
             }
         }
         
@@ -651,6 +1074,24 @@ namespace Home.Properties {
         public static string strUser {
             get {
                 return ResourceManager.GetString("strUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value.
+        /// </summary>
+        public static string strValue {
+            get {
+                return ResourceManager.GetString("strValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes.
+        /// </summary>
+        public static string strYes {
+            get {
+                return ResourceManager.GetString("strYes", resourceCulture);
             }
         }
     }

@@ -312,4 +312,154 @@
   <data name="strSendMessageDialog_LogLevel_Error" xml:space="preserve">
     <value>Fehler</value>
   </data>
+  <data name="strBit" xml:space="preserve">
+    <value>Bit</value>
+  </data>
+  <data name="strDays" xml:space="preserve">
+    <value>Tage</value>
+  </data>
+  <data name="strHours" xml:space="preserve">
+    <value>Stunden</value>
+  </data>
+  <data name="strMinutes" xml:space="preserve">
+    <value>Minuten</value>
+  </data>
+  <data name="strNoWarnings" xml:space="preserve">
+    <value>Keine Warnungen!</value>
+  </data>
+  <data name="strDeviceLocationNotAssigend" xml:space="preserve">
+    <value>Nicht zugeordnet</value>
+  </data>
+  <data name="strNo" xml:space="preserve">
+    <value>Nein</value>
+  </data>
+  <data name="strProperty" xml:space="preserve">
+    <value>Eigenschaft</value>
+  </data>
+  <data name="strReport_Battery" xml:space="preserve">
+    <value>Akku</value>
+  </data>
+  <data name="strReport_BatteryExists" xml:space="preserve">
+    <value>Vorhanden</value>
+  </data>
+  <data name="strReport_BatteryRemaningPercentage" xml:space="preserve">
+    <value>Verbleibende Prozent</value>
+  </data>
+  <data name="strReport_CPU" xml:space="preserve">
+    <value>CPU</value>
+  </data>
+  <data name="strReport_Description" xml:space="preserve">
+    <value>Beschreibung</value>
+  </data>
+  <data name="strReport_DeviceID" xml:space="preserve">
+    <value>Geräte-ID</value>
+  </data>
+  <data name="strReport_DeviceLog" xml:space="preserve">
+    <value>Geräte Log</value>
+  </data>
+  <data name="strReport_Disk" xml:space="preserve">
+    <value>Datenträger</value>
+  </data>
+  <data name="strReport_DeviceType" xml:space="preserve">
+    <value>Geräte-Typ</value>
+  </data>
+  <data name="strReport_DiskDeviceName" xml:space="preserve">
+    <value>Gerätename</value>
+  </data>
+  <data name="strReport_DiskFilesystem" xml:space="preserve">
+    <value>Dateisystem</value>
+  </data>
+  <data name="strReport_DiskFreeSpace" xml:space="preserve">
+    <value>Freier Speicherplatz</value>
+  </data>
+  <data name="strReport_DiskStorage" xml:space="preserve">
+    <value>Speicherplatz</value>
+  </data>
+  <data name="strReport_DiskVolumeName" xml:space="preserve">
+    <value>Volume</value>
+  </data>
+  <data name="strReport_Domain" xml:space="preserve">
+    <value>Domain</value>
+  </data>
+  <data name="strReport_Graphics" xml:space="preserve">
+    <value>Grafik</value>
+  </data>
+  <data name="strReport_Group" xml:space="preserve">
+    <value>Gruppe</value>
+  </data>
+  <data name="strReport_Hardware" xml:space="preserve">
+    <value>Hardware</value>
+  </data>
+  <data name="strReport_HomeClientVersion" xml:space="preserve">
+    <value>Home.Client-Version</value>
+  </data>
+  <data name="strReport_IPAddress" xml:space="preserve">
+    <value>IP-Addresse</value>
+  </data>
+  <data name="strReport_IsCharging" xml:space="preserve">
+    <value>Wird geladen</value>
+  </data>
+  <data name="strReport_Motherboard" xml:space="preserve">
+    <value>Motherboard</value>
+  </data>
+  <data name="strReport_Location" xml:space="preserve">
+    <value>Ort</value>
+  </data>
+  <data name="strReport_OS" xml:space="preserve">
+    <value>Betriebssystem</value>
+  </data>
+  <data name="strReport_OsName" xml:space="preserve">
+    <value>Bezeichnung</value>
+  </data>
+  <data name="strReport_Product" xml:space="preserve">
+    <value>Produkt</value>
+  </data>
+  <data name="strReport_RAM" xml:space="preserve">
+    <value>RAM</value>
+  </data>
+  <data name="strReport_StartTimestamp" xml:space="preserve">
+    <value>Start-Zeitstempel</value>
+  </data>
+  <data name="strReport_Uptime" xml:space="preserve">
+    <value>Uptime</value>
+  </data>
+  <data name="strReport_User" xml:space="preserve">
+    <value>Benutzer</value>
+  </data>
+  <data name="strReport_Vendor" xml:space="preserve">
+    <value>Hersteller</value>
+  </data>
+  <data name="strReport_Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="strReport_WarningMessage" xml:space="preserve">
+    <value>Nachricht</value>
+  </data>
+  <data name="strReport_WarningOccured" xml:space="preserve">
+    <value>Warnung aufgetreten</value>
+  </data>
+  <data name="strReport_Warnings" xml:space="preserve">
+    <value>Warnungen</value>
+  </data>
+  <data name="strReport_WarningType" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="strValue" xml:space="preserve">
+    <value>Wert</value>
+  </data>
+  <data name="strYes" xml:space="preserve">
+    <value>Ja</value>
+  </data>
+  <data name="strError" xml:space="preserve">
+    <value>Fehler!</value>
+  </data>
+  <data name="strFailedToSaveReport" xml:space="preserve">
+    <value>Fehler beim Speichern des Reports!</value>
+  </data>
+  <data name="strSaveReport" xml:space="preserve">
+    <value>Bericht speichern</value>
+  </data>
+  <data name="strReport" xml:space="preserve">
+    <value>Bericht</value>
+  </data>
 </root>
