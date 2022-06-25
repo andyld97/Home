@@ -20,7 +20,7 @@ To get this working you need to setup `Home.API` as a self-hosted API on your lo
 | OS                    | Supported?      | Service                  | .NET                                | Information                                                   |
 |-----------------------|--------------------|--------------------------|-------------------------------------|---------------------------------------------------------------|
 | Windows 9x            | :x:                | -                        | ``.NET Framework 2.0``              | -                                                             |
-| Windows XP            | :heavy_check_mark: | ``Home.Service.Legacy``  | ``.NET Framework 4.0``              | No file access!                                               |
+| Windows XP            | :heavy_check_mark: | ``Home.Service.Legacy``  | ``.NET Framework 4.0``              | No remote file access!                                               |
 | Windows VISTA         | :heavy_check_mark: | ``Home.Service.Legacy``  | ``.NET Framework 4.0``              | No remote file access!                                        |
 | Windows 7 SP1         | :heavy_check_mark: | ``Home.Service``         | ``.NET Desktop/ASP.NET Core 6.0.x`` | #LEGACY Compiler-Flag (using WebClient instead of HttpClient) |
 | Windows 8, 8.1, 10/11 | :heavy_check_mark: | ``Home.Service``         | ``.NET Desktop/ASP.NET Core 6.0.x`` | -                                                             |
@@ -80,7 +80,7 @@ https://user-images.githubusercontent.com/10423894/174055660-a2b4c4a1-4a06-48bf-
 
  ## Setup
  
-All informations about the setup are described in the Wiki (see here: https://github.com/andyld97/Home/wiki)
+All information about the setup are described in the Wiki (see here: https://github.com/andyld97/Home/wiki)
 
 ## Build
 To build this solution you need to have ``VS 2019`` installed. Once it is installed and builded you can continue using ``VS 2022``. This is related to the fact, that ``VS 2022`` doesn't supports ``.NET 4.0`` and older, but obviously for older Windows versions (legacy) it is required to use ``.NET Framework 4.0`` or even ``.NET Framework 2.0``.
