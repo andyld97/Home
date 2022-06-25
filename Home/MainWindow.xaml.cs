@@ -851,6 +851,11 @@ namespace Home
 
             NonActiveBorderBrush = GlowBrush;
         }
+
+        private void MenuButtonOpenAbout_Click(object sender, RoutedEventArgs e)
+        {
+            new AboutDialog().Show();
+        }
     }
 
     #region Converter

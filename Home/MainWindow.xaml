@@ -27,6 +27,7 @@
                 <Fluent:ApplicationMenu Header="{x:Static res:Resources.strFile}" MaxDropDownHeight="500" BorderBrush="Blue">
                     <!--<Fluent:MenuItem x:Name="MenuButtonChangeTheme" Click="MenuButtonChangeTheme_Click" Header="{x:Static res:Resources.strToggleTheme}" />-->
                     <Fluent:MenuItem x:Name="MenuButtonOpenSettings" Click="MenuButtonOpenSettings_Click" Header="{x:Static res:Resources.strSettings}" Icon="resources/icons/menu/settings.png" />
+                    <Fluent:MenuItem x:Name="MenuButtonOpenAbout" Click="MenuButtonOpenAbout_Click" Header="{x:Static res:Resources.strAbout}" Icon="resources/icons/menu/about.png" />
                     <Fluent:MenuItem x:Name="MenuButtonExit" Click="MenuButtonExit_Click" Icon="resources/icons/menu/exit.png" Header="{x:Static res:Resources.strExit}" />
                 </Fluent:ApplicationMenu>
             </Fluent:Ribbon.Menu>

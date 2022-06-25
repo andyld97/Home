@@ -32,9 +32,11 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="resources\icons\menu\about.png" />
     <None Remove="resources\icons\menu\exit.png" />
     <None Remove="resources\icons\menu\report.png" />
     <None Remove="resources\icons\menu\settings.png" />
+    <None Remove="resources\images\logo.png" />
     <None Remove="resources\report\disk_template.html" />
     <None Remove="resources\report\template.html" />
     <None Remove="resources\report\warning_template.html" />
@@ -76,6 +78,7 @@
     <Resource Include="resources\icons\reset_view.png" />
     <Resource Include="resources\icons\devices\tablet.png" />
     <Resource Include="resources\icons\live\online.png" />
+    <Resource Include="resources\images\logo.png" />
     <Resource Include="resources\images\screenshot_default.png" />
     <Resource Include="resources\icons\devices\pi.png" />
     <Resource Include="resources\icons\devices\server_windows_11.png" />
@@ -156,6 +159,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resources\icons\menu\about.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="resources\icons\menu\settings.png" />

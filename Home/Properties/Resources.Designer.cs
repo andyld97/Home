@@ -61,6 +61,69 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to About.
+        /// </summary>
+        public static string strAbout {
+            get {
+                return ResourceManager.GetString("strAbout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Concept and realisation by Andreas L..
+        /// </summary>
+        public static string strAbout_Line1 {
+            get {
+                return ResourceManager.GetString("strAbout_Line1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Many thanks ....
+        /// </summary>
+        public static string strAbout_Line2 {
+            get {
+                return ResourceManager.GetString("strAbout_Line2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ... to.
+        /// </summary>
+        public static string strAboutTextFluentRibbon_1 {
+            get {
+                return ResourceManager.GetString("strAboutTextFluentRibbon_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to for the menu!.
+        /// </summary>
+        public static string strAboutTextFluentRibbon_2 {
+            get {
+                return ResourceManager.GetString("strAboutTextFluentRibbon_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ... to.
+        /// </summary>
+        public static string strAboutTextIcons8_1 {
+            get {
+                return ResourceManager.GetString("strAboutTextIcons8_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to for the free icons!.
+        /// </summary>
+        public static string strAboutTextIcons8_2 {
+            get {
+                return ResourceManager.GetString("strAboutTextIcons8_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Active Devices: {0}.
         /// </summary>
         public static string strActiveDevicesTab {
@@ -120,6 +183,24 @@ namespace Home.Properties {
         public static string strDarkModeSettingsTitle {
             get {
                 return ResourceManager.GetString("strDarkModeSettingsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MM/dd/yyyy.
+        /// </summary>
+        public static string strDateFormat {
+            get {
+                return ResourceManager.GetString("strDateFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MM/dd/yyyy HH:mm.
+        /// </summary>
+        public static string strDateTimeFormat {
+            get {
+                return ResourceManager.GetString("strDateTimeFormat", resourceCulture);
             }
         }
         
@@ -390,6 +471,15 @@ namespace Home.Properties {
         public static string strIsColorfulTheme {
             get {
                 return ResourceManager.GetString("strIsColorfulTheme", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to en.
+        /// </summary>
+        public static string strLang {
+            get {
+                return ResourceManager.GetString("strLang", resourceCulture);
             }
         }
         

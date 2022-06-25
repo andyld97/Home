@@ -31,11 +31,11 @@
         <TabControl.Resources>
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>
-                    <ResourceDictionary Source="..\..\resources\TabControlStyle.xaml"/>
+                    <ResourceDictionary Source="..\..\resources\TabControlStyle.xaml" />
                 </ResourceDictionary.MergedDictionaries>
             </ResourceDictionary>
         </TabControl.Resources>
-        <TabItem Header="Allgemein">
+        <TabItem Header="{x:Static res:Resources.strGeneral}">
             <Grid Background="Transparent">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />

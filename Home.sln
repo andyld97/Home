@@ -37,6 +37,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{27651F
 		Assets\ack.png = Assets\ack.png
 		Assets\Icons.sketch = Assets\Icons.sketch
 		Assets\preview.mp4 = Assets\preview.mp4
+		Assets\Redmi Note 7.html = Assets\Redmi Note 7.html
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Home.Service.Android", "Service\Home.Service.Android\Home.Service.Android.csproj", "{7716B99C-FC83-4755-878D-C094CC8C7649}"

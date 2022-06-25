@@ -551,4 +551,42 @@
     <value>You can only continue with a valid connection! Please test your connection to continue!</value>
     <comment>SettingsDialog.xaml.cs</comment>
   </data>
+  <data name="strAbout" xml:space="preserve">
+    <value>About</value>
+    <comment>*</comment>
+  </data>
+  <data name="strAboutTextIcons8_2" xml:space="preserve">
+    <value>for the free icons!</value>
+    <comment>About.xaml</comment>
+  </data>
+  <data name="strAboutTextFluentRibbon_2" xml:space="preserve">
+    <value>for the menu!</value>
+    <comment>About.xaml</comment>
+  </data>
+  <data name="strAboutTextIcons8_1" xml:space="preserve">
+    <value>... to</value>
+    <comment>About.xaml</comment>
+  </data>
+  <data name="strAboutTextFluentRibbon_1" xml:space="preserve">
+    <value>... to</value>
+    <comment>About.xaml</comment>
+  </data>
+  <data name="strDateFormat" xml:space="preserve">
+    <value>MM/dd/yyyy</value>
+    <comment>*</comment>
+  </data>
+  <data name="strDateTimeFormat" xml:space="preserve">
+    <value>MM/dd/yyyy HH:mm</value>
+    <comment>*</comment>
+  </data>
+  <data name="strLang" xml:space="preserve">
+    <value>en</value>
+    <comment>*</comment>
+  </data>
+  <data name="strAbout_Line1" xml:space="preserve">
+    <value>Concept and realisation by Andreas L.</value>
+  </data>
+  <data name="strAbout_Line2" xml:space="preserve">
+    <value>Many thanks ...</value>
+  </data>
 </root>

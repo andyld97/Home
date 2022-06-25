@@ -509,4 +509,39 @@
   <data name="strSuccess" xml:space="preserve">
     <value>Erfolg!</value>
   </data>
+  <data name="strAbout" xml:space="preserve">
+    <value>Über</value>
+  </data>
+  <data name="strAboutTextIcons8_2" xml:space="preserve">
+    <value>für die kostenlosen Icons!</value>
+    <comment>About.xaml</comment>
+  </data>
+  <data name="strAboutTextFluentRibbon_2" xml:space="preserve">
+    <value>für das Menü!</value>
+    <comment>About.xaml</comment>
+  </data>
+  <data name="strAboutTextIcons8_1" xml:space="preserve">
+    <value>... an</value>
+    <comment>About.xaml</comment>
+  </data>
+  <data name="strAboutTextFluentRibbon_1" xml:space="preserve">
+    <value>... an</value>
+    <comment>About.xaml</comment>
+  </data>
+  <data name="strDateFormat" xml:space="preserve">
+    <value>dd.MM.yyyy</value>
+    <comment>*</comment>
+  </data>
+  <data name="strDateTimeFormat" xml:space="preserve">
+    <value>dd.MM.yyyy HH:mm</value>
+  </data>
+  <data name="strLang" xml:space="preserve">
+    <value>de</value>
+  </data>
+  <data name="strAbout_Line2" xml:space="preserve">
+    <value>Vielen Dank ...</value>
+  </data>
+  <data name="strAbout_Line1" xml:space="preserve">
+    <value>Idee und Umsetzung von Andreas L.</value>
+  </data>
 </root>
