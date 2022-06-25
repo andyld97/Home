@@ -55,7 +55,7 @@ To get this working you need to setup `Home.API` as a self-hosted API on your lo
    - Hardware changes (e.g. ``Device "SRV03" detected CPU change. CPU AMD Athlon(tm) II X3 425 Processor got replaced with AMD Athlon(tm) II X3 450 Processor)``
    - When a device goes online/offline (only if your device is classified as a server!)
 - Get storage infos of each disk (also on Linux and Android!)
-- Create and export a ``HTML``-report of each device!
+- Create and export a ``HTML``-report of each device (See example [here](https://htmlpreview.github.io/?https://raw.githubusercontent.com/andyld97/Home/dev/Assets/Redmi%20Note%207.html))
 - Low storage warning (<= 10% left) per disk
 - Low battery warning (<= 10% left)
 - Device Log for each device
