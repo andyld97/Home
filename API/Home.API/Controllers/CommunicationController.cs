@@ -372,5 +372,11 @@ namespace Home.API.Controllers
 
             return Ok(AnswerExtensions.Success("ok"));
         }
+
+        [HttpGet("test")]
+        public IActionResult ConnectionTest()
+        {
+            return Ok();
+        }
     }
 }

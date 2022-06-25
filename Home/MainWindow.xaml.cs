@@ -27,6 +27,7 @@ using Microsoft.Web.WebView2.Core;
 using Home.Data.Helper;
 using Model;
 using Microsoft.Win32;
+using Controls.Dialogs;
 
 namespace Home
 {
@@ -41,6 +42,7 @@ namespace Home
         public static readonly string CACHE_PATH = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "cache");
         public static Client CLIENT = new Client() { IsRealClient = true };
         public static Communication.API API = null;
+        public static MainWindow W_INSTANCE = null;
 
         private readonly DispatcherTimer updateTimer = new DispatcherTimer();
         private CoreWebView2Environment webView2Environment;
@@ -55,7 +57,16 @@ namespace Home
         public MainWindow()
         {
             InitializeComponent();
-            API = new Communication.API("http://192.168.178.38:83");
+            W_INSTANCE = this;
+
+            if (string.IsNullOrEmpty(Settings.Instance.Host))
+            {
+                var result = new SettingsDialog(false).ShowDialog();
+                if (result.HasValue && !result.Value)
+                    return;
+            }
+
+            API = new Communication.API(Settings.Instance.Host);
             CLIENT.ID = ClientData.Instance.ClientID;
 
             Closing += MainWindow_Closing;
@@ -819,6 +830,26 @@ namespace Home
                     MessageBox.Show(this, $"{Home.Properties.Resources.strFailedToSaveReport}{Environment.NewLine}{ex.Message}", Home.Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
+        }
+
+        private void MenuButtonExit_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void MenuButtonOpenSettings_Click(object sender, RoutedEventArgs e)
+        {
+            new SettingsDialog(true).ShowDialog();
+        }
+
+        public void UpdateGlowingBrush()
+        {
+            if (Settings.Instance.ActivateGlowingBrush)
+                GlowBrush = new SolidColorBrush((System.Windows.Media.Color)FindResource("Fluent.Ribbon.Colors.AccentColor60"));
+            else
+                GlowBrush = null;
+
+            NonActiveBorderBrush = GlowBrush;
         }
     }
 

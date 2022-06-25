@@ -376,7 +376,7 @@
     <value>Speicherplatz</value>
   </data>
   <data name="strReport_DiskVolumeName" xml:space="preserve">
-    <value>Volume</value>
+    <value>Partition</value>
   </data>
   <data name="strReport_Domain" xml:space="preserve">
     <value>Domain</value>
@@ -461,5 +461,52 @@
   </data>
   <data name="strReport" xml:space="preserve">
     <value>Bericht</value>
+  </data>
+  <data name="strSettings" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="strSettingsActivateGlowingEffect" xml:space="preserve">
+    <value>Fensterleuchteffekt aktivieren</value>
+    <comment>*</comment>
+  </data>
+  <data name="strIsColorfulTheme" xml:space="preserve">
+    <value>Akzentfarbe in der Titelleiste anzeigen</value>
+    <comment>SettingsDialog.xaml</comment>
+  </data>
+  <data name="strTheme" xml:space="preserve">
+    <value>Thema:</value>
+  </data>
+  <data name="strLight" xml:space="preserve">
+    <value>Hell</value>
+  </data>
+  <data name="strDark" xml:space="preserve">
+    <value>Dunkel</value>
+  </data>
+  <data name="strDarkModeSettingsTitle" xml:space="preserve">
+    <value>Darstellung:</value>
+  </data>
+  <data name="strSettings_AttentionText" xml:space="preserve">
+    <value>ACHTUNG: Die API-URL muss gesetzt, gültig und erreichbar sein, um die Einstellungen zu übernhemen!</value>
+  </data>
+  <data name="strSettings_CheckConnection" xml:space="preserve">
+    <value>Verbindung testen ...</value>
+  </data>
+  <data name="strSettings_ConnectionEstablishedSuccuessfully" xml:space="preserve">
+    <value>Die Verbindung wurde erfolgreich hergestellt!</value>
+  </data>
+  <data name="strSettings_ConnectionNotEstablished" xml:space="preserve">
+    <value>Die Verbindung konnte nicht hergestellt werden</value>
+  </data>
+  <data name="strSettings_ForceExit" xml:space="preserve">
+    <value>App beenden</value>
+  </data>
+  <data name="strSettings_Host" xml:space="preserve">
+    <value>API-Host Url: (z.B. http://192.168.178.38:83)</value>
+  </data>
+  <data name="strSettings_OnlyContinueUsingAValidConnection" xml:space="preserve">
+    <value>Sie können nur mit einer gültigen Verbindung fortfahren! Bitte testen Sie Ihre Verbindung, um fortzufahren!</value>
+  </data>
+  <data name="strSuccess" xml:space="preserve">
+    <value>Erfolg!</value>
   </data>
 </root>

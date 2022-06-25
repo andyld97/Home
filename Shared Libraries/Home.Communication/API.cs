@@ -34,6 +34,7 @@ namespace Home.Communication
         public static readonly string SEND_COMMAND = "send_command";
         public static readonly string STATUS = "status";
         public static readonly string DELETE = "delete";
+        public static readonly string TEST = "test";
 
         public API(string host)
         {
@@ -62,6 +63,25 @@ namespace Home.Communication
             catch (Exception ex)
             {
                 return AnswerExtensions.Fail<List<Device>>(ex.Message);
+            }
+        }
+
+        public async Task<(bool, string)> TestConnectionAsync()
+        {
+            try
+            {
+                string url = GenerateEpUrl(true, TEST);
+                var result = await httpClient.GetAsync(url);
+
+                if (result.IsSuccessStatusCode)
+                    return (true, string.Empty);
+                else
+                    throw new Exception($"Http Status Code: {result.StatusCode}");
+
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
             }
         }
 

@@ -55,7 +55,7 @@ namespace Home.Data.Helper
         }
 
         /// <summary>
-        /// Gets the descriptions of an enum value (https://stackoverflow.com/a/1415187/6237448)
+        /// Gets the description of an enum value (https://stackoverflow.com/a/1415187/6237448)
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -68,16 +68,14 @@ namespace Home.Data.Helper
                 FieldInfo field = type.GetField(name);
                 if (field != null)
                 {
-                    DescriptionAttribute attr =
-                           Attribute.GetCustomAttribute(field,
-                             typeof(DescriptionAttribute)) as DescriptionAttribute;
+                    DescriptionAttribute attr = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
                     if (attr != null)
-                    {
                         return attr.Description;
-                    }
                 }
             }
-            return null;
+
+            // default return value is identity
+            return value.ToString();
         }
 
         public static string BuildSHA1Hash(this string input)

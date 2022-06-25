@@ -1,0 +1,86 @@
+﻿<Window x:Class="Controls.Dialogs.SettingsDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:res="clr-namespace:Home.Properties"
+        mc:Ignorable="d"
+        xmlns:Fluent="urn:fluent-ribbon"
+        xmlns:controlzEx="urn:controlzex"
+        ResizeMode="NoResize"
+        Background="{DynamicResource WhiteBrush}"
+        WindowStartupLocation="CenterScreen"
+        Title="{x:Static res:Resources.strSettings}" Height="350" Width="400">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
+        <Style TargetType="{x:Type CheckBox}">
+            <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+        </Style>
+        <Style TargetType="{x:Type RadioButton}">
+            <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+        </Style>
+        <Style TargetType="{x:Type TextBlock}">
+            <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+        </Style>
+        <Style TargetType="{x:Type TextBox}">
+            <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+            <Setter Property="Background" Value="{DynamicResource WhiteBrush}" />
+        </Style>
+    </Window.Resources>
+    <TabControl Background="{DynamicResource WhiteBrush}" Margin="2">
+        <TabControl.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <ResourceDictionary Source="..\..\resources\TabControlStyle.xaml"/>
+                </ResourceDictionary.MergedDictionaries>
+            </ResourceDictionary>
+        </TabControl.Resources>
+        <TabItem Header="Allgemein">
+            <Grid Background="Transparent">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <StackPanel Background="Transparent">
+                    <StackPanel.Resources>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Margin" Value="0,8,5,0" />
+                        </Style>
+                    </StackPanel.Resources>
+
+                    <TextBlock Margin="0,2,5,0" Text="{x:Static res:Resources.strSettings_Host}" FontWeight="Bold" />
+                    <TextBox x:Name="TextHost" TextChanged="TextHost_TextChanged" Margin="1" Padding="1" />
+
+                    <TextBlock Margin="2" Foreground="Orange" FontWeight="Bold" TextWrapping="Wrap" Text="{x:Static res:Resources.strSettings_AttentionText}" />
+                    <Button x:Name="ButtonTestConnection" Click="ButtonTestConnection_Click" Margin="2" Width="150" HorizontalAlignment="Left" Content="{x:Static res:Resources.strSettings_CheckConnection}" FontWeight="Bold" />
+
+                    <TextBlock Text="{x:Static res:Resources.strDarkModeSettingsTitle}"/>
+                    <Fluent:ComboBox IsEditable="False" Padding="4" Margin="-8,3,4,0" SelectedIndex="0" x:Name="CheckBoxDisplayMode" SelectionChanged="CheckBoxDisplayMode_SelectionChanged">
+                        <ComboBox.Items>
+                            <ComboBoxItem Content="{x:Static res:Resources.strLight}" />
+                            <ComboBoxItem Content="{x:Static res:Resources.strDark}" />
+                        </ComboBox.Items>
+                    </Fluent:ComboBox>
+
+                    <TextBlock Text="{x:Static res:Resources.strTheme}"/>
+                    <Fluent:ComboBox x:Name="ComboBoxThemeChooser" SelectionChanged="ComboBoxThemeChooser_SelectionChanged" MinWidth="150" Margin="-8,3,4,0" IsEditable="False" ItemsSource="{Binding Themes}">
+                        <Fluent:ComboBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type controlzEx:Theme}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Width="16" Height="16" Fill="{Binding ShowcaseBrush, Mode=OneWay}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding DisplayName}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </Fluent:ComboBox.ItemTemplate>
+                    </Fluent:ComboBox>
+
+                    <CheckBox x:Name="CheckBoxThemeIsColorful" Content="{x:Static res:Resources.strIsColorfulTheme}" Checked="CheckBoxThemeIsColorful_Checked" Unchecked="CheckBoxThemeIsColorful_Unchecked" Margin="0,5,0,0" />
+                    <CheckBox x:Name="CheckBoxActivateGlowingBrush" Checked="CheckBoxActivateGlowingBrush_Checked" Unchecked="CheckBoxActivateGlowingBrush_Checked" Content="{x:Static res:Resources.strSettingsActivateGlowingEffect}" Margin="0,5,0,0" />
+                </StackPanel>
+
+                <Button x:Name="ButtonForceExit" Click="ButtonForceExit_Click" Content="{x:Static res:Resources.strSettings_ForceExit}" Grid.Row="1" FontWeight="Bold" HorizontalAlignment="Right" Width="100" Margin="2" Padding="3" />
+            </Grid>
+        </TabItem>
+    </TabControl>
+</Window>

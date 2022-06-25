@@ -17,7 +17,6 @@ namespace Model
         {
             string htmlTemplate = GetHtmlTemplate("template");
 
-
             string f(string value = "")
             {
                 if (string.IsNullOrEmpty(value))

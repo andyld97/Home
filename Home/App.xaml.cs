@@ -1,4 +1,5 @@
 ﻿using ControlzEx.Theming;
+using Helper;
 using Home.Model;
 using System;
 using System.Windows;
@@ -23,8 +24,7 @@ namespace Home
             System.Threading.Thread.CurrentThread.CurrentUICulture = ci;
 #endif
 
-            ThemeManager.Current.ThemeSyncMode = ThemeSyncMode.SyncWithAppMode;
-            ThemeManager.Current.SyncTheme();
+            ThemeHelper.ApplyTheme();
 
             // Ensure tooltips doesn't dissapear
             // Maybe this can be removed (because the bug should already be fixed in .NET Core 6.0.5)

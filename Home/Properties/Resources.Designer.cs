@@ -106,6 +106,24 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dark.
+        /// </summary>
+        public static string strDark {
+            get {
+                return ResourceManager.GetString("strDark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Color mode:.
+        /// </summary>
+        public static string strDarkModeSettingsTitle {
+            get {
+                return ResourceManager.GetString("strDarkModeSettingsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Days.
         /// </summary>
         public static string strDays {
@@ -363,6 +381,24 @@ namespace Home.Properties {
         public static string strIndividualOverview {
             get {
                 return ResourceManager.GetString("strIndividualOverview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show accent color in titlebar.
+        /// </summary>
+        public static string strIsColorfulTheme {
+            get {
+                return ResourceManager.GetString("strIsColorfulTheme", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Light.
+        /// </summary>
+        public static string strLight {
+            get {
+                return ResourceManager.GetString("strLight", resourceCulture);
             }
         }
         
@@ -637,7 +673,7 @@ namespace Home.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Parititon.
+        ///   Looks up a localized string similar to Volume.
         /// </summary>
         public static string strReport_DiskVolumeName {
             get {
@@ -700,7 +736,7 @@ namespace Home.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loading.
+        ///   Looks up a localized string similar to Is Charging.
         /// </summary>
         public static string strReport_IsCharging {
             get {
@@ -1006,6 +1042,87 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Settings.
+        /// </summary>
+        public static string strSettings {
+            get {
+                return ResourceManager.GetString("strSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ATTENTION: The API URL must be set, valid and accessible in order to apply the settings!.
+        /// </summary>
+        public static string strSettings_AttentionText {
+            get {
+                return ResourceManager.GetString("strSettings_AttentionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test connection ....
+        /// </summary>
+        public static string strSettings_CheckConnection {
+            get {
+                return ResourceManager.GetString("strSettings_CheckConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The connection was successfully established!.
+        /// </summary>
+        public static string strSettings_ConnectionEstablishedSuccuessfully {
+            get {
+                return ResourceManager.GetString("strSettings_ConnectionEstablishedSuccuessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The connection could not be established.
+        /// </summary>
+        public static string strSettings_ConnectionNotEstablished {
+            get {
+                return ResourceManager.GetString("strSettings_ConnectionNotEstablished", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exit App.
+        /// </summary>
+        public static string strSettings_ForceExit {
+            get {
+                return ResourceManager.GetString("strSettings_ForceExit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to API Host Url: (e.g. http://192.168.178.38:83).
+        /// </summary>
+        public static string strSettings_Host {
+            get {
+                return ResourceManager.GetString("strSettings_Host", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can only continue with a valid connection! Please test your connection to continue!.
+        /// </summary>
+        public static string strSettings_OnlyContinueUsingAValidConnection {
+            get {
+                return ResourceManager.GetString("strSettings_OnlyContinueUsingAValidConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Active window glowing effect.
+        /// </summary>
+        public static string strSettingsActivateGlowingEffect {
+            get {
+                return ResourceManager.GetString("strSettingsActivateGlowingEffect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show screenshots.
         /// </summary>
         public static string strShowScreenshots {
@@ -1029,6 +1146,24 @@ namespace Home.Properties {
         public static string strShutdownMenu {
             get {
                 return ResourceManager.GetString("strShutdownMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Success!.
+        /// </summary>
+        public static string strSuccess {
+            get {
+                return ResourceManager.GetString("strSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Theme:.
+        /// </summary>
+        public static string strTheme {
+            get {
+                return ResourceManager.GetString("strTheme", resourceCulture);
             }
         }
         
