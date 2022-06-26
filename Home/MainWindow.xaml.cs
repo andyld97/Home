@@ -39,7 +39,9 @@ namespace Home
         /// <summary>
         /// ToDo: *** Move to a Consts.cs file
         /// </summary>
-        public static readonly string CACHE_PATH = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "cache");
+        public static readonly string CACHE_PATH = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Home", "Cache");
+        public static readonly string WEBVIEW_CACHE_PATH = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Home", "WebView2Cache");
+
         public static Client CLIENT = new Client() { IsRealClient = true };
         public static Communication.API API = null;
         public static MainWindow W_INSTANCE = null;
@@ -53,6 +55,23 @@ namespace Home
         private Device currentDevice = null;
         private bool ignoreSelectionChanged = false;
         private int oldDeviceCount = -1;
+
+        static MainWindow()
+        {
+            try
+            {
+                System.IO.Directory.CreateDirectory(CACHE_PATH);
+            }
+            catch
+            { }
+
+            try
+            {
+                System.IO.Directory.CreateDirectory(WEBVIEW_CACHE_PATH);
+            }
+            catch
+            { }
+        }
 
         public MainWindow()
         {
@@ -116,8 +135,8 @@ namespace Home
         protected override async void OnContentRendered(EventArgs e)
         {
             base.OnContentRendered(e);
-            webView2Environment = await CoreWebView2Environment.CreateAsync();
 
+            webView2Environment = await CoreWebView2Environment.CreateAsync(userDataFolder: WEBVIEW_CACHE_PATH);
             await webViewReport.EnsureCoreWebView2Async(webView2Environment);
         }
 
@@ -135,7 +154,7 @@ namespace Home
             if (result.Success)
                 RefreshDeviceHolder();
             else
-                MessageBox.Show(result.ErrorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(result.ErrorMessage, Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
 
             updateTimer.Interval = TimeSpan.FromSeconds(5);
             updateTimer.Tick += UpdateTimer_Tick;
@@ -201,6 +220,7 @@ namespace Home
             if (d == null)
                 return;
 
+            // ToDo: *** Translate
             if (d.OS.IsAndroid())
             {
                 MessageBox.Show($"Ein Android Gerät kann nicht heruntergefahren oder neugestartet werden!", "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -233,7 +253,6 @@ namespace Home
             PanelOverview.Children.Clear();
 
             var groups = from device in deviceList where device.Status != DeviceStatus.Offline group device by device.Location into gr orderby gr.Count() descending select gr;
-
             List<Device> notAssociatedDevices = new List<Device>();
 
             foreach (var group in groups)
@@ -243,7 +262,6 @@ namespace Home
                 {
                     foreach (var device in group.OrderBy(d => d.Name))
                         notAssociatedDevices.Add(device);
-
                     continue;
                 }
 
@@ -772,7 +790,7 @@ namespace Home
                     driveName = dd.DriveName;
                 else if (currentDevice.OS.IsLinux())
                 {
-                    if (dd.VolumeName.Contains(","))
+                    if (dd.VolumeName.Contains(','))
                         driveName = dd.VolumeName.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
                     else
                         driveName = dd.VolumeName;
