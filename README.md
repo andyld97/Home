@@ -75,6 +75,10 @@ To get this working you need to setup `Home.API` as a self-hosted API on your lo
       - Tooltip on a device shows the screenshot
       - You can tick "Show screenshots", then you will become an overview of all devices but only with screenshots!  
 
+## Screenshots
+![home](https://github.com/andyld97/Home/blob/dev/Assets/screenshots/home.png)
+![overview](https://github.com/andyld97/Home/blob/dev/Assets/screenshots/overview.png)
+
 ## Preview-Video
 https://user-images.githubusercontent.com/10423894/174055660-a2b4c4a1-4a06-48bf-88a7-d0abbce7b3b7.mp4
 
