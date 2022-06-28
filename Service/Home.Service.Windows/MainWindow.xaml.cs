@@ -219,7 +219,7 @@ namespace Home.Service.Windows
 
         public async Task PostScreenshot()
         {
-            string fileName = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"capture{DateTime.Now.ToString(Consts.SCREENSHOT_DATE_FILE_FORMAT)}.png");
+            string fileName = System.IO.Path.Combine(ServiceData.SCREENSHOT_PATH, $"capture{DateTime.Now.ToString(Consts.SCREENSHOT_DATE_FILE_FORMAT)}.png");
             var result = NET.CreateScreenshot(fileName);
 
 #if LEGACY
