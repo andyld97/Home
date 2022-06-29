@@ -31,7 +31,6 @@ namespace Home.Service.Linux
             return sb.ToString();
         }
 
-
         public static bool IsValidJson(string strInput)
         {
             if (string.IsNullOrWhiteSpace(strInput)) return false;

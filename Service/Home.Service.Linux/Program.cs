@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -23,7 +24,7 @@ namespace Home.Service.Linux
     {
         #region Private Members
         private static readonly Device currentDevice = new Device();
-        private static readonly Version ClientVersion = new Version(0, 0, 7);
+        private static readonly Version ClientVersion = new Version(0, 0, 8);
         private static readonly DateTime startTime = DateTime.Now;
         private static Home.Communication.API api;
         private static JObject jInfo = null;
@@ -50,7 +51,7 @@ namespace Home.Service.Linux
                 // Debug LSHW JSON FILES:
 #if DEBUG
                 var device = new Device();
-                ParseHardwareInfo(System.IO.File.ReadAllText(@"Test\test6.json"), device);
+                ParseHardwareInfo(System.IO.File.ReadAllText(@"Test\test7.json"), device);
                 int debug = 0;
 #endif
 
@@ -381,6 +382,8 @@ namespace Home.Service.Linux
                 if (item.Value<string>("description") != null)
                     device.Environment.Description = item.Value<string>("description");
 
+                device.Environment.PCIBus.Clear();
+
                 Queue<JToken> childrenQueue = new Queue<JToken>();
                 childrenQueue.Enqueue(item);
 
@@ -475,7 +478,14 @@ namespace Home.Service.Linux
                 device.Environment.TotalRAM = child.Value<long>("size");
             else if (childClass == "processor" && string.IsNullOrEmpty(device.Environment.CPUName))
                 device.Environment.CPUName = child.Value<string>("product");
-            if (childClass == "display")
+            else if (childID == "firmware")
+            {
+                // ToDo: *** Process bios/firmware information
+                int debug = 0;
+            }
+            else if (childID.ToLower().Contains("pci:"))
+                device.Environment.PCIBus.Add(ReadPCIDevice(child));
+            else if (childClass == "display")
                 device.Environment.GraphicCards = new List<string> { child.Value<string>("product") };
             else if (childClass == "network" && string.IsNullOrEmpty(device.IP))
                 device.IP = child.Value<JObject>("configuration").Value<string>("ip");
@@ -548,6 +558,56 @@ namespace Home.Service.Linux
                 }
             }           
         }
+        #endregion
+
+        #region PCI Bus
+
+        public static PCIDevice ReadPCIDevice(JToken input)
+        {
+            PCIDevice currentDevice = new PCIDevice();
+
+            currentDevice.ID = input.Value<string>("id");
+            currentDevice.DisplayName = input.Value<string>("handle");
+            currentDevice.Class = input.Value<string>("class");
+            currentDevice.Properties = new ObservableCollection<Property>(ParseProperties(input, "capabilities", "children"));
+            currentDevice.Capabilites = new ObservableCollection<Property>(ParseProperties(input.Value<JToken>("capabilities")));
+
+            var children = input.Value<JArray>("children");
+            if (children != null)
+            {
+                foreach (var child in children)
+                    currentDevice.Children.Add(ReadPCIDevice(child));
+            }
+
+            return currentDevice;
+        }
+
+        public static List<Property> ParseProperties(JToken input, params string[] ignoreProperties)
+        {
+            List<Property> properties = new List<Property>();
+
+            if (input != null)
+            {
+                foreach (JProperty item in input.Where(p => p is JProperty))
+                {                
+                    if (ignoreProperties.Contains(item.Name))
+                        continue;
+
+                    Property property = new Property();
+                    property.Name = item.Name;
+
+                    if (item.Value is JToken token && token.HasValues)
+                        property.Values = ParseProperties(token, ignoreProperties);
+                    else
+                        property.Value = item.Value.Value<string>();
+
+                    properties.Add(property);
+                }
+            }
+
+            return properties;
+        }
+
         #endregion
     }
 }

@@ -519,10 +519,70 @@ namespace Home
 
             RenderPlot();
 
+            List<string> previouslySelectedItems = new List<string>();
+            List<string> previouslyExpandedItems = new List<string>();
+
+            void t(PCIDevice pci)
+            {
+                var hash = pci.BuildHash();
+                if (pci.IsSelected)
+                    previouslySelectedItems.Add(hash);
+                if (pci.IsExpanded)
+                    previouslyExpandedItems.Add(hash);
+
+                foreach (var item in pci.Children)
+                    t(item);
+            }
+
+            foreach (var pci in TreeViewPCIDevices.Items)
+                if (pci is PCIDevice e)
+                    t(e);
+
+            // Generate item source (group all items with no children to a single group to make it better)
+            List<PCIDevice> devicesWithOther = new List<PCIDevice>();
+            PCIDevice other = new PCIDevice() { ID = "Other", Class = "PCI" };
+            foreach (var item in currentDevice.Environment.PCIBus)
+            {
+                if (item.Children.Count == 0)
+                    other.Children.Add(item);
+                else
+                    devicesWithOther.Add(item);
+            }
+
+            devicesWithOther.Add(other);
+
+         
+
+            TreeViewPCIDevices.ItemsSource = devicesWithOther;
+
+            void f(PCIDevice pci)
+            {
+                var hash = pci.BuildHash();
+                if (previouslyExpandedItems.Contains(hash))
+                    pci.IsExpanded = true;
+                if (previouslySelectedItems.Contains(hash))
+                    pci.IsSelected = true;
+
+                foreach (var item in pci.Children)
+                    f(item);
+            }
+
+            foreach (var pci in devicesWithOther)
+                f(pci);
+
             DeviceInfo.DataContext = null;
             DeviceInfo.DataContext = currentDevice;
             ScreenshotViewer.UpdateDevice(currentDevice);
             CmbGraphics.SelectedIndex = 0;
+        }
+
+        private void TreeViewPCIDevices_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (TreeViewPCIDevices.SelectedItem is PCIDevice pci)
+            {
+                TreeViewProperties.ItemsSource = pci.Properties;
+                TreeViewCapabilites.ItemsSource = pci.Capabilites; 
+            }
         }
 
         #region Activity Plot

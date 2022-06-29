@@ -16,6 +16,7 @@ using Home.Data.Helper;
 using System.Xml.Serialization;
 using JsonIgnoreAttribute = Newtonsoft.Json.JsonIgnoreAttribute;
 using System.Text;
+using System.Linq;
 
 namespace Home.Model
 {
@@ -103,9 +104,9 @@ namespace Home.Model
         }
 
         [JsonProperty("state")]
-         #if !LEGACY
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("state")]
-        #endif
+#endif
         public DeviceStatus Status
         {
             get => status;
@@ -120,9 +121,9 @@ namespace Home.Model
         }
 
         [JsonProperty("type")]
-         #if !LEGACY
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("type")]
-        #endif
+#endif
         public DeviceType Type
         {
             get => type;
@@ -137,9 +138,9 @@ namespace Home.Model
         }
 
         [JsonProperty("os")]
-         #if !LEGACY
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("os")]
-        #endif
+#endif
         public OSType OS
         {
             get => os;
@@ -154,9 +155,9 @@ namespace Home.Model
         }
 
         [JsonProperty("group")]
-         #if !LEGACY
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("group")]
-        #endif
+#endif
         public string DeviceGroup
         {
             get => deviceGroup;
@@ -171,9 +172,9 @@ namespace Home.Model
         }
 
         [JsonProperty("location")]
-         #if !LEGACY
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("location")]
-        #endif
+#endif
         public string Location
         {
             get => location;
@@ -192,10 +193,10 @@ namespace Home.Model
         /// It's not really live, but if this property is true, the device will be forced to send a screenshot in every ack!
         /// </summary>
         [JsonProperty("is_live")]
-        #if !LEGACY
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("is_live")]
-        #endif
-        [XmlIgnore] 
+#endif
+        [XmlIgnore]
         // Ignore (won't save) because on api start we do not know any clients which may be still using this
         // to prevent that if there are no clients that we generate unneccessary data
         public bool? IsLive
@@ -212,15 +213,15 @@ namespace Home.Model
         }
 
         [JsonProperty("log_entries")]
-         #if !LEGACY
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("log_entries")]
-        #endif
+#endif
         public ObservableCollection<LogEntry> LogEntries { get; set; } = new ObservableCollection<LogEntry>();
 
         [JsonProperty("screenshots_file_names")]
-         #if !LEGACY
+#if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("screenshots_file_names")]
-        #endif
+#endif
         public List<string> ScreenshotFileNames { get; set; } = new List<string>();
 
         [JsonProperty("environment")]
@@ -624,6 +625,12 @@ namespace Home.Model
         [System.Text.Json.Serialization.JsonPropertyName("graphic_cards")]
 #endif
         public List<string> GraphicCards { get; set; } = new List<string>();
+
+        [JsonProperty("pci_bus")]
+#if !LEGACY
+        [JsonPropertyName("pci_bus")]
+#endif
+        public ObservableCollection<PCIDevice> PCIBus { get; set; } = new ObservableCollection<PCIDevice>();
 
         [JsonProperty("total_ram")]
 #if !LEGACY
@@ -1040,7 +1047,7 @@ namespace Home.Model
         /// The id of the related DiskDrive
         /// </summary>
         [JsonPropertyName("storage_id")]
-        public string StorageID { get; set; }  
+        public string StorageID { get; set; }
 
         [JsonPropertyName("value")]
         public ulong Value { get; set; }
@@ -1121,4 +1128,139 @@ namespace Home.Model
     }
 
 #endif
+    public class PCIDevice : INotifyPropertyChanged
+    {
+        private bool isExpanded;
+        private bool isSelected;
+
+#if !LEGACY
+        [JsonIgnore()]
+        [XmlIgnore]
+        public bool IsExpanded
+        {
+            get => isExpanded;
+            set
+            {
+                if (value != isExpanded)
+                {
+                    isExpanded = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsExpanded"));
+                }
+            }
+        }
+
+        [JsonIgnore()]
+        [XmlIgnore]
+        public bool IsSelected
+        {
+            get => isSelected;
+            set
+            {
+                if (value != isSelected)
+                {
+                    isSelected = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsSelected"));
+                }
+            }
+        }
+#endif
+
+        [JsonProperty("id")]
+#if !LEGACY
+        [JsonPropertyName("id")]
+#endif
+        public string ID { get; set; }
+
+        [JsonProperty("class")]
+#if !LEGACY
+        [JsonPropertyName("class")]
+#endif
+        public string Class { get; set; }
+
+        [JsonProperty("display_name")]
+#if !LEGACY
+        [JsonPropertyName("display_name")]
+#endif
+        public string DisplayName { get; set; }
+
+        [JsonProperty("properties")]
+#if !LEGACY
+        [JsonPropertyName("properties")]
+#endif
+        public ObservableCollection<Property> Properties { get; set; } = new ObservableCollection<Property>();
+
+        [JsonProperty("children")]
+#if !LEGACY
+        [JsonPropertyName("children")]
+#endif
+        public ObservableCollection<PCIDevice> Children { get; set; } = new ObservableCollection<PCIDevice>();
+
+
+        [JsonProperty("capabilites")]
+#if !LEGACY
+        [JsonPropertyName("capabilites")]
+#endif
+        public ObservableCollection<Property> Capabilites { get; set; } = new ObservableCollection<Property>();
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+#if !LEGACY
+        public string BuildHash()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(ID);
+            sb.Append(Class);
+            sb.Append(DisplayName);
+            foreach (var child in Children)
+                sb.Append(child.BuildHash());
+            foreach (var capability in Capabilites)
+                sb.Append(capability.BuildHash());
+            foreach (var property in Properties)
+                sb.Append(property.BuildHash());
+
+            return Home.Data.Helper.GeneralHelper.BuildSHA1Hash(sb.ToString());
+        }
+#endif
+
+        public override string ToString()
+        {
+            return $"{ID}:{DisplayName} ({Class})";
+        }
+    }
+
+    public class Property
+    {
+        [JsonProperty("name")]
+#if !LEGACY
+        [JsonPropertyName("name")]
+#endif
+        public string Name { get; set; }
+
+        [JsonProperty("value")]
+#if !LEGACY
+        [JsonPropertyName("value")]
+#endif
+        public string Value { get; set; }
+
+        [JsonProperty("values")]
+#if !LEGACY
+        [JsonPropertyName("values")]
+#endif
+        public ObservableCollection<Property> Values { get; set; } = new ObservableCollection<Property>();
+
+        public override string ToString()
+        {
+            if (!string.IsNullOrEmpty(Value))
+                return $"{Name}:{Value}";
+            else 
+                return $"{Name}:{string.Join(Environment.NewLine, Values.Select(p => p.ToString()))}";
+        }
+
+#if !LEGACY
+        public string BuildHash()
+        {
+           return Home.Data.Helper.GeneralHelper.BuildSHA1Hash(this.ToString());
+        }
+#endif
+    }
 }
