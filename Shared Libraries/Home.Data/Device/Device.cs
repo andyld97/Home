@@ -1128,43 +1128,8 @@ namespace Home.Model
     }
 
 #endif
-    public class PCIDevice : INotifyPropertyChanged
+    public class PCIDevice
     {
-        private bool isExpanded;
-        private bool isSelected;
-
-#if !LEGACY
-        [JsonIgnore()]
-        [XmlIgnore]
-        public bool IsExpanded
-        {
-            get => isExpanded;
-            set
-            {
-                if (value != isExpanded)
-                {
-                    isExpanded = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsExpanded"));
-                }
-            }
-        }
-
-        [JsonIgnore()]
-        [XmlIgnore]
-        public bool IsSelected
-        {
-            get => isSelected;
-            set
-            {
-                if (value != isSelected)
-                {
-                    isSelected = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsSelected"));
-                }
-            }
-        }
-#endif
-
         [JsonProperty("id")]
 #if !LEGACY
         [JsonPropertyName("id")]
@@ -1201,8 +1166,6 @@ namespace Home.Model
         [JsonPropertyName("capabilites")]
 #endif
         public ObservableCollection<Property> Capabilites { get; set; } = new ObservableCollection<Property>();
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
 #if !LEGACY
         public string BuildHash()

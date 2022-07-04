@@ -453,68 +453,117 @@
                                                     <HierarchicalDataTemplate DataType="{x:Type device:Property}" ItemsSource="{Binding Values}">
                                                         <StackPanel Orientation="Horizontal">
                                                             <Image Source="resources/icons/property.png" Width="24" />
-                                                            <TextBlock VerticalAlignment="Center" Margin="2" FontSize="13">
+                                                            <TextBlock Foreground="{DynamicResource BlackBrush}" VerticalAlignment="Center" Margin="2" FontSize="13">
                                                                         <Run Text="{Binding Name}" /><Run Text=": " />
                                                                         <Run Text="{Binding Value}" />
                                                             </TextBlock>
                                                         </StackPanel>
-                                                        <HierarchicalDataTemplate.ItemTemplate>
-                                                            <HierarchicalDataTemplate ItemsSource="{Binding Values}">
+                                                      
+                                                    </HierarchicalDataTemplate>
+
+                                                    <Style TargetType="{x:Type TreeView}">
+                                                        <Setter Property="Background" Value="{DynamicResource WhiteBrush}" />
+                                                        <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+                                                    </Style>
+                                                    <Style TargetType="{x:Type TreeViewItem}">
+                                                        <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+                                                    </Style>
+                                                </Grid.Resources>
+
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="*" />
+                                                    </Grid.RowDefinitions>
+
+                                                    <TextBlock Text="Geräte:" Margin="3" FontSize="15" FontWeight="Bold" />
+                                                    <TreeView x:Name="TreeViewPCIDevices" Grid.Row="1" SelectedItemChanged="TreeViewPCIDevices_SelectedItemChanged">
+                                                        <TreeView.Resources>
+                                                            <HierarchicalDataTemplate DataType="{x:Type device:PCIDevice}" ItemsSource="{Binding Children}">
                                                                 <StackPanel Orientation="Horizontal">
                                                                     <Image Source="resources/icons/property.png" Width="24" />
-
-                                                                    <TextBlock VerticalAlignment="Center" Margin="2" FontSize="13">
-                                                                            <Run Text="{Binding Name}" /><Run Text=": " />
-                                                                            <Run Text="{Binding Value}" />
+                                                                    <TextBlock Foreground="{DynamicResource BlackBrush}" VerticalAlignment="Center" Margin="2" FontSize="13">
+                                                                    <Run Text="{Binding ID}" FontWeight="Bold" />
+                                                                    <Run Text="(" /><Run Text="{Binding Class}" /><Run Text=")" />
                                                                     </TextBlock>
                                                                 </StackPanel>
                                                             </HierarchicalDataTemplate>
-                                                        </HierarchicalDataTemplate.ItemTemplate>
-                                                    </HierarchicalDataTemplate>
-                                                </Grid.Resources>
+                                                        </TreeView.Resources>
+                                                        <TreeView.ItemContainerStyle>
+                                                            <Style TargetType="{x:Type TreeViewItem}">
+                                                                <Style.Resources>
+                                                                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#AF0C70F2" />
+                                                                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+                                                                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#AF0C70F2" />
+                                                                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="Black" />
+                                                                </Style.Resources>
 
-                                                <TreeView x:Name="TreeViewPCIDevices" SelectedItemChanged="TreeViewPCIDevices_SelectedItemChanged">
-                                                    <TreeView.Resources>
-                                                        <HierarchicalDataTemplate DataType="{x:Type device:Property}" ItemsSource="{Binding Properties}">
-                                                            <StackPanel>
-                                                                <TextBlock Text="{Binding Name}" />
-                                                                <TextBlock Text="{Binding Value}" />
-                                                            </StackPanel>
-                                                        </HierarchicalDataTemplate>
-
-                                                        <HierarchicalDataTemplate DataType="{x:Type device:PCIDevice}" ItemsSource="{Binding Children}">
-                                                            <StackPanel Orientation="Horizontal">
-                                                                <Image Source="resources/icons/property.png" Width="24" />
-                                                                <TextBlock VerticalAlignment="Center" Margin="2" FontSize="13">
-                                                                    <Run Text="{Binding ID}" FontWeight="Bold" />
-                                                                    <Run Text="(" /><Run Text="{Binding Class}" /><Run Text=")" />
-                                                                </TextBlock>
-                                                            </StackPanel>
-                                                        </HierarchicalDataTemplate>
-                                                    </TreeView.Resources>
-                                                    <TreeView.ItemContainerStyle>
-                                                        <Style TargetType="{x:Type TreeViewItem}">
-                                                            <Style.Resources>
-                                                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#AF0C70F2" />
-                                                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
-                                                                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#AF0C70F2" />
-                                                                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="Black" />
-                                                            </Style.Resources>
-
-                                                            <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
-                                                            <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
-                                                        </Style>
-                                                    </TreeView.ItemContainerStyle>
-                                                </TreeView>
-
+                                                                <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
+                                                                <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
+                                                            </Style>
+                                                        </TreeView.ItemContainerStyle>
+                                                    </TreeView>
+                                                </Grid>
+                                                
                                                 <Grid Grid.Column="1">
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition Height="*" />
                                                         <RowDefinition Height="*" />
                                                     </Grid.RowDefinitions>
 
-                                                    <TreeView x:Name="TreeViewProperties" />
-                                                    <TreeView x:Name="TreeViewCapabilites" Grid.Row="1" />
+                                                    <Grid>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto" />
+                                                            <RowDefinition Height="*" />
+                                                        </Grid.RowDefinitions>
+                                                        
+                                                        <Grid>
+                                                            <TextBlock Text="Eigenschaften:" Margin="3" FontSize="15" FontWeight="Bold" /> 
+                                                        </Grid>
+
+                                                        <TreeView x:Name="TreeViewProperties" Grid.Row="1">
+                                                            <TreeView.ItemContainerStyle>
+                                                                <Style TargetType="{x:Type TreeViewItem}">
+                                                                    <Style.Resources>
+                                                                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#AF0C70F2" />
+                                                                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+                                                                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#AF0C70F2" />
+                                                                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="Black" />
+                                                                    </Style.Resources>
+
+                                                                    <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
+                                                                    <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
+                                                                </Style>
+                                                            </TreeView.ItemContainerStyle>
+                                                        </TreeView>
+                                                    </Grid>
+
+                                                    <Grid Grid.Row="1">
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto" />
+                                                            <RowDefinition Height="*" />
+                                                        </Grid.RowDefinitions>
+
+                                                        <Grid>
+                                                            <TextBlock Text="Capabilites:" Margin="3" FontSize="15" FontWeight="Bold" />
+                                                        </Grid>
+
+                                                        <TreeView x:Name="TreeViewCapabilites" Grid.Row="1">
+                                                            <TreeView.ItemContainerStyle>
+                                                                <Style TargetType="{x:Type TreeViewItem}">
+                                                                    <Style.Resources>
+                                                                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#AF0C70F2" />
+                                                                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+                                                                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#AF0C70F2" />
+                                                                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="Black" />
+                                                                    </Style.Resources>
+
+                                                                    <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
+                                                                    <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
+                                                                </Style>
+                                                            </TreeView.ItemContainerStyle>
+                                                        </TreeView>
+                                                    </Grid>
                                                 </Grid>
                                             </Grid>
                                         </TabItem>

@@ -28,6 +28,7 @@ using Home.Data.Helper;
 using Model;
 using Microsoft.Win32;
 using Controls.Dialogs;
+using Model.PCI;
 
 namespace Home
 {
@@ -465,6 +466,8 @@ namespace Home
             }
         }
 
+        private bool treeViewIgnoreSelectionChanged = false;
+
         private async Task RefreshSelectedItem()
         {
             if (currentDevice == null)
@@ -512,7 +515,6 @@ namespace Home
                 currentParagraph.Inlines.Add(new LineBreak());
             }
 
-
             flowDocument.Blocks.Add(currentParagraph);
             LogHolder.Document = flowDocument;
             LogScrollViewer.ScrollToEnd();
@@ -522,7 +524,7 @@ namespace Home
             List<string> previouslySelectedItems = new List<string>();
             List<string> previouslyExpandedItems = new List<string>();
 
-            void t(PCIDevice pci)
+            void t(PCIDeviceItem pci)
             {
                 var hash = pci.BuildHash();
                 if (pci.IsSelected)
@@ -535,40 +537,37 @@ namespace Home
             }
 
             foreach (var pci in TreeViewPCIDevices.Items)
-                if (pci is PCIDevice e)
+                if (pci is PCIDeviceItem e)
                     t(e);
 
-            // Generate item source (group all items with no children to a single group to make it better)
-            List<PCIDevice> devicesWithOther = new List<PCIDevice>();
-            PCIDevice other = new PCIDevice() { ID = "Other", Class = "PCI" };
-            foreach (var item in currentDevice.Environment.PCIBus)
+
+            void b(PropertyItem propertyItem)
             {
-                if (item.Children.Count == 0)
-                    other.Children.Add(item);
+                var hash = propertyItem.BuildHash();
+
+                if (propertyItem.IsSelected)
+                    previouslySelectedItemsProperties.Add(hash);
                 else
-                    devicesWithOther.Add(item);
+                    previouslySelectedItemsProperties.Remove(hash);
+
+                if (propertyItem.IsExpanded)
+                    previouslyExpandedItemsProperties.Add(hash);
+                else
+                    previouslyExpandedItemsProperties.Remove(hash);
+
+                foreach (var item in propertyItem.Values)
+                    b(item);
             }
 
-            devicesWithOther.Add(other);
+            foreach (var item in TreeViewProperties.Items)
+                if (item is PropertyItem pt)
+                    b(pt);
 
-         
 
-            TreeViewPCIDevices.ItemsSource = devicesWithOther;
-
-            void f(PCIDevice pci)
-            {
-                var hash = pci.BuildHash();
-                if (previouslyExpandedItems.Contains(hash))
-                    pci.IsExpanded = true;
-                if (previouslySelectedItems.Contains(hash))
-                    pci.IsSelected = true;
-
-                foreach (var item in pci.Children)
-                    f(item);
-            }
-
-            foreach (var pci in devicesWithOther)
-                f(pci);
+            // Generate item source (group all items with no children to a single group to make it better)          
+            treeViewIgnoreSelectionChanged = true;
+            TreeViewPCIDevices.ItemsSource = PCIDeviceItem.BuildViewModel(currentDevice.Environment.PCIBus, isFirstCall: true, selectedHashes: previouslySelectedItems, expandedHashes: previouslyExpandedItems);
+            treeViewIgnoreSelectionChanged = false;
 
             DeviceInfo.DataContext = null;
             DeviceInfo.DataContext = currentDevice;
@@ -576,12 +575,19 @@ namespace Home
             CmbGraphics.SelectedIndex = 0;
         }
 
+        private List<string> previouslySelectedItemsProperties = new List<string>();
+        private List<string> previouslyExpandedItemsProperties = new List<string>();
+
         private void TreeViewPCIDevices_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
+            if (treeViewIgnoreSelectionChanged)
+                return;
+
             if (TreeViewPCIDevices.SelectedItem is PCIDevice pci)
             {
-                TreeViewProperties.ItemsSource = pci.Properties;
-                TreeViewCapabilites.ItemsSource = pci.Capabilites; 
+                // ToDo: ***
+                TreeViewProperties.ItemsSource = PropertyItem.BuildViewModel(pci.Properties, previouslySelectedItemsProperties, previouslyExpandedItemsProperties);
+                TreeViewCapabilites.ItemsSource = PropertyItem.BuildViewModel(pci.Capabilites, new List<string>(), new List<string>());
             }
         }
 
