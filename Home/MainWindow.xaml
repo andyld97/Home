@@ -207,6 +207,7 @@
                                                         <Setter Property="Padding" Value="0" />
                                                         <Setter Property="FontSize" Value="15" />
                                                         <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                                                        <Setter Property="TextWrapping" Value="NoWrap" />
                                                     </Style>
                                                 </Grid.Resources>
                                                 <Grid.ColumnDefinitions>
@@ -284,7 +285,7 @@
                                                         </TextBlock>
                                                         <TextBlock Text="{Binding Environment.OSVersion}" ToolTip="{Binding Environment.OSVersion}" />
                                                         <TextBlock x:Name="TextCPUName" ToolTip="{Binding ElementName=TextCPUName, Path=Text}">
-                                                <Run  Text="{Binding Environment.CPUName}"  />
+                                                <Run  Text="{Binding Environment.CPUName, Converter={StaticResource emptyConverter}}"  />
                                                 <Run Text=" x " /><Run Text="{Binding Environment.CPUCount}" />
                                                         </TextBlock>
                                                         <TextBlock x:Name="TextMotherboard" Text="{Binding Environment.Motherboard, Converter={StaticResource emptyConverter}}" ToolTip="{Binding ElementName=TextMotherboard, Path=Text}" />

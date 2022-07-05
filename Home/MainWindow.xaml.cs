@@ -996,6 +996,10 @@ namespace Home
         {
             if (string.IsNullOrEmpty(value?.ToString()))
                 return Properties.Resources.strUnkown;
+            string[] newLine = new string[] { System.Environment.NewLine, "\r", "\n", "\r\n" };
+
+            if (value is string str && newLine.Any(n => str.Contains(n)))
+                return str.Split(newLine, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
 
             return value;
         }
