@@ -215,6 +215,7 @@ namespace Home
             RefreshOverview();
         }
 
+
         private async Task ShutdownOrRestartAsync(Device d, bool shutdown)
         {
             if (d == null)
