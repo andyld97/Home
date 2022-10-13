@@ -14,7 +14,7 @@ namespace Home.Service.Android
 {
 	
 	
-	[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Android.Build.Tasks", "13.0.99.109")]
+	[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Android.Build.Tasks", "13.0.0.73")]
 	public partial class Resource
 	{
 		
@@ -9350,43 +9350,46 @@ namespace Home.Service.Android
 			public const int view_tree_lifecycle_owner = 2131296744;
 			
 			// aapt resource value: 0x7F0901E9
-			public const int view_tree_saved_state_registry_owner = 2131296745;
+			public const int view_tree_on_back_pressed_dispatcher_owner = 2131296745;
 			
 			// aapt resource value: 0x7F0901EA
-			public const int view_tree_view_model_store_owner = 2131296746;
+			public const int view_tree_saved_state_registry_owner = 2131296746;
 			
 			// aapt resource value: 0x7F0901EB
-			public const int visible = 2131296747;
+			public const int view_tree_view_model_store_owner = 2131296747;
 			
 			// aapt resource value: 0x7F0901EC
-			public const int visible_removing_fragment_view_tag = 2131296748;
+			public const int visible = 2131296748;
 			
 			// aapt resource value: 0x7F0901ED
-			public const int west = 2131296749;
-			
-			// aapt resource value: 0x7F0901EF
-			public const int withinBounds = 2131296751;
+			public const int visible_removing_fragment_view_tag = 2131296749;
 			
 			// aapt resource value: 0x7F0901EE
-			public const int withText = 2131296750;
+			public const int west = 2131296750;
 			
 			// aapt resource value: 0x7F0901F0
-			public const int wrap = 2131296752;
+			public const int withinBounds = 2131296752;
+			
+			// aapt resource value: 0x7F0901EF
+			public const int withText = 2131296751;
 			
 			// aapt resource value: 0x7F0901F1
-			public const int wrap_content = 2131296753;
+			public const int wrap = 2131296753;
 			
 			// aapt resource value: 0x7F0901F2
-			public const int wrap_content_constrained = 2131296754;
+			public const int wrap_content = 2131296754;
 			
 			// aapt resource value: 0x7F0901F3
-			public const int x_left = 2131296755;
+			public const int wrap_content_constrained = 2131296755;
 			
 			// aapt resource value: 0x7F0901F4
-			public const int x_right = 2131296756;
+			public const int x_left = 2131296756;
 			
 			// aapt resource value: 0x7F0901F5
-			public const int zero_corner_chip = 2131296757;
+			public const int x_right = 2131296757;
+			
+			// aapt resource value: 0x7F0901F6
+			public const int zero_corner_chip = 2131296758;
 			
 			static Id()
 			{
