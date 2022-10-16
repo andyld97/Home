@@ -1,13 +1,18 @@
-﻿using Home.API.Model;
+﻿using Home.API.Helper;
+using Home.API.home;
+using Home.API.Model;
 using Home.Data;
 using Home.Data.Com;
 using Home.Data.Events;
 using Home.Model;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace Home.API.Controllers
 {
@@ -16,14 +21,16 @@ namespace Home.API.Controllers
     public class CommunicationController : ControllerBase
     {
         private readonly ILogger<CommunicationController> _logger;
+        private readonly HomeContext _context;
 
-        public CommunicationController(ILogger<CommunicationController> logger)
+        public CommunicationController(ILogger<CommunicationController> logger, HomeContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         [HttpPost("login")]
-        public IActionResult Login([FromBody] Client client)
+        public async Task<IActionResult> Login([FromBody] Client client)
         {
             if (client == null || !client.IsRealClient)
                 return NotFound(AnswerExtensions.Fail("Invalid client data!"));
@@ -57,23 +64,28 @@ namespace Home.API.Controllers
                 // return BadRequest(AnswerExtensions.Fail("Already logged in"));
             }
 
-            return Ok(AnswerExtensions.Success(Program.Devices));
+            var devices = await _context.Device.Include(p => p.DeviceType).Include(p => p.Environment).Include(p => p.DeviceDiskDrive).Include(p => p.OstypeNavigation).ToListAsync();
+            List<Device> result = new List<Device>();
+            foreach (var item in devices)
+                result.Add(DeviceHelper.ConvertDevice(item));
+
+            return Ok(AnswerExtensions.Success(result));
         }
 
         [HttpPost("logoff")]
-        public IActionResult LogOff([FromBody] Client client)
+        public async Task<IActionResult> LogOffAsync([FromBody] Client client)
         {
             if (client == null || !client.IsRealClient)
                 return NotFound(AnswerExtensions.Fail("Invalid client data"));
 
             if (Program.Clients.Any(p => p.ID == client.ID))
             {
+                Client cl;
                 lock (Program.Clients)
                 {
-                    Client cl = Program.Clients.Where(p => p.ID == client.ID).FirstOrDefault();
+                    cl = Program.Clients.Where(p => p.ID == client.ID).FirstOrDefault();
                     if (cl != null)
                         Program.Clients.Remove(cl);
-
 
                     lock (Program.EventQueues)
                     {
@@ -81,46 +93,45 @@ namespace Home.API.Controllers
                         if (eventQueue != null)
                             Program.EventQueues.Remove(eventQueue);
                     }
+                }
 
-                    // Clean UP liveMode Assoc
-                    if (Program.LiveModeAssoc.ContainsKey(cl))
+                // Clean UP liveMode Assoc
+                if (Program.LiveModeAssoc.ContainsKey(cl))
+                {
+                    var allDevices = await _context.GetAllDevicesAsync();
+                    var devices = Program.LiveModeAssoc[cl].Select(d => allDevices.FirstOrDefault(f => f.Guid == d));
+
+                    // Check if we can set the device to false (if true),
+                    // because if this device is also used by another client, we cannot set it to false then.
+                    foreach (var partictularDevice in devices)
                     {
-                        var devices = Program.LiveModeAssoc[cl].Select(d => Program.Devices.FirstOrDefault(f => f.ID == d));
+                        bool found = false;
 
-                        // Check if we can set the device to false (if true),
-                        // because if this device is also used by another client, we cannot set it to false then.
-                        foreach (var partictularDevice in devices)
+                        // Check if we can disable this device (if it is not used by any other clients)
+                        foreach (var item in Program.LiveModeAssoc.Keys)
                         {
-                            bool found = false;
+                            if (item.ID == cl.ID)
+                                continue;
 
-                            // Check if we can disable this device (if it is not used by any other clients)
-                            foreach (var item in Program.LiveModeAssoc.Keys)
+                            if (Program.LiveModeAssoc[item].Contains(partictularDevice.Guid))
                             {
-                                if (item.ID == cl.ID)
-                                    continue;
-
-                                if (Program.LiveModeAssoc[item].Contains(partictularDevice.ID))
-                                {
-                                    found = true;
-                                    break;
-                                }
-                            }
-
-                            if (!found)
-                            {
-                                lock (Program.Devices)
-                                {
-                                    partictularDevice.IsLive = false;
-                                    partictularDevice.LogEntries.Add(new LogEntry($"Device \"{partictularDevice.Name}\" status changed to normal, because one or multiple clients (those that have aquired live view) have logged off!", LogEntry.LogLevel.Information, false));
-                                }
-                                
+                                found = true;
+                                break;
                             }
                         }
 
-                        Program.LiveModeAssoc.Remove(cl);
+                        if (!found)
+                        {
+                            // ToDo. *** Notify client queue
+                            partictularDevice.IsLive = false;
+                            var logEntry = DeviceHelper.CreateLogEntry(partictularDevice, $"Device \"{partictularDevice.Name}\" status changed to normal, because one or multiple clients (those that have aquired live view) have logged off!", LogEntry.LogLevel.Information, false);
+                            await _context.DeviceLog.AddAsync(logEntry);
+                        }
                     }
 
-                }
+                    await _context.SaveChangesAsync();
+                    Program.LiveModeAssoc.Remove(cl);
+                }                
 
                 _logger.LogInformation($"Client {client} has just logged off!");
             }
@@ -156,7 +167,9 @@ namespace Home.API.Controllers
         [HttpGet("get_screenshot/{clientId}/{deviceId}")]
         public IActionResult AskForScreenshot(string clientId, string deviceID)
         {
-            if (string.IsNullOrEmpty(clientId))
+            // ToDo: ***
+            return Ok();
+            /*if (string.IsNullOrEmpty(clientId))
                 return BadRequest(AnswerExtensions.Fail("Invalid client data"));
 
             if (string.IsNullOrEmpty(deviceID))
@@ -187,7 +200,7 @@ namespace Home.API.Controllers
                 }
             }
 
-            return Ok(AnswerExtensions.Success(true));
+            return Ok(AnswerExtensions.Success(true));*/
         }
 
         [HttpGet("recieve_screenshot/{deviceId}/{fileName}")]
@@ -214,33 +227,34 @@ namespace Home.API.Controllers
         }
 
         [HttpGet("clear_log/{deviceID}")]
-        public IActionResult ClearDeviceLog(string deviceID)
+        public async Task<IActionResult> ClearDeviceLogAsync(string deviceID)
         {
             if (string.IsNullOrEmpty(deviceID))
                 return BadRequest(AnswerExtensions.Fail("Invalid device data"));
 
-            lock (Program.Devices)
-            {
-                if (!Program.Devices.Any(p => p.ID == deviceID))
-                    return NotFound(AnswerExtensions.Fail("Device not found!"));
+            if (!(await _context.Device.Where(p => p.Guid == deviceID).AnyAsync()))
+                return NotFound(AnswerExtensions.Fail("Device not found!"));
 
-                var device = Program.Devices.Where(p => p.ID == deviceID).FirstOrDefault();
-                if (device != null)
+            var device = await DeviceHelper.GetDeviceByIdAsync(_context, deviceID);
+            if (device != null)
+            {
+                device.DeviceLog.Clear();
+                
+                _logger.LogInformation($"Clearing log of {device.Name} ...");
+                lock (Program.EventQueues)
                 {
-                    device.LogEntries.Clear();
-                    _logger.LogInformation($"Clearing log of {device.Name} ...");
-                    lock (Program.EventQueues)
+                    foreach (var queue in Program.EventQueues)
                     {
-                        foreach (var queue in Program.EventQueues)
-                        {
-                            queue.LastEvent = DateTime.Now;
-                            queue.Events.Enqueue(new EventQueueItem() { DeviceID = deviceID, EventData = new EventData(device), EventDescription = EventQueueItem.EventKind.LogCleared, EventOccured = DateTime.Now });
-                        }
+                        queue.LastEvent = DateTime.Now;
+                        queue.Events.Enqueue(new EventQueueItem() { DeviceID = deviceID, EventData = new EventData(DeviceHelper.ConvertDevice(device)), EventDescription = EventQueueItem.EventKind.LogCleared, EventOccured = DateTime.Now });
                     }
                 }
+
+
+                return Ok(AnswerExtensions.Success("ok"));
             }
 
-            return Ok(AnswerExtensions.Success("ok"));
+            return NotFound();
         }
 
         [HttpPost("send_message")]
@@ -249,7 +263,9 @@ namespace Home.API.Controllers
             if (message == null)
                 return BadRequest(AnswerExtensions.Fail("Invalid device data!"));
 
-            Device device = null;
+            return Ok();
+            // ToDo: *** Send message
+           /* Device device = null;
             // Check if this devices exists
             lock (Program.Devices)
             {
@@ -284,59 +300,60 @@ namespace Home.API.Controllers
                 }
             }
 
-            return Ok(AnswerExtensions.Success("ok"));
+            return Ok(AnswerExtensions.Success("ok"));*/
         }
 
         [HttpGet("status/{clientId}/{deviceId}/{live:bool}")]
-        public IActionResult SetLiveStatus(string clientId, string deviceId, bool live)
+        public async Task<IActionResult> SetLiveStatus(string clientId, string deviceId, bool live)
         {
-            lock (Program.Devices)
+            var device = await _context.GetDeviceByIdAsync(deviceId);
+            if (device == null)
+                return BadRequest(AnswerExtensions.Fail($"Device couldn't be found: {deviceId}"));
+
+            if (!device.Status) // == Device.DeviceStatus.Offline)
+                return BadRequest(AnswerExtensions.Fail("Cannot set live status if device is offline!"));
+
+            Client client;
+            lock (Program.Clients)
             {
-                var device = Program.Devices.FirstOrDefault(d => d.ID == deviceId);
-                if (device == null)
-                    return BadRequest(AnswerExtensions.Fail($"Device couldn't be found: {deviceId}"));
+                client = Program.Clients.FirstOrDefault(c => c.ID == clientId);
+                if (client == null)
+                    return BadRequest(AnswerExtensions.Fail($"Client couldn't be found: {clientId}"));
 
-                if (device.Status == Device.DeviceStatus.Offline)
-                    return BadRequest(AnswerExtensions.Fail("Cannot set live status if device is offline!"));
-
-                lock (Program.Clients)
+                if (Program.LiveModeAssoc.ContainsKey(client))
                 {
-                    var client = Program.Clients.FirstOrDefault(c => c.ID == clientId);
-                    if (client == null)
-                        return BadRequest(AnswerExtensions.Fail($"Client couldn't be found: {clientId}"));
-
-                    if (Program.LiveModeAssoc.ContainsKey(client))
-                    {
-                        var list = Program.LiveModeAssoc[client];
-                        if (!list.Contains(deviceId))
-                            list.Add(deviceId);
-                    }
-                    else
-                        Program.LiveModeAssoc.Add(client, new List<string>() { deviceId });
-
-                    lock (Program.Devices)
-                    {
-                        device.IsLive = live;
-                        device.LogEntries.Add(new LogEntry($"Device \"{device.Name}\" status changed to {(live ? "live" : "normal")} by client {client.Name}!", LogEntry.LogLevel.Information, false));
-                    }
+                    var list = Program.LiveModeAssoc[client];
+                    if (!list.Contains(deviceId))
+                        list.Add(deviceId);
                 }
-                return Ok(AnswerExtensions.Success("ok"));
+                else
+                    Program.LiveModeAssoc.Add(client, new List<string>() { deviceId });
             }
+
+            device.IsLive = live;
+
+            var logEntry = DeviceHelper.CreateLogEntry(device, $"Device \"{device.Name}\" status changed to {(live ? "live" : "normal")} by client {client.Name}!", LogEntry.LogLevel.Information, false);
+            await _context.DeviceLog.AddAsync(logEntry);
+
+            return Ok(AnswerExtensions.Success("ok"));
         }
 
         [HttpGet("delete/{guid}")]
-        public IActionResult DeleteDevice(string guid)
+        public async Task<IActionResult> DeleteDeviceAsync(string guid)
         {
-            lock (Program.Devices)
-            {
-                var device = Program.Devices.FirstOrDefault(d => d.ID == guid);
-                Program.Devices.Remove(device);
+            var device = await _context.Device.Where(p => p.Guid == guid).FirstOrDefaultAsync();
 
-                if (device != null)
-                    return Ok(AnswerExtensions.Success("ok"));
-                else
-                    return BadRequest(AnswerExtensions.Fail("This device doesn't exists!"));
+            if (device != null)
+            {
+                _context.Device.Remove(device);
+                // ToDo: *** Remove all other related entries from other tables
+
+                await _context.SaveChangesAsync();
+
+                return Ok(AnswerExtensions.Success("ok"));
             }
+            else
+                return BadRequest(AnswerExtensions.Fail("This device doesn't exists!"));
         }
 
         [HttpPost("send_command")]
@@ -345,7 +362,9 @@ namespace Home.API.Controllers
             if (command == null)
                 return BadRequest(AnswerExtensions.Fail("Invalid device data!"));
 
-            Device device = null;
+            // ToDo: *** Commands
+            return Ok();
+           /* Device device = null;
             // Check if this devices exists
             lock (Program.Devices)
             {
@@ -370,7 +389,7 @@ namespace Home.API.Controllers
                 }
             }
 
-            return Ok(AnswerExtensions.Success("ok"));
+            return Ok(AnswerExtensions.Success("ok"));*/
         }
 
         [HttpGet("test")]

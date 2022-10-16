@@ -1,8 +1,13 @@
+using Home.API.home;
+using Home.API.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using System;
 
 namespace Home.API
 {
@@ -18,6 +23,16 @@ namespace Home.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<HomeContext>(options => { 
+                options.UseSqlServer(Program.GlobalConfig.ConnectionString);
+
+#if DEBUG
+                options.EnableSensitiveDataLogging();
+#endif
+
+            });
+            services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddHostedService<HealthCheckService>();
             services.AddControllers();
         }
 
@@ -28,7 +43,7 @@ namespace Home.API
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            
             app.UseHttpsRedirection();
 
             app.UseRouting();

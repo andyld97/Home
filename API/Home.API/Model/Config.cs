@@ -19,6 +19,12 @@ namespace Home.API.Model
         public string HostUrl { get; set; } = "http://localhost:5250";
 
         /// <summary>
+        /// The db connection string (used here to prevent commiting passwords) in appsettings.json :(
+        /// </summary>
+        [JsonPropertyName("connection_string")]
+        public string ConnectionString { get; set; } = "Server=YOUR_PC\\SQLEXPRESS,1433;User Id=user;password=set_your_password;Database=home;Trusted_Connection=False;MultipleActiveResultSets=true";
+
+        /// <summary>
         /// If set to true a webhook for important events will be called (<see cref="WebHookUrl"/> must be also set)
         /// </summary>
         [JsonPropertyName("use_webhook")]
