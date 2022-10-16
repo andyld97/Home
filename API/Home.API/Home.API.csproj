@@ -22,10 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared Libraries\Home.Data\Home.Data.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="Serialization">
       <HintPath>..\..\External Libraries\Serialization.dll</HintPath>
     </Reference>
@@ -39,6 +35,10 @@
 
   <ItemGroup>
     <Folder Include="home\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared Libraries\Home.Data\Home.Data.csproj" />
   </ItemGroup>
 
 

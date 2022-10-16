@@ -165,11 +165,9 @@ namespace Home.API.Controllers
         }
 
         [HttpGet("get_screenshot/{clientId}/{deviceId}")]
-        public IActionResult AskForScreenshot(string clientId, string deviceID)
+        public async Task<IActionResult> AskForScreenshotAsync(string clientId, string deviceID)
         {
-            // ToDo: ***
-            return Ok();
-            /*if (string.IsNullOrEmpty(clientId))
+            if (string.IsNullOrEmpty(clientId))
                 return BadRequest(AnswerExtensions.Fail("Invalid client data"));
 
             if (string.IsNullOrEmpty(deviceID))
@@ -184,23 +182,18 @@ namespace Home.API.Controllers
                     cl = Program.Clients.Where(c => c.ID == clientId).FirstOrDefault();
             }
 
-            lock (Program.Devices)
-            {
-                if (!Program.Devices.Any(p => p.ID == deviceID))
-                    return NotFound(AnswerExtensions.Fail("Device not found!"));
+            var device = await _context.GetDeviceByIdAsync(deviceID);
+            if (device == null)
+                return NotFound(AnswerExtensions.Fail("Device not found!"));
 
-                var device = Program.Devices.Where(p => p.ID == deviceID).FirstOrDefault();
-                if (device != null)
-                {
-                    if (device.OS == Device.OSType.Android)
-                        return BadRequest(AnswerExtensions.Fail("Android Device doesn't support screenshots!"));
+            if (device.OstypeNavigation.OstypeId == (int)Device.OSType.Android)
+                return BadRequest(AnswerExtensions.Fail("Android Device doesn't support screenshots!"));
 
-                    device.IsScreenshotRequired = true;
-                    _logger.LogInformation($"Aquired screenshot from {cl?.Name} for device {device.Name}!");
-                }
-            }
+            device.IsScreenshotRequired = true;
+            await _context.SaveChangesAsync();
+            _logger.LogInformation($"Aquired screenshot from {cl?.Name} for device {device.Name}!");
 
-            return Ok(AnswerExtensions.Success(true));*/
+            return Ok(AnswerExtensions.Success(true));
         }
 
         [HttpGet("recieve_screenshot/{deviceId}/{fileName}")]
@@ -214,7 +207,7 @@ namespace Home.API.Controllers
                 string screenshotFilePath = System.IO.Path.Combine(Config.SCREENSHOTS_PATH, deviceId, $"{fileName}.png");
                 Screenshot screenshot = new Screenshot()
                 {
-                    ClientID = null,
+                    DeviceID = null,
                     Data = Convert.ToBase64String(System.IO.File.ReadAllBytes(screenshotFilePath))
                 };
 

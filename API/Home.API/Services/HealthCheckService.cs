@@ -1,5 +1,7 @@
 ﻿using Home.API.Helper;
 using Home.API.home;
+using Home.API.home.Models;
+using Home.API.Model;
 using Home.Data;
 using Home.Data.Events;
 using Home.Model;
@@ -10,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -73,7 +76,8 @@ namespace Home.API.Services
 
                     // If a device turns offline, usually the user wants to end the live state if the device is shutdown for example
                     device.IsLive = false;
-                    var logEntry = DeviceHelper.CreateLogEntry(device, $"No activity detected ... Device \"{device.Name}\" was flagged as offline!", LogEntry.LogLevel.Information, (device.DeviceType.TypeId == (int)Device.DeviceType.SingleBoardDevice || device.DeviceType.TypeId == (int)Device.DeviceType.Server));
+                    bool notifyWebHook = (device.DeviceType.TypeId != (int)Home.Model.Device.DeviceType.Smartphone) &&  (device.DeviceType.TypeId == (int)Home.Model.Device.DeviceType.SingleBoardDevice || device.DeviceType.TypeId == (int)Home.Model.Device.DeviceType.Server);
+                    var logEntry = DeviceHelper.CreateLogEntry(device, $"No activity detected ... Device \"{device.Name}\" was flagged as offline!", LogEntry.LogLevel.Information, notifyWebHook);
                     await homeContext.DeviceLog.AddAsync(logEntry);
 
                     NotifyClientQueues(EventQueueItem.EventKind.DeviceChangedState, DeviceHelper.ConvertDevice(device));
@@ -82,37 +86,36 @@ namespace Home.API.Services
                 // Aquiring a new screenshot for all online devices (except android devices)
                 foreach (var device in await homeContext.GetAllDevicesAsync())
                 {
-                    // ToDo: *** Screenshots
-                    /*if (device.IsScreenshotRequired)
+                    if (device.IsScreenshotRequired)
                         continue;
 
-                    if (device.ScreenshotFileNames.Count == 0)
+                    if (device.DeviceScreenshot.Count == 0)
                         continue;
 
-                    string screenshotFileName = device.ScreenshotFileNames.LastOrDefault();
-                    if (string.IsNullOrEmpty(screenshotFileName))
+                    var shot = device.DeviceScreenshot.LastOrDefault();
+                    if (shot == null)
                         continue;
 
                     // Check age of this screenshot
-                    if (DateTime.TryParseExact(screenshotFileName, Consts.SCREENSHOT_DATE_FILE_FORMAT, System.Globalization.CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime result) && result.Add(GlobalConfig.AquireNewScreenshot) < DateTime.Now)
+                    if (shot.Timestamp.Add(Program.GlobalConfig.AquireNewScreenshot) < DateTime.Now)
                     {
                         device.IsScreenshotRequired = true;
-                        device.LogEntries.Add(new LogEntry(DateTime.Now, $"Last screenshot was older than {GlobalConfig.AquireNewScreenshot.TotalHours}h. Aquiring a new screenshot ...", LogEntry.LogLevel.Information));
-                        NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
-                    }*/
+                        var logEntry = DeviceHelper.CreateLogEntry(device, $"Last screenshot was older than {Program.GlobalConfig.AquireNewScreenshot.TotalHours}h. Aquiring a new screenshot ...", LogEntry.LogLevel.Information);
+                        await homeContext.DeviceLog.AddRangeAsync(logEntry);
+                        NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, DeviceHelper.ConvertDevice(device));
+                    }
                 }
 
                 // Delete screenshots which are older than one day
                 foreach (var device in await DeviceHelper.GetAllDevicesAsync(homeContext))
                 {
-                    // ToDo: *** Screenshots
-                    /*if (device.ScreenshotFileNames.Count == 0 || device.ScreenshotFileNames.Count == 1)
+                    if (device.DeviceScreenshot.Count == 0 || device.DeviceScreenshot.Count == 1)
                         continue;
 
-                    List<string> screenshotsToRemove = new List<string>();
-                    foreach (var shot in device.ScreenshotFileNames.Take(device.ScreenshotFileNames.Count - 1))
+                    List<DeviceScreenshot> screenshotsToRemove = new List<DeviceScreenshot>();
+                    foreach (var shot in device.DeviceScreenshot.Take(device.DeviceScreenshot.Count - 1))
                     {
-                        if (DateTime.TryParseExact(shot, Consts.SCREENSHOT_DATE_FILE_FORMAT, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime result) && result.Add(GlobalConfig.RemoveOldScreenshots) < DateTime.Now)
+                        if (shot.Timestamp.Add(Program.GlobalConfig.RemoveOldScreenshots) < DateTime.Now)
                         {
                             screenshotsToRemove.Add(shot);
                             _logger.LogInformation($"Deleted screenshot {shot} from device {device.Name}, because it is older than one day!");
@@ -121,8 +124,8 @@ namespace Home.API.Services
 
                     foreach (var shot in screenshotsToRemove)
                     {
-                        device.ScreenshotFileNames.Remove(shot);
-                        string path = System.IO.Path.Combine(Config.SCREENSHOTS_PATH, device.ID, $"{shot}.png");
+                        device.DeviceScreenshot.Remove(shot);
+                        string path = System.IO.Path.Combine(Config.SCREENSHOTS_PATH, device.Guid, $"{shot}.png");
                         try
                         {
                             System.IO.File.Delete(path);
@@ -131,7 +134,7 @@ namespace Home.API.Services
                         {
                             _logger.LogError($"Failed to remove screenshot {ex.Message}");
                         }
-                    }*/
+                    }
                 }
 
                 // Check for obsolete warnings
@@ -216,7 +219,7 @@ namespace Home.API.Services
         /// </summary>
         /// <param name="eventKind"></param>
         /// <param name="device"></param>
-        private static void NotifyClientQueues(EventQueueItem.EventKind eventKind, Device device)
+        private static void NotifyClientQueues(EventQueueItem.EventKind eventKind, Home.Model.Device device)
         {
             lock (Program.EventQueues)
             {

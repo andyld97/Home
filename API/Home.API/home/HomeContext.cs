@@ -26,6 +26,7 @@ namespace Home.API.home
         public virtual DbSet<DeviceGraphic> DeviceGraphic { get; set; }
         public virtual DbSet<DeviceLog> DeviceLog { get; set; }
         public virtual DbSet<DeviceOstype> DeviceOstype { get; set; }
+        public virtual DbSet<DeviceScreenshot> DeviceScreenshot { get; set; }
         public virtual DbSet<DeviceType> DeviceType { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -256,6 +257,24 @@ namespace Home.API.home
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<DeviceScreenshot>(entity =>
+            {
+                entity.HasKey(e => e.ScreenshotId);
+
+                entity.Property(e => e.ScreenshotFileName)
+                    .IsRequired()
+                    .HasMaxLength(260)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Timestamp).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Device)
+                    .WithMany(p => p.DeviceScreenshot)
+                    .HasForeignKey(d => d.DeviceId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_DeviceScreenshot_Device");
             });
 
             modelBuilder.Entity<DeviceType>(entity =>

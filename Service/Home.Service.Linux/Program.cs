@@ -246,7 +246,7 @@ namespace Home.Service.Linux
                 try
                 {
                     byte[] data = await System.IO.File.ReadAllBytesAsync("screenshot.png");
-                    var screenshotResult = await api.SendScreenshotAsync(new Screenshot() { ClientID = currentDevice.ID, Data = Convert.ToBase64String(data) });
+                    var screenshotResult = await api.SendScreenshotAsync(new Screenshot() { DeviceID = currentDevice.ID, Data = Convert.ToBase64String(data) });
 
                     if (!screenshotResult.Success)
                         Console.WriteLine(screenshotResult.ErrorMessage);

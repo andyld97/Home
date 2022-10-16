@@ -7,6 +7,7 @@ using Home.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,7 +20,7 @@ namespace Home.API.Helper
 {
     public static class DeviceHelper
     {
-        public static async Task<home.Models.Device> UpdateDeviceAsync(HomeContext homeContext, home.Models.Device dbDevice, Device device, DeviceStatus status, DateTime now)
+        public static home.Models.Device UpdateDevice(HomeContext homeContext, home.Models.Device dbDevice, Device device, DeviceStatus status, DateTime now)
         {
             dbDevice.Guid = device.ID;
             dbDevice.DeviceGroup = device.DeviceGroup;
@@ -29,9 +30,13 @@ namespace Home.API.Helper
             dbDevice.Ostype = (int)device.OS;
             dbDevice.ServiceClientVersion = device.ServiceClientVersion;
             dbDevice.Location = device.Location;
+            dbDevice.IsScreenshotRequired = device.IsScreenshotRequired;
             dbDevice.Ip = device.IP;
-            dbDevice.Status = true; // (status == DeviceStatus.Active);  // nullable, when Inactive?
-            dbDevice.LastSeen = now;
+            dbDevice.Status = (status == DeviceStatus.Active);  // nullable, when Inactive?
+            dbDevice.LastSeen = device.LastSeen;
+
+            if (device.LastSeen == DateTime.MinValue)
+                dbDevice.LastSeen = (DateTime)System.Data.SqlTypes.SqlDateTime.MinValue;
 
             if (dbDevice.Environment == null)
                 dbDevice.Environment = new home.Models.DeviceEnvironment();
@@ -75,6 +80,19 @@ namespace Home.API.Helper
                 }
             }
 
+            foreach (var screenshot in device.ScreenshotFileNames)
+            {
+                if (DateTime.TryParseExact(screenshot, Consts.SCREENSHOT_DATE_FILE_FORMAT, System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None, out DateTime dt))
+                {
+                    dbDevice.DeviceScreenshot.Add(new DeviceScreenshot()
+                    {
+                        Device = dbDevice,
+                        ScreenshotFileName = screenshot,
+                        Timestamp = dt
+                    });
+                }
+            }
+
             foreach (var graphic in dbDevice.DeviceGraphic)
             {
                 // Remove all cards which do not belong to this device anymore
@@ -97,38 +115,41 @@ namespace Home.API.Helper
         public static async Task<home.Models.Device> ConvertDeviceAsync(this HomeContext context, Device device)
         {
             home.Models.Device dbDevice = new home.Models.Device();
-            await UpdateDeviceAsync(context, dbDevice, device, DeviceStatus.Active, DateTime.Now);
+            UpdateDevice(context, dbDevice, device, DeviceStatus.Active, DateTime.Now);
             return dbDevice;
         }
 
         public static async Task<home.Models.Device> GetDeviceByIdAsync(this HomeContext context, string guid)
         {
             return await context.Device.Include(d => d.DeviceLog)
-                                                              .Include(p => p.DeviceGraphic)
-                                                              .Include(p => p.Environment)
-                                                              .Include(p => p.DeviceDiskDrive)
-                                                              .Include(p => p.DeviceType)
-                                                              .Include(p => p.OstypeNavigation).Where(p => p.Guid == guid).FirstOrDefaultAsync();
+                                       .Include(p => p.DeviceGraphic)
+                                       .Include(p => p.Environment)
+                                       .Include(p => p.DeviceDiskDrive)
+                                       .Include(p => p.DeviceType)
+                                       .Include(p => p.DeviceScreenshot)
+                                       .Include(p => p.OstypeNavigation).Where(p => p.Guid == guid).FirstOrDefaultAsync();
         }
 
         public static async Task<List<home.Models.Device>> GetAllDevicesAsync(this HomeContext context)
         {
             return await context.Device.Include(d => d.DeviceLog)
-                                                                 .Include(p => p.DeviceGraphic)
-                                                                 .Include(p => p.Environment)
-                                                                 .Include(p => p.DeviceDiskDrive)
-                                                                 .Include(p => p.DeviceType)
-                                                                 .Include(p => p.OstypeNavigation).ToListAsync();
+                                       .Include(p => p.DeviceGraphic)
+                                       .Include(p => p.Environment)
+                                       .Include(p => p.DeviceDiskDrive)
+                                       .Include(p => p.DeviceType)
+                                       .Include(p => p.DeviceScreenshot)
+                                       .Include(p => p.OstypeNavigation).ToListAsync();
         }
 
         public static async Task<IEnumerable<home.Models.Device>> GetInactiveDevicesAsync(this HomeContext context)
         {
             var list = await context.Device.Include(d => d.DeviceLog)
-                                                                 .Include(p => p.DeviceGraphic)
-                                                                 .Include(p => p.Environment)
-                                                                 .Include(p => p.DeviceDiskDrive)
-                                                                 .Include(p => p.DeviceType)
-                                                                 .Include(p => p.OstypeNavigation).Where(d => d.Status && d.OstypeNavigation.OstypeId != (int)Device.OSType.Android).ToListAsync();
+                                           .Include(p => p.DeviceGraphic)
+                                           .Include(p => p.Environment)
+                                           .Include(p => p.DeviceDiskDrive)
+                                           .Include(p => p.DeviceType)
+                                           .Include(p => p.DeviceScreenshot)
+                                           .Include(p => p.OstypeNavigation).Where(d => d.Status).ToListAsync();
 
             return list.Where(d => d.LastSeen.Add(Program.GlobalConfig.RemoveInactiveClients) < DateTime.Now);
         }
@@ -142,7 +163,7 @@ namespace Home.API.Helper
             result.DeviceGroup = device.DeviceGroup;
             result.IP = device.Ip;
             result.IsLive = device.IsLive;
-            result.IsScreenshotRequired = false; // ToDo: ***
+            result.IsScreenshotRequired = device.IsScreenshotRequired;
             result.LastSeen = device.LastSeen;
             result.Location = device.Location;
             result.Status = (device.Status ? DeviceStatus.Active : DeviceStatus.Offline);
@@ -176,6 +197,11 @@ namespace Home.API.Helper
                 Vendor = device.Environment.Vendor,
             };
 
+            // Screenshot
+            foreach (var item in device.DeviceScreenshot)
+                result.ScreenshotFileNames.Add(item.ScreenshotFileName);
+
+            // Log
             foreach (var item in device.DeviceLog)
                 result.LogEntries.Add(new LogEntry(item.Timestamp.Value, item.Blob, (LogEntry.LogLevel)item.LogLevel, false));
 
@@ -237,7 +263,7 @@ namespace Home.API.Helper
             return dbDisk;
         }
 
-        public static DeviceLog CreateLogEntry(home.Models.Device device, string message, LogEntry.LogLevel level, bool notifyTelegram)
+        public static DeviceLog CreateLogEntry(home.Models.Device device, string message, LogEntry.LogLevel level, bool notifyTelegram = false)
         {
             var now = DateTime.Now;
 

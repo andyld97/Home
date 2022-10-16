@@ -903,7 +903,7 @@ namespace Home.Model
 #if !LEGACY
         [JsonPropertyName("client_id")]
 #endif
-        public string ClientID { get; set; }
+        public string DeviceID { get; set; }
     }
 
     public class DeviceUsage

@@ -43,6 +43,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[DeviceScreenshot]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[DeviceType]",
          "ObjectType": 0
       }
