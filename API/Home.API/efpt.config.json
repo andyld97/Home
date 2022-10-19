@@ -49,6 +49,10 @@
       {
          "Name": "[dbo].[DeviceType]",
          "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[DeviceUsage]",
+         "ObjectType": 0
       }
    ],
    "UiHint": "NIS-PC\\SQLEXPRESS.home",

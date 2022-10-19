@@ -23,6 +23,8 @@ namespace Home.API.Helper
         public static home.Models.Device UpdateDevice(HomeContext homeContext, home.Models.Device dbDevice, Device device, DeviceStatus status, DateTime now)
         {
             // Log: must not be added from device to dbDevice, because device itself won't log
+            // Usage will be added to dbDevice in AckController so no need to add usage here
+
             dbDevice.Guid = device.ID;
             dbDevice.DeviceGroup = device.DeviceGroup;
             dbDevice.IsLive = device.IsLive;
@@ -63,7 +65,6 @@ namespace Home.API.Helper
 
             // ToDo: *** Battery shouldn't be an own table
             // dbDevice.Environment.Battery
-
             foreach (var disk in device.DiskDrives)
             {
                 if (dbDevice.DeviceDiskDrive.Any(p => p.Guid == disk.UniqueID))
@@ -128,6 +129,7 @@ namespace Home.API.Helper
                                        .Include(p => p.DeviceDiskDrive)
                                        .Include(p => p.DeviceType)
                                        .Include(p => p.DeviceScreenshot)
+                                       .Include(p => p.DeviceUsage)
                                        .Include(p => p.OstypeNavigation).Where(p => p.Guid == guid).FirstOrDefaultAsync();
         }
 
@@ -139,6 +141,7 @@ namespace Home.API.Helper
                                        .Include(p => p.DeviceDiskDrive)
                                        .Include(p => p.DeviceType)
                                        .Include(p => p.DeviceScreenshot)
+                                       .Include(p => p.DeviceUsage)
                                        .Include(p => p.OstypeNavigation).ToListAsync();
         }
 
@@ -150,6 +153,7 @@ namespace Home.API.Helper
                                            .Include(p => p.DeviceDiskDrive)
                                            .Include(p => p.DeviceType)
                                            .Include(p => p.DeviceScreenshot)
+                                           .Include(p => p.DeviceUsage)
                                            .Include(p => p.OstypeNavigation).Where(d => d.Status).ToListAsync();
 
             return list.Where(d => d.LastSeen.Add(Program.GlobalConfig.RemoveInactiveClients) < DateTime.Now);
@@ -233,6 +237,38 @@ namespace Home.API.Helper
                     MediaLoaded = disk.MediaLoaded.Value,
                     MediaStatus = disk.MediaStatus,
                 });
+            }
+
+            // Usage
+            result.Usage = new Home.Model.DeviceUsage();
+            if (device.DeviceUsage != null)
+            {
+                foreach (var item in device.DeviceUsage.Cpu.Split(new string[] { "|" }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if (double.TryParse(item, out double res))
+                        result.Usage.AddCPUEntry(res);
+                }
+
+                foreach (var item in device.DeviceUsage.Ram.Split(new string[] { "|" }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if (double.TryParse(item, out double res))
+                        result.Usage.AddRAMEntry(res);
+                }
+
+                foreach (var item in device.DeviceUsage.Disk.Split(new string[] { "|" }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if (double.TryParse(item, out double res))
+                        result.Usage.AddDISKEntry(res);
+                }
+
+                if (!string.IsNullOrEmpty(device.DeviceUsage.Battery)) // battery is currently not implemented!
+                {
+                    foreach (var item in device.DeviceUsage.Battery.Split(new string[] { "|" }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        if (int.TryParse(item, out int res))
+                            result.Usage.AddBatteryEntry(res);
+                    }
+                }
             }
 
             return result;

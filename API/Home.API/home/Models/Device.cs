@@ -29,8 +29,10 @@ namespace Home.API.home.Models
         public int EnvironmentId { get; set; }
         public string ServiceClientVersion { get; set; }
         public bool IsScreenshotRequired { get; set; }
+        public int? DeviceUsageId { get; set; }
 
         public virtual DeviceType DeviceType { get; set; }
+        public virtual DeviceUsage DeviceUsage { get; set; }
         public virtual DeviceEnvironment Environment { get; set; }
         public virtual DeviceOstype OstypeNavigation { get; set; }
         public virtual ICollection<DeviceDiskDrive> DeviceDiskDrive { get; set; }

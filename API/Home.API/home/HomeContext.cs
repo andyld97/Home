@@ -28,6 +28,7 @@ namespace Home.API.home
         public virtual DbSet<DeviceOstype> DeviceOstype { get; set; }
         public virtual DbSet<DeviceScreenshot> DeviceScreenshot { get; set; }
         public virtual DbSet<DeviceType> DeviceType { get; set; }
+        public virtual DbSet<DeviceUsage> DeviceUsage { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -72,6 +73,11 @@ namespace Home.API.home
                     .HasForeignKey(d => d.DeviceTypeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_DeviceTypes");
+
+                entity.HasOne(d => d.DeviceUsage)
+                    .WithMany(p => p.Device)
+                    .HasForeignKey(d => d.DeviceUsageId)
+                    .HasConstraintName("FK_Device_DeviceUsage");
 
                 entity.HasOne(d => d.Environment)
                     .WithOne(p => p.Device)
@@ -291,6 +297,23 @@ namespace Home.API.home
                 entity.Property(e => e.Type)
                     .IsRequired()
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<DeviceUsage>(entity =>
+            {
+                entity.Property(e => e.Battery).HasColumnType("text");
+
+                entity.Property(e => e.Cpu)
+                    .HasColumnType("text")
+                    .HasColumnName("CPU");
+
+                entity.Property(e => e.Disk)
+                    .HasColumnType("text")
+                    .HasColumnName("DISK");
+
+                entity.Property(e => e.Ram)
+                    .HasColumnType("text")
+                    .HasColumnName("RAM");
             });
 
             OnModelCreatingPartial(modelBuilder);

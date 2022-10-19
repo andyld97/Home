@@ -354,7 +354,7 @@ namespace Home.API.Controllers
         {
             if (command == null)
                 return BadRequest(AnswerExtensions.Fail("Invalid device data!"));
-
+            
             // ToDo: *** Commands
             return Ok();
            /* Device device = null;

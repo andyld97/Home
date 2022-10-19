@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -93,6 +94,23 @@ namespace Home.API.Controllers
                 return Ok(AnswerExtensions.Success(true));
 
             return BadRequest(AnswerExtensions.Fail("Device-Register couldn't be processed!"));
+        }
+
+        private string AddUsage(string data, double? usage)
+        {
+            if (usage == null)
+                return data;
+
+            if (string.IsNullOrEmpty(data))
+                return $"{usage}|";
+
+            List<string> values = data.Split(new string[] { "|" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            if (values.Count + 1 > 60)
+                values.RemoveAt(0);
+
+            values.Add(usage.ToString());
+
+            return string.Join("|", values);
         }
 
         [HttpPost("ack")]
@@ -210,23 +228,22 @@ namespace Home.API.Controllers
 
                     // USAGE
                     // CPU & DISK
+                    if (currentDevice.DeviceUsage == null)
+                        currentDevice.DeviceUsage = new home.Models.DeviceUsage();
 
-                    // ToDo: ***
-                    // currentDevice.Usage.AddCPUEntry(refreshedDevice.Environment.CPUUsage);
-                    // currentDevice.Usage.AddDISKEntry(refreshedDevice.Environment.DiskUsage);
+                    currentDevice.DeviceUsage.Cpu = AddUsage(currentDevice.DeviceUsage.Cpu, currentDevice.Environment.Cpuusage);
+                    currentDevice.DeviceUsage.Disk = AddUsage(currentDevice.DeviceUsage.Disk, currentDevice.Environment.DiskUsage);
 
                     // RAM
-
-                    // ToDo: ***
-                    // var ram = refreshedDevice.Environment.FreeRAM.Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
-                    // if (ram != null && double.TryParse(ram, out double res))
-                    //    currentDevice.Usage.AddRAMEntry(res);
+                     var ram = currentDevice.Environment.FreeRam.Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+                    if (ram != null && double.TryParse(ram, out double res))
+                        currentDevice.DeviceUsage.Ram = AddUsage(currentDevice.DeviceUsage.Ram, res);
 
                     // Battery (if any)
                     if (requestedDevice.BatteryInfo != null)
                     {
-                        // ToDo: ***
-                        // currentDevice.Usage.AddBatteryEntry(currentDevice.BatteryInfo.BatteryLevelInPercent);
+                        // ToDo: ***  Battery is not yet implemented
+                        // currentDevice.DeviceUsage.Battery = AddUsage(currentDevice.DeviceUsage.Battery, currentDevice.Environment.Battery.Percentage);
 
                         // Check for battery warning
                         if (requestedDevice.BatteryInfo.BatteryLevelInPercent <= Program.GlobalConfig.BatteryWarningPercentage)
