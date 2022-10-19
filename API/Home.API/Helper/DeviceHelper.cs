@@ -113,7 +113,7 @@ namespace Home.API.Helper
             return dbDevice;
         }
 
-        public static async Task<home.Models.Device> ConvertDeviceAsync(this HomeContext context, Device device)
+        public static home.Models.Device ConvertDevice(this HomeContext context, Device device)
         {
             home.Models.Device dbDevice = new home.Models.Device();
             UpdateDevice(context, dbDevice, device, DeviceStatus.Active, DateTime.Now);
@@ -159,7 +159,6 @@ namespace Home.API.Helper
         {
             Device result = new Device();
 
-            result.BatteryInfo = null; // ToDo: ***
             result.ServiceClientVersion = device.ServiceClientVersion;
             result.DeviceGroup = device.DeviceGroup;
             result.IP = device.Ip;

@@ -64,7 +64,7 @@ namespace Home.API.Controllers
                 // return BadRequest(AnswerExtensions.Fail("Already logged in"));
             }
 
-            var devices = await _context.Device.Include(p => p.DeviceType).Include(p => p.Environment).Include(p => p.DeviceDiskDrive).Include(p => p.OstypeNavigation).ToListAsync();
+            var devices = await _context.GetAllDevicesAsync();
             List<Device> result = new List<Device>();
             foreach (var item in devices)
                 result.Add(DeviceHelper.ConvertDevice(item));

@@ -61,6 +61,7 @@ namespace Home.API.Controllers
                 return BadRequest(AnswerExtensions.Fail("Invalid device given"));
 
             bool result = false;
+
             // Check if device exists
             if (await _homeContext.Device.AnyAsync(p => p.Guid == device.ID))
             {
@@ -71,7 +72,7 @@ namespace Home.API.Controllers
                 _logger.LogInformation($"New device {device.Environment.MachineName} has just logged in!");
                 device.IsScreenshotRequired = true;
 
-                var dbDevice = await DeviceHelper.ConvertDeviceAsync(_homeContext, device);
+                var dbDevice = DeviceHelper.ConvertDevice(_homeContext, device);
                 await _homeContext.Device.AddAsync(dbDevice);
 
                 lock (Program.EventQueues)
@@ -316,7 +317,7 @@ namespace Home.API.Controllers
                 {
                     // Temporay fix if data is empty again :(
                     requestedDevice.LastSeen = now;
-                    await _homeContext.Device.AddAsync(await DeviceHelper.ConvertDeviceAsync(_homeContext, requestedDevice));
+                    await _homeContext.Device.AddAsync(DeviceHelper.ConvertDevice(_homeContext, requestedDevice));
                     await _homeContext.SaveChangesAsync();
 
                     lock (Program.EventQueues)
