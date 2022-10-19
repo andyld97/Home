@@ -34,7 +34,7 @@ namespace Home.API.Services
         {           
             while (!stoppingToken.IsCancellationRequested)
             {
-              //  await Task.Delay((int)Program.GlobalConfig.HealthCheckTimerInterval.TotalMilliseconds);
+                await Task.Delay((int)Program.GlobalConfig.HealthCheckTimerInterval.TotalMilliseconds);
 
                 var scope =  serviceProvider.CreateAsyncScope();
                 var homeContext = scope.ServiceProvider.GetService<HomeContext>();
