@@ -22,6 +22,7 @@ namespace Home.API.Helper
     {
         public static home.Models.Device UpdateDevice(HomeContext homeContext, home.Models.Device dbDevice, Device device, DeviceStatus status, DateTime now)
         {
+            // Log: must not be added from device to dbDevice, because device itself won't log
             dbDevice.Guid = device.ID;
             dbDevice.DeviceGroup = device.DeviceGroup;
             dbDevice.IsLive = device.IsLive;

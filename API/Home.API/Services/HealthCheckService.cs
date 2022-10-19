@@ -34,7 +34,7 @@ namespace Home.API.Services
         {           
             while (!stoppingToken.IsCancellationRequested)
             {
-                await Task.Delay((int)Program.GlobalConfig.HealthCheckTimerInterval.TotalMilliseconds);
+              //  await Task.Delay((int)Program.GlobalConfig.HealthCheckTimerInterval.TotalMilliseconds);
 
                 var scope =  serviceProvider.CreateAsyncScope();
                 var homeContext = scope.ServiceProvider.GetService<HomeContext>();
@@ -107,7 +107,7 @@ namespace Home.API.Services
                 }
 
                 // Delete screenshots which are older than one day
-                foreach (var device in await DeviceHelper.GetAllDevicesAsync(homeContext))
+                foreach (var device in await homeContext.GetAllDevicesAsync())
                 {
                     if (device.DeviceScreenshot.Count == 0 || device.DeviceScreenshot.Count == 1)
                         continue;
@@ -124,8 +124,11 @@ namespace Home.API.Services
 
                     foreach (var shot in screenshotsToRemove)
                     {
-                        device.DeviceScreenshot.Remove(shot);
-                        string path = System.IO.Path.Combine(Config.SCREENSHOTS_PATH, device.Guid, $"{shot}.png");
+                        shot.Device = null;
+                        homeContext.DeviceScreenshot.Remove(shot);
+                        // device.DeviceScreenshot.Remove(shot);
+
+                        string path = System.IO.Path.Combine(Config.SCREENSHOTS_PATH, device.Guid, $"{shot.ScreenshotFileName}.png");
                         try
                         {
                             System.IO.File.Delete(path);
@@ -185,31 +188,29 @@ namespace Home.API.Services
                     }
                 }
 
-                // Save devices (ToDo: *** Only save if there are any changes recieved from the controller!)
-                /*try
+                foreach (var device in await homeContext.GetAllDevicesAsync())
                 {
-                    lock (Devices)
+                    if (device.DeviceLog.Count >= 200)
                     {
-                        foreach (var device in Devices)
-                        {
-                            if (device.LogEntries.Count >= 200)
-                            {
-                                while (device.LogEntries.Count != 100 - 2)
-                                    device.LogEntries.RemoveAt(0);
+                        // ToDo: ***
+                        /*   
+                        while (device.DeviceLog.Count != 100 - 2)
+                            device.DeviceLog.Remove()
 
-                                device.LogEntries.Insert(0, new LogEntry("Truncated log file of this device!", LogEntry.LogLevel.Information));
-                                NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
-                            }
-                        }
-
-                        Serialization.Serialization.Save<List<Device>>(Config.DEVICE_PATH, Devices, Serialization.Serialization.Mode.Normal);
+                        device.LogEntries.Insert(0, new LogEntry("Truncated log file of this device!", LogEntry.LogLevel.Information));
+                        NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);*/
                     }
                 }
-                catch
-                { }*/
 
-
-                await homeContext.SaveChangesAsync();
+                try
+                {
+                    await homeContext.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    await WebHook.NotifyWebHookAsync(Program.GlobalConfig.WebHookUrl, $"CRICTIAL EXCEPTION from Background Service: {ex.ToString()}");
+                    return;
+                }
             }
         }
 

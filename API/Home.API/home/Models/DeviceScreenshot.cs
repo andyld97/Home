@@ -8,7 +8,7 @@ namespace Home.API.home.Models
     public partial class DeviceScreenshot
     {
         public int ScreenshotId { get; set; }
-        public int DeviceId { get; set; }
+        public int? DeviceId { get; set; }
         public string ScreenshotFileName { get; set; }
         public DateTime Timestamp { get; set; }
 

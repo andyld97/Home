@@ -45,7 +45,7 @@ namespace Home.API.Model
         /// - Saves devices.xml <br/>
         /// </summary>
         [JsonPropertyName("health_check_timer_interval")]
-        public TimeSpan HealthCheckTimerInterval { get; set; } = TimeSpan.FromSeconds(5);
+        public TimeSpan HealthCheckTimerInterval { get; set; } = TimeSpan.FromMinutes(1);
 
         /// <summary>
         /// The interval when inactive Home.WPF client queues should be removed
