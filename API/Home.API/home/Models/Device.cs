@@ -9,6 +9,7 @@ namespace Home.API.home.Models
     {
         public Device()
         {
+            DeviceCommand = new HashSet<DeviceCommand>();
             DeviceDiskDrive = new HashSet<DeviceDiskDrive>();
             DeviceGraphic = new HashSet<DeviceGraphic>();
             DeviceLog = new HashSet<DeviceLog>();
@@ -35,6 +36,7 @@ namespace Home.API.home.Models
         public virtual DeviceUsage DeviceUsage { get; set; }
         public virtual DeviceEnvironment Environment { get; set; }
         public virtual DeviceOstype OstypeNavigation { get; set; }
+        public virtual ICollection<DeviceCommand> DeviceCommand { get; set; }
         public virtual ICollection<DeviceDiskDrive> DeviceDiskDrive { get; set; }
         public virtual ICollection<DeviceGraphic> DeviceGraphic { get; set; }
         public virtual ICollection<DeviceLog> DeviceLog { get; set; }

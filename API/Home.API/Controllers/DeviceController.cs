@@ -124,7 +124,7 @@ namespace Home.API.Controllers
             bool result = false;
             bool isScreenshotRequired = false;
             Message hasMessage = null;
-            Command hasCommand = null;
+            home.Models.DeviceCommand hasCommand = null;
 
             try
             {
@@ -306,17 +306,17 @@ namespace Home.API.Controllers
                     {
                         if (currentDevice.Messages.Count != 0)
                             hasMessage = currentDevice.Messages.Dequeue();
-                    }
+                    }*/
 
                     if (hasMessage == null)
                     {
-                        lock (currentDevice.Commands)
-                        {
-                            // Check for commands
-                            if (currentDevice.Commands.Count != 0)
-                                hasCommand = currentDevice.Commands.Dequeue();
-                        }
-                    }*/
+                        // Check for commands
+                        if (currentDevice.DeviceCommand.Any(p => !p.IsExceuted))
+                            hasCommand = currentDevice.DeviceCommand.Where(p => !p.IsExceuted).OrderBy(c => c.Timestamp).FirstOrDefault();
+
+                        if (hasCommand != null)
+                            hasCommand.IsExceuted = true;
+                    }
 
                     result = true;
                     await _homeContext.SaveChangesAsync();
@@ -366,7 +366,7 @@ namespace Home.API.Controllers
                     if (hasCommand != null)
                     {
                         ack |= AckResult.Ack.CommandRecieved;
-                        ackResult.JsonData = JsonConvert.SerializeObject(hasCommand);
+                        ackResult.JsonData = JsonConvert.SerializeObject(DeviceHelper.ConvertCommand(hasCommand));
                     }
 
                     ackResult.Result = ack;

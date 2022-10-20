@@ -8,6 +8,7 @@ using Home.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -350,39 +351,32 @@ namespace Home.API.Controllers
         }
 
         [HttpPost("send_command")]
-        public IActionResult SendCommnad([FromBody] Command command)
+        public async Task<IActionResult> SendCommnadAsync([FromBody] Command command)
         {
             if (command == null)
                 return BadRequest(AnswerExtensions.Fail("Invalid device data!"));
-            
-            // ToDo: *** Commands
-            return Ok();
-           /* Device device = null;
+
             // Check if this devices exists
-            lock (Program.Devices)
-            {
-                if (!Program.Devices.Any(p => p.ID == command.DeviceID))
-                    return BadRequest(AnswerExtensions.Fail("Device doesn't exists!"));
-                else
-                    device = Program.Devices.Where(p => p.ID == command.DeviceID).FirstOrDefault();
-            }
+            home.Models.Device device = await _context.GetDeviceByIdAsync(command.DeviceID);
+
+            if (device == null)
+                return BadRequest(AnswerExtensions.Fail("Device doesn't exists!"));
 
             _logger.LogInformation($"Sent command to {device.Name}: {command}");
-            lock (device.Commands)
-                device.Commands.Enqueue(command);
-
-            device.LogEntries.Add(new LogEntry(DateTime.Now, $"Recieved command: {command}", LogEntry.LogLevel.Information));
+            device.DeviceCommand.Add(new home.Models.DeviceCommand() { Executable = command.Executable, IsExceuted = false, Paramter = command.Parameter, Timestamp = DateTime.Now });
+            await _context.DeviceLog.AddAsync(DeviceHelper.CreateLogEntry(device, $"Recieved command: {command}", LogEntry.LogLevel.Information, false));
 
             lock (Program.EventQueues)
             {
                 foreach (var queue in Program.EventQueues)
                 {
                     queue.LastEvent = DateTime.Now;
-                    queue.Events.Enqueue(new EventQueueItem() { DeviceID = device.ID, EventData = new EventData(device), EventDescription = EventQueueItem.EventKind.LogEntriesRecieved, EventOccured = DateTime.Now });
+                    queue.Events.Enqueue(new EventQueueItem() { DeviceID = device.Guid, EventData = new EventData(DeviceHelper.ConvertDevice(device)), EventDescription = EventQueueItem.EventKind.LogEntriesRecieved, EventOccured = DateTime.Now });
                 }
             }
 
-            return Ok(AnswerExtensions.Success("ok"));*/
+            await _context.SaveChangesAsync();
+            return Ok(AnswerExtensions.Success("ok"));
         }
 
         [HttpGet("test")]

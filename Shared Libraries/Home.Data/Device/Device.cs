@@ -270,10 +270,9 @@ namespace Home.Model
         [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         [XmlIgnore]
-        public Queue<Command> Commands { get; set; } = new Queue<Command>();
+        public List<Command> Commands { get; set; } = new List<Command>();
 
         #endregion
-
 
         [JsonPropertyName("storage_warnings")]
         public List<StorageWarning> StorageWarnings { get; set; } = new List<StorageWarning>();

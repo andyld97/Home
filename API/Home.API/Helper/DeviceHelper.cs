@@ -130,6 +130,7 @@ namespace Home.API.Helper
                                        .Include(p => p.DeviceType)
                                        .Include(p => p.DeviceScreenshot)
                                        .Include(p => p.DeviceUsage)
+                                       .Include(p => p.DeviceCommand)
                                        .Include(p => p.OstypeNavigation).Where(p => p.Guid == guid).FirstOrDefaultAsync();
         }
 
@@ -142,6 +143,7 @@ namespace Home.API.Helper
                                        .Include(p => p.DeviceType)
                                        .Include(p => p.DeviceScreenshot)
                                        .Include(p => p.DeviceUsage)
+                                       .Include(p => p.DeviceCommand)
                                        .Include(p => p.OstypeNavigation).ToListAsync();
         }
 
@@ -154,6 +156,7 @@ namespace Home.API.Helper
                                            .Include(p => p.DeviceType)
                                            .Include(p => p.DeviceScreenshot)
                                            .Include(p => p.DeviceUsage)
+                                           .Include(p => p.DeviceCommand)
                                            .Include(p => p.OstypeNavigation).Where(d => d.Status).ToListAsync();
 
             return list.Where(d => d.LastSeen.Add(Program.GlobalConfig.RemoveInactiveClients) < DateTime.Now);
@@ -297,6 +300,16 @@ namespace Home.API.Helper
             dbDisk.MediaLoaded = diskDrive.MediaLoaded;
 
             return dbDisk;
+        }
+
+        public static Command ConvertCommand(home.Models.DeviceCommand deviceCommand)
+        {
+            return new Command()
+            {
+                DeviceID = deviceCommand.Device.Guid,
+                Executable = deviceCommand.Executable,
+                Parameter = deviceCommand.Paramter,
+            };
         }
 
         public static DeviceLog CreateLogEntry(home.Models.Device device, string message, LogEntry.LogLevel level, bool notifyTelegram = false)

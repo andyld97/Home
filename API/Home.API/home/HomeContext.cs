@@ -21,6 +21,7 @@ namespace Home.API.home
 
         public virtual DbSet<Device> Device { get; set; }
         public virtual DbSet<DeviceBattery> DeviceBattery { get; set; }
+        public virtual DbSet<DeviceCommand> DeviceCommand { get; set; }
         public virtual DbSet<DeviceDiskDrive> DeviceDiskDrive { get; set; }
         public virtual DbSet<DeviceEnvironment> DeviceEnvironment { get; set; }
         public virtual DbSet<DeviceGraphic> DeviceGraphic { get; set; }
@@ -97,6 +98,20 @@ namespace Home.API.home
                 entity.HasKey(e => e.BatteryId);
 
                 entity.Property(e => e.BatteryId).HasColumnName("BatteryID");
+            });
+
+            modelBuilder.Entity<DeviceCommand>(entity =>
+            {
+                entity.Property(e => e.Executable).HasColumnType("text");
+
+                entity.Property(e => e.Paramter).HasColumnType("text");
+
+                entity.Property(e => e.Timestamp).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Device)
+                    .WithMany(p => p.DeviceCommand)
+                    .HasForeignKey(d => d.DeviceId)
+                    .HasConstraintName("FK_DeviceCommand_Device");
             });
 
             modelBuilder.Entity<DeviceDiskDrive>(entity =>
