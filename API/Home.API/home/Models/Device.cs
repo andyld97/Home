@@ -13,6 +13,7 @@ namespace Home.API.home.Models
             DeviceDiskDrive = new HashSet<DeviceDiskDrive>();
             DeviceGraphic = new HashSet<DeviceGraphic>();
             DeviceLog = new HashSet<DeviceLog>();
+            DeviceMessage = new HashSet<DeviceMessage>();
             DeviceScreenshot = new HashSet<DeviceScreenshot>();
         }
 
@@ -40,6 +41,7 @@ namespace Home.API.home.Models
         public virtual ICollection<DeviceDiskDrive> DeviceDiskDrive { get; set; }
         public virtual ICollection<DeviceGraphic> DeviceGraphic { get; set; }
         public virtual ICollection<DeviceLog> DeviceLog { get; set; }
+        public virtual ICollection<DeviceMessage> DeviceMessage { get; set; }
         public virtual ICollection<DeviceScreenshot> DeviceScreenshot { get; set; }
     }
 }

@@ -123,7 +123,7 @@ namespace Home.API.Controllers
 
             bool result = false;
             bool isScreenshotRequired = false;
-            Message hasMessage = null;
+            home.Models.DeviceMessage hasMessage = null;
             home.Models.DeviceCommand hasCommand = null;
 
             try
@@ -301,12 +301,14 @@ namespace Home.API.Controllers
                         }
                     }
 
-                    // ToDo: ***
-                    /*lock (currentDevice.Messages)
+                    if (currentDevice.DeviceMessage.Count != 0)
                     {
-                        if (currentDevice.Messages.Count != 0)
-                            hasMessage = currentDevice.Messages.Dequeue();
-                    }*/
+                        if (currentDevice.DeviceMessage.Any(p => !p.IsRecieved))
+                            hasMessage = currentDevice.DeviceMessage.Where(p => !p.IsRecieved).OrderBy(m => m.Timestamp).FirstOrDefault();
+
+                        if (hasMessage != null)
+                            hasMessage.IsRecieved = true;
+                    }
 
                     if (hasMessage == null)
                     {
@@ -360,7 +362,7 @@ namespace Home.API.Controllers
                     if (hasMessage != null)
                     {
                         ack |= AckResult.Ack.MessageRecieved;
-                        ackResult.JsonData = JsonConvert.SerializeObject(hasMessage);
+                        ackResult.JsonData = JsonConvert.SerializeObject(DeviceHelper.ConvertMessage(hasMessage));
                     }
 
                     if (hasCommand != null)

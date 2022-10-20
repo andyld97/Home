@@ -43,6 +43,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[DeviceMessage]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[DeviceOSType]",
          "ObjectType": 0
       },

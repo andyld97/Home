@@ -262,7 +262,7 @@ namespace Home.Model
         [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         [XmlIgnore]
-        public Queue<Message> Messages { get; set; } = new Queue<Message>();
+        public List<Message> Messages { get; set; } = new List<Message>();
 
         /// <summary>
         /// Only for internal api usage

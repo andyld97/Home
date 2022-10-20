@@ -131,6 +131,7 @@ namespace Home.API.Helper
                                        .Include(p => p.DeviceScreenshot)
                                        .Include(p => p.DeviceUsage)
                                        .Include(p => p.DeviceCommand)
+                                       .Include(p => p.DeviceMessage)
                                        .Include(p => p.OstypeNavigation).Where(p => p.Guid == guid).FirstOrDefaultAsync();
         }
 
@@ -144,6 +145,7 @@ namespace Home.API.Helper
                                        .Include(p => p.DeviceScreenshot)
                                        .Include(p => p.DeviceUsage)
                                        .Include(p => p.DeviceCommand)
+                                       .Include(p => p.DeviceMessage)
                                        .Include(p => p.OstypeNavigation).ToListAsync();
         }
 
@@ -157,6 +159,7 @@ namespace Home.API.Helper
                                            .Include(p => p.DeviceScreenshot)
                                            .Include(p => p.DeviceUsage)
                                            .Include(p => p.DeviceCommand)
+                                           .Include(p => p.DeviceMessage)
                                            .Include(p => p.OstypeNavigation).Where(d => d.Status).ToListAsync();
 
             return list.Where(d => d.LastSeen.Add(Program.GlobalConfig.RemoveInactiveClients) < DateTime.Now);
@@ -309,6 +312,17 @@ namespace Home.API.Helper
                 DeviceID = deviceCommand.Device.Guid,
                 Executable = deviceCommand.Executable,
                 Parameter = deviceCommand.Paramter,
+            };
+        }
+
+        public static Message ConvertMessage(home.Models.DeviceMessage message)
+        {
+            return new Message()
+            {
+                Content = message.Content,
+                Title = message.Title,
+                DeviceID = message.Device.Guid,
+                Type = (Message.MessageImage)message.Type
             };
         }
 

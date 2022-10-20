@@ -26,6 +26,7 @@ namespace Home.API.home
         public virtual DbSet<DeviceEnvironment> DeviceEnvironment { get; set; }
         public virtual DbSet<DeviceGraphic> DeviceGraphic { get; set; }
         public virtual DbSet<DeviceLog> DeviceLog { get; set; }
+        public virtual DbSet<DeviceMessage> DeviceMessage { get; set; }
         public virtual DbSet<DeviceOstype> DeviceOstype { get; set; }
         public virtual DbSet<DeviceScreenshot> DeviceScreenshot { get; set; }
         public virtual DbSet<DeviceType> DeviceType { get; set; }
@@ -258,6 +259,22 @@ namespace Home.API.home
                     .HasForeignKey(d => d.DeviceId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_DeviceID");
+            });
+
+            modelBuilder.Entity<DeviceMessage>(entity =>
+            {
+                entity.HasKey(e => e.MessageId);
+
+                entity.Property(e => e.Content).HasColumnType("text");
+
+                entity.Property(e => e.Timestamp).HasColumnType("datetime");
+
+                entity.Property(e => e.Title).HasColumnType("text");
+
+                entity.HasOne(d => d.Device)
+                    .WithMany(p => p.DeviceMessage)
+                    .HasForeignKey(d => d.DeviceId)
+                    .HasConstraintName("FK_DeviceMessage_Device");
             });
 
             modelBuilder.Entity<DeviceOstype>(entity =>
