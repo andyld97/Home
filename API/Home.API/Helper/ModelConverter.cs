@@ -18,7 +18,7 @@ using Device = Home.Model.Device;
 
 namespace Home.API.Helper
 {
-    public static class DeviceHelper
+    public static class ModelConverter
     {
         public static home.Models.Device UpdateDevice(HomeContext homeContext, home.Models.Device dbDevice, Device device, DeviceStatus status, DateTime now)
         {
@@ -63,8 +63,9 @@ namespace Home.API.Helper
             dbDevice.Environment.UserName = device.Environment.UserName;
             dbDevice.Environment.Vendor = device.Environment.Vendor;
 
-            // ToDo: *** Battery shouldn't be an own table
-            // dbDevice.Environment.Battery
+            if (device.BatteryInfo != null)
+                dbDevice.Environment.Battery = new DeviceBattery() { IsCharging = device.BatteryInfo.IsCharging, Percentage = device.BatteryInfo.BatteryLevelInPercent };
+
             foreach (var disk in device.DiskDrives)
             {
                 if (dbDevice.DeviceDiskDrive.Any(p => p.Guid == disk.UniqueID))
@@ -108,7 +109,7 @@ namespace Home.API.Helper
                     continue;
 
                 if (!dbDevice.DeviceGraphic.Any(x => x.Name == graphic))
-                    dbDevice.DeviceGraphic.Add(new DeviceGraphic() { Device = dbDevice, Name = graphic });
+                    dbDevice.DeviceGraphic.Add(new DeviceGraphic() { Device = dbDevice, Name = graphic });            
             }
 
             return dbDevice;
@@ -126,12 +127,14 @@ namespace Home.API.Helper
             return await context.Device.Include(d => d.DeviceLog)
                                        .Include(p => p.DeviceGraphic)
                                        .Include(p => p.Environment)
+                                       .ThenInclude(p => p.Battery)
                                        .Include(p => p.DeviceDiskDrive)
                                        .Include(p => p.DeviceType)
                                        .Include(p => p.DeviceScreenshot)
                                        .Include(p => p.DeviceUsage)
                                        .Include(p => p.DeviceCommand)
                                        .Include(p => p.DeviceMessage)
+                                       .Include(p => p.DeviceWarning)
                                        .Include(p => p.OstypeNavigation).Where(p => p.Guid == guid).FirstOrDefaultAsync();
         }
 
@@ -140,12 +143,14 @@ namespace Home.API.Helper
             return await context.Device.Include(d => d.DeviceLog)
                                        .Include(p => p.DeviceGraphic)
                                        .Include(p => p.Environment)
+                                       .ThenInclude(p => p.Battery)
                                        .Include(p => p.DeviceDiskDrive)
                                        .Include(p => p.DeviceType)
                                        .Include(p => p.DeviceScreenshot)
                                        .Include(p => p.DeviceUsage)
                                        .Include(p => p.DeviceCommand)
                                        .Include(p => p.DeviceMessage)
+                                       .Include(p => p.DeviceWarning)
                                        .Include(p => p.OstypeNavigation).ToListAsync();
         }
 
@@ -154,12 +159,14 @@ namespace Home.API.Helper
             var list = await context.Device.Include(d => d.DeviceLog)
                                            .Include(p => p.DeviceGraphic)
                                            .Include(p => p.Environment)
+                                           .ThenInclude(p => p.Battery)
                                            .Include(p => p.DeviceDiskDrive)
                                            .Include(p => p.DeviceType)
                                            .Include(p => p.DeviceScreenshot)
                                            .Include(p => p.DeviceUsage)
                                            .Include(p => p.DeviceCommand)
                                            .Include(p => p.DeviceMessage)
+                                           .Include(p => p.DeviceWarning)
                                            .Include(p => p.OstypeNavigation).Where(d => d.Status).ToListAsync();
 
             return list.Where(d => d.LastSeen.Add(Program.GlobalConfig.RemoveInactiveClients) < DateTime.Now);
@@ -177,8 +184,8 @@ namespace Home.API.Helper
             result.LastSeen = device.LastSeen;
             result.Location = device.Location;
             result.Status = (device.Status ? DeviceStatus.Active : DeviceStatus.Offline);
-            // result.Commands ToDo: ***
-            result.BatteryInfo = null; // ToDo: ***
+            if (device.Environment.Battery != null)
+                result.BatteryInfo = new Battery() { IsCharging = device.Environment.Battery.IsCharging, BatteryLevelInPercent = (int)device.Environment.Battery.Percentage };
             result.OS = (OSType)device.OstypeNavigation.OstypeId;
             result.Type = (Device.DeviceType)device.DeviceType.TypeId;
             result.ID = device.Guid;
@@ -219,31 +226,9 @@ namespace Home.API.Helper
             foreach (var item in device.DeviceGraphic)
                 result.Environment.GraphicCards.Add(item.Name);
 
-            // Hard disks
+            // Hard disks or SSDs
             foreach (var disk in device.DeviceDiskDrive)
-            {
-                result.DiskDrives.Add(new DiskDrive()
-                {
-                    DiskInterface = disk.DiskInterface,
-                    DiskModel = disk.DiskModel,
-                    DiskName = disk.DiskName,
-                    DriveCompressed = disk.DriveCompressed,
-                    DriveID = disk.DiskName,
-                    DriveMediaType = (uint)disk.DriveMediaType,
-                    DriveName = disk.DiskName,
-                    DriveType = (uint)disk.DriveType,
-                    FileSystem = disk.FileSystem,
-                    FreeSpace = (ulong)disk.FreeSpace,
-                    MediaSignature = (uint)disk.MediaSignature,
-                    MediaType = disk.MediaType,
-                    PhysicalName = disk.PhysicalName,
-                    TotalSpace = (ulong)disk.TotalSpace,
-                    VolumeName = disk.VolumeName,
-                    VolumeSerial = disk.VolumeSerial,
-                    MediaLoaded = disk.MediaLoaded.Value,
-                    MediaStatus = disk.MediaStatus,
-                });
-            }
+                result.DiskDrives.Add(ConvertDisk(disk));
 
             // Usage
             result.Usage = new Home.Model.DeviceUsage();
@@ -277,7 +262,41 @@ namespace Home.API.Helper
                 }
             }
 
+            // Also add warnings (if any)
+            foreach (var warning in device.DeviceWarning)
+            {
+                if (warning.WarningType == (int)WarningType.BatteryWarning)
+                    result.BatteryWarning = ModelConverter.ConvertBatteryWarning(warning);
+                else  if (warning.WarningType == (int)WarningType.StorageWarning)
+                    result.StorageWarnings.Add( ModelConverter.ConvertStorageWarning(warning));
+            }
+
             return result;
+        }
+
+        public static DiskDrive ConvertDisk(home.Models.DeviceDiskDrive dbDisk)
+        {
+            return new DiskDrive()
+            {
+                DiskInterface = dbDisk.DiskInterface,
+                DiskModel = dbDisk.DiskModel,
+                DiskName = dbDisk.DiskName,
+                DriveCompressed = dbDisk.DriveCompressed,
+                DriveID = dbDisk.DiskName,
+                DriveMediaType = (uint)dbDisk.DriveMediaType,
+                DriveName = dbDisk.DiskName,
+                DriveType = (uint)dbDisk.DriveType,
+                FileSystem = dbDisk.FileSystem,
+                FreeSpace = (ulong)dbDisk.FreeSpace,
+                MediaSignature = (uint)dbDisk.MediaSignature,
+                MediaType = dbDisk.MediaType,
+                PhysicalName = dbDisk.PhysicalName,
+                TotalSpace = (ulong)dbDisk.TotalSpace,
+                VolumeName = dbDisk.VolumeName,
+                VolumeSerial = dbDisk.VolumeSerial,
+                MediaLoaded = dbDisk.MediaLoaded.Value,
+                MediaStatus = dbDisk.MediaStatus,
+            };
         }
 
         public static home.Models.DeviceDiskDrive ConvertDisk(home.Models.DeviceDiskDrive dbDisk, DiskDrive diskDrive)
@@ -326,11 +345,41 @@ namespace Home.API.Helper
             };
         }
 
-        public static DeviceLog CreateLogEntry(home.Models.Device device, string message, LogEntry.LogLevel level, bool notifyTelegram = false)
+        public static BatteryWarning ConvertBatteryWarning(home.Models.DeviceWarning deviceWarning)
+        {
+            return new BatteryWarning()
+            {
+                Value = (int)deviceWarning.CriticalValue,
+                WarningOccoured = deviceWarning.Timestamp,
+            };
+        }
+
+        public static StorageWarning ConvertStorageWarning(home.Models.DeviceWarning deviceWarning)
+        {
+            var storageWarning = new StorageWarning();
+            storageWarning.WarningOccoured = deviceWarning.Timestamp;
+            storageWarning.Value = (ulong)deviceWarning.CriticalValue;
+
+            if (!string.IsNullOrEmpty(deviceWarning.AdditionalInfo) && deviceWarning.AdditionalInfo.Contains("|"))
+            {
+                string[] entries = deviceWarning.AdditionalInfo.Split(new string[] { "|" }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (entries.Length >= 2)
+                {
+                    storageWarning.StorageID = entries[0];
+                    storageWarning.DiskName = entries[1];
+
+                }
+            }
+
+            return storageWarning;
+        }
+
+        public static DeviceLog CreateLogEntry(home.Models.Device device, string message, LogEntry.LogLevel level, bool notifyWebHook = false)
         {
             var now = DateTime.Now;
 
-            if (notifyTelegram && Program.GlobalConfig.UseWebHook)
+            if (notifyWebHook && Program.GlobalConfig.UseWebHook)
             {
                 string webHookMessage = $"[{now.ToShortDateString()} @ {now.ToShortTimeString()}]: {message}";
                 Program.WebHookLogging.Enqueue(webHookMessage);
@@ -342,6 +391,20 @@ namespace Home.API.Helper
                 Blob = message,
                 Timestamp = DateTime.Now,
                 LogLevel = (int)level
+            };
+        }
+
+        public static DeviceLog ConvertLogEntry(home.Models.Device device, LogEntry logEntry)
+        {
+            if (logEntry.NotifyWebHook && Program.GlobalConfig.UseWebHook)
+                Program.WebHookLogging.Enqueue(logEntry.Message);
+
+            return new DeviceLog()
+            {
+                Device = device,
+                Blob = logEntry.Message,
+                Timestamp = logEntry.Timestamp,
+                LogLevel = (int)logEntry.Level
             };
         }
     }

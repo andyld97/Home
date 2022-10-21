@@ -67,8 +67,8 @@ namespace Home.API.Controllers
 
             var devices = await _context.GetAllDevicesAsync();
             List<Device> result = new List<Device>();
-            foreach (var item in devices)
-                result.Add(DeviceHelper.ConvertDevice(item));
+            foreach (var item in devices.OrderBy(p => p.Name))
+                result.Add(ModelConverter.ConvertDevice(item));
 
             return Ok(AnswerExtensions.Success(result));
         }
@@ -125,7 +125,7 @@ namespace Home.API.Controllers
                         {
                             // ToDo ***: Notify client queue
                             partictularDevice.IsLive = false;
-                            var logEntry = DeviceHelper.CreateLogEntry(partictularDevice, $"Device \"{partictularDevice.Name}\" status changed to normal, because one or multiple clients (those that have aquired live view) have logged off!", LogEntry.LogLevel.Information, false);
+                            var logEntry = ModelConverter.CreateLogEntry(partictularDevice, $"Device \"{partictularDevice.Name}\" status changed to normal, because one or multiple clients (those that have aquired live view) have logged off!", LogEntry.LogLevel.Information, false);
                             await _context.DeviceLog.AddAsync(logEntry);
                         }
                     }
@@ -229,7 +229,7 @@ namespace Home.API.Controllers
             if (!(await _context.Device.Where(p => p.Guid == deviceID).AnyAsync()))
                 return NotFound(AnswerExtensions.Fail("Device not found!"));
 
-            var device = await DeviceHelper.GetDeviceByIdAsync(_context, deviceID);
+            var device = await ModelConverter.GetDeviceByIdAsync(_context, deviceID);
             if (device != null)
             {
                 device.DeviceLog.Clear();
@@ -240,7 +240,7 @@ namespace Home.API.Controllers
                     foreach (var queue in Program.EventQueues)
                     {
                         queue.LastEvent = DateTime.Now;
-                        queue.Events.Enqueue(new EventQueueItem() { DeviceID = deviceID, EventData = new EventData(DeviceHelper.ConvertDevice(device)), EventDescription = EventQueueItem.EventKind.LogCleared, EventOccured = DateTime.Now });
+                        queue.Events.Enqueue(new EventQueueItem() { DeviceID = deviceID, EventData = new EventData(ModelConverter.ConvertDevice(device)), EventDescription = EventQueueItem.EventKind.LogCleared, EventOccured = DateTime.Now });
                     }
                 }
 
@@ -271,7 +271,7 @@ namespace Home.API.Controllers
                 case Message.MessageImage.Error: level = LogEntry.LogLevel.Error; break;
             }
 
-            await _context.DeviceLog.AddAsync(DeviceHelper.CreateLogEntry(device, $"Recieved message: {message}", level, false));
+            await _context.DeviceLog.AddAsync(ModelConverter.CreateLogEntry(device, $"Recieved message: {message}", level, false));
             await _context.SaveChangesAsync();
 
             lock (Program.EventQueues)
@@ -279,7 +279,7 @@ namespace Home.API.Controllers
                 foreach (var queue in Program.EventQueues)
                 {
                     queue.LastEvent = DateTime.Now;
-                    queue.Events.Enqueue(new EventQueueItem() { DeviceID = device.Guid, EventData = new EventData(DeviceHelper.ConvertDevice(device)), EventDescription = EventQueueItem.EventKind.LogEntriesRecieved, EventOccured = DateTime.Now });
+                    queue.Events.Enqueue(new EventQueueItem() { DeviceID = device.Guid, EventData = new EventData(ModelConverter.ConvertDevice(device)), EventDescription = EventQueueItem.EventKind.LogEntriesRecieved, EventOccured = DateTime.Now });
                 }
             }
 
@@ -315,7 +315,7 @@ namespace Home.API.Controllers
 
             device.IsLive = live;
 
-            var logEntry = DeviceHelper.CreateLogEntry(device, $"Device \"{device.Name}\" status changed to {(live ? "live" : "normal")} by client {client.Name}!", LogEntry.LogLevel.Information, false);
+            var logEntry = ModelConverter.CreateLogEntry(device, $"Device \"{device.Name}\" status changed to {(live ? "live" : "normal")} by client {client.Name}!", LogEntry.LogLevel.Information, false);
             await _context.DeviceLog.AddAsync(logEntry);
 
             return Ok(AnswerExtensions.Success("ok"));
@@ -353,14 +353,14 @@ namespace Home.API.Controllers
 
             _logger.LogInformation($"Sent command to {device.Name}: {command}");
             device.DeviceCommand.Add(new home.Models.DeviceCommand() { Executable = command.Executable, IsExceuted = false, Paramter = command.Parameter, Timestamp = DateTime.Now });
-            await _context.DeviceLog.AddAsync(DeviceHelper.CreateLogEntry(device, $"Recieved command: {command}", LogEntry.LogLevel.Information, false));
+            await _context.DeviceLog.AddAsync(ModelConverter.CreateLogEntry(device, $"Recieved command: {command}", LogEntry.LogLevel.Information, false));
 
             lock (Program.EventQueues)
             {
                 foreach (var queue in Program.EventQueues)
                 {
                     queue.LastEvent = DateTime.Now;
-                    queue.Events.Enqueue(new EventQueueItem() { DeviceID = device.Guid, EventData = new EventData(DeviceHelper.ConvertDevice(device)), EventDescription = EventQueueItem.EventKind.LogEntriesRecieved, EventOccured = DateTime.Now });
+                    queue.Events.Enqueue(new EventQueueItem() { DeviceID = device.Guid, EventData = new EventData(ModelConverter.ConvertDevice(device)), EventDescription = EventQueueItem.EventKind.LogEntriesRecieved, EventOccured = DateTime.Now });
                 }
             }
 

@@ -31,6 +31,7 @@ namespace Home.API.home
         public virtual DbSet<DeviceScreenshot> DeviceScreenshot { get; set; }
         public virtual DbSet<DeviceType> DeviceType { get; set; }
         public virtual DbSet<DeviceUsage> DeviceUsage { get; set; }
+        public virtual DbSet<DeviceWarning> DeviceWarning { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -346,6 +347,20 @@ namespace Home.API.home
                 entity.Property(e => e.Ram)
                     .HasColumnType("text")
                     .HasColumnName("RAM");
+            });
+
+            modelBuilder.Entity<DeviceWarning>(entity =>
+            {
+                entity.HasKey(e => e.WarningId);
+
+                entity.Property(e => e.AdditionalInfo).HasColumnType("text");
+
+                entity.Property(e => e.Timestamp).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Device)
+                    .WithMany(p => p.DeviceWarning)
+                    .HasForeignKey(d => d.DeviceId)
+                    .HasConstraintName("FK_DeviceWarning_Device");
             });
 
             OnModelCreatingPartial(modelBuilder);

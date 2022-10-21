@@ -14,8 +14,10 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
+using Device = Home.API.home.Models.Device;
 
 namespace Home.API.Services
 {
@@ -69,113 +71,25 @@ namespace Home.API.Services
                     }
                 }
 
-                // Check devices
-                foreach (var device in await homeContext.GetInactiveDevicesAsync())
-                {
-                    device.Status = false; // Device.DeviceStatus.Offline;
-
-                    // If a device turns offline, usually the user wants to end the live state if the device is shutdown for example
-                    device.IsLive = false;
-                    bool notifyWebHook = (device.DeviceType.TypeId != (int)Home.Model.Device.DeviceType.Smartphone) &&  (device.DeviceType.TypeId == (int)Home.Model.Device.DeviceType.SingleBoardDevice || device.DeviceType.TypeId == (int)Home.Model.Device.DeviceType.Server);
-                    var logEntry = DeviceHelper.CreateLogEntry(device, $"No activity detected ... Device \"{device.Name}\" was flagged as offline!", LogEntry.LogLevel.Information, notifyWebHook);
-                    await homeContext.DeviceLog.AddAsync(logEntry);
-
-                    NotifyClientQueues(EventQueueItem.EventKind.DeviceChangedState, DeviceHelper.ConvertDevice(device));
-                }
-
-                // Aquiring a new screenshot for all online devices (except android devices)
+                // This is all be done in one loop to prevent multiple db calls
                 foreach (var device in await homeContext.GetAllDevicesAsync())
                 {
-                    if (device.IsScreenshotRequired)
-                        continue;
+                    // Update the device status if it is inactive
+                    await UpdateDeviceStatusAsync(homeContext, device);
 
-                    if (device.DeviceScreenshot.Count == 0)
-                        continue;
+                    // Aquiring a new screenshot for all online devices (except android devices)
+                    await CheckForScreenshotsAsync(homeContext, device);
 
-                    var shot = device.DeviceScreenshot.LastOrDefault();
-                    if (shot == null)
-                        continue;
+                    // Delete screenshots which are older than one day
+                    await CleanUpScreenshotsAsync(homeContext, device);
 
-                    // Check age of this screenshot
-                    if (shot.Timestamp.Add(Program.GlobalConfig.AquireNewScreenshot) < DateTime.Now)
-                    {
-                        device.IsScreenshotRequired = true;
-                        var logEntry = DeviceHelper.CreateLogEntry(device, $"Last screenshot was older than {Program.GlobalConfig.AquireNewScreenshot.TotalHours}h. Aquiring a new screenshot ...", LogEntry.LogLevel.Information);
-                        await homeContext.DeviceLog.AddRangeAsync(logEntry);
-                        NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, DeviceHelper.ConvertDevice(device));
-                    }
+                    // Check if there are any warnings to remove
+                    await UpdateDeviceWarningsAsync(homeContext, device);
+
+                    // Ensure that the device log doesn't blow up
+                    await TruncateDeviceLogAsync(homeContext, device);
                 }
-
-                // Delete screenshots which are older than one day
-                foreach (var device in await homeContext.GetAllDevicesAsync())
-                {
-                    if (device.DeviceScreenshot.Count == 0 || device.DeviceScreenshot.Count == 1)
-                        continue;
-
-                    List<DeviceScreenshot> screenshotsToRemove = new List<DeviceScreenshot>();
-                    foreach (var shot in device.DeviceScreenshot.Take(device.DeviceScreenshot.Count - 1))
-                    {
-                        if (shot.Timestamp.Add(Program.GlobalConfig.RemoveOldScreenshots) < DateTime.Now)
-                        {
-                            screenshotsToRemove.Add(shot);
-                            _logger.LogInformation($"Deleted screenshot {shot} from device {device.Name}, because it is older than one day!");
-                        }
-                    }
-
-                    foreach (var shot in screenshotsToRemove)
-                    {
-                        shot.Device = null;
-                        homeContext.DeviceScreenshot.Remove(shot);
-                        // device.DeviceScreenshot.Remove(shot);
-
-                        string path = System.IO.Path.Combine(Config.SCREENSHOTS_PATH, device.Guid, $"{shot.ScreenshotFileName}.png");
-                        try
-                        {
-                            System.IO.File.Delete(path);
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.LogError($"Failed to remove screenshot {ex.Message}");
-                        }
-                    }
-                }
-
-                // Check for obsolete warnings
-                // ToDo: *** Warnings
-                /*foreach (var device in Devices)
-                {
-                    // Battery Warnings
-                    if (device.BatteryWarning != null && device.BatteryWarning.CanBeRemoved(device, GlobalConfig.BatteryWarningPercentage))
-                    {
-                        device.BatteryWarning = null;
-                        device.LogEntries.Add(new LogEntry("[Battery Warning]: Removed!", LogEntry.LogLevel.Information, true));
-                    }
-
-                    // Storage Warnings
-                    if (device.StorageWarnings.Count == 0)
-                        continue;
-
-                    List<StorageWarning> toRemove = new List<StorageWarning>();
-                    foreach (var warning in device.StorageWarnings)
-                    {
-                        var associatedDisk = device.DiskDrives.FirstOrDefault(d => d.UniqueID == warning.StorageID);
-                        if (associatedDisk == null)
-                            continue;
-
-                        if (warning.CanBeRemoved(associatedDisk, GlobalConfig.StorageWarningPercentage))
-                        {
-                            // Add log entry
-                            toRemove.Add(warning);
-                            device.LogEntries.Add(new LogEntry($"[Storage Warning]: Removed for DISK \"{associatedDisk}\"", LogEntry.LogLevel.Information, true));
-                            NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
-                        }
-                    }
-
-                    foreach (var warning in toRemove)
-                        device.StorageWarnings.Remove(warning);
-                }*/
-
-
+ 
                 if (Program.GlobalConfig.UseWebHook)
                 {
                     // Send log messages
@@ -185,20 +99,6 @@ namespace Home.API.Services
                             await WebHook.NotifyWebHookAsync(Program.GlobalConfig.WebHookUrl, log);
                         else
                             break;
-                    }
-                }
-
-                foreach (var device in await homeContext.GetAllDevicesAsync())
-                {
-                    if (device.DeviceLog.Count >= 200)
-                    {
-                        // ToDo: ***
-                        /*   
-                        while (device.DeviceLog.Count != 100 - 2)
-                            device.DeviceLog.Remove()
-
-                        device.LogEntries.Insert(0, new LogEntry("Truncated log file of this device!", LogEntry.LogLevel.Information));
-                        NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);*/
                     }
                 }
 
@@ -214,6 +114,135 @@ namespace Home.API.Services
             }
         }
 
+        #region Health Service Tasks
+
+        private async Task UpdateDeviceStatusAsync(HomeContext homeContext, Device device)
+        {
+            if (device.Status && device.LastSeen.Add(Program.GlobalConfig.RemoveInactiveClients) < DateTime.Now)
+            {
+                device.Status = false; // Device.DeviceStatus.Offline;
+
+                // If a device turns offline, usually the user wants to end the live state if the device is shutdown for example
+                device.IsLive = false;
+                bool notifyWebHook = (device.DeviceType.TypeId != (int)Home.Model.Device.DeviceType.Smartphone) && (device.DeviceType.TypeId == (int)Home.Model.Device.DeviceType.SingleBoardDevice || device.DeviceType.TypeId == (int)Home.Model.Device.DeviceType.Server);
+                var logEntry = ModelConverter.CreateLogEntry(device, $"No activity detected ... Device \"{device.Name}\" was flagged as offline!", LogEntry.LogLevel.Information, notifyWebHook);
+                await homeContext.DeviceLog.AddAsync(logEntry);
+
+                NotifyClientQueues(EventQueueItem.EventKind.DeviceChangedState, ModelConverter.ConvertDevice(device));
+            }
+        }
+
+        private async Task CheckForScreenshotsAsync(HomeContext homeContext, Device device)
+        {
+            if (device.IsScreenshotRequired)
+                return;
+
+            if (device.DeviceScreenshot.Count == 0)
+                return;
+
+            var shot = device.DeviceScreenshot.LastOrDefault();
+            if (shot == null)
+                return;
+
+            // Check age of this screenshot
+            if (shot.Timestamp.Add(Program.GlobalConfig.AquireNewScreenshot) < DateTime.Now)
+            {
+                device.IsScreenshotRequired = true;
+                var logEntry = ModelConverter.CreateLogEntry(device, $"Last screenshot was older than {Program.GlobalConfig.AquireNewScreenshot.TotalHours}h. Aquiring a new screenshot ...", LogEntry.LogLevel.Information);
+                await homeContext.DeviceLog.AddRangeAsync(logEntry);
+                NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, ModelConverter.ConvertDevice(device));
+            }
+        }
+
+        private async Task CleanUpScreenshotsAsync(HomeContext homeContext, Device device)
+        {
+            if (device.DeviceScreenshot.Count == 0 || device.DeviceScreenshot.Count == 1)
+                return;
+
+            List<DeviceScreenshot> screenshotsToRemove = new List<DeviceScreenshot>();
+            foreach (var shot in device.DeviceScreenshot.Take(device.DeviceScreenshot.Count - 1))
+            {
+                if (shot.Timestamp.Add(Program.GlobalConfig.RemoveOldScreenshots) < DateTime.Now)
+                {
+                    screenshotsToRemove.Add(shot);
+                    _logger.LogInformation($"Deleted screenshot {shot} from device {device.Name}, because it is older than one day!");
+                }
+            }
+
+            foreach (var shot in screenshotsToRemove)
+            {
+                shot.Device = null;
+                homeContext.DeviceScreenshot.Remove(shot);
+                // device.DeviceScreenshot.Remove(shot);
+
+                string path = System.IO.Path.Combine(Config.SCREENSHOTS_PATH, device.Guid, $"{shot.ScreenshotFileName}.png");
+                try
+                {
+                    System.IO.File.Delete(path);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Failed to remove screenshot {ex.Message}");
+                }
+            }
+        }
+
+        private async Task UpdateDeviceWarningsAsync(HomeContext homeContext, Device device)
+        {
+            // Battery Warnings
+            var batteryWarning = device.DeviceWarning.Where(w => w.WarningType == (int)WarningType.BatteryWarning).FirstOrDefault();
+            if (batteryWarning != null && ModelConverter.ConvertBatteryWarning(batteryWarning).CanBeRemoved(ModelConverter.ConvertDevice(device), Program.GlobalConfig.BatteryWarningPercentage))
+            {
+                batteryWarning.Device = null;
+                homeContext.DeviceWarning.Remove(batteryWarning);
+                var logEntry = ModelConverter.CreateLogEntry(device, "[Battery Warning]: Removed!", LogEntry.LogLevel.Information, true);
+                await homeContext.DeviceLog.AddAsync(logEntry);
+            }
+
+            // Storage Warnings
+            var storageWarnings = device.DeviceWarning.Where(w => w.WarningType == (int)WarningType.StorageWarning).Select(p => (ModelConverter.ConvertStorageWarning(p), p)).ToList();
+            if (storageWarnings.Count > 0)
+            {
+                List<DeviceWarning> toRemove = new List<DeviceWarning>();
+                foreach (var warning in storageWarnings)
+                {
+                    var associatedDisk = device.DeviceDiskDrive.FirstOrDefault(d => d.Guid == warning.Item1.StorageID);
+                    if (associatedDisk == null)
+                        continue;
+
+                    if (warning.Item1.CanBeRemoved(ModelConverter.ConvertDisk(associatedDisk), Program.GlobalConfig.StorageWarningPercentage))
+                    {
+                        // Add log entry
+                        toRemove.Add(warning.p);
+                        var logEntry = ModelConverter.CreateLogEntry(device, $"[Storage Warning]: Removed for DISK \"{associatedDisk}\"", LogEntry.LogLevel.Information, true);
+                        await homeContext.DeviceLog.AddAsync(logEntry);
+                        NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, ModelConverter.ConvertDevice(device));
+                    }
+                }
+
+                foreach (var warning in toRemove)
+                {
+                    warning.Device = null;
+                    homeContext.DeviceWarning.Remove(warning);
+                }
+            }
+        }
+
+        private async Task TruncateDeviceLogAsync(HomeContext homeContext, Device device)
+        {
+            if (device.DeviceLog.Count >= 200)
+            {
+                // ToDo: ***
+                /*   
+                while (device.DeviceLog.Count != 100 - 2)
+                    device.DeviceLog.Remove()
+
+                device.LogEntries.Insert(0, new LogEntry("Truncated log file of this device!", LogEntry.LogLevel.Information));
+                NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);*/
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// Notifies all active client queues that there is a new event for the device

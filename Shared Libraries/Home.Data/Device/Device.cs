@@ -1033,6 +1033,12 @@ namespace Home.Model
         }
     }
 
+    public enum WarningType
+    {
+        StorageWarning = 0,
+        BatteryWarning = 1,
+    }
+
     public class StorageWarning : Warning<DiskDrive>
     {
         /// <summary>

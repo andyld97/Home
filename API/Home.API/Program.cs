@@ -19,7 +19,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
-using static Home.API.Helper.DeviceHelper;
+using static Home.API.Helper.ModelConverter;
 
 namespace Home.API
 {
