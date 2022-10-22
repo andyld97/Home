@@ -32,10 +32,6 @@ namespace Home.API
         public readonly static Dictionary<Device, bool> AckErrorSentAssoc = new Dictionary<Device, bool>();
         public static ConcurrentQueue<string> WebHookLogging = new ConcurrentQueue<string>();
 
-        private static readonly Timer healthCheckTimer = new Timer();
-        private static bool isHealthCheckTimerActive = false;
-        private static readonly object _lock = new object();
-
         public static Config GlobalConfig;
 
         public static IHost App { get; private set; }
@@ -45,22 +41,6 @@ namespace Home.API
             // Create a logger to enable logging also here in Program.cs (see https://stackoverflow.com/a/62404676/6237448)
             var loggerFactory = LoggerFactory.Create(builder => { builder.AddConsole(); });
             _logger = loggerFactory.CreateLogger<Startup>();
-
-            // Load devices
-            /*if (System.IO.File.Exists(Config.DEVICE_PATH))
-            {
-                try
-                {
-                    Devices = Serialization.Serialization.Read<List<Device>>(Config.DEVICE_PATH, Serialization.Serialization.Mode.Normal);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError($"Failed to read devices.xml: {ex.Message}");
-                }
-
-                if (Devices == null)
-                    Devices = new List<Device>();
-            }*/
 
             // Initalize config.json to GlobalConfig
             // Read config json (if any) [https://stackoverflow.com/a/28700387/6237448]
@@ -84,31 +64,7 @@ namespace Home.API
                 GlobalConfig = new Config();
             }
 
-            // Initalize health check timer
-            healthCheckTimer.Interval = GlobalConfig.HealthCheckTimerInterval.TotalMilliseconds;
-            healthCheckTimer.Elapsed += HealthCheckTimer_Elapsed;
-            healthCheckTimer.Start();
-
             CreateHostBuilder(args).Build().Run();
-        }
-
-
-        private static void HealthCheckTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            lock (_lock)
-            {
-                if (isHealthCheckTimerActive)
-                    return;
-                else
-                    isHealthCheckTimerActive = false;
-            }
-
-            // [deprecated, replaced with background service]
-
-            lock (_lock)
-            {
-                isHealthCheckTimerActive = false;
-            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
