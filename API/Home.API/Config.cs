@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.Json.Serialization;
 
-namespace Home.API.Model
+namespace Home.API
 {
     /// <summary>
     /// The config used for this API
@@ -17,6 +17,12 @@ namespace Home.API.Model
         /// </summary>
         [JsonPropertyName("host")]
         public string HostUrl { get; set; } = "http://localhost:5250";
+
+        /// <summary>
+        /// The db connection string (used here to prevent commiting passwords) in appsettings.json :(
+        /// </summary>
+        [JsonPropertyName("connection_string")]
+        public string ConnectionString { get; set; } = "Server=YOUR_PC\\SQLEXPRESS,1433;User Id=user;password=set_your_password;Database=home;Trusted_Connection=False;MultipleActiveResultSets=true";
 
         /// <summary>
         /// If set to true a webhook for important events will be called (<see cref="WebHookUrl"/> must be also set)
@@ -39,7 +45,7 @@ namespace Home.API.Model
         /// - Saves devices.xml <br/>
         /// </summary>
         [JsonPropertyName("health_check_timer_interval")]
-        public TimeSpan HealthCheckTimerInterval { get; set; } = TimeSpan.FromSeconds(5);
+        public TimeSpan HealthCheckTimerInterval { get; set; } = TimeSpan.FromMinutes(1);
 
         /// <summary>
         /// The interval when inactive Home.WPF client queues should be removed

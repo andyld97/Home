@@ -262,7 +262,7 @@ namespace Home.Model
         [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         [XmlIgnore]
-        public Queue<Message> Messages { get; set; } = new Queue<Message>();
+        public List<Message> Messages { get; set; } = new List<Message>();
 
         /// <summary>
         /// Only for internal api usage
@@ -270,10 +270,9 @@ namespace Home.Model
         [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         [XmlIgnore]
-        public Queue<Command> Commands { get; set; } = new Queue<Command>();
+        public List<Command> Commands { get; set; } = new List<Command>();
 
         #endregion
-
 
         [JsonPropertyName("storage_warnings")]
         public List<StorageWarning> StorageWarnings { get; set; } = new List<StorageWarning>();
@@ -903,7 +902,7 @@ namespace Home.Model
 #if !LEGACY
         [JsonPropertyName("client_id")]
 #endif
-        public string ClientID { get; set; }
+        public string DeviceID { get; set; }
     }
 
     public class DeviceUsage
@@ -1032,6 +1031,12 @@ namespace Home.Model
             string message = $"[{Name} Warning]: \"{Text}\"";
             return new LogEntry(WarningOccoured, message, LogEntry.LogLevel.Warning, true);
         }
+    }
+
+    public enum WarningType
+    {
+        StorageWarning = 0,
+        BatteryWarning = 1,
     }
 
     public class StorageWarning : Warning<DiskDrive>

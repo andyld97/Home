@@ -1,0 +1,89 @@
+﻿{
+   "CodeGenerationMode": 2,
+   "ContextClassName": "HomeContext",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": "home",
+   "OutputPath": "home\\Models",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "Home.API",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 0,
+   "Tables": [
+      {
+         "Name": "[dbo].[Device]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[DeviceBattery]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[DeviceCommand]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[DeviceDiskDrive]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[DeviceEnvironment]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[DeviceGraphic]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[DeviceLog]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[DeviceMessage]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[DeviceOSType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[DeviceScreenshot]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[DeviceType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[DeviceUsage]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[DeviceWarning]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": "NIS-PC\\SQLEXPRESS.home",
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDbContextSplitting": false,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": false,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoConstructor": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UseSchemaFolders": false,
+   "UseSpatial": false,
+   "UseT4": false
+}
