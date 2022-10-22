@@ -8,7 +8,7 @@ namespace Home.API.home.Models
     public partial class DeviceLog
     {
         public int LogEntryId { get; set; }
-        public int DeviceId { get; set; }
+        public int? DeviceId { get; set; }
         public string Blob { get; set; }
         public DateTime? Timestamp { get; set; }
         public int LogLevel { get; set; }

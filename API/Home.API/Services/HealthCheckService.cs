@@ -1,7 +1,6 @@
 ﻿using Home.API.Helper;
 using Home.API.home;
 using Home.API.home.Models;
-using Home.API.Model;
 using Home.Data;
 using Home.Data.Events;
 using Home.Model;
@@ -173,7 +172,6 @@ namespace Home.API.Services
             {
                 shot.Device = null;
                 homeContext.DeviceScreenshot.Remove(shot);
-                // device.DeviceScreenshot.Remove(shot);
 
                 string path = System.IO.Path.Combine(Config.SCREENSHOTS_PATH, device.Guid, $"{shot.ScreenshotFileName}.png");
                 try
@@ -232,13 +230,20 @@ namespace Home.API.Services
         {
             if (device.DeviceLog.Count >= 200)
             {
-                // ToDo: ***
-                /*   
-                while (device.DeviceLog.Count != 100 - 2)
-                    device.DeviceLog.Remove()
+                var entries = device.DeviceLog.OrderBy(p => p.Timestamp).ToList();
 
-                device.LogEntries.Insert(0, new LogEntry("Truncated log file of this device!", LogEntry.LogLevel.Information));
-                NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);*/
+                while (device.DeviceLog.Count != 100 - 2)
+                {
+                    var entry = entries.FirstOrDefault();
+                    entry.Device = null;
+                    device.DeviceLog.Remove(entry);
+                    entries.RemoveAt(0);
+                }
+
+                var logEntry = ModelConverter.CreateLogEntry(device, "Truncated log file of this device!", LogEntry.LogLevel.Information);
+                await homeContext.DeviceLog.AddAsync(logEntry);
+
+                NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, ModelConverter.ConvertDevice(device));
             }
         }
 

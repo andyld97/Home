@@ -1,6 +1,5 @@
 ﻿using Home.API.Helper;
 using Home.API.home;
-using Home.API.Model;
 using Home.Data;
 using Home.Data.Com;
 using Home.Data.Events;

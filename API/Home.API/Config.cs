@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.Json.Serialization;
 
-namespace Home.API.Model
+namespace Home.API
 {
     /// <summary>
     /// The config used for this API

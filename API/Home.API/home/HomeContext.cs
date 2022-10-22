@@ -258,7 +258,6 @@ namespace Home.API.home
                 entity.HasOne(d => d.Device)
                     .WithMany(p => p.DeviceLog)
                     .HasForeignKey(d => d.DeviceId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_DeviceID");
             });
 
