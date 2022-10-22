@@ -7,6 +7,7 @@ using Home.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace Home.API.Helper
 {
     public static class ModelConverter
     {
-        public static home.Models.Device UpdateDevice(HomeContext homeContext, home.Models.Device dbDevice, Device device, DeviceStatus status, DateTime now)
+        public static home.Models.Device UpdateDevice(ILogger logger, HomeContext homeContext, home.Models.Device dbDevice, Device device, DeviceStatus status, DateTime now)
         {
             // Log: must not be added from device to dbDevice, because device itself won't log
             // Usage will be added to dbDevice in AckController so no need to add usage here
@@ -89,6 +90,18 @@ namespace Home.API.Helper
                 }
             }
 
+            // Remove all non (anymore) existent disks
+            foreach (var disk in dbDevice.DeviceDiskDrive)
+            {
+                if (!device.DiskDrives.Any(d => d.UniqueID == disk.Guid))
+                {
+                    disk.Device = null;
+                    // ToDo: *** Also notify webhook (using device log)
+                    logger.LogWarning($"Removed disk {disk.DiskName} from Device {dbDevice.Name} ...");
+                    dbDevice.DeviceDiskDrive.Remove(disk);
+                }
+            }
+
             foreach (var screenshot in device.ScreenshotFileNames)
             {
                 if (DateTime.TryParseExact(screenshot, Consts.SCREENSHOT_DATE_FILE_FORMAT, System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None, out DateTime dt))
@@ -102,11 +115,15 @@ namespace Home.API.Helper
                 }
             }
 
+            // Remove all cards which do not belong to this device anymore
             foreach (var graphic in dbDevice.DeviceGraphic)
             {
-                // Remove all cards which do not belong to this device anymore
                 if (device.Environment.Graphics != graphic.Name && !device.Environment.GraphicCards.Contains(graphic.Name))
-                      homeContext.DeviceGraphic.Remove(graphic);
+                {
+                    // ToDo: *** Also notify webhook (using device log)
+                    logger.LogWarning($"Removed graphics card {graphic.Name} from Device {dbDevice.Name} ...");
+                    homeContext.DeviceGraphic.Remove(graphic);
+                }
             }
 
             foreach (var graphic in device.Environment.GraphicCards.Append(device.Environment.Graphics))
@@ -121,10 +138,10 @@ namespace Home.API.Helper
             return dbDevice;
         }
 
-        public static home.Models.Device ConvertDevice(this HomeContext context, Device device)
+        public static home.Models.Device ConvertDevice(this HomeContext context, ILogger logger, Device device)
         {
             home.Models.Device dbDevice = new home.Models.Device();
-            UpdateDevice(context, dbDevice, device, DeviceStatus.Active, DateTime.Now);
+            UpdateDevice(logger, context, dbDevice, device, DeviceStatus.Active, DateTime.Now);
             return dbDevice;
         }
 

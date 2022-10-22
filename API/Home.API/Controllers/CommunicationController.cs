@@ -1,5 +1,6 @@
 ﻿using Home.API.Helper;
 using Home.API.home;
+using Home.API.home.Models;
 using Home.Data;
 using Home.Data.Com;
 using Home.Data.Events;
@@ -13,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Device = Home.API.home.Models.Device;
 
 namespace Home.API.Controllers
 {
@@ -65,7 +67,7 @@ namespace Home.API.Controllers
             }
 
             var devices = await _context.GetAllDevicesAsync();
-            List<Device> result = new List<Device>();
+            List<Home.Model.Device> result = new List<Home.Model.Device>();
             foreach (var item in devices.OrderBy(p => p.Name))
                 result.Add(ModelConverter.ConvertDevice(item));
 
@@ -122,7 +124,7 @@ namespace Home.API.Controllers
 
                         if (!found)
                         {
-                            // ToDo ***: Notify client queue
+                            ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LiveModeChanged, partictularDevice);
                             partictularDevice.IsLive = false;
                             var logEntry = ModelConverter.CreateLogEntry(partictularDevice, $"Device \"{partictularDevice.Name}\" status changed to normal, because one or multiple clients (those that have aquired live view) have logged off!", LogEntry.LogLevel.Information, false);
                             await _context.DeviceLog.AddAsync(logEntry);
@@ -186,7 +188,7 @@ namespace Home.API.Controllers
             if (device == null)
                 return NotFound(AnswerExtensions.Fail("Device not found!"));
 
-            if (device.OstypeNavigation.OstypeId == (int)Device.OSType.Android)
+            if (device.OstypeNavigation.OstypeId == (int)Home.Model.Device.OSType.Android)
                 return BadRequest(AnswerExtensions.Fail("Android Device doesn't support screenshots!"));
 
             device.IsScreenshotRequired = true;
@@ -234,15 +236,7 @@ namespace Home.API.Controllers
                 device.DeviceLog.Clear();
                 
                 _logger.LogInformation($"Clearing log of {device.Name} ...");
-                lock (Program.EventQueues)
-                {
-                    foreach (var queue in Program.EventQueues)
-                    {
-                        queue.LastEvent = DateTime.Now;
-                        queue.Events.Enqueue(new EventQueueItem() { DeviceID = deviceID, EventData = new EventData(ModelConverter.ConvertDevice(device)), EventDescription = EventQueueItem.EventKind.LogCleared, EventOccured = DateTime.Now });
-                    }
-                }
-
+                ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LogCleared, device);
                 return Ok(AnswerExtensions.Success("ok"));
             }
 
@@ -273,15 +267,7 @@ namespace Home.API.Controllers
             await _context.DeviceLog.AddAsync(ModelConverter.CreateLogEntry(device, $"Recieved message: {message}", level, false));
             await _context.SaveChangesAsync();
 
-            lock (Program.EventQueues)
-            {
-                foreach (var queue in Program.EventQueues)
-                {
-                    queue.LastEvent = DateTime.Now;
-                    queue.Events.Enqueue(new EventQueueItem() { DeviceID = device.Guid, EventData = new EventData(ModelConverter.ConvertDevice(device)), EventDescription = EventQueueItem.EventKind.LogEntriesRecieved, EventOccured = DateTime.Now });
-                }
-            }
-
+            ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
             return Ok(AnswerExtensions.Success("ok"));
         }
 
@@ -313,7 +299,7 @@ namespace Home.API.Controllers
             }
 
             device.IsLive = live;
-
+            ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LiveModeChanged, device);
             var logEntry = ModelConverter.CreateLogEntry(device, $"Device \"{device.Name}\" status changed to {(live ? "live" : "normal")} by client {client.Name}!", LogEntry.LogLevel.Information, false);
             await _context.DeviceLog.AddAsync(logEntry);
 
@@ -354,15 +340,8 @@ namespace Home.API.Controllers
             device.DeviceCommand.Add(new home.Models.DeviceCommand() { Executable = command.Executable, IsExceuted = false, Paramter = command.Parameter, Timestamp = DateTime.Now });
             await _context.DeviceLog.AddAsync(ModelConverter.CreateLogEntry(device, $"Recieved command: {command}", LogEntry.LogLevel.Information, false));
 
-            lock (Program.EventQueues)
-            {
-                foreach (var queue in Program.EventQueues)
-                {
-                    queue.LastEvent = DateTime.Now;
-                    queue.Events.Enqueue(new EventQueueItem() { DeviceID = device.Guid, EventData = new EventData(ModelConverter.ConvertDevice(device)), EventDescription = EventQueueItem.EventKind.LogEntriesRecieved, EventOccured = DateTime.Now });
-                }
-            }
-
+            ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
+            
             await _context.SaveChangesAsync();
             return Ok(AnswerExtensions.Success("ok"));
         }

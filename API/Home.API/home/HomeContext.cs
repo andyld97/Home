@@ -155,7 +155,6 @@ namespace Home.API.home
                 entity.HasOne(d => d.Device)
                     .WithMany(p => p.DeviceDiskDrive)
                     .HasForeignKey(d => d.DeviceId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_DeviceDiskDrives_Device");
             });
 

@@ -8,7 +8,7 @@ namespace Home.API.home.Models
     public partial class DeviceDiskDrive
     {
         public int DiskDriveId { get; set; }
-        public int DeviceId { get; set; }
+        public int? DeviceId { get; set; }
         public string Guid { get; set; }
         public string PhysicalName { get; set; }
         public string DiskName { get; set; }

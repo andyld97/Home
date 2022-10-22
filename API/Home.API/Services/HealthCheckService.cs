@@ -94,7 +94,6 @@ namespace Home.API.Services
                 catch (Exception ex)
                 {
                     await WebHook.NotifyWebHookAsync(Program.GlobalConfig.WebHookUrl, $"CRICTIAL EXCEPTION from Background Service: {ex.ToString()}");
-                    return;
                 }
  
                 if (Program.GlobalConfig.UseWebHook)
@@ -135,7 +134,7 @@ namespace Home.API.Services
                 var logEntry = ModelConverter.CreateLogEntry(device, $"No activity detected ... Device \"{device.Name}\" was flagged as offline!", LogEntry.LogLevel.Information, notifyWebHook);
                 await homeContext.DeviceLog.AddAsync(logEntry);
 
-                NotifyClientQueues(EventQueueItem.EventKind.DeviceChangedState, ModelConverter.ConvertDevice(device));
+                ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.DeviceChangedState, ModelConverter.ConvertDevice(device));
             }
         }
 
@@ -157,7 +156,7 @@ namespace Home.API.Services
                 device.IsScreenshotRequired = true;
                 var logEntry = ModelConverter.CreateLogEntry(device, $"Last screenshot was older than {Program.GlobalConfig.AquireNewScreenshot.TotalHours}h. Aquiring a new screenshot ...", LogEntry.LogLevel.Information);
                 await homeContext.DeviceLog.AddRangeAsync(logEntry);
-                NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, ModelConverter.ConvertDevice(device));
+                ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, ModelConverter.ConvertDevice(device));
             }
         }
 
@@ -222,7 +221,7 @@ namespace Home.API.Services
                         toRemove.Add(warning.p);
                         var logEntry = ModelConverter.CreateLogEntry(device, $"[Storage Warning]: Removed for DISK \"{associatedDisk}\"", LogEntry.LogLevel.Information, true);
                         await homeContext.DeviceLog.AddAsync(logEntry);
-                        NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, ModelConverter.ConvertDevice(device));
+                        ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, ModelConverter.ConvertDevice(device));
                     }
                 }
 
@@ -251,28 +250,10 @@ namespace Home.API.Services
                 var logEntry = ModelConverter.CreateLogEntry(device, "Truncated log file of this device!", LogEntry.LogLevel.Information);
                 await homeContext.DeviceLog.AddAsync(logEntry);
 
-                NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, ModelConverter.ConvertDevice(device));
+                ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, ModelConverter.ConvertDevice(device));
             }
         }
 
         #endregion
-
-        /// <summary>
-        /// Notifies all active client queues that there is a new event for the device
-        /// </summary>
-        /// <param name="eventKind"></param>
-        /// <param name="device"></param>
-        private static void NotifyClientQueues(EventQueueItem.EventKind eventKind, Home.Model.Device device)
-        {
-            lock (Program.EventQueues)
-            {
-                foreach (var queue in Program.EventQueues)
-                {
-                    var now = DateTime.Now;
-                    queue.LastEvent = now;
-                    queue.Events.Enqueue(new EventQueueItem() { DeviceID = device.ID, EventDescription = eventKind, EventOccured = now, EventData = new EventData(device) });
-                }
-            }
-        }
     }
 }

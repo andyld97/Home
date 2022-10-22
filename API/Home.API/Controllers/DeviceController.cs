@@ -72,20 +72,12 @@ namespace Home.API.Controllers
                 _logger.LogInformation($"New device {device.Environment.MachineName} has just logged in!");
                 device.IsScreenshotRequired = true;
 
-                var dbDevice = ModelConverter.ConvertDevice(_context, device);
+                var dbDevice = ModelConverter.ConvertDevice(_context, _logger, device);
                 await _context.Device.AddAsync(dbDevice);
 
-                lock (Program.EventQueues)
-                {
-                    foreach (var queue in Program.EventQueues)
-                    {
-                        queue.LastEvent = now;
-                        queue.Events.Enqueue(new EventQueueItem() { DeviceID = device.ID, EventData = new EventData(ModelConverter.ConvertDevice(dbDevice)), EventDescription = EventQueueItem.EventKind.NewDeviceConnected, EventOccured = now });
-                    }
-                }
-
-                // Write to database
+                ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.NewDeviceConnected, device);
                 await _context.SaveChangesAsync();
+
                 result = true;
             }
 
@@ -263,7 +255,7 @@ namespace Home.API.Controllers
                     }
 
                     // Update device
-                    ModelConverter.UpdateDevice(_context, currentDevice, requestedDevice, DeviceStatus.Active, now);
+                    ModelConverter.UpdateDevice(_logger, _context, currentDevice, requestedDevice, DeviceStatus.Active, now);
 
                     if (requestedDevice.DiskDrives.Count > 0)
                     {
@@ -337,32 +329,17 @@ namespace Home.API.Controllers
                     result = true;
                     await _context.SaveChangesAsync();
 
-                    lock (Program.EventQueues)
-                    {
-                        foreach (var queue in Program.EventQueues)
-                        {
-                            queue.LastEvent = now;
-                            queue.Events.Enqueue(new EventQueueItem() { DeviceID = currentDevice.Guid, EventData = new EventData() { EventDevice = ModelConverter.ConvertDevice(currentDevice) }, EventDescription = EventQueueItem.EventKind.ACK, EventOccured = now });
-                        }
-                    }
+                    ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.ACK, currentDevice);
                 }
                 else
                 {
                     // Temporay fix if data is empty again :(
                     requestedDevice.LastSeen = now;
-                    await _context.Device.AddAsync(ModelConverter.ConvertDevice(_context, requestedDevice));
+                    await _context.Device.AddAsync(ModelConverter.ConvertDevice(_context, _logger, requestedDevice));
                     await _context.SaveChangesAsync();
 
-                    lock (Program.EventQueues)
-                    {
-                        foreach (var queue in Program.EventQueues)
-                        {
-                            queue.LastEvent = now;
-                            queue.Events.Enqueue(new EventQueueItem() { DeviceID = requestedDevice.ID, EventData = new EventData() { EventDevice = requestedDevice }, EventDescription = EventQueueItem.EventKind.NewDeviceConnected, EventOccured = now });
-                        }
-                    }
+                    ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.NewDeviceConnected, requestedDevice);
                 }
-
 
                 if (result)
                 {
@@ -478,14 +455,7 @@ namespace Home.API.Controllers
                 deviceFound.IsScreenshotRequired = false;
 
                 // Also append to event queue
-                lock (Program.EventQueues)
-                {
-                    foreach (var queue in Program.EventQueues)
-                    {
-                        queue.Events.Enqueue(new EventQueueItem() { DeviceID = deviceFound.Guid, EventData = new EventData() { EventDevice = ModelConverter.ConvertDevice(deviceFound) }, EventDescription = EventQueueItem.EventKind.DeviceScreenshotRecieved, EventOccured = now });
-                        queue.LastEvent = now;
-                    }
-                }
+                ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.DeviceScreenshotRecieved, deviceFound);
 
                 await _context.SaveChangesAsync();
                 return Ok(AnswerExtensions.Success(true));

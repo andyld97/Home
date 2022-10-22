@@ -8,7 +8,7 @@ namespace Home.Helper
     {
         public static BitmapImage LoadImage(string bitmapSourceUri, bool isScreenshot)
         {
-            // ToDo: *** Cache resource images (prevint loading in multiple times)
+            // ToDo: *** Cache resource images (prevent loading in multiple times)
             if (isScreenshot && !System.IO.File.Exists(bitmapSourceUri))
             {
                 // Replace with default image uri

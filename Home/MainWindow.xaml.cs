@@ -349,7 +349,6 @@ namespace Home
                     }
                     else
                     {
-                        // Add
                         deviceList.Add(device.EventData.EventDevice);
                         MessageBox.Show("New device added!", "New device!", MessageBoxButton.OK, MessageBoxImage.Information);
                         RefreshDeviceHolder();
