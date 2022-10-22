@@ -64,7 +64,13 @@ namespace Home.API.Helper
             dbDevice.Environment.Vendor = device.Environment.Vendor;
 
             if (device.BatteryInfo != null)
-                dbDevice.Environment.Battery = new DeviceBattery() { IsCharging = device.BatteryInfo.IsCharging, Percentage = device.BatteryInfo.BatteryLevelInPercent };
+            {
+                if (dbDevice.Environment.Battery == null)
+                    dbDevice.Environment.Battery = new DeviceBattery();
+
+                dbDevice.Environment.Battery.IsCharging = device.BatteryInfo.IsCharging;
+                dbDevice.Environment.Battery.Percentage = device.BatteryInfo.BatteryLevelInPercent;
+            }
 
             foreach (var disk in device.DiskDrives)
             {

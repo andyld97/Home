@@ -71,22 +71,30 @@ namespace Home.API.Services
                 }
 
                 // This is all be done in one loop to prevent multiple db calls
-                foreach (var device in await homeContext.GetAllDevicesAsync())
+                try
                 {
-                    // Update the device status if it is inactive
-                    await UpdateDeviceStatusAsync(homeContext, device);
+                    foreach (var device in await homeContext.GetAllDevicesAsync())
+                    {
+                        // Update the device status if it is inactive
+                        await UpdateDeviceStatusAsync(homeContext, device);
 
-                    // Aquiring a new screenshot for all online devices (except android devices)
-                    await CheckForScreenshotsAsync(homeContext, device);
+                        // Aquiring a new screenshot for all online devices (except android devices)
+                        await CheckForScreenshotsAsync(homeContext, device);
 
-                    // Delete screenshots which are older than one day
-                    await CleanUpScreenshotsAsync(homeContext, device);
+                        // Delete screenshots which are older than one day
+                        await CleanUpScreenshotsAsync(homeContext, device);
 
-                    // Check if there are any warnings to remove
-                    await UpdateDeviceWarningsAsync(homeContext, device);
+                        // Check if there are any warnings to remove
+                        await UpdateDeviceWarningsAsync(homeContext, device);
 
-                    // Ensure that the device log doesn't blow up
-                    await TruncateDeviceLogAsync(homeContext, device);
+                        // Ensure that the device log doesn't blow up
+                        await TruncateDeviceLogAsync(homeContext, device);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await WebHook.NotifyWebHookAsync(Program.GlobalConfig.WebHookUrl, $"CRICTIAL EXCEPTION from Background Service: {ex.ToString()}");
+                    return;
                 }
  
                 if (Program.GlobalConfig.UseWebHook)
