@@ -73,7 +73,7 @@ namespace Home.API.Services
                 // This is all be done in one loop to prevent multiple db calls
                 try
                 {
-                    foreach (var device in await homeContext.GetAllDevicesAsync())
+                    foreach (var device in await homeContext.GetAllDevicesAsync(false))
                     {
                         // Update the device status if it is inactive
                         await UpdateDeviceStatusAsync(homeContext, device);

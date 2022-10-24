@@ -66,7 +66,7 @@ namespace Home.API.Controllers
                 // return BadRequest(AnswerExtensions.Fail("Already logged in"));
             }
 
-            var devices = await _context.GetAllDevicesAsync();
+            var devices = await _context.GetAllDevicesAsync(true);
             List<Home.Model.Device> result = new List<Home.Model.Device>();
             foreach (var item in devices.OrderBy(p => p.Name))
                 result.Add(ModelConverter.ConvertDevice(item));
@@ -100,7 +100,7 @@ namespace Home.API.Controllers
                 // Clean UP liveMode Assoc
                 if (Program.LiveModeAssoc.ContainsKey(cl))
                 {
-                    var allDevices = await _context.GetAllDevicesAsync();
+                    var allDevices = await _context.GetAllDevicesAsync(false);
                     var devices = Program.LiveModeAssoc[cl].Select(d => allDevices.FirstOrDefault(f => f.Guid == d));
 
                     // Check if we can set the device to false (if true),

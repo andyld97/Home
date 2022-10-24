@@ -161,9 +161,9 @@ namespace Home.API.Helper
                                        .Include(p => p.OstypeNavigation).Where(p => p.Guid == guid).FirstOrDefaultAsync();
         }
 
-        public static async Task<List<home.Models.Device>> GetAllDevicesAsync(this HomeContext context)
+        public static async Task<List<home.Models.Device>> GetAllDevicesAsync(this HomeContext context, bool noTracking)
         {
-            return await context.Device.Include(d => d.DeviceLog)
+            var devices = context.Device.Include(d => d.DeviceLog)
                                        .Include(p => p.DeviceGraphic)
                                        .Include(p => p.Environment)
                                        .ThenInclude(p => p.Battery)
@@ -174,7 +174,12 @@ namespace Home.API.Helper
                                        .Include(p => p.DeviceCommand)
                                        .Include(p => p.DeviceMessage)
                                        .Include(p => p.DeviceWarning)
-                                       .Include(p => p.OstypeNavigation).ToListAsync();
+                                       .Include(p => p.OstypeNavigation);
+
+            if (noTracking)
+                return await devices.AsNoTracking().ToListAsync();
+
+            return await devices.ToListAsync();
         }
 
         public static async Task<IEnumerable<home.Models.Device>> GetInactiveDevicesAsync(this HomeContext context)

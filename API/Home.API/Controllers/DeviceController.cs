@@ -42,7 +42,7 @@ namespace Home.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
-            var devices = await ModelConverter.GetAllDevicesAsync(_context);
+            var devices = await ModelConverter.GetAllDevicesAsync(_context, true);
 
             List<Device> devicesList = new List<Device>();
             foreach (var device in devices)
