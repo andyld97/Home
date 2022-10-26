@@ -73,7 +73,15 @@ namespace Home.API.Services
                 // This is all be done in one loop to prevent multiple db calls
                 try
                 {
-                    foreach (var device in await homeContext.GetAllDevicesAsync(false))
+                    var devices = await homeContext.Device.Include(p => p.DeviceLog).Include(s => s.DeviceScreenshot).Include(p => p.DeviceWarning).ToListAsync();
+
+                    ParallelOptions parallelOptions = new ParallelOptions()
+                    {
+                        MaxDegreeOfParallelism = Environment.ProcessorCount,
+                        CancellationToken = stoppingToken,
+                    };
+
+                    await Parallel.ForEachAsync(devices, parallelOptions, async (device, token) =>
                     {
                         // Update the device status if it is inactive
                         await UpdateDeviceStatusAsync(homeContext, device);
@@ -89,7 +97,14 @@ namespace Home.API.Services
 
                         // Ensure that the device log doesn't blow up
                         await TruncateDeviceLogAsync(homeContext, device);
-                    }
+                    });
+
+ 
+                    /**
+                    foreach (var device in devices)
+                    {
+                      
+                    }*/
                 }
                 catch (Exception ex)
                 {
