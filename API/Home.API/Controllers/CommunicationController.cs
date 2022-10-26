@@ -100,7 +100,7 @@ namespace Home.API.Controllers
                 // Clean UP liveMode Assoc
                 if (Program.LiveModeAssoc.ContainsKey(cl))
                 {
-                    var allDevices = await _context.GetAllDevicesAsync(false);
+                    var allDevices = await _context.Device.Include(p => p.DeviceLog).ToListAsync();
                     var devices = Program.LiveModeAssoc[cl].Select(d => allDevices.FirstOrDefault(f => f.Guid == d));
 
                     // Check if we can set the device to false (if true),
@@ -184,11 +184,11 @@ namespace Home.API.Controllers
                     cl = Program.Clients.Where(c => c.ID == clientId).FirstOrDefault();
             }
 
-            var device = await _context.GetDeviceByIdAsync(deviceID);
+            var device = await _context.Device.Where(p => p.Guid == deviceID).FirstOrDefaultAsync();
             if (device == null)
                 return NotFound(AnswerExtensions.Fail("Device not found!"));
 
-            if (device.OstypeNavigation.OstypeId == (int)Home.Model.Device.OSType.Android)
+            if (device.Ostype == (int)Home.Model.Device.OSType.Android)
                 return BadRequest(AnswerExtensions.Fail("Android Device doesn't support screenshots!"));
 
             device.IsScreenshotRequired = true;
@@ -227,10 +227,7 @@ namespace Home.API.Controllers
             if (string.IsNullOrEmpty(deviceID))
                 return BadRequest(AnswerExtensions.Fail("Invalid device data"));
 
-            if (!(await _context.Device.Where(p => p.Guid == deviceID).AnyAsync()))
-                return NotFound(AnswerExtensions.Fail("Device not found!"));
-
-            var device = await ModelConverter.GetDeviceByIdAsync(_context, deviceID);
+            var device = await _context.Device.Include(d => d.DeviceLog).Where(p => p.Guid == deviceID).FirstOrDefaultAsync();
             if (device != null)
             {
                 device.DeviceLog.Clear();
@@ -239,8 +236,8 @@ namespace Home.API.Controllers
                 ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LogCleared, device);
                 return Ok(AnswerExtensions.Success("ok"));
             }
-
-            return NotFound();
+            else
+                return NotFound(AnswerExtensions.Fail("Device not found!"));
         }
 
         [HttpPost("send_message")]
@@ -248,8 +245,8 @@ namespace Home.API.Controllers
         {
             if (message == null)
                 return BadRequest(AnswerExtensions.Fail("Invalid device data!"));
-            
-            var device = await _context.GetDeviceByIdAsync(message.DeviceID);
+
+            var device = await _context.Device.Include(d => d.DeviceLog).Include(d => d.DeviceMessage).Where(p => p.Guid == message.DeviceID).FirstOrDefaultAsync();
             if (device == null)
                 return BadRequest(AnswerExtensions.Fail("Device doesn't exists!"));                
 
@@ -274,7 +271,7 @@ namespace Home.API.Controllers
         [HttpGet("status/{clientId}/{deviceId}/{live:bool}")]
         public async Task<IActionResult> SetLiveStatusAsync(string clientId, string deviceId, bool live)
         {
-            var device = await _context.GetDeviceByIdAsync(deviceId);
+            var device = await _context.Device.Include(d => d.DeviceLog).Where(p => p.Guid == deviceId).FirstOrDefaultAsync();
             if (device == null)
                 return BadRequest(AnswerExtensions.Fail($"Device couldn't be found: {deviceId}"));
 
@@ -331,7 +328,7 @@ namespace Home.API.Controllers
                 return BadRequest(AnswerExtensions.Fail("Invalid device data!"));
 
             // Check if this devices exists
-            home.Models.Device device = await _context.GetDeviceByIdAsync(command.DeviceID);
+            home.Models.Device device = await _context.Device.Include(d => d.DeviceCommand).Include(d => d.DeviceLog).Where(p => p.Guid == command.DeviceID).FirstOrDefaultAsync();
 
             if (device == null)
                 return BadRequest(AnswerExtensions.Fail("Device doesn't exists!"));

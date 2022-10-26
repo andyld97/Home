@@ -63,7 +63,7 @@ namespace Home.API.Controllers
             bool result = false;
 
             // Check if device exists
-            if (await _context.Device.AnyAsync(p => p.Guid == device.ID))
+            if (!(await _context.Device.AnyAsync(p => p.Guid == device.ID)))
             {
                 device.Status = Device.DeviceStatus.Active;
                 device.LastSeen = now;
