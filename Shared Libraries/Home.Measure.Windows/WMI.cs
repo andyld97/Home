@@ -2,8 +2,10 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Management;
+using System.Windows.Forms;
 
 namespace Home.Measure.Windows
 {
@@ -131,7 +133,7 @@ namespace Home.Measure.Windows
             }
             catch
             {
-             
+
             }
         }
 
@@ -175,6 +177,7 @@ namespace Home.Measure.Windows
 
                                     var driveName = Convert.ToString(ld.Properties["Name"].Value); // C:
                                     var driveId = Convert.ToString(ld.Properties["DeviceId"].Value); // C:
+                                    var pnpDriveId = Convert.ToString(d.Properties["PNPDeviceID"].Value);
                                     var driveCompressed = Convert.ToBoolean(ld.Properties["Compressed"].Value);
                                     var driveType = Convert.ToUInt32(ld.Properties["DriveType"].Value); // C: - 3
                                     var fileSystem = Convert.ToString(ld.Properties["FileSystem"].Value); // NTFS
@@ -196,6 +199,7 @@ namespace Home.Measure.Windows
                                         ["media_status"] = mediaStatus,
                                         ["drive_name"] = driveName,
                                         ["drive_id"] = driveId,
+                                        ["pnp_drive_id"] = pnpDriveId,
                                         ["drive_compressed"] = driveCompressed,
                                         ["drive_type"] = driveType,
                                         ["file_system"] = fileSystem,
