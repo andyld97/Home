@@ -5,9 +5,19 @@ using System.Text;
 
 namespace Home.Measure.Windows.SMART
 {
-    // Code from https://github.com/krugertech/Krugertech.IO.Smart/blob/master/Smart.Net/Controllers/WmiController.cs
+    // Code from (https://github.com/krugertech/Krugertech.IO.Smart/blob/master/Smart.Net/Controllers/WmiController.cs)[MODIFED]
     public class SmartAttribute
     {
+        /*
+         * Interesting values:
+         * 
+         * 
+         * 0x09:    "Power-on hours count":    0x000000003DCF (Data) => 0x3DCF  => 15823h
+         * 0xC2:    "Temperature":             0x0034000E001D (Data) => 0x1D    => 29°C (last 2 values => temp) 
+         * 0x0C:    "Power cycle count"        0x00000000025E (Data) => 0x25E   => 606 (How often the device was turned on)
+         * 
+         * 
+         */
         public static readonly Dictionary<byte, string> SmartAttributes = new Dictionary<byte, string>()
         {
             { 0x00, "Invalid" },
