@@ -84,7 +84,7 @@
             android:id="@+id/spinnerDeviceType"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:entries="@array/device_type" />
+            android:entries="@array/strDeviceType" />
 
         <Button
             android:id="@+id/buttonRegisterDevice"

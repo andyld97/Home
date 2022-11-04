@@ -37,6 +37,15 @@ namespace Home.Service.Android
         private string xmlDevicePath = string.Empty;
         private string xmlSettingsPath = string.Empty;
 
+        private Dictionary<int, Device.DeviceType> spinnerAssoc = new Dictionary<int, Device.DeviceType>()
+        {
+            { 0, Device.DeviceType.Smartphone },
+            { 1, Device.DeviceType.SmartTV },
+            { 2, Device.DeviceType.SetTopBox },
+            { 3, Device.DeviceType.Tablet },
+            { 4, Device.DeviceType.AndroidTVStick },
+        };
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -129,8 +138,13 @@ namespace Home.Service.Android
                 textHost.Text = currentSettings.Host;
                 textLocation.Text = currentDevice.Location;
                 textGroup.Text = currentDevice.DeviceGroup;
-                spinnerDeviceType.SetSelection((int)(currentDevice.Type - 5));
+
+                foreach (var item in spinnerAssoc)
+                    if (item.Value == currentDevice.Type)
+                        spinnerDeviceType.SetSelection(item.Key);
             }
+
+            textGroup.NextFocusDownId = Resource.Id.spinnerDeviceType;
 
 #if !NOGL
             // Only determine graphics when it's not set, because GLSurfaceView/a valid Open GL Context is required
@@ -149,7 +163,7 @@ namespace Home.Service.Android
 #else
             /*if (string.IsNullOrEmpty(currentDevice.Environment.Graphics))
                 currentDevice.Environment.Graphics = "Unknown";*/
-            if (currentDevice.Environment.GraphicCards.Count == 0)
+                if (currentDevice.Environment.GraphicCards.Count == 0)
                 currentDevice.Environment.GraphicCards.Add("Unknown");
 #endif
 
@@ -182,12 +196,7 @@ namespace Home.Service.Android
 
             currentDevice.DeviceGroup = group;
             currentDevice.Location = location;
-            var type = (Device.DeviceType)(spinnerDeviceType.SelectedItemId + 5);
-            currentDevice.Type = type;
-
-            // 0 => Smartphone : 5
-            // 1 => SmartTV    : 6
-            // 2 => SetTopBox  : 7
+            currentDevice.Type = spinnerAssoc[(int)spinnerDeviceType.SelectedItemId];
             Home.Communication.API api = new Home.Communication.API(host);
 
             var registerResult = await api.RegisterDeviceAsync(currentDevice);

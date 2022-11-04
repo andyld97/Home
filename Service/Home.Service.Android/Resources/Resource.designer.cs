@@ -439,8 +439,8 @@ namespace Home.Service.Android
 		public partial class Array
 		{
 			
-			// aapt resource value: 0x7F030000
-			public const int device_type = 2130903040;
+			// aapt resource value: 0x7F030001
+			public const int strDeviceType = 2130903041;
 			
 			static Array()
 			{

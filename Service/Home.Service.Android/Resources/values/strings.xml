@@ -14,10 +14,11 @@
 	<string name="strServiceInActiveText">Home.Service.Android is not active!</string>
 	<string name="strDeviceRegisteredText">The Device {0} is registered!</string>
 	<string name="strDeviceNotRegisteredText">The Device {0} is not registered!</string>
-	<string-array name="device_type">
+	<string-array name="strDeviceType">
 		<item>Smartphone</item>
 		<item>SmartTV</item>
 		<item>SetTopBox</item>
 		<item>Tablet</item>
+		<item>AndroidTVStick</item>
 	</string-array>
 </resources>

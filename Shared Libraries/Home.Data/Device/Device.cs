@@ -316,7 +316,8 @@ namespace Home.Model
             SmartTV,
             SetTopBox,
             Tablet,
-            VirtualMachine
+            VirtualMachine,
+            AndroidTVStick
         }
 
         public enum OSType
@@ -367,6 +368,7 @@ namespace Home.Model
                 case DeviceType.Smartphone: image = "smartphone"; break;
                 case DeviceType.SmartTV: image = "smarttv"; break;
                 case DeviceType.SetTopBox: image = "settopbox"; break;
+                case DeviceType.AndroidTVStick: image = "androidtvstick"; break;
                 case DeviceType.MiniPC:
                 case DeviceType.Server:
                 case DeviceType.Desktop:

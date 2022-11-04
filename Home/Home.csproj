@@ -32,6 +32,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="resources\icons\devices\androidtvstick.png" />
     <None Remove="resources\icons\menu\about.png" />
     <None Remove="resources\icons\menu\exit.png" />
     <None Remove="resources\icons\menu\report.png" />
@@ -55,7 +56,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Web.WebView2">
-      <Version>1.0.1414-prerelease</Version>
+      <Version>1.0.1418.22</Version>
     </PackageReference>
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.6.0-preview3.19128.7" />
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.346202">
@@ -159,6 +160,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resources\icons\devices\androidtvstick.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="resources\icons\menu\about.png" />
