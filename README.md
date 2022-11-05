@@ -6,8 +6,7 @@ will be setuped with the appropriate `ACK`-service (this service also starts on 
 To get this working you need to setup `Home.API` as a self-hosted API on your local server/or in the internet (not recommended)
 
 ## Exemplary setup:
-
-![ack](https://user-images.githubusercontent.com/10423894/173809046-37eaddea-b106-40d7-ac3a-661642a3a2f8.png)
+![ack](https://user-images.githubusercontent.com/10423894/200111760-793ac13f-bc9d-4b4d-b002-f55c37ec0750.png)
 
 ## Supported Devices
 - Desktop PC
@@ -15,6 +14,7 @@ To get this working you need to setup `Home.API` as a self-hosted API on your lo
 - Single Board Computers (e.g. Raspberry PI)
 - Smartphones
 - Android TVs/Android PCs (Set-Top-Box)
+- Android TV Sticks
 
 ## Supported operating systems
 | OS                    | Supported?      | Service                  | .NET                                | Information                                                   |
@@ -22,8 +22,8 @@ To get this working you need to setup `Home.API` as a self-hosted API on your lo
 | Windows 9x            | :x:                | -                        | ``.NET Framework 2.0``              | -                                                             |
 | Windows XP            | :heavy_check_mark: | ``Home.Service.Legacy``  | ``.NET Framework 4.0``              | No remote file access!                                               |
 | Windows VISTA         | :heavy_check_mark: | ``Home.Service.Legacy``  | ``.NET Framework 4.0``              | No remote file access!                                        |
-| Windows 7 SP1         | :heavy_check_mark: | ``Home.Service``         | ``.NET Desktop/ASP.NET Core 6.0.x`` | #LEGACY Compiler-Flag (using WebClient instead of HttpClient) |
-| Windows 8, 8.1, 10/11 | :heavy_check_mark: | ``Home.Service``         | ``.NET Desktop/ASP.NET Core 6.0.x`` | -                                                             |
+| Windows 7 SP1         | :heavy_check_mark: | ``Home.Service.Windows``         | ``.NET Desktop/ASP.NET Core 6.0.x`` | #LEGACY Compiler-Flag (using WebClient instead of HttpClient) |
+| Windows 8, 8.1, 10/11 | :heavy_check_mark: | ``Home.Service.Windows``         | ``.NET Desktop/ASP.NET Core 6.0.x`` | -                                                             |
 | Rasbpian              | :heavy_check_mark: | ``Home.Service.Linux``   | ``.NET Desktop/ASP.NET Core 6.0.x`` | -                                                             |
 | Debian                | :heavy_check_mark: | ``Home.Service.Linux``   | ``.NET Desktop/ASP.NET Core 6.0.x`` | -                                                             |
 | Ubuntu (>= 18.04)     | :heavy_check_mark: | ``Home.Service.Linux``   | ``.NET Desktop/ASP.NET Core 6.0.x`` | -                                                             |
