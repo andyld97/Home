@@ -246,7 +246,7 @@ namespace Home.API.Controllers
             if (message == null)
                 return BadRequest(AnswerExtensions.Fail("Invalid device data!"));
 
-            var device = await _context.Device.Include(d => d.DeviceLog).Include(d => d.DeviceMessage).Where(p => p.Guid == message.DeviceID).FirstOrDefaultAsync();
+            var device = await _context.GetDeviceByIdAsync(message.DeviceID); // .Device.Include(d => d.DeviceLog).Include(d => d.DeviceMessage).Where(p => p.Guid == message.DeviceID).FirstOrDefaultAsync();
             if (device == null)
                 return BadRequest(AnswerExtensions.Fail("Device doesn't exists!"));                
 
@@ -314,7 +314,6 @@ namespace Home.API.Controllers
                 
                 // ToDo: *** Remove all other related entries from other tables
                 await _context.SaveChangesAsync();
-
                 return Ok(AnswerExtensions.Success("ok"));
             }
             else
@@ -328,7 +327,7 @@ namespace Home.API.Controllers
                 return BadRequest(AnswerExtensions.Fail("Invalid device data!"));
 
             // Check if this devices exists
-            home.Models.Device device = await _context.Device.Include(d => d.DeviceCommand).Include(d => d.DeviceLog).Where(p => p.Guid == command.DeviceID).FirstOrDefaultAsync();
+            home.Models.Device device = await _context.GetDeviceByIdAsync(command.DeviceID); // Include(d => d.DeviceCommand).Include(d => d.DeviceLog).Where(p => p.Guid == command.DeviceID).FirstOrDefaultAsync();
 
             if (device == null)
                 return BadRequest(AnswerExtensions.Fail("Device doesn't exists!"));

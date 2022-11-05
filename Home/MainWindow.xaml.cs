@@ -361,7 +361,9 @@ namespace Home
                             {
                                 oldDevice.Status = @event.EventData.EventDevice.Status;
 
-                                // ToDo: *** Refresh gui
+                                // Refresh gui
+                                await RefreshSelectedItem();
+                                RefreshDeviceHolder();
                             }
                         }
                     }
