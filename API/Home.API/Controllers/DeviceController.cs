@@ -38,7 +38,6 @@ namespace Home.API.Controllers
             _context = homeContext;
         }
 
-
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
@@ -50,7 +49,6 @@ namespace Home.API.Controllers
 
             return Ok(devicesList);
         }
-
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] Device device)
@@ -148,6 +146,13 @@ namespace Home.API.Controllers
                     if (currentDevice.ServiceClientVersion != requestedDevice.ServiceClientVersion && !string.IsNullOrEmpty(currentDevice.ServiceClientVersion))
                     {
                         var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"Device \"{requestedDevice.Name}\" detected new client version: {requestedDevice.ServiceClientVersion}", LogEntry.LogLevel.Information, true);
+                        await _context.DeviceLog.AddAsync(logEntry);
+                    }
+
+                    // Check if os version changed
+                    if (currentDevice.Environment.Osversion != requestedDevice.Environment.OSVersion && !string.IsNullOrEmpty(currentDevice.Environment.Osversion))
+                    {
+                        var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"Device \"{requestedDevice.Name}\" detected new os version: {requestedDevice.Environment.OSVersion}", LogEntry.LogLevel.Information, true);
                         await _context.DeviceLog.AddAsync(logEntry);
                     }
                     // Detect any device changes and log them (also to Telegram)

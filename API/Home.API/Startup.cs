@@ -3,11 +3,14 @@ using Home.API.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.Diagnostics.Tracing;
 
 namespace Home.API
 {
@@ -25,6 +28,8 @@ namespace Home.API
         {
             services.AddDbContext<HomeContext>(options => { 
                 options.UseSqlServer(Program.GlobalConfig.ConnectionString);
+                // ToDo: *** Use split queries 
+                options.ConfigureWarnings(x => x.Ignore(RelationalEventId.MultipleCollectionIncludeWarning));
 
 #if DEBUG
                 options.EnableSensitiveDataLogging();
