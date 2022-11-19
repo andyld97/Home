@@ -35,6 +35,8 @@ namespace Home.API.home
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.UseCollation("Latin1_General_CI_AS");
+
             modelBuilder.Entity<Device>(entity =>
             {
                 entity.HasIndex(e => e.EnvironmentId, "IX_Device")

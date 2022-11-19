@@ -67,7 +67,7 @@
          "ObjectType": 0
       }
    ],
-   "UiHint": "NIS-PC\\SQLEXPRESS.home",
+   "UiHint": "sql1.home",
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,
    "UseDbContextSplitting": false,
