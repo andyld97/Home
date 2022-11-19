@@ -365,8 +365,8 @@ namespace Home.API.Controllers
                     ackResult.Result = ack;
 
                     // Reset error in case
-                    if (Program.AckErrorSentAssoc.ContainsKey(requestedDevice))
-                        Program.AckErrorSentAssoc[requestedDevice] = false;
+                    if (Program.AckErrorSentAssoc.ContainsKey(requestedDevice.ID))
+                        Program.AckErrorSentAssoc[requestedDevice.ID] = false;
 
                     return Ok(AnswerExtensions.Success(ackResult));
                 }
@@ -380,23 +380,23 @@ namespace Home.API.Controllers
                 _logger.LogError(ex.Message);
 
                 bool send = false;
-                if (!Program.AckErrorSentAssoc.ContainsKey(requestedDevice))
+                if (!Program.AckErrorSentAssoc.ContainsKey(requestedDevice.ID))
                 {
-                    Program.AckErrorSentAssoc.Add(requestedDevice, true);
+                    Program.AckErrorSentAssoc.Add(requestedDevice.ID, true);
                     send = true;
                 }
                 else
                 {
-                    if (!Program.AckErrorSentAssoc[requestedDevice])
+                    if (!Program.AckErrorSentAssoc[requestedDevice.ID])
                     {
-                        Program.AckErrorSentAssoc[requestedDevice] = true;
+                        Program.AckErrorSentAssoc[requestedDevice.ID] = true;
                         send = true;
                     }
                 }
 
                 // Send a notification once
                 if (send && Program.GlobalConfig.UseWebHook)
-                    await WebHook.NotifyWebHookAsync(Program.GlobalConfig.WebHookUrl, $"ACK-ERROR OCCURED: {ex.ToString()}");
+                    await WebHook.NotifyWebHookAsync(Program.GlobalConfig.WebHookUrl, $"ACK-ERROR [{requestedDevice.Name}] OCCURED: {ex.ToString()}");
 
                 return BadRequest(new Answer<AckResult>("fail", new AckResult(AckResult.Ack.Invalid)) { ErrorMessage = ex.ToString() });
             }

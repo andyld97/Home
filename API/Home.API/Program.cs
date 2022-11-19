@@ -28,7 +28,7 @@ namespace Home.API
         public readonly static List<EventQueue> EventQueues = new List<EventQueue>();
         public readonly static List<Client> Clients = new List<Client>();
         public readonly static Dictionary<Client, List<string>> LiveModeAssoc = new Dictionary<Client, List<string>>();
-        public readonly static Dictionary<Device, bool> AckErrorSentAssoc = new Dictionary<Device, bool>();
+        public readonly static Dictionary<string, bool> AckErrorSentAssoc = new Dictionary<string, bool>();
         public static ConcurrentQueue<string> WebHookLogging = new ConcurrentQueue<string>();
 
         public static Config GlobalConfig;

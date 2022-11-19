@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Identity.Client.Extensions.Msal;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -25,10 +26,36 @@ namespace Home.API.Services
         private readonly ILogger<HealthCheckService> _logger;
         private IServiceScopeFactory serviceProvider;
 
+        private int hour = -1;
+
         public HealthCheckService(ILogger<HealthCheckService> logger, IServiceScopeFactory serviceProvider)
         {
             _logger = logger;
             this.serviceProvider = serviceProvider;
+        }
+
+        /// <summary>
+        /// Currently each hour will resets this, so in the worst case you will get a notication every hour (still better than each time the service runs)
+        /// ACK Errors gets LOGGED only ONCE per DEVICE. So if there is a an ack error you have to handle it,
+        /// but mostly such an error don't occur for only one device, but rather for all devices (e.g. if the db connection is lost)
+        /// </summary>
+        /// <returns>true if the webhook should be notified</returns>
+        private bool ShouldNotifyWebHook()
+        {
+            bool shouldLog = false;
+            int h = DateTime.Now.Hour;
+            if (hour == -1)
+            {
+                shouldLog = true;
+                hour = h;
+            }
+            else if (hour != h)
+            {
+                hour = h;
+                shouldLog = true;
+            }
+
+            return shouldLog;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -73,7 +100,8 @@ namespace Home.API.Services
                 // This is all be done in one loop to prevent multiple db calls
                 try
                 {
-                    var devices = await homeContext.Device.Include(p => p.DeviceLog).Include(s => s.DeviceScreenshot).Include(p => p.DeviceWarning).ToListAsync();
+                    // [INFO]: We have to include all tables here to ensure that the event queues can be notified (device conversation)
+                    var devices = await homeContext.GetAllDevicesAsync(false);
 
                     ParallelOptions parallelOptions = new ParallelOptions()
                     {
@@ -101,7 +129,10 @@ namespace Home.API.Services
                 }
                 catch (Exception ex)
                 {
-                    await WebHook.NotifyWebHookAsync(Program.GlobalConfig.WebHookUrl, $"CRICTIAL EXCEPTION from Background Service: {ex.ToString()}");
+                    _logger.LogError($"Critical Exception from HealthCheck-Service: {ex.ToString()}");
+
+                    if (ShouldNotifyWebHook())
+                        await WebHook.NotifyWebHookAsync(Program.GlobalConfig.WebHookUrl, $"CRICTIAL EXCEPTION from Background Service: {ex.ToString()}");
                 }
  
                 if (Program.GlobalConfig.UseWebHook)
@@ -122,7 +153,10 @@ namespace Home.API.Services
                 }
                 catch (Exception ex)
                 {
-                    await WebHook.NotifyWebHookAsync(Program.GlobalConfig.WebHookUrl, $"CRICTIAL EXCEPTION from Background Service: {ex.ToString()}");
+                    _logger.LogError($"Critical Exception from HealthCheck-Service (while saving): {ex.Message}");
+
+                    if (ShouldNotifyWebHook())
+                        await WebHook.NotifyWebHookAsync(Program.GlobalConfig.WebHookUrl, $"CRICTIAL EXCEPTION from Background Service: {ex.ToString()}");
                     return;
                 }
             }
@@ -138,7 +172,7 @@ namespace Home.API.Services
 
                 // If a device turns offline, usually the user wants to end the live state if the device is shutdown for example
                 device.IsLive = false;
-                bool notifyWebHook = (device.DeviceType.TypeId != (int)Home.Model.Device.DeviceType.Smartphone) && (device.DeviceType.TypeId == (int)Home.Model.Device.DeviceType.SingleBoardDevice || device.DeviceType.TypeId == (int)Home.Model.Device.DeviceType.Server);
+                bool notifyWebHook = (device.DeviceTypeId != (int)Home.Model.Device.DeviceType.Smartphone) && (device.DeviceTypeId == (int)Home.Model.Device.DeviceType.SingleBoardDevice || device.DeviceTypeId == (int)Home.Model.Device.DeviceType.Server);
                 var logEntry = ModelConverter.CreateLogEntry(device, $"No activity detected ... Device \"{device.Name}\" was flagged as offline!", LogEntry.LogLevel.Information, notifyWebHook);
                 await homeContext.DeviceLog.AddAsync(logEntry);
 
@@ -208,7 +242,9 @@ namespace Home.API.Services
         {
             // Battery Warnings
             var batteryWarning = device.DeviceWarning.Where(w => w.WarningType == (int)WarningType.BatteryWarning).FirstOrDefault();
-            if (batteryWarning != null && ModelConverter.ConvertBatteryWarning(batteryWarning).CanBeRemoved(ModelConverter.ConvertDevice(device), Program.GlobalConfig.BatteryWarningPercentage))
+
+            // If Battery Warning is not empty but the device has no battery, also remove the warning
+            if ((batteryWarning != null && device.Environment.Battery == null) || (batteryWarning != null && GeneralHelper.ConvertNullableValue(device.Environment.Battery.Percentage, out int per) && ModelConverter.ConvertBatteryWarning(batteryWarning).CanBeRemoved(per, Program.GlobalConfig.BatteryWarningPercentage)))
             {
                 batteryWarning.Device = null;
                 homeContext.DeviceWarning.Remove(batteryWarning);
@@ -227,11 +263,24 @@ namespace Home.API.Services
                     if (associatedDisk == null)
                         continue;
 
-                    if (warning.Item1.CanBeRemoved(ModelConverter.ConvertDisk(associatedDisk), Program.GlobalConfig.StorageWarningPercentage))
+                    bool remove = false;
+                    try
+                    {
+                        if (warning.Item1.CanBeRemoved(ModelConverter.ConvertDisk(associatedDisk), Program.GlobalConfig.StorageWarningPercentage))
+                            remove = true;
+                    }
+                    catch (ArgumentException)
+                    {
+                        // CHECK IF THE DISK FOR THE STORAGE WARNING STILL EXISTS, OTHERWISE REMOVE THE WARNING
+                        // So, ArgumentException will be thrown if the disk is not existent anymore, so the warning can be removed
+                        remove = true;
+                    }
+
+                    if (remove)
                     {
                         // Add log entry
-                        toRemove.Add(warning.p);
-                        var logEntry = ModelConverter.CreateLogEntry(device, $"[Storage Warning]: Removed for DISK \"{associatedDisk}\"", LogEntry.LogLevel.Information, true);
+                        toRemove.Add(warning.p);                                               
+                        var logEntry = ModelConverter.CreateLogEntry(device, $"[Storage Warning]: Removed for DISK \"{associatedDisk.DriveName}\"", LogEntry.LogLevel.Information, true);
                         await homeContext.DeviceLog.AddAsync(logEntry);
                         ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
                     }

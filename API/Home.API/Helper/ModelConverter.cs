@@ -216,7 +216,7 @@ namespace Home.API.Helper
             if (device.Environment.Battery != null)
                 result.BatteryInfo = new Battery() { IsCharging = device.Environment.Battery.IsCharging, BatteryLevelInPercent = (int)device.Environment.Battery.Percentage };
             result.OS = (OSType)device.OstypeNavigation.OstypeId;
-            result.Type = (Device.DeviceType)device.DeviceType.TypeId;
+            result.Type = (Device.DeviceType)device.DeviceTypeId;
             result.ID = device.Guid;
             result.Name = device.Name;
 

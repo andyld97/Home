@@ -1109,7 +1109,12 @@ namespace Home.Model
             if (param.BatteryInfo.IsCharging)
                 return true;
 
-            return param.BatteryInfo.BatteryLevelInPercent > percentage;
+            return CanBeRemoved(param.BatteryInfo.BatteryLevelInPercent, percentage);
+        }
+
+        public bool CanBeRemoved(int devicePercentage, int percentage)
+        {
+            return devicePercentage > percentage;
         }
 
         /// <summary>
