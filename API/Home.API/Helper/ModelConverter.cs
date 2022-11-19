@@ -21,84 +21,85 @@ namespace Home.API.Helper
 {
     public static class ModelConverter
     {
-        public static home.Models.Device UpdateDevice(ILogger logger, HomeContext homeContext, home.Models.Device dbDevice, Device device, DeviceStatus status, DateTime now)
+        public static home.Models.Device UpdateDevice(ILogger logger, HomeContext homeContext, home.Models.Device updateDevice, Device device, DeviceStatus status, DateTime now)
         {
             // Log: must not be added from device to dbDevice, because device itself won't log
             // Usage will be added to dbDevice in AckController so no need to add usage here
 
-            dbDevice.Guid = device.ID;
-            dbDevice.DeviceGroup = device.DeviceGroup;
-            dbDevice.IsLive = device.IsLive;
-            dbDevice.DeviceTypeId = (int)device.Type;
-            dbDevice.Name = device.Name;
-            dbDevice.Ostype = (int)device.OS;
-            dbDevice.ServiceClientVersion = device.ServiceClientVersion;
-            dbDevice.Location = device.Location;
-            dbDevice.IsScreenshotRequired = device.IsScreenshotRequired;
-            dbDevice.Ip = device.IP;
-            dbDevice.Status = (status == DeviceStatus.Active);  // nullable, when Inactive?
-            dbDevice.LastSeen = device.LastSeen;
+            updateDevice.Guid = device.ID;
+            updateDevice.DeviceGroup = device.DeviceGroup;
+            updateDevice.IsLive = device.IsLive;
+            updateDevice.DeviceTypeId = (int)device.Type;
+            updateDevice.Name = device.Name;
+            updateDevice.Ostype = (int)device.OS;
+            updateDevice.ServiceClientVersion = device.ServiceClientVersion;
+            updateDevice.Location = device.Location;
+            updateDevice.IsScreenshotRequired = device.IsScreenshotRequired;
+            updateDevice.Ip = device.IP;
+            updateDevice.Status = (status == DeviceStatus.Active);  // nullable, when Inactive?
+            updateDevice.LastSeen = device.LastSeen;
 
             if (device.LastSeen == DateTime.MinValue)
-                dbDevice.LastSeen = (DateTime)System.Data.SqlTypes.SqlDateTime.MinValue;
+                updateDevice.LastSeen = (DateTime)System.Data.SqlTypes.SqlDateTime.MinValue;
 
-            if (dbDevice.Environment == null)
-                dbDevice.Environment = new home.Models.DeviceEnvironment();
+            if (updateDevice.Environment == null)
+                updateDevice.Environment = new home.Models.DeviceEnvironment();
 
-            dbDevice.Environment.Cpucount = (short)device.Environment.CPUCount;
-            dbDevice.Environment.Cpuname = device.Environment.CPUName;
-            dbDevice.Environment.Cpuusage = device.Environment.CPUUsage;
-            dbDevice.Environment.Description = device.Environment.Description;
-            dbDevice.Environment.DiskUsage = device.Environment.DiskUsage;
-            dbDevice.Environment.DomainName = device.Environment.DomainName;
-            dbDevice.Environment.MachineName = device.Environment.MachineName;
-            dbDevice.Environment.FreeRam = device.Environment.FreeRAM;
-            dbDevice.Environment.TotalRam = device.Environment.TotalRAM;
-            dbDevice.Environment.Is64BitOs = device.Environment.Is64BitOS;
-            dbDevice.Environment.Motherboard = device.Environment.Motherboard;
-            dbDevice.Environment.Osname = device.Environment.OSName;
-            dbDevice.Environment.Osversion = device.Environment.OSVersion;
-            dbDevice.Environment.Product = device.Environment.Product;
-            dbDevice.Environment.RunningTime = device.Environment.RunningTime.Ticks;
-            dbDevice.Environment.StartTimestamp = device.Environment.StartTimestamp;
-            dbDevice.Environment.UserName = device.Environment.UserName;
-            dbDevice.Environment.Vendor = device.Environment.Vendor;
+            updateDevice.Environment.Cpucount = (short)device.Environment.CPUCount;
+            updateDevice.Environment.Cpuname = device.Environment.CPUName;
+            updateDevice.Environment.Cpuusage = device.Environment.CPUUsage;
+            updateDevice.Environment.Description = device.Environment.Description;
+            updateDevice.Environment.DiskUsage = device.Environment.DiskUsage;
+            updateDevice.Environment.DomainName = device.Environment.DomainName;
+            updateDevice.Environment.MachineName = device.Environment.MachineName;
+            updateDevice.Environment.FreeRam = device.Environment.FreeRAM;
+            updateDevice.Environment.TotalRam = device.Environment.TotalRAM;
+            updateDevice.Environment.Is64BitOs = device.Environment.Is64BitOS;
+            updateDevice.Environment.Motherboard = device.Environment.Motherboard;
+            updateDevice.Environment.Osname = device.Environment.OSName;
+            updateDevice.Environment.Osversion = device.Environment.OSVersion;
+            updateDevice.Environment.Product = device.Environment.Product;
+            updateDevice.Environment.RunningTime = device.Environment.RunningTime.Ticks;
+            updateDevice.Environment.StartTimestamp = device.Environment.StartTimestamp;
+            updateDevice.Environment.UserName = device.Environment.UserName;
+            updateDevice.Environment.Vendor = device.Environment.Vendor;
 
             if (device.BatteryInfo != null)
             {
-                if (dbDevice.Environment.Battery == null)
-                    dbDevice.Environment.Battery = new DeviceBattery();
+                if (updateDevice.Environment.Battery == null)
+                    updateDevice.Environment.Battery = new DeviceBattery();
 
-                dbDevice.Environment.Battery.IsCharging = device.BatteryInfo.IsCharging;
-                dbDevice.Environment.Battery.Percentage = device.BatteryInfo.BatteryLevelInPercent;
+                updateDevice.Environment.Battery.IsCharging = device.BatteryInfo.IsCharging;
+                updateDevice.Environment.Battery.Percentage = device.BatteryInfo.BatteryLevelInPercent;
             }
 
             foreach (var disk in device.DiskDrives)
             {
-                if (dbDevice.DeviceDiskDrive.Any(p => p.Guid == disk.UniqueID))
+                if (updateDevice.DeviceDiskDrive.Any(p => p.Guid == disk.UniqueID))
                 {
                     // Just update disk
-                    var diskToUpdate = dbDevice.DeviceDiskDrive.FirstOrDefault(d => d.Guid == disk.UniqueID);
+                    var diskToUpdate = updateDevice.DeviceDiskDrive.FirstOrDefault(d => d.Guid == disk.UniqueID);
                     ConvertDisk(diskToUpdate, disk);
                 }
                 else
                 {
                     // Add disk
                     var dbDisk = new DeviceDiskDrive();
-                    dbDisk.Device = dbDevice;
-                    dbDevice.DeviceDiskDrive.Add(ConvertDisk(dbDisk, disk));
+                    dbDisk.Device = updateDevice;
+                    updateDevice.DeviceDiskDrive.Add(ConvertDisk(dbDisk, disk));
                 }
             }
 
             // Remove all non (anymore) existent disks
-            foreach (var disk in dbDevice.DeviceDiskDrive)
+            foreach (var disk in updateDevice.DeviceDiskDrive)
             {
                 if (!device.DiskDrives.Any(d => d.UniqueID == disk.Guid))
                 {
                     disk.Device = null;
                     // ToDo: *** Also notify webhook (using device log)
-                    logger.LogWarning($"Removed disk {disk.DiskName} from Device {dbDevice.Name} ...");
-                    dbDevice.DeviceDiskDrive.Remove(disk);
+                    logger.LogWarning($"Removed disk {disk.DiskName} from Device {updateDevice.Name} ...");
+                    // updateDevice.DeviceDiskDrive.Remove(disk);
+                    homeContext.DeviceDiskDrive.Remove(disk);
                 }
             }
 
@@ -106,9 +107,9 @@ namespace Home.API.Helper
             {
                 if (DateTime.TryParseExact(screenshot, Consts.SCREENSHOT_DATE_FILE_FORMAT, System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None, out DateTime dt))
                 {
-                    dbDevice.DeviceScreenshot.Add(new DeviceScreenshot()
+                    updateDevice.DeviceScreenshot.Add(new DeviceScreenshot()
                     {
-                        Device = dbDevice,
+                        Device = updateDevice,
                         ScreenshotFileName = screenshot,
                         Timestamp = dt
                     });
@@ -116,12 +117,12 @@ namespace Home.API.Helper
             }
 
             // Remove all cards which do not belong to this device anymore
-            foreach (var graphic in dbDevice.DeviceGraphic)
+            foreach (var graphic in updateDevice.DeviceGraphic)
             {
                 if (device.Environment.Graphics != graphic.Name && !device.Environment.GraphicCards.Contains(graphic.Name))
                 {
                     // ToDo: *** Also notify webhook (using device log)
-                    logger.LogWarning($"Removed graphics card {graphic.Name} from Device {dbDevice.Name} ...");
+                    logger.LogWarning($"Removed graphics card {graphic.Name} from Device {updateDevice.Name} ...");
                     homeContext.DeviceGraphic.Remove(graphic);
                 }
             }
@@ -131,11 +132,11 @@ namespace Home.API.Helper
                 if (graphic == null)
                     continue;
 
-                if (!dbDevice.DeviceGraphic.Any(x => x.Name == graphic))
-                    dbDevice.DeviceGraphic.Add(new DeviceGraphic() { Device = dbDevice, Name = graphic });            
+                if (!updateDevice.DeviceGraphic.Any(x => x.Name == graphic))
+                    updateDevice.DeviceGraphic.Add(new DeviceGraphic() { Device = updateDevice, Name = graphic });            
             }
 
-            return dbDevice;
+            return updateDevice;
         }
 
         public static home.Models.Device ConvertDevice(this HomeContext context, ILogger logger, Device device)

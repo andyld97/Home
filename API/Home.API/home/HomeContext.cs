@@ -123,6 +123,9 @@ namespace Home.API.home
                 entity.HasKey(e => e.DiskDriveId)
                     .HasName("PK_DiskDriveId");
 
+                entity.HasIndex(e => e.Guid, "IX_DeviceDiskDrive")
+                    .IsUnique();
+
                 entity.Property(e => e.DeviceId).HasColumnName("DeviceID");
 
                 entity.Property(e => e.DiskInterface).HasColumnType("text");

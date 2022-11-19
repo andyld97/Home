@@ -98,13 +98,6 @@ namespace Home.API.Services
                         // Ensure that the device log doesn't blow up
                         await TruncateDeviceLogAsync(homeContext, device);
                     });
-
- 
-                    /**
-                    foreach (var device in devices)
-                    {
-                      
-                    }*/
                 }
                 catch (Exception ex)
                 {
