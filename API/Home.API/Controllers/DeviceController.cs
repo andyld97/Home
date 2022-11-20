@@ -201,6 +201,18 @@ namespace Home.API.Controllers
                             }
                         }
                     }
+                    else
+                    {
+                        // Count is equal, but in case the device have only one card (which is mostly the case), this one card could be changed
+                        foreach (var card in requestedDevice.Environment.GraphicCards)
+                        {
+                            if (currentDevice.DeviceGraphic.Any(gc => gc.Name == card))
+                                continue;
+
+                            var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"Device \"{requestedDevice.Name}\" detected Graphics change(s) ({card})", LogEntry.LogLevel.Information, true);
+                            await _context.DeviceLog.AddAsync(logEntry);
+                        }
+                    }
 
                     // RAM
                     if (currentDevice.Environment.TotalRam != requestedDevice.Environment.TotalRAM && requestedDevice.Environment.TotalRAM > 0)
