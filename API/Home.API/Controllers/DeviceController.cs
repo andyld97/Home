@@ -152,7 +152,7 @@ namespace Home.API.Controllers
                     // Check if os version changed
                     if (currentDevice.Environment.Osversion != requestedDevice.Environment.OSVersion && !string.IsNullOrEmpty(currentDevice.Environment.Osversion))
                     {
-                        var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"Device \"{requestedDevice.Name}\" detected new os version: {requestedDevice.Environment.OSVersion}", LogEntry.LogLevel.Information, true);
+                        var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"Device \"{requestedDevice.Name}\" detected new os version: {requestedDevice.Environment.OSVersion} (Old version: {currentDevice.Environment.Osversion}", LogEntry.LogLevel.Information, true);
                         await _context.DeviceLog.AddAsync(logEntry);
                     }
                     // Detect any device changes and log them (also to Telegram)
