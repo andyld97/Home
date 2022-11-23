@@ -108,7 +108,7 @@ namespace Home.API.home
             {
                 entity.Property(e => e.Executable).HasColumnType("text");
 
-                entity.Property(e => e.Paramter).HasColumnType("text");
+                entity.Property(e => e.Parameter).HasColumnType("text");
 
                 entity.Property(e => e.Timestamp).HasColumnType("datetime");
 

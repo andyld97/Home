@@ -10,7 +10,7 @@ namespace Home.API.home.Models
         public int DeviceCommandId { get; set; }
         public int? DeviceId { get; set; }
         public string Executable { get; set; }
-        public string Paramter { get; set; }
+        public string Parameter { get; set; }
         public DateTime Timestamp { get; set; }
         public bool IsExceuted { get; set; }
 

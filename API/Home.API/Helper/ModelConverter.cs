@@ -359,7 +359,7 @@ namespace Home.API.Helper
             {
                 DeviceID = deviceCommand.Device.Guid,
                 Executable = deviceCommand.Executable,
-                Parameter = deviceCommand.Paramter,
+                Parameter = deviceCommand.Parameter,
             };
         }
 

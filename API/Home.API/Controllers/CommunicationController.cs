@@ -333,7 +333,7 @@ namespace Home.API.Controllers
                 return BadRequest(AnswerExtensions.Fail("Device doesn't exists!"));
 
             _logger.LogInformation($"Sent command to {device.Name}: {command}");
-            device.DeviceCommand.Add(new home.Models.DeviceCommand() { Executable = command.Executable, IsExceuted = false, Paramter = command.Parameter, Timestamp = DateTime.Now });
+            device.DeviceCommand.Add(new home.Models.DeviceCommand() { Executable = command.Executable, IsExceuted = false, Parameter = command.Parameter, Timestamp = DateTime.Now });
             await _context.DeviceLog.AddAsync(ModelConverter.CreateLogEntry(device, $"Recieved command: {command}", LogEntry.LogLevel.Information, false));
 
             ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
