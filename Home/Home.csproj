@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net7.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
     <SccProjectName></SccProjectName>
     <SccLocalPath></SccLocalPath>
@@ -187,12 +187,12 @@
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.de.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-	  <LogicalName>Properties.Resources.de.resources</LogicalName>
+	  <!--<LogicalName>Properties.Resources.de.resources</LogicalName>-->
     </EmbeddedResource>
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-	  <LogicalName>Properties.Resources.resources</LogicalName>
+	  <!--<LogicalName>Properties.Resources.resources</LogicalName>-->
     </EmbeddedResource>
   </ItemGroup>
 </Project>

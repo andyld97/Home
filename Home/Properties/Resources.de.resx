@@ -394,7 +394,7 @@
     <value>Home.Client-Version</value>
   </data>
   <data name="strReport_IPAddress" xml:space="preserve">
-    <value>IP-Addresse</value>
+    <value>IP-Adresse</value>
   </data>
   <data name="strReport_IsCharging" xml:space="preserve">
     <value>Wird geladen</value>

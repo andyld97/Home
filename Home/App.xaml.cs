@@ -28,7 +28,7 @@ namespace Home
 
             // Ensure tooltips doesn't dissapear
             // Maybe this can be removed (because the bug should already be fixed in .NET Core 6.0.5)
-            ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(Int32.MaxValue));
+            //ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(Int32.MaxValue));
             base.OnStartup(e);
         }
 

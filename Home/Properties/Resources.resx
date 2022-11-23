@@ -421,7 +421,7 @@
     <value>Group</value>
   </data>
   <data name="strReport_IPAddress" xml:space="preserve">
-    <value>IP address</value>
+    <value>IP-Address</value>
   </data>
   <data name="strReport_HomeClientVersion" xml:space="preserve">
     <value>Home.Client-Version</value>
