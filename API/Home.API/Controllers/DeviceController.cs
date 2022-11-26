@@ -133,7 +133,7 @@ namespace Home.API.Controllers
                 string oldCards = string.Join(Environment.NewLine, currentDevice.DeviceGraphic.Select(p => p.Name));
                 string newCards = string.Join(Environment.NewLine, requestedDevice.Environment.GraphicCards);
 
-                var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"Device \"{requestedDevice.Name}\" detected graphics change:\n\nOld cards: {oldCards}\n\nNew cards: {newCards}", LogEntry.LogLevel.Information, true);
+                var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"Device \"{requestedDevice.Name}\" detected graphics change:\n\nOld card(s):\n {oldCards}\n\nNew card(s):\n {newCards}", LogEntry.LogLevel.Information, true);
                 await _context.DeviceLog.AddAsync(logEntry);
             }
         }
