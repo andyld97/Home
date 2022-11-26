@@ -102,6 +102,42 @@ namespace Home.API.Controllers
             return string.Join("|", values);
         }
 
+        private async Task NotifyWebhookGraphicsChange(home.Models.Device currentDevice, Device requestedDevice)
+        {
+            bool log = false;
+            if (currentDevice.DeviceGraphic.Count != requestedDevice.Environment.GraphicCards.Count)
+            {
+                if (requestedDevice.Environment.GraphicCards.Count == 0 && !string.IsNullOrEmpty(requestedDevice.Environment.Graphics))
+                {
+                    // ignore
+                    log = false;
+                }
+                else
+                    log = true;
+            }
+            else
+            {
+                // Count is equal, but in case the device have only one card (which is mostly the case), this one card could be changed
+                foreach (var card in requestedDevice.Environment.GraphicCards)
+                {
+                    if (currentDevice.DeviceGraphic.Any(gc => gc.Name == card))
+                        continue;
+
+                    log = true;
+                    break;
+                }
+            }
+
+            if (log)
+            {
+                string oldCards = string.Join(Environment.NewLine, currentDevice.DeviceGraphic.Select(p => p.Name));
+                string newCards = string.Join(Environment.NewLine, requestedDevice.Environment.GraphicCards);
+
+                var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"Device \"{requestedDevice.Name}\" detected graphics change:\n\nOld cards: {oldCards}\n\nNew cards: {newCards}", LogEntry.LogLevel.Information, true);
+                await _context.DeviceLog.AddAsync(logEntry);
+            }
+        }
+
         [HttpPost("ack")]
         public async Task<IActionResult> AckAsnyc([FromBody] Home.Model.Device requestedDevice)
         {
@@ -184,35 +220,7 @@ namespace Home.API.Controllers
                     }
 
                     // Graphics
-                    //if (oldDevice.Envoirnment.Graphics != refreshedDevice.Envoirnment.Graphics && !string.IsNullOrEmpty(refreshedDevice.Envoirnment.Graphics))
-                    //    oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected Graphics change from {oldDevice.Envoirnment.Graphics} to {refreshedDevice.Envoirnment.Graphics}", LogEntry.LogLevel.Information, true));
-                    if (currentDevice.DeviceGraphic.Count != requestedDevice.Environment.GraphicCards.Count)
-                    {
-                        if (requestedDevice.Environment.GraphicCards.Count == 0 && !string.IsNullOrEmpty(requestedDevice.Environment.Graphics))
-                        {
-                            // ignore
-                        }
-                        else
-                        {
-                            foreach (var item in requestedDevice.Environment.GraphicCards)
-                            {
-                                var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"Device \"{requestedDevice.Name}\" detected Graphics change(s) ({item})", LogEntry.LogLevel.Information, true);
-                                await _context.DeviceLog.AddAsync(logEntry);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // Count is equal, but in case the device have only one card (which is mostly the case), this one card could be changed
-                        foreach (var card in requestedDevice.Environment.GraphicCards)
-                        {
-                            if (currentDevice.DeviceGraphic.Any(gc => gc.Name == card))
-                                continue;
-
-                            var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"Device \"{requestedDevice.Name}\" detected Graphics change(s) ({card})", LogEntry.LogLevel.Information, true);
-                            await _context.DeviceLog.AddAsync(logEntry);
-                        }
-                    }
+                    await NotifyWebhookGraphicsChange(currentDevice, requestedDevice);
 
                     // RAM
                     if (currentDevice.Environment.TotalRam != requestedDevice.Environment.TotalRAM && requestedDevice.Environment.TotalRAM > 0)
