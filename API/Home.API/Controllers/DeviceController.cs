@@ -1,6 +1,7 @@
 ﻿using Home.API.Helper;
 using Home.API.home;
 using Home.API.home.Models;
+using Home.API.Services;
 using Home.Data;
 using Home.Data.Com;
 using Home.Data.Events;
@@ -31,17 +32,23 @@ namespace Home.API.Controllers
     {
         private readonly ILogger<DeviceController> _logger;
         private readonly HomeContext _context;
+        private readonly IDeviceAckService _deviceAckService;
 
-        public DeviceController(ILogger<DeviceController> logger, HomeContext homeContext)
+        public DeviceController(ILogger<DeviceController> logger, HomeContext homeContext, IDeviceAckService deviceAckService)
         {
             _logger = logger;
             _context = homeContext;
+            _deviceAckService = deviceAckService;
         }
 
+        /// <summary>
+        /// Gets all devices
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
-            var devices = await ModelConverter.GetAllDevicesAsync(_context, true);
+            var devices = await DeviceHelper.GetAllDevicesAsync(_context, true);
 
             List<Device> devicesList = new List<Device>();
             foreach (var device in devices)
@@ -50,6 +57,11 @@ namespace Home.API.Controllers
             return Ok(devicesList);
         }
 
+        /// <summary>
+        /// Registers a new device in the database
+        /// </summary>
+        /// <param name="device">The device to register</param>
+        /// <returns>OK on success</returns>
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] Device device)
         {
@@ -85,353 +97,35 @@ namespace Home.API.Controllers
             return BadRequest(AnswerExtensions.Fail("Device-Register couldn't be processed!"));
         }
 
-        private string AddUsage(string data, double? usage)
-        {
-            if (usage == null)
-                return data;
-
-            if (string.IsNullOrEmpty(data))
-                return $"{usage}|";
-
-            List<string> values = data.Split(new string[] { "|" }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            if (values.Count + 1 > 60)
-                values.RemoveAt(0);
-
-            values.Add(usage.ToString());
-
-            return string.Join("|", values);
-        }
-
-        private async Task NotifyWebhookGraphicsChange(home.Models.Device currentDevice, Device requestedDevice)
-        {
-            bool log = false;
-            if (currentDevice.DeviceGraphic.Count != requestedDevice.Environment.GraphicCards.Count)
-            {
-                if (requestedDevice.Environment.GraphicCards.Count == 0 && !string.IsNullOrEmpty(requestedDevice.Environment.Graphics))
-                {
-                    // ignore
-                    log = false;
-                }
-                else
-                    log = true;
-            }
-            else
-            {
-                // Count is equal, but in case the device have only one card (which is mostly the case), this one card could be changed
-                foreach (var card in requestedDevice.Environment.GraphicCards)
-                {
-                    if (currentDevice.DeviceGraphic.Any(gc => gc.Name == card))
-                        continue;
-
-                    log = true;
-                    break;
-                }
-            }
-
-            if (log)
-            {
-                string oldCards = string.Join(Environment.NewLine, currentDevice.DeviceGraphic.Select(p => p.Name));
-                string newCards = string.Join(Environment.NewLine, requestedDevice.Environment.GraphicCards);
-
-                var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"Device \"{requestedDevice.Name}\" detected graphics change:\n\nOld card(s):\n {oldCards}\n\nNew card(s):\n {newCards}", LogEntry.LogLevel.Information, true);
-                await _context.DeviceLog.AddAsync(logEntry);
-            }
-        }
-
+        /// <summary>
+        /// Processes an ack sent from a device
+        /// </summary>
+        /// <param name="device">The device which has sent the ack</param>
+        /// <returns>OK on success</returns>
         [HttpPost("ack")]
-        public async Task<IActionResult> AckAsnyc([FromBody] Home.Model.Device requestedDevice)
-        {
-            var now = DateTime.Now;
-
-            if (requestedDevice == null)
+        public async Task<IActionResult> ProcessDeviceAckAsync([FromBody] Home.Model.Device device)
+        {            
+            if (device == null)
                 return BadRequest(AnswerExtensions.Fail("Invalid device given"));
 
-            bool result = false;
-            bool isScreenshotRequired = false;
-            home.Models.DeviceMessage hasMessage = null;
-            home.Models.DeviceCommand hasCommand = null;
+            var result = await _deviceAckService.ProcessDeviceAckAsync(device);
 
-            try
-            {
-                var currentDevice = await ModelConverter.GetDeviceByIdAsync(_context, requestedDevice.ID);
-                if (currentDevice != null)
-                {
-                    // Check if device was previously offline
-                    if (currentDevice.Status == false) // Device.DeviceStatus.Offline)
-                    {
-                        currentDevice.Status = true;
-                        currentDevice.IsScreenshotRequired = true;
-                        currentDevice.LastSeen = now;
-                        requestedDevice.LastSeen = now;
-
-                        // Check for clearing usage stats (if the device was offline for more than one hour)
-                        // Usage is currently not avaiable to configure, because it is fixed to one hour!
-                        if (currentDevice.LastSeen.AddHours(1) < DateTime.Now)
-                            requestedDevice.Usage.Clear();
-
-                        var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"Device \"{currentDevice.Name}\" has recovered and is now online again!", LogEntry.LogLevel.Information, (requestedDevice.Type == Device.DeviceType.SingleBoardDevice || requestedDevice.Type == Device.DeviceType.Server));
-                        await _context.DeviceLog.AddAsync(logEntry);
-                    }
-                    else
-                    {
-                        currentDevice.LastSeen = now;
-                        requestedDevice.LastSeen = now;
-                    }
-
-                    // Check if a newer client version is used
-                    if (currentDevice.ServiceClientVersion != requestedDevice.ServiceClientVersion && !string.IsNullOrEmpty(currentDevice.ServiceClientVersion))
-                    {
-                        var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"Device \"{requestedDevice.Name}\" detected new client version: {requestedDevice.ServiceClientVersion}", LogEntry.LogLevel.Information, true);
-                        await _context.DeviceLog.AddAsync(logEntry);
-                    }
-
-                    // Check if os version changed
-                    if (currentDevice.Environment.Osversion != requestedDevice.Environment.OSVersion && !string.IsNullOrEmpty(currentDevice.Environment.Osversion))
-                    {
-                        var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"Device \"{requestedDevice.Name}\" detected new os version: {requestedDevice.Environment.OSVersion} (Old version: {currentDevice.Environment.Osversion}", LogEntry.LogLevel.Information, true);
-                        await _context.DeviceLog.AddAsync(logEntry);
-                    }
-                    // Detect any device changes and log them (also to Telegram)
-
-                    // CPU
-                    if (currentDevice.Environment.Cpuname != requestedDevice.Environment.CPUName && !string.IsNullOrEmpty(requestedDevice.Environment.CPUName))
-                    {
-                        var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"Device \"{requestedDevice.Name}\" detected CPU change. CPU {currentDevice.Environment.Cpuname} got replaced with {requestedDevice.Environment.CPUName}", LogEntry.LogLevel.Information, true);
-                        await _context.DeviceLog.AddAsync(logEntry);
-                    }
-                    if (currentDevice.Environment.Cpucount != requestedDevice.Environment.CPUCount && requestedDevice.Environment.CPUCount > 0)
-                    {
-                        var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"Device \"{requestedDevice.Name}\" detected CPU-Count change from {currentDevice.Environment.Cpucount} to {requestedDevice.Environment.CPUCount}", LogEntry.LogLevel.Information, true);
-                        await _context.DeviceLog.AddAsync(logEntry);
-                    }
-
-                    // OS (Ignore Windows Updates, just document enum chnages)
-                    if (currentDevice.OstypeNavigation.Name != requestedDevice.OS.ToString())
-                    {
-                        var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"Device \"{requestedDevice.Name}\" detected OS change from {currentDevice.OstypeNavigation.Name} to {requestedDevice.OS}", LogEntry.LogLevel.Information, true);
-                        await _context.DeviceLog.AddAsync(logEntry);
-                    }
-
-                    // Motherboard
-                    if (currentDevice.Environment.Motherboard != requestedDevice.Environment.Motherboard && !string.IsNullOrEmpty(requestedDevice.Environment.Motherboard))
-                    {
-                        var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"Device \"{requestedDevice.Name}\" detected Motherboard change from {currentDevice.Environment.Motherboard} to {requestedDevice.Environment.Motherboard}", LogEntry.LogLevel.Information, true);
-                        await _context.DeviceLog.AddAsync(logEntry);
-                    }
-
-                    // Graphics
-                    await NotifyWebhookGraphicsChange(currentDevice, requestedDevice);
-
-                    // RAM
-                    if (currentDevice.Environment.TotalRam != requestedDevice.Environment.TotalRAM && requestedDevice.Environment.TotalRAM > 0)
-                    {
-                        var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"Device \"{requestedDevice.Name}\" detected RAM change from {currentDevice.Environment.TotalRam} GB to {requestedDevice.Environment.TotalRAM} GB", LogEntry.LogLevel.Information, true);
-                        await _context.DeviceLog.AddAsync(logEntry);
-                    }
-
-                    // IP Change
-                    if (currentDevice.Ip.Replace("/24", string.Empty) != requestedDevice.IP.Replace("/24", string.Empty) && !string.IsNullOrEmpty(requestedDevice.IP))
-                    {
-                        var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"Device \"{requestedDevice.Name}\" detected IP change from {currentDevice.Ip} to {requestedDevice.IP}", LogEntry.LogLevel.Information, true);
-                        await _context.DeviceLog.AddAsync(logEntry);
-                    }
-
-                    isScreenshotRequired = currentDevice.IsScreenshotRequired;
-
-                    // If this device is live, ALWAYS send a screenshot on ack!
-                    if (currentDevice.IsLive.HasValue && currentDevice.IsLive.Value)
-                        isScreenshotRequired = true;
-
-                    // USAGE
-                    // CPU & DISK
-                    if (currentDevice.DeviceUsage == null)
-                        currentDevice.DeviceUsage = new home.Models.DeviceUsage();
-
-                    currentDevice.DeviceUsage.Cpu = AddUsage(currentDevice.DeviceUsage.Cpu, currentDevice.Environment.Cpuusage);
-                    currentDevice.DeviceUsage.Disk = AddUsage(currentDevice.DeviceUsage.Disk, currentDevice.Environment.DiskUsage);
-
-                    // RAM
-                     var ram = currentDevice.Environment.FreeRam.Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
-                    if (ram != null && double.TryParse(ram, out double res))
-                        currentDevice.DeviceUsage.Ram = AddUsage(currentDevice.DeviceUsage.Ram, res);
-
-                    // Battery (if any)
-                    if (currentDevice.Environment.Battery != null)
-                    {
-                        currentDevice.DeviceUsage.Battery = AddUsage(currentDevice.DeviceUsage.Battery, currentDevice.Environment.Battery?.Percentage);
-
-                        // Check for battery warning
-                        if (requestedDevice.BatteryInfo.BatteryLevelInPercent <= Program.GlobalConfig.BatteryWarningPercentage)
-                        {
-                            var batteryWarning = currentDevice.DeviceWarning.Where(p => p.WarningType == (int)WarningType.BatteryWarning).FirstOrDefault();
-                            if (batteryWarning == null)
-                            {
-                                // Create battery warning
-                                var warning = BatteryWarning.Create((int)currentDevice.Environment.Battery.Percentage);
-                                currentDevice.DeviceWarning.Add(new DeviceWarning() { WarningType = (int)Home.Model.WarningType.BatteryWarning, CriticalValue = (int)warning.Value, Timestamp = DateTime.Now });
-                                await _context.DeviceLog.AddAsync(ModelConverter.ConvertLogEntry(currentDevice, warning.ConvertToLogEntry()));
-                            }
-                            else
-                            {
-                                // Update battery warning (no log due to the fact that the warning should be displayed in the gui)
-                                batteryWarning.CriticalValue = (int)currentDevice.Environment.Battery.Percentage;
-                            }
-                        }
-                    }
-
-                    // Update device
-                    ModelConverter.UpdateDevice(_logger, _context, currentDevice, requestedDevice, DeviceStatus.Active, now);
-
-                    if (requestedDevice.DiskDrives.Count > 0)
-                    {
-                        var dds = requestedDevice.DiskDrives.Where(d =>
-                        {
-                            var result = d.IsFull(Program.GlobalConfig.StorageWarningPercentage);
-                            return result.HasValue && result.Value;
-                        }).ToList();
-
-                        // Add storage warning
-                        // But ensure that the warning is only once per device and will be added again if dismissed by the user
-                        if (dds.Count > 0)
-                        {
-                            foreach (var disk in dds)
-                            {
-                                // Check for already existing storage warnings       
-                                bool foundStorageWarning = false;
-                                foreach (var sw in currentDevice.DeviceWarning.Where(p => p.WarningType == (int)WarningType.StorageWarning && !string.IsNullOrEmpty(p.AdditionalInfo)))
-                                {
-                                    string[] entries = sw.AdditionalInfo.Split(new string[] { "|" }, StringSplitOptions.RemoveEmptyEntries);
-
-                                    if (sw.AdditionalInfo.Contains("|") && disk.UniqueID == entries.FirstOrDefault())
-                                    {
-                                        // Refresh this storage warning (if freeSpace changed)                                        
-                                        if (sw.CriticalValue != (long)disk.FreeSpace)
-                                            sw.CriticalValue = (long)disk.FreeSpace;
-
-                                        foundStorageWarning = true;
-                                        break;
-                                    }
-                                }
-
-                                if (!foundStorageWarning)
-                                {
-                                    // Add storage warning
-                                    var warning = StorageWarning.Create(disk.ToString(), disk.UniqueID, disk.FreeSpace);
-                                    currentDevice.DeviceWarning.Add(new DeviceWarning()
-                                    {
-                                        CriticalValue = (long)warning.Value,
-                                        Timestamp = DateTime.Now,
-                                        WarningType = (int)WarningType.StorageWarning,
-                                        AdditionalInfo = $"{disk.UniqueID}|{disk.DiskName}"
-                                    });
-                                    
-                                    var logEntry = ModelConverter.ConvertLogEntry(currentDevice, warning.ConvertToLogEntry());
-                                    await _context.DeviceLog.AddAsync(logEntry);
-                                }
-                            }
-                        }
-                    }
-
-                    if (currentDevice.DeviceMessage.Count != 0)
-                    {
-                        if (currentDevice.DeviceMessage.Any(p => !p.IsRecieved))
-                            hasMessage = currentDevice.DeviceMessage.Where(p => !p.IsRecieved).OrderBy(m => m.Timestamp).FirstOrDefault();
-
-                        if (hasMessage != null)
-                            hasMessage.IsRecieved = true;
-                    }
-
-                    if (hasMessage == null)
-                    {
-                        // Check for commands
-                        if (currentDevice.DeviceCommand.Any(p => !p.IsExceuted))
-                            hasCommand = currentDevice.DeviceCommand.Where(p => !p.IsExceuted).OrderBy(c => c.Timestamp).FirstOrDefault();
-
-                        if (hasCommand != null)
-                            hasCommand.IsExceuted = true;
-                    }
-
-                    result = true;
-                    await _context.SaveChangesAsync();
-
-                    ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.ACK, currentDevice);
-                }
-                else
-                {
-                    // Temporay fix if data is empty again :(
-                    requestedDevice.LastSeen = now;
-                    await _context.Device.AddAsync(ModelConverter.ConvertDevice(_context, _logger, requestedDevice));
-                    await _context.SaveChangesAsync();
-
-                    ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.NewDeviceConnected, requestedDevice);
-                }
-
-                if (result)
-                {
-                    // isScreenshotRequired
-                    AckResult ackResult = new AckResult();
-                    AckResult.Ack ack = AckResult.Ack.OK;
-
-                    if (isScreenshotRequired)
-                        ack |= AckResult.Ack.ScreenshotRequired;
-
-                    if (hasMessage != null)
-                    {
-                        ack |= AckResult.Ack.MessageRecieved;
-                        ackResult.JsonData = JsonConvert.SerializeObject(ModelConverter.ConvertMessage(hasMessage));
-                    }
-
-                    if (hasCommand != null)
-                    {
-                        ack |= AckResult.Ack.CommandRecieved;
-                        ackResult.JsonData = JsonConvert.SerializeObject(ModelConverter.ConvertCommand(hasCommand));
-                    }
-
-                    ackResult.Result = ack;
-
-                    // Reset error in case
-                    if (Program.AckErrorSentAssoc.ContainsKey(requestedDevice.ID))
-                        Program.AckErrorSentAssoc[requestedDevice.ID] = false;
-
-                    return Ok(AnswerExtensions.Success(ackResult));
-                }
-
-                return BadRequest(new Answer<AckResult>("fail", new AckResult(AckResult.Ack.Invalid)) { ErrorMessage = "Device-ACK couldn't be processed. This device was not logged in before!" });
-
-            }
-            catch (Exception ex)
-            {
-                // Only log once for a device
-                _logger.LogError(ex.Message);
-
-                bool send = false;
-                if (!Program.AckErrorSentAssoc.ContainsKey(requestedDevice.ID))
-                {
-                    Program.AckErrorSentAssoc.Add(requestedDevice.ID, true);
-                    send = true;
-                }
-                else
-                {
-                    if (!Program.AckErrorSentAssoc[requestedDevice.ID])
-                    {
-                        Program.AckErrorSentAssoc[requestedDevice.ID] = true;
-                        send = true;
-                    }
-                }
-
-                // Send a notification once
-                if (send && Program.GlobalConfig.UseWebHook)
-                    await WebHook.NotifyWebHookAsync(Program.GlobalConfig.WebHookUrl, $"ACK-ERROR [{requestedDevice.Name}] OCCURED: {ex.ToString()}");
-
-                return BadRequest(new Answer<AckResult>("fail", new AckResult(AckResult.Ack.Invalid)) { ErrorMessage = ex.ToString() });
-            }
+            if (result.Success)
+                return Ok(AnswerExtensions.Success(result.AckResult));
+            else
+                return StatusCode(result.StatusCode, new Answer<AckResult>("fail", new AckResult(AckResult.Ack.Invalid)) { ErrorMessage = result.ErrorMessage });
         }
 
+        /// <summary>
+        /// Processes a screenshot for the given device
+        /// </summary>
+        /// <param name="shot">The screenshot object</param>
+        /// <returns>OK on success</returns>
         [HttpPost("screenshot")]
         public async Task<IActionResult> PostScreenshotAsync([FromBody] Screenshot shot)
         {
             var now = DateTime.Now;
-            string fileName = now.ToString(Consts.SCREENSHOT_DATE_FILE_FORMAT);
+            string fileName = now.ToString(Home.Data.Consts.SCREENSHOT_DATE_FILE_FORMAT);
 
             if (shot == null)
                 return BadRequest(AnswerExtensions.Fail("screenshot is null!"));
@@ -457,7 +151,7 @@ namespace Home.API.Controllers
                     string newPath = System.IO.Path.Combine(clientPath, $"{fileName}.png");
 
                     long bytes = 0;
-                    byte[] buffer = new byte[4096];
+                    byte[] buffer = new byte[Consts.BufferSize];
 
                     using (System.IO.FileStream fs = new FileStream(newPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite))
                     {
@@ -487,7 +181,7 @@ namespace Home.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
+                _logger.LogError($"Failed to post screenshot: {ex}");
                 return BadRequest(AnswerExtensions.Fail(ex.Message));
             }
         }

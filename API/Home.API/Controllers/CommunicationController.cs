@@ -31,8 +31,13 @@ namespace Home.API.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Performs a login for the given client
+        /// </summary>
+        /// <param name="client">Home.WPF App</param>
+        /// <returns>Ok on success</returns>
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] Client client)
+        public async Task<IActionResult> LoginClientAsync([FromBody] Client client)
         {
             if (client == null || !client.IsRealClient)
                 return NotFound(AnswerExtensions.Fail("Invalid client data!"));
@@ -74,8 +79,13 @@ namespace Home.API.Controllers
             return Ok(AnswerExtensions.Success(result));
         }
 
+        /// <summary>
+        /// Performs a logoff for the given client
+        /// </summary>
+        /// <param name="client">Home.WPF App</param>
+        /// <returns>Ok on success</returns>
         [HttpPost("logoff")]
-        public async Task<IActionResult> LogOffAsync([FromBody] Client client)
+        public async Task<IActionResult> LogOffClientAsync([FromBody] Client client)
         {
             if (client == null || !client.IsRealClient)
                 return NotFound(AnswerExtensions.Fail("Invalid client data"));
@@ -143,6 +153,11 @@ namespace Home.API.Controllers
             return Ok(AnswerExtensions.Success("ok"));
         }
 
+        /// <summary>
+        /// Updates the client using the associated event queue
+        /// </summary>
+        /// <param name="client">Home.WPF App</param>
+        /// <returns>Ok on success</returns>
         [HttpPost("update")]
         public IActionResult Update([FromBody] Client client)
         {
@@ -166,6 +181,12 @@ namespace Home.API.Controllers
             return NotFound(AnswerExtensions.Fail("Client not found!"));
         }
 
+        /// <summary>
+        /// Request a screenshot from the given device
+        /// </summary>
+        /// <param name="clientId">Home.WPF App</param>
+        /// <param name="deviceID">Selected device</param>
+        /// <returns>Ok on success</returns>
         [HttpGet("get_screenshot/{clientId}/{deviceId}")]
         public async Task<IActionResult> AskForScreenshotAsync(string clientId, string deviceID)
         {
@@ -198,6 +219,12 @@ namespace Home.API.Controllers
             return Ok(AnswerExtensions.Success(true));
         }
 
+        /// <summary>
+        /// Gets a screenshot for the given device
+        /// </summary>
+        /// <param name="deviceId">The selected device</param>
+        /// <param name="fileName">The screenshot filename</param>
+        /// <returns>Ok on success</returns>
         [HttpGet("recieve_screenshot/{deviceId}/{fileName}")]
         public IActionResult RecieveScreenshot(string deviceId, string fileName)
         {
@@ -221,6 +248,11 @@ namespace Home.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Clears the device log of the given device completely
+        /// </summary>
+        /// <param name="deviceID">The selected device</param>
+        /// <returns>Ok on success</returns>
         [HttpGet("clear_log/{deviceID}")]
         public async Task<IActionResult> ClearDeviceLogAsync(string deviceID)
         {
@@ -240,13 +272,18 @@ namespace Home.API.Controllers
                 return NotFound(AnswerExtensions.Fail("Device not found!"));
         }
 
+        /// <summary>
+        /// Sends a message to the device
+        /// </summary>
+        /// <param name="message">The message to send</param>
+        /// <returns>Ok on success</returns>
         [HttpPost("send_message")]
         public async Task<IActionResult> SendMessageAsync([FromBody] Message message)
         {
             if (message == null)
                 return BadRequest(AnswerExtensions.Fail("Invalid device data!"));
 
-            var device = await _context.GetDeviceByIdAsync(message.DeviceID); // .Device.Include(d => d.DeviceLog).Include(d => d.DeviceMessage).Where(p => p.Guid == message.DeviceID).FirstOrDefaultAsync();
+            var device = await _context.GetDeviceByIdAsync(message.DeviceID);
             if (device == null)
                 return BadRequest(AnswerExtensions.Fail("Device doesn't exists!"));                
 
@@ -268,6 +305,14 @@ namespace Home.API.Controllers
             return Ok(AnswerExtensions.Success("ok"));
         }
 
+        /// <summary>
+        /// Set the live status of the given device<br/>
+        /// "Live" means that the device is asked for a screenshot on every ack
+        /// </summary>
+        /// <param name="clientId">Home.WPF App</param>
+        /// <param name="deviceId">The selected device</param>
+        /// <param name="live">Enable or Disable live status</param>
+        /// <returns>Ok on success</returns>
         [HttpGet("status/{clientId}/{deviceId}/{live:bool}")]
         public async Task<IActionResult> SetLiveStatusAsync(string clientId, string deviceId, bool live)
         {
@@ -303,7 +348,12 @@ namespace Home.API.Controllers
             return Ok(AnswerExtensions.Success("ok"));
         }
 
-        [HttpGet("delete/{guid}")]
+        /// <summary>
+        /// Deletes a device from the database completly
+        /// </summary>
+        /// <param name="guid">The id of the device</param>
+        /// <returns>Ok on success</returns>
+        [HttpDelete("delete/{guid}")]
         public async Task<IActionResult> DeleteDeviceAsync(string guid)
         {
             var device = await _context.Device.Where(p => p.Guid == guid).FirstOrDefaultAsync();
@@ -320,6 +370,11 @@ namespace Home.API.Controllers
                 return BadRequest(AnswerExtensions.Fail("This device doesn't exists!"));
         }
 
+        /// <summary>
+        /// Sends a command to the given device
+        /// </summary>
+        /// <param name="command">The command</param>
+        /// <returns>Ok on succeess</returns>
         [HttpPost("send_command")]
         public async Task<IActionResult> SendCommnadAsync([FromBody] Command command)
         {
@@ -342,9 +397,15 @@ namespace Home.API.Controllers
             return Ok(AnswerExtensions.Success("ok"));
         }
 
+        /// <summary>
+        /// A connection test
+        /// </summary>
+        /// <returns>Ok on success</returns>
         [HttpGet("test")]
         public IActionResult ConnectionTest()
         {
+            // Also ensure that the db connection is working (test)
+            var dummy = _context.Device.Where(d => d.Name == "test").FirstOrDefault();  
             return Ok();
         }
     }

@@ -408,7 +408,7 @@ namespace Home.Communication
             try
             {
                 string url = $"{GenerateEpUrl(true, DELETE)}/{device.ID}";
-                var result = await httpClient.GetAsync(url);
+                var result = await httpClient.DeleteAsync(url);
 
                 var content = await result.Content.ReadAsStringAsync();
                 if (!string.IsNullOrEmpty(content))

@@ -129,10 +129,13 @@ namespace Home.API.Services
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Critical Exception from HealthCheck-Service: {ex.ToString()}");
+                    if (ex is not TaskCanceledException)
+                    {
+                        _logger.LogError($"Critical Exception from HealthCheck-Service: {ex.ToString()}");
 
-                    if (ShouldNotifyWebHook())
-                        await WebHook.NotifyWebHookAsync(Program.GlobalConfig.WebHookUrl, $"CRICTIAL EXCEPTION from Background Service: {ex.ToString()}");
+                        if (ShouldNotifyWebHook())
+                            await WebHook.NotifyWebHookAsync(Program.GlobalConfig.WebHookUrl, $"CRICTIAL EXCEPTION from Background Service: {ex.ToString()}");
+                    }
                 }
  
                 if (Program.GlobalConfig.UseWebHook)
@@ -153,11 +156,13 @@ namespace Home.API.Services
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Critical Exception from HealthCheck-Service (while saving): {ex.Message}");
+                    if (ex is not TaskCanceledException)
+                    {
+                        _logger.LogError($"Critical Exception from HealthCheck-Service (while saving): {ex.Message}");
 
-                    if (ShouldNotifyWebHook())
-                        await WebHook.NotifyWebHookAsync(Program.GlobalConfig.WebHookUrl, $"CRICTIAL EXCEPTION from Background Service: {ex.ToString()}");
-                    return;
+                        if (ShouldNotifyWebHook())
+                            await WebHook.NotifyWebHookAsync(Program.GlobalConfig.WebHookUrl, $"CRICTIAL EXCEPTION from Background Service: {ex.ToString()}");
+                    }
                 }
             }
         }
@@ -248,7 +253,7 @@ namespace Home.API.Services
             {
                 batteryWarning.Device = null;
                 homeContext.DeviceWarning.Remove(batteryWarning);
-                var logEntry = ModelConverter.CreateLogEntry(device, "[Battery Warning]: Removed!", LogEntry.LogLevel.Information, true);
+                var logEntry = ModelConverter.CreateLogEntry(device, $"[Battery Warning]: Removed for device {device.Name}!", LogEntry.LogLevel.Information, true);
                 await homeContext.DeviceLog.AddAsync(logEntry);
             }
 

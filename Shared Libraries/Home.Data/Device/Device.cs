@@ -1028,9 +1028,9 @@ namespace Home.Model
         /// Create a log entry of this warning
         /// </summary>
         /// <returns></returns>
-        public LogEntry ConvertToLogEntry()
+        public LogEntry ConvertToLogEntry(string deviceName)
         {
-            string message = $"[{Name} Warning]: \"{Text}\"";
+            string message = $"[{Name} Warning]: Created for {deviceName} - \"{Text}\"";
             return new LogEntry(WarningOccoured, message, LogEntry.LogLevel.Warning, true);
         }
     }

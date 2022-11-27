@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -16,8 +17,11 @@ namespace Home.Measure.Windows
 
             try
             {
+                // A device can also have multiple ip addresses, e.g. WLAN and LAN,
+                // but it is required to find the "main" ip address (mostly LAN)
+
                 // Get a list of all network interfaces (usually one per network card, dialup, and VPN connection)
-                NetworkInterface[] networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
+                NetworkInterface[] networkInterfaces = NetworkInterface.GetAllNetworkInterfaces().OrderBy(p => p.Name).ToArray();
 
                 foreach (NetworkInterface network in networkInterfaces)
                 {

@@ -9,8 +9,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.PlatformAbstractions;
 using System;
 using System.Diagnostics.Tracing;
+using System.IO;
+using System.Reflection;
 
 namespace Home.API
 {
@@ -22,6 +25,16 @@ namespace Home.API
         }
 
         public IConfiguration Configuration { get; }
+
+        private static string XmlCommentsFilePath
+        {
+            get
+            {
+                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+                var fileName = $"{typeof(Startup).GetTypeInfo().Assembly.GetName().Name}.xml";
+                return Path.Combine(basePath, fileName);
+            }
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -38,7 +51,14 @@ namespace Home.API
             });
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddHostedService<HealthCheckService>();
+            services.AddTransient<IDeviceAckService, DeviceAckService>();
             services.AddControllers();
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen(options => 
+            {
+                options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo() {  Title = "Home API", Version = "v1" });
+                options.IncludeXmlComments(XmlCommentsFilePath);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,6 +67,11 @@ namespace Home.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(options => 
+                {
+                    options.SwaggerEndpoint("v1/swagger.json", "Home API");
+                });
             }
             
             app.UseHttpsRedirection();
