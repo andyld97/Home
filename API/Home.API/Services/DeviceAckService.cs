@@ -324,10 +324,17 @@ namespace Home.API.Services
                 await _context.DeviceLog.AddAsync(logEntry);
             }
 
-            // Check if os version changed
+            // Check if os name changed
+            if (currentDevice.OstypeNavigation.Name != requestedDevice.OS.ToString())
+            {
+                var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"{prefix} detected OS change from {currentDevice.OstypeNavigation.Name} to {requestedDevice.OS}", LogEntry.LogLevel.Information, true);
+                await _context.DeviceLog.AddAsync(logEntry);
+            }
+
+            // Check if os version changed (don't ignore updates in general)
             if (currentDevice.Environment.Osversion != requestedDevice.Environment.OSVersion && !string.IsNullOrEmpty(currentDevice.Environment.Osversion))
             {
-                var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"{prefix} detected new os version: {requestedDevice.Environment.OSVersion} (Old version: {currentDevice.Environment.Osversion}", LogEntry.LogLevel.Information, true);
+                var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"{prefix} detected new os version: {requestedDevice.Environment.OSVersion} (Old version: {currentDevice.Environment.Osversion})", LogEntry.LogLevel.Information, true);
                 await _context.DeviceLog.AddAsync(logEntry);
             }
 
@@ -337,16 +344,11 @@ namespace Home.API.Services
                 var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"{prefix} detected CPU change. CPU {currentDevice.Environment.Cpuname} got replaced with {requestedDevice.Environment.CPUName}", LogEntry.LogLevel.Information, true);
                 await _context.DeviceLog.AddAsync(logEntry);
             }
+
+            // CPU Count
             if (currentDevice.Environment.Cpucount != requestedDevice.Environment.CPUCount && requestedDevice.Environment.CPUCount > 0)
             {
                 var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"{prefix} detected CPU-Count change from {currentDevice.Environment.Cpucount} to {requestedDevice.Environment.CPUCount}", LogEntry.LogLevel.Information, true);
-                await _context.DeviceLog.AddAsync(logEntry);
-            }
-
-            // OS (Ignore Windows Updates, just document enum chnages)
-            if (currentDevice.OstypeNavigation.Name != requestedDevice.OS.ToString())
-            {
-                var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"{prefix} detected OS change from {currentDevice.OstypeNavigation.Name} to {requestedDevice.OS}", LogEntry.LogLevel.Information, true);
                 await _context.DeviceLog.AddAsync(logEntry);
             }
 
