@@ -43,7 +43,7 @@ namespace Home.Controls
             lastDate = text;
 
             if (lastSelectedDevice.OS == Device.OSType.Android)
-                lastDate = text = $"{ lastSelectedDevice.LastSeen.ToShortDateString()} @ {lastSelectedDevice.LastSeen.ToShortTimeString()}";
+                lastDate = text = $"{lastSelectedDevice.LastSeen.ToString(Properties.Resources.strDateTimeFormat)}";
 
             if (lastSelectedDevice.IsLive != null && lastSelectedDevice.IsLive.HasValue && lastSelectedDevice.IsLive.Value)
                 TextLive.Text = $"Live - {text}";

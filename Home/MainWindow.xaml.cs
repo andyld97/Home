@@ -215,7 +215,6 @@ namespace Home
             RefreshOverview();
         }
 
-
         private async Task ShutdownOrRestartAsync(Device d, bool shutdown)
         {
             if (d == null)
@@ -398,7 +397,7 @@ namespace Home
             if (System.IO.File.Exists(path))
             {
                 if (updateGui && DateTime.TryParseExact(screenShotFileName, Consts.SCREENSHOT_DATE_FILE_FORMAT, CultureInfo.CurrentCulture, DateTimeStyles.AssumeLocal, out DateTime result))
-                    ScreenshotViewer.UpdateDate($"{result.ToShortDateString()} @ {result.ToShortTimeString()}");
+                    ScreenshotViewer.UpdateDate(result.ToString(Properties.Resources.strDateTimeFormat));
                 else if (updateGui)
                     ScreenshotViewer.UpdateDate(null);
 
@@ -491,7 +490,7 @@ namespace Home
                 return;
 
             // Generate log entries FlowDocument
-            FlowDocument flowDocument = new FlowDocument { FontFamily = new FontFamily("Consolas") };
+            FlowDocument flowDocument = new FlowDocument { FontFamily = new FontFamily("Cascadia Code") };
             Paragraph currentParagraph = new Paragraph();
 
             foreach (var entry in currentDevice.LogEntries)
@@ -526,8 +525,8 @@ namespace Home
 
                 bi = ImageHelper.LoadImage($"pack://application:,,,/Home;Component/resources/icons/{resourceName}", false);
 
-                currentParagraph.Inlines.Add(new InlineUIContainer(new Image() { Source = bi, Width = 20, Margin = new Thickness(0, 2, 2, 0) }) { BaselineAlignment = BaselineAlignment.Bottom });
-                currentParagraph.Inlines.Add(new Run($"[{entry.Timestamp.ToShortDateString()} {entry.Timestamp.ToShortTimeString()}]: ") { Foreground = new SolidColorBrush(Colors.Green), BaselineAlignment = BaselineAlignment.TextTop });
+                currentParagraph.Inlines.Add(new InlineUIContainer(new Image() { Source = bi, Width = 15, Margin = new Thickness(2, 2, 5, 2) }) { BaselineAlignment = BaselineAlignment.Bottom });
+                currentParagraph.Inlines.Add(new Run($"[{entry.Timestamp.ToString(Properties.Resources.strDateTimeFormat)}]: ") { Foreground = new SolidColorBrush(Colors.Gray), BaselineAlignment = BaselineAlignment.TextTop });
                 currentParagraph.Inlines.Add(new Run(entry.Message) { Foreground = foregroundBrush, BaselineAlignment = BaselineAlignment.Bottom });
                 currentParagraph.Inlines.Add(new LineBreak());
             }

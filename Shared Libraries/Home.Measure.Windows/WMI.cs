@@ -14,6 +14,7 @@ namespace Home.Measure.Windows
     {
         public static List<string> DetermineGraphicsCardNames()
         {
+            // Alternative: SELECT VideoProcessor FROM Win32_VideoController
             List<string> devices = new List<string>();
             try
             {
