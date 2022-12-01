@@ -50,7 +50,7 @@
     <ProjectReference Include="..\..\Shared Libraries\Home.Measure.Windows\Home.Measure.Windows.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="DotnetRuntimeBootstrapper" Version="2.3.1">
+    <PackageReference Include="DotnetRuntimeBootstrapper" Version="2.4.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

@@ -208,27 +208,36 @@ namespace Home.API.Helper
             result.Usage = new Home.Model.DeviceUsage();
             if (device.DeviceUsage != null)
             {
-                foreach (var item in device.DeviceUsage.Cpu.Split(new string[] { "|" }, StringSplitOptions.RemoveEmptyEntries))
+                if (!string.IsNullOrEmpty(device.DeviceUsage.Cpu))
                 {
-                    if (double.TryParse(item, out double res))
-                        result.Usage.AddCPUEntry(res);
+                    foreach (var item in device.DeviceUsage.Cpu.Split(new string[] { Consts.StatsSeperator }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        if (double.TryParse(item, out double res))
+                            result.Usage.AddCPUEntry(res);
+                    }
                 }
 
-                foreach (var item in device.DeviceUsage.Ram.Split(new string[] { "|" }, StringSplitOptions.RemoveEmptyEntries))
+                if (!string.IsNullOrEmpty(device.DeviceUsage.Ram))
                 {
-                    if (double.TryParse(item, out double res))
-                        result.Usage.AddRAMEntry(res);
+                    foreach (var item in device.DeviceUsage.Ram.Split(new string[] { Consts.StatsSeperator }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        if (double.TryParse(item, out double res))
+                            result.Usage.AddRAMEntry(res);
+                    }
                 }
 
-                foreach (var item in device.DeviceUsage.Disk.Split(new string[] { "|" }, StringSplitOptions.RemoveEmptyEntries))
+                if (!string.IsNullOrEmpty(device.DeviceUsage.Disk))
                 {
-                    if (double.TryParse(item, out double res))
-                        result.Usage.AddDISKEntry(res);
+                    foreach (var item in device.DeviceUsage.Disk.Split(new string[] { Consts.StatsSeperator }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        if (double.TryParse(item, out double res))
+                            result.Usage.AddDISKEntry(res);
+                    }
                 }
 
-                if (!string.IsNullOrEmpty(device.DeviceUsage.Battery)) // battery is currently not implemented!
+                if (!string.IsNullOrEmpty(device.DeviceUsage.Battery))
                 {
-                    foreach (var item in device.DeviceUsage.Battery.Split(new string[] { "|" }, StringSplitOptions.RemoveEmptyEntries))
+                    foreach (var item in device.DeviceUsage.Battery.Split(new string[] { Consts.StatsSeperator }, StringSplitOptions.RemoveEmptyEntries))
                     {
                         if (int.TryParse(item, out int res))
                             result.Usage.AddBatteryEntry(res);
@@ -242,7 +251,7 @@ namespace Home.API.Helper
                 if (warning.WarningType == (int)WarningType.BatteryWarning)
                     result.BatteryWarning = ModelConverter.ConvertBatteryWarning(warning);
                 else  if (warning.WarningType == (int)WarningType.StorageWarning)
-                    result.StorageWarnings.Add( ModelConverter.ConvertStorageWarning(warning));
+                    result.StorageWarnings.Add(ModelConverter.ConvertStorageWarning(warning));
             }
 
             return result;
