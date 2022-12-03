@@ -343,9 +343,9 @@ namespace Home.API.Helper
             storageWarning.WarningOccoured = deviceWarning.Timestamp;
             storageWarning.Value = (ulong)deviceWarning.CriticalValue;
 
-            if (!string.IsNullOrEmpty(deviceWarning.AdditionalInfo) && deviceWarning.AdditionalInfo.Contains("|"))
+            if (!string.IsNullOrEmpty(deviceWarning.AdditionalInfo) && deviceWarning.AdditionalInfo.Contains(Consts.StatsSeperator))
             {
-                string[] entries = deviceWarning.AdditionalInfo.Split(new string[] { "|" }, StringSplitOptions.RemoveEmptyEntries);
+                string[] entries = deviceWarning.AdditionalInfo.Split(new string[] { Consts.StatsSeperator }, StringSplitOptions.RemoveEmptyEntries);
 
                 if (entries.Length >= 2)
                 {
@@ -364,7 +364,7 @@ namespace Home.API.Helper
 
             if (notifyWebHook && Program.GlobalConfig.UseWebHook)
             {
-                string webHookMessage = $"[{now.ToShortDateString()} @ {now.ToShortTimeString()}]: {message}";
+                string webHookMessage = $"[{now.ToString(Program.GlobalConfig.WebHookDateTimeFormat)}]: {message}";
                 Program.WebHookLogging.Enqueue(webHookMessage);
             }
 

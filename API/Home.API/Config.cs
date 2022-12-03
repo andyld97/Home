@@ -82,5 +82,10 @@ namespace Home.API
         /// </summary>
         [JsonPropertyName("battery_warning_percentage")]
         public int BatteryWarningPercentage { get; set; } = 10;
+
+        /// <summary>
+        /// Timeformat for messages sent to the webhook endpoint
+        /// </summary>
+        public string WebHookDateTimeFormat { get; set; } = "dd.MM.yyyy HH:mm";
     }
 }
