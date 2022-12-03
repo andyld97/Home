@@ -175,7 +175,7 @@
 
                         <Border Grid.Column="1" Grid.Row="1" BorderThickness="2" CornerRadius="5" BorderBrush="Gray" Margin="5">
                             <Grid>
-                                <Grid x:Name="DeviceInfoHint" Visibility="Visible"> <!-- Visible -->
+                                <Grid x:Name="DeviceInfoHint">
                                     <TextBlock Text="{x:Static res:Resources.strNoDeviceSelected}" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Foreground="{DynamicResource BlackBrush}" FontSize="33" />
                                 </Grid>
 
