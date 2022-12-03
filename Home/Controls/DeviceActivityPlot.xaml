@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="Home.Controls.DeviceActivityPlot"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Home.Controls"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF" xmlns:skiasharpview="clr-namespace:LiveChartsCore.SkiaSharpView;assembly=LiveChartsCore.SkiaSharpView" xmlns:livechartscore="clr-namespace:LiveChartsCore;assembly=LiveChartsCore"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel x:Name="Legend" Margin="0,3,0,0" Orientation="Horizontal" HorizontalAlignment="Center">
+            <StackPanel.Resources>
+                <StreamGeometry x:Key="ActivityGraph">M2.224,31.831c0.206,0.097,0.423,0.143,0.637,0.143c0.563,0,1.103-0.318,1.358-0.862l8.728-18.587 l6.581,7.894c0.328,0.393,0.836,0.595,1.344,0.526c0.509-0.065,0.948-0.386,1.166-0.85L30.47,2.138 c0.352-0.75,0.03-1.644-0.72-1.995C29-0.21,28.105,0.112,27.755,0.863l-7.431,15.825l-6.581-7.894 c-0.328-0.393-0.839-0.597-1.344-0.526c-0.509,0.065-0.948,0.386-1.166,0.85L1.504,29.837C1.152,30.586,1.474,31.48,2.224,31.831z</StreamGeometry>
+                <Style TargetType="{x:Type CheckBox}">
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                    <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+                    <Setter Property="FontWeight" Value="Bold" />
+                    <Setter Property="Margin" Value="5,0,0,0" />
+                    <Setter Property="IsChecked" Value="True" />
+                </Style>
+            </StackPanel.Resources>
+
+            <Viewbox Height="20" Margin="0,0,0,0">
+                <Path Data="{StaticResource ActivityGraph}" Fill="AliceBlue" />
+            </Viewbox>
+            <CheckBox x:Name="ChkCPULegend" Content="CPU" Checked="ChkCPULegend_Checked" Unchecked="ChkCPULegend_Checked" />
+
+            <Viewbox Height="20" Margin="50,0,0,0">
+                <Path Data="{StaticResource ActivityGraph}" Fill="Violet" />
+            </Viewbox>
+            <CheckBox x:Name="ChkRAMLegend" Content="RAM" Checked="ChkRAMLegend_Checked" Unchecked="ChkRAMLegend_Checked" />
+
+            <Viewbox Height="20" Margin="50,0,0,0">
+                <Path Data="{StaticResource ActivityGraph}" Fill="Orange" />
+            </Viewbox>
+            <CheckBox x:Name="ChkDiskLegend" Content="DISK" Checked="ChkDiskLegend_Checked" Unchecked="ChkDiskLegend_Checked" />
+
+            <Viewbox Height="20" Margin="50,0,0,0">
+                <Path Data="{StaticResource ActivityGraph}" Fill="Green" />
+            </Viewbox>
+            <CheckBox x:Name="ChkBatteryLegend" Content="Battery" Checked="ChkBatteryLegend_Checked" Unchecked="ChkBatteryLegend_Checked" />
+        </StackPanel>
+
+        <Border Grid.Row="1">
+            <lvc:CartesianChart x:Name="plot" />
+        </Border>
+    </Grid>
+</UserControl>

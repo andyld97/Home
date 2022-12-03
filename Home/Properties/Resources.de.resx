@@ -544,4 +544,25 @@
   <data name="strAbout_Line1" xml:space="preserve">
     <value>Idee und Umsetzung von Andreas L.</value>
   </data>
+  <data name="strBattery" xml:space="preserve">
+    <value>Batterie:</value>
+  </data>
+  <data name="strCPUDescription" xml:space="preserve">
+    <value>CPU:</value>
+  </data>
+  <data name="strGraphicsDescription" xml:space="preserve">
+    <value>Grafik:</value>
+  </data>
+  <data name="strMotherboardDescription" xml:space="preserve">
+    <value>Motherboard:</value>
+  </data>
+  <data name="strOperatingSystem" xml:space="preserve">
+    <value>Betriebssystem:</value>
+  </data>
+  <data name="strOsVersion" xml:space="preserve">
+    <value>Version:</value>
+  </data>
+  <data name="strRAMDescription" xml:space="preserve">
+    <value>RAM:</value>
+  </data>
 </root>

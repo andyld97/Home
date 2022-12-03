@@ -54,6 +54,7 @@ namespace Home
         private readonly List<DeviceItem> deviceItems = new List<DeviceItem>(); // gui
         private Device currentDevice = null;
         private bool ignoreSelectionChanged = false;
+        private bool scrollToEnd = true;
         private int oldDeviceCount = -1;
 
         static MainWindow()
@@ -91,8 +92,6 @@ namespace Home
             Closing += MainWindow_Closing;
             ScreenshotViewer.OnResize += ScreenshotViewer_OnResize;
             ScreenshotViewer.OnScreenShotAquired += ScreenshotViewer_OnScreenShotAquired;
-
-            InitalizeDeviceActivityPlot();
             App.OnShutdownOrRestart += App_OnShutdownOrRestart;
         }
 
@@ -462,9 +461,10 @@ namespace Home
                 DeviceInfo.Visibility = Visibility.Visible;
                 DeviceInfoHint.Visibility = Visibility.Collapsed;
                 MenuButtonSendMessage.IsEnabled = true;
+                scrollToEnd = true;
 
                 await webViewReport.EnsureCoreWebView2Async(webView2Environment);
-                webViewReport.NavigateToString(Report.GenerateHtmlDeviceReport(currentDevice));
+                webViewReport.NavigateToString(Report.GenerateHtmlDeviceReport(currentDevice, Properties.Resources.strDateTimeFormat));
             }
             else
             {
@@ -528,161 +528,32 @@ namespace Home
                 currentParagraph.Inlines.Add(new InlineUIContainer(new Image() { Source = bi, Width = 15, Margin = new Thickness(2, 2, 5, 2) }) { BaselineAlignment = BaselineAlignment.Bottom });
                 currentParagraph.Inlines.Add(new Run($"[{entry.Timestamp.ToString(Properties.Resources.strDateTimeFormat)}]: ") { Foreground = new SolidColorBrush(Colors.Gray), BaselineAlignment = BaselineAlignment.TextTop });
                 currentParagraph.Inlines.Add(new Run(entry.Message) { Foreground = foregroundBrush, BaselineAlignment = BaselineAlignment.Bottom });
-                currentParagraph.Inlines.Add(new LineBreak());
+                currentParagraph.Inlines.Add(new LineBreak());       
             }
 
-
             flowDocument.Blocks.Add(currentParagraph);
-            LogHolder.Document = flowDocument;
-            LogScrollViewer.ScrollToEnd();
 
-            RenderPlot();
+            // Remember old scroll position
+            double oldScrollPosition = LogScrollViewer.VerticalOffset;
+            LogHolder.Document = flowDocument;
+            //LogScrollViewer.ScrollToEnd();
+
+            // Restore old scroll position
+            if (!scrollToEnd)
+                LogScrollViewer.ScrollToVerticalOffset(oldScrollPosition);
+            else
+            {
+                scrollToEnd = false;
+                LogScrollViewer.ScrollToEnd();
+            }
+
+            DeviceActivityPlot.RenderPlot(currentDevice);
 
             DeviceInfo.DataContext = null;
             DeviceInfo.DataContext = currentDevice;
             ScreenshotViewer.UpdateDevice(currentDevice);
-            CmbGraphics.SelectedIndex = 0;
+            DeviceInfoDisplay.UpdateDevice(currentDevice);
         }
-
-        #region Activity Plot
-
-        private double NormalizeValue(double input)
-        {
-            // 0.19 => 19%
-            if (Math.Round(input, 0) == 0)
-                return input * 100;
-
-            // 500% => 50%
-            if (input > 100)
-                return Math.Round(input / 100, 2);
-
-            return input;
-        }
-
-        private void RenderPlot()
-        {
-            if (currentDevice == null)
-                return;
-
-            List<Point> cpuPoints = new List<Point>();
-            List<Point> ramPoints = new List<Point>();
-            List<Point> diskPoints = new List<Point>();
-            List<Point> batteryPoints = new List<Point>();
-
-            int cpuCounter = 1;
-            foreach (var cpu in currentDevice.Usage.CPU)
-                cpuPoints.Add(new Point(cpuCounter++, NormalizeValue(cpu)));
-
-            int ramCounter = 1;
-            foreach (var ram in currentDevice.Usage.RAM)
-                ramPoints.Add(new Point(ramCounter++, Math.Round((ram / currentDevice.Environment.TotalRAM) * 100, 2)));
-
-            int diskCounter = 1;
-            foreach (var disk in currentDevice.Usage.DISK)
-                diskPoints.Add(new Point(diskCounter++, NormalizeValue(disk)));
-
-            if (currentDevice.BatteryInfo != null)
-            {
-                int batteryCounter = 1;
-                foreach (var bPercent in currentDevice.Usage.Battery)
-                    batteryPoints.Add(new Point(batteryCounter++, bPercent));
-            }
-
-            //  Fill = new SolidColorPaint(SkiaSharp.SKColors.LightBlue.WithAlpha(128)),
-
-            void mapping(Point s, ChartPoint e)
-            {
-                e.SecondaryValue = s.X;
-                e.PrimaryValue = s.Y;
-            }
-
-            var cpuSeries = new LineSeries<Point>()
-            {
-                Values = cpuPoints,
-                Mapping = mapping,
-                Stroke = new SolidColorPaint(SkiaSharp.SKColors.AliceBlue, 3),
-                Fill = null,
-                GeometrySize = 0,
-                Name = "CPU Usage (%)",
-                TooltipLabelFormatter = (s) => $"CPU: {s.PrimaryValue} %",
-            };
-
-            var ramSeries = new LineSeries<Point>()
-            {
-                Values = ramPoints,
-                Mapping = mapping,
-                Stroke = new SolidColorPaint(SkiaSharp.SKColors.Violet, 3),
-                Fill = null,
-                GeometrySize = 0,
-                Name = "RAM Usage (%)",
-                TooltipLabelFormatter = (s) => $"RAM: {s.PrimaryValue} %",
-            };
-
-            var diskSeries = new LineSeries<Point>()
-            {
-                Values = diskPoints,
-                Mapping = mapping,
-                Stroke = new SolidColorPaint(SkiaSharp.SKColors.Orange, 3),
-                Fill = null,
-                GeometrySize = 0,
-                Name = "DISK Usage (%)",
-                TooltipLabelFormatter = (s) => $"DISK: {s.PrimaryValue} %",
-            };
-
-            var batterySeries = new LineSeries<Point>()
-            {
-                Values = batteryPoints,
-                Mapping = mapping,
-                Stroke = new SolidColorPaint(SkiaSharp.SKColors.Green, 3),
-                Fill = null,
-                GeometrySize = 0,
-                Name = "Battery Remaning (%)",
-                TooltipLabelFormatter = (s) => $"Battery Remaning: {s.PrimaryValue} %"
-            };
-
-            List<ISeries> series = new List<ISeries>(); // { cpuSeries, ramSeries, diskSeries };
-
-            if (ChkCPULegend.IsChecked.Value)
-                series.Add(cpuSeries);
-
-            if (ChkRAMLegend.IsChecked.Value)
-                series.Add(ramSeries);
-
-            if (ChkDiskLegend.IsChecked.Value)
-                series.Add(diskSeries);
-
-            if (ChkBatteryLegend.IsChecked.Value && currentDevice.BatteryInfo != null)
-                series.Add(batterySeries);
-
-            DeviceActivityPlot.Series = series;
-        }
-
-        private void InitalizeDeviceActivityPlot()
-        {
-            // This legened is always switching colors, so I am going to use my own legend!
-            DeviceActivityPlot.LegendPosition = LiveChartsCore.Measure.LegendPosition.Hidden; // top
-            DeviceActivityPlot.LegendOrientation = LiveChartsCore.Measure.LegendOrientation.Horizontal;
-            DeviceActivityPlot.LegendBackground = FindResource("WhiteBrush") as SolidColorBrush;
-            DeviceActivityPlot.LegendTextBrush = FindResource("BlackBrush") as SolidColorBrush;
-
-            var xaxis = DeviceActivityPlot.XAxes.FirstOrDefault();
-            var yaxis = DeviceActivityPlot.YAxes.FirstOrDefault();
-            yaxis.Labeler = (y) => $"{y}%";
-            xaxis.Labeler = (x) =>
-            {
-                if (currentDevice == null)
-                    return string.Empty;
-
-                if (currentDevice.LastSeen == DateTime.MinValue)
-                    return String.Empty;
-
-                // 60 is not true if there are not 60 values in the list
-                // and remember that all values (cpu, ram, disk) MUST have the same amount, also if they get cleard (they get all cleard)
-                var n = currentDevice.LastSeen.AddMinutes(-(currentDevice.Usage.CPU.Count - x));
-                return n.ToString("HH:mm");
-            };
-        }
-        #endregion
 
         #region Menu
 
@@ -825,32 +696,12 @@ namespace Home
             SwitchFileManager(false);
         }
 
-        private void ChkCPULegend_Checked(object sender, RoutedEventArgs e)
-        {
-            RenderPlot();
-        }
-
-        private void ChkRAMLegend_Checked(object sender, RoutedEventArgs e)
-        {
-            RenderPlot();
-        }
-
-        private void ChkDiskLegend_Checked(object sender, RoutedEventArgs e)
-        {
-            RenderPlot();
-        }
-
-        private void ChkBatteryLegend_Checked(object sender, RoutedEventArgs e)
-        {
-            RenderPlot();
-        }
-
         private async void MenuButtonGenerateReport_Click(object sender, RoutedEventArgs e)
         {
             if (currentDevice == null)
                 return;
 
-            var report = Report.GenerateHtmlDeviceReport(currentDevice);
+            var report = Report.GenerateHtmlDeviceReport(currentDevice, Properties.Resources.strDateTimeFormat);
 
             SaveFileDialog sfd = new SaveFileDialog() { Filter = "HTML Report File (*.html)|*.html" };
             sfd.FileName = $"{currentDevice.Name}.html";

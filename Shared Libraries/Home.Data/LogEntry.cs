@@ -55,7 +55,12 @@ namespace Home.Data
 
         public override string ToString()
         {
-            return $"[{Timestamp.ToShortDateString()} @ {Timestamp.ToShortTimeString()}]: {Message}";
+            return $"[{Timestamp.ToString("dd.MM.yyyy HH:mm")}]: {Message}";
+        }
+
+        public string ToString(string format)
+        {
+            return $"[{Timestamp.ToString(format)}]: {Message}";
         }
     }
 }

@@ -589,4 +589,25 @@
   <data name="strAbout_Line2" xml:space="preserve">
     <value>Many thanks ...</value>
   </data>
+  <data name="strOperatingSystem" xml:space="preserve">
+    <value>Operating System:</value>
+  </data>
+  <data name="strOsVersion" xml:space="preserve">
+    <value>Version:</value>
+  </data>
+  <data name="strCPUDescription" xml:space="preserve">
+    <value>CPU:</value>
+  </data>
+  <data name="strMotherboardDescription" xml:space="preserve">
+    <value>Motherboard:</value>
+  </data>
+  <data name="strRAMDescription" xml:space="preserve">
+    <value>RAM:</value>
+  </data>
+  <data name="strGraphicsDescription" xml:space="preserve">
+    <value>Graphics:</value>
+  </data>
+  <data name="strBattery" xml:space="preserve">
+    <value>Battery:</value>
+  </data>
 </root>

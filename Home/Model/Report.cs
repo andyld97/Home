@@ -2,6 +2,7 @@
 using Home.Model;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Model
@@ -13,7 +14,7 @@ namespace Model
         /// </summary>
         /// <param name="device"></param>
         /// <returns></returns>
-        public static string GenerateHtmlDeviceReport(Device device)
+        public static string GenerateHtmlDeviceReport(Device device, string dateTimeFormat)
         {
             string htmlTemplate = GetHtmlTemplate("template");
 
@@ -87,7 +88,7 @@ namespace Model
             htmlTemplate = htmlTemplate.Replace("{warnings}", warningsText);
 
             // log
-            htmlTemplate = htmlTemplate.Replace("{log}", string.Join(Environment.NewLine, device.LogEntries));
+            htmlTemplate = htmlTemplate.Replace("{log}", string.Join(Environment.NewLine, device.LogEntries.Select(p => p.ToString(dateTimeFormat))));
 
             string diskHtmlContent = string.Empty;
             foreach (var dd in device.DiskDrives)

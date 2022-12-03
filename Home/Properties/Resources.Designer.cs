@@ -151,6 +151,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Battery: ähnelt.
+        /// </summary>
+        public static string strBattery {
+            get {
+                return ResourceManager.GetString("strBattery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Bits ähnelt.
         /// </summary>
         public static string strBit {
@@ -165,6 +174,15 @@ namespace Home.Properties {
         public static string strClearLog {
             get {
                 return ResourceManager.GetString("strClearLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die CPU: ähnelt.
+        /// </summary>
+        public static string strCPUDescription {
+            get {
+                return ResourceManager.GetString("strCPUDescription", resourceCulture);
             }
         }
         
@@ -439,6 +457,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Graphics: ähnelt.
+        /// </summary>
+        public static string strGraphicsDescription {
+            get {
+                return ResourceManager.GetString("strGraphicsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die free of ähnelt.
         /// </summary>
         public static string strHDD_FreeOf {
@@ -529,6 +556,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Motherboard: ähnelt.
+        /// </summary>
+        public static string strMotherboardDescription {
+            get {
+                return ResourceManager.GetString("strMotherboardDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Mute Sound ähnelt.
         /// </summary>
         public static string strMuteSound {
@@ -583,6 +619,24 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Operating System: ähnelt.
+        /// </summary>
+        public static string strOperatingSystem {
+            get {
+                return ResourceManager.GetString("strOperatingSystem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Version: ähnelt.
+        /// </summary>
+        public static string strOsVersion {
+            get {
+                return ResourceManager.GetString("strOsVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Network Overview ähnelt.
         /// </summary>
         public static string strOverview {
@@ -606,6 +660,15 @@ namespace Home.Properties {
         public static string strProperty {
             get {
                 return ResourceManager.GetString("strProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die RAM: ähnelt.
+        /// </summary>
+        public static string strRAMDescription {
+            get {
+                return ResourceManager.GetString("strRAMDescription", resourceCulture);
             }
         }
         

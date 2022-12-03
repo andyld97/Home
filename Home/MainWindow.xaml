@@ -3,9 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Home" xmlns:controls="clr-namespace:Home.Controls" xmlns:converter="clr-namespace:Home.Converter" xmlns:wpf="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF" xmlns:skiasharpview="clr-namespace:LiveChartsCore.SkiaSharpView;assembly=LiveChartsCore.SkiaSharpView" xmlns:livechartscore="clr-namespace:LiveChartsCore;assembly=LiveChartsCore" mc:Ignorable="d"
+        xmlns:local="clr-namespace:Home" xmlns:controls="clr-namespace:Home.Controls" xmlns:converter="clr-namespace:Home.Converter" mc:Ignorable="d"
         xmlns:res="clr-namespace:Home.Properties" xmlns:wpf1="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
-                     Title="Home" Height="1024" Width="1280" WindowStartupLocation="CenterScreen" Loaded="RibbonWindow_Loaded">
+        Title="Home" Height="1024" Width="1280" WindowStartupLocation="CenterScreen" Loaded="RibbonWindow_Loaded">
     <Fluent:RibbonWindow.Resources>
         <local:DiskImageConverter x:Key="diskImageConverter" />
         <local:ByteToGBConverter x:Key="byteToGBConverter" />
@@ -208,7 +208,6 @@
                                                         <Setter Property="FontSize" Value="15" />
                                                         <Setter Property="TextTrimming" Value="CharacterEllipsis" />
                                                         <Setter Property="TextWrapping" Value="NoWrap" />
-                                                        <Setter Property="FontFamily" Value="Cascadia Code" />
                                                     </Style>
                                                 </Grid.Resources>
                                                 <Grid.ColumnDefinitions>
@@ -216,137 +215,14 @@
                                                     <ColumnDefinition Width="*" />
                                                 </Grid.ColumnDefinitions>
 
-                                                <Grid x:Name="InfoGrid" Grid.Row="0">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto" />
-                                                        <ColumnDefinition Width="*" />
-                                                    </Grid.ColumnDefinitions>
-
+                                                <Grid x:Name="InfoGrid">
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition Height="Auto" />
                                                         <RowDefinition Height="*" />
                                                     </Grid.RowDefinitions>
-
-                                                    <StackPanel>
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <Image Source="resources/icons/device.png" Height="24" Margin="5" />
-                                                            <TextBlock FontSize="25" VerticalAlignment="Center" FontWeight="Bold">
-                                                                <Run Text="{x:Static res:Resources.strDevice}" />
-                                                            </TextBlock>
-                                                        </StackPanel>
-
-                                                        <Separator Margin="0,5,0,0" Foreground="{DynamicResource BlackBrush}" />
-                                                        <TextBlock Text="{x:Static res:Resources.strManufacturer}" />
-                                                        <TextBlock Text="{x:Static res:Resources.strProduct}" />
-                                                        <TextBlock Text="{x:Static res:Resources.strDeviceDescription}"/>
-                                                        <TextBlock Text="{x:Static res:Resources.strDeviceStart}" />
-                                                        <TextBlock Text="{x:Static res:Resources.strDeviceOnlineTime}" />
-                                                        <TextBlock Text="{x:Static res:Resources.strLocation}" />
-                                                        <TextBlock Text="{x:Static res:Resources.strDeviceClientVersion}"/>
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <Image Source="resources/icons/hardware.png" Height="24" Margin="5" />
-                                                            <TextBlock Text="Hardware" FontSize="25" Margin="0,0,0,0" VerticalAlignment="Center" FontWeight="Bold" />
-                                                        </StackPanel>
-                                                        <Separator Margin="0,5,0,0" />
-                                                        <TextBlock Text="OS:" FontWeight="Bold" />
-                                                        <TextBlock Text="VER:" FontWeight="Bold" />
-                                                        <TextBlock Text="CPU:" FontWeight="Bold" />
-                                                        <TextBlock Text="Motherboard:" FontWeight="Bold" />
-                                                        <TextBlock Text="Graphics:" FontWeight="Bold" />
-                                                        <TextBlock Text="RAM:" FontWeight="Bold" />
-                                                        <TextBlock Text="Battery:" FontWeight="Bold" />
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <Image Source="resources/icons/activity.png" Height="24" Margin="5" />
-                                                            <TextBlock Text="{x:Static res:Resources.strActivity}" FontSize="25" VerticalAlignment="Center" Margin="0,0,0,0" FontWeight="Bold" />
-                                                        </StackPanel>
-                                                        <Separator Margin="0,5,0,0" Foreground="{DynamicResource BlackBrush}" />
-                                                    </StackPanel>
-
-                                                    <StackPanel Grid.Column="1">
-                                                        <TextBlock FontSize="25" />
-                                                        <Separator Margin="0,8,0,0" Foreground="{DynamicResource BlackBrush}" />
-                                                        <TextBlock Text="{Binding Environment.Vendor, Converter={StaticResource emptyConverter}}" />
-                                                        <TextBlock Text="{Binding Environment.Product, Converter={StaticResource emptyConverter}}" />
-                                                        <TextBlock Text="{Binding Environment.Description, Converter={StaticResource emptyConverter}}"/>
-                                                        <TextBlock x:Name="TextStartTime" Text="{Binding Environment.StartTimestamp, StringFormat=dd.MM.yyyy HH:mm}" ToolTip="{Binding ElementName=TextStartTime, Path=Text}" />
-                                                        <TextBlock x:Name="TextRunningTime" ToolTip="{Binding ElementName=TextRunningTime, Path=Text}">
-                                                            <TextBlock.Text>
-                                                                <MultiBinding StringFormat="{}{0:00}:{1:00}:{2:00;00}">
-                                                                    <Binding Path="Environment.RunningTime.Days" />
-                                                                    <Binding Path="Environment.RunningTime.Hours" />
-                                                                    <Binding Path="Environment.RunningTime.Minutes" />
-                                                                </MultiBinding>
-                                                            </TextBlock.Text>
-                                                        </TextBlock>
-                                                        <TextBlock Text="{Binding Location, Converter={StaticResource emptyConverter}}" />
-                                                        <TextBlock Text="{Binding ServiceClientVersion, Converter={StaticResource emptyConverter}}"/>
-                                                        <TextBlock Margin="0,1,0,0" FontSize="25" />
-                                                        <Separator Margin="0,9,0,0" Foreground="{DynamicResource BlackBrush}" />
-                                                        <TextBlock x:Name="TextOSName" ToolTip="{Binding ElementName=TextOSName, Path=Text}" >
-                                                <Run Text="{Binding OS, Converter={StaticResource osNameConverter}}" />
-                                                <Run Text="(" /><Run Text="{Binding Environment.Is64BitOS, Converter={StaticResource os64BitConverter}}" /><Run Text=")" />
-                                                        </TextBlock>
-                                                        <TextBlock Text="{Binding Environment.OSVersion}" ToolTip="{Binding Environment.OSVersion}" />
-                                                        <TextBlock x:Name="TextCPUName" ToolTip="{Binding ElementName=TextCPUName, Path=Text}">
-                                                <Run  Text="{Binding Environment.CPUName, Converter={StaticResource emptyConverter}}"  />
-                                                <Run Text=" x " /><Run Text="{Binding Environment.CPUCount}" />
-                                                        </TextBlock>
-                                                        <TextBlock x:Name="TextMotherboard" Text="{Binding Environment.Motherboard, Converter={StaticResource emptyConverter}}" ToolTip="{Binding ElementName=TextMotherboard, Path=Text}" />
-                                                        <Fluent:ComboBox x:Name="CmbGraphics" Margin="-8,0,5,0" IsEditable="False" ItemsSource="{Binding Environment.GraphicCards}" SelectedIndex="0" />
-                                                        <TextBlock x:Name="TextTotalRAM" ToolTip="{Binding ElementName=TextTotalRAM, Path=Text}">
-                                                <Run Text="{Binding Environment.TotalRAM}" />
-                                                <Run Text="GB" />
-                                                        </TextBlock>
-                                                        <TextBlock Text="{Binding BatteryInfo, Converter={StaticResource batteryInfoConverter}}" />
-                                                        <TextBlock Margin="0,1,0,0" FontSize="25" />
-                                                        <Separator Margin="0,6,0,0" />
-                                                    </StackPanel>
-
-                                                    <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition Height="Auto" />
-                                                            <RowDefinition Height="*" />
-                                                        </Grid.RowDefinitions>
-
-                                                        <StackPanel x:Name="Legend" Margin="0,3,0,0" Orientation="Horizontal" HorizontalAlignment="Center">
-                                                            <StackPanel.Resources>
-                                                                <StreamGeometry x:Key="ActivityGraph">
-                                                                    M2.224,31.831c0.206,0.097,0.423,0.143,0.637,0.143c0.563,0,1.103-0.318,1.358-0.862l8.728-18.587 l6.581,7.894c0.328,0.393,0.836,0.595,1.344,0.526c0.509-0.065,0.948-0.386,1.166-0.85L30.47,2.138 c0.352-0.75,0.03-1.644-0.72-1.995C29-0.21,28.105,0.112,27.755,0.863l-7.431,15.825l-6.581-7.894 c-0.328-0.393-0.839-0.597-1.344-0.526c-0.509,0.065-0.948,0.386-1.166,0.85L1.504,29.837C1.152,30.586,1.474,31.48,2.224,31.831z
-                                                                </StreamGeometry>
-                                                                <Style TargetType="{x:Type CheckBox}">
-                                                                    <Setter Property="VerticalAlignment" Value="Center" />
-                                                                    <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
-                                                                    <Setter Property="FontWeight" Value="Bold" />
-                                                                    <Setter Property="Margin" Value="5,0,0,0" />
-                                                                    <Setter Property="IsChecked" Value="True" />
-                                                                </Style>
-                                                            </StackPanel.Resources>
-
-                                                            <Viewbox Height="20" Margin="0,0,0,0">
-                                                                <Path Data="{StaticResource ActivityGraph}" Fill="AliceBlue" />
-                                                            </Viewbox>
-                                                            <CheckBox x:Name="ChkCPULegend" Content="CPU" Checked="ChkCPULegend_Checked" Unchecked="ChkCPULegend_Checked" />
-
-                                                            <Viewbox Height="20" Margin="50,0,0,0">
-                                                                <Path Data="{StaticResource ActivityGraph}" Fill="Violet" />
-                                                            </Viewbox>
-                                                            <CheckBox x:Name="ChkRAMLegend" Content="RAM" Checked="ChkRAMLegend_Checked" Unchecked="ChkRAMLegend_Checked" />
-
-                                                            <Viewbox Height="20" Margin="50,0,0,0">
-                                                                <Path Data="{StaticResource ActivityGraph}" Fill="Orange" />
-                                                            </Viewbox>
-                                                            <CheckBox x:Name="ChkDiskLegend" Content="DISK" Checked="ChkDiskLegend_Checked" Unchecked="ChkDiskLegend_Checked" />
-
-                                                            <Viewbox Height="20" Margin="50,0,0,0">
-                                                                <Path Data="{StaticResource ActivityGraph}" Fill="Green" />
-                                                            </Viewbox>
-                                                            <CheckBox x:Name="ChkBatteryLegend" Content="Battery" Checked="ChkBatteryLegend_Checked" Unchecked="ChkBatteryLegend_Checked" />
-                                                        </StackPanel>
-                                                        
-                                                        <Border Grid.Row="1">
-                                                            <wpf:CartesianChart x:Name="DeviceActivityPlot" />
-                                                        </Border>
-                                                    </Grid>
+                                                    
+                                                    <controls:DeviceInfoDisplay x:Name="DeviceInfoDisplay" />
+                                                    <controls:DeviceActivityPlot x:Name="DeviceActivityPlot" Grid.Row="1" />
                                                 </Grid>
 
                                                 <Grid x:Name="ScreeshotViewHolder" Grid.Column="1">
@@ -454,11 +330,11 @@
                                                 <TabItem.Header>
                                                     <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Center">
                                                         <Image Source="resources/icons/log.png" Width="16" />
-                                                        <TextBlock Margin="5,0,0,0" Text="{x:Static res:Resources.strDeviceLog}" TextAlignment="Center" />
+                                                        <TextBlock Margin="5,0,0,0" Text="{x:Static res:Resources.strDeviceLog}" TextAlignment="Center" /> 
                                                     </StackPanel>
                                                 </TabItem.Header>
-                                                <ScrollViewer x:Name="LogScrollViewer">
-                                                    <FlowDocumentScrollViewer x:Name="LogHolder" PreviewMouseWheel="LogHolder_PreviewMouseWheel" VerticalScrollBarVisibility="Disabled"  />
+                                                <ScrollViewer x:Name="LogScrollViewer" Grid.Column="1">
+                                                    <FlowDocumentScrollViewer x:Name="LogHolder" PreviewMouseWheel="LogHolder_PreviewMouseWheel" VerticalScrollBarVisibility="Disabled" />
                                                 </ScrollViewer>
                                             </TabItem>
                                             <TabItem>
