@@ -11,7 +11,9 @@ namespace Home.API.home.Models
         public int? DeviceId { get; set; }
         public string ScreenshotFileName { get; set; }
         public DateTime Timestamp { get; set; }
+        public int? ScreenId { get; set; }
 
         public virtual Device Device { get; set; }
+        public virtual DeviceScreen Screen { get; set; }
     }
 }

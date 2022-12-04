@@ -130,6 +130,9 @@ namespace Home.API.Controllers
             if (shot == null)
                 return BadRequest(AnswerExtensions.Fail("screenshot is null!"));
 
+            if (shot.ScreenIndex != null)
+                fileName += $"_{shot.ScreenIndex}";
+
             var deviceFound = await _context.GetDeviceByIdAsync(shot.DeviceID);
 
             if (deviceFound == null)
@@ -170,7 +173,23 @@ namespace Home.API.Controllers
                 var logEntry = ModelConverter.CreateLogEntry(deviceFound, "Recieved screenshot from this device!", LogEntry.LogLevel.Information);
                 await _context.DeviceLog.AddAsync(logEntry);
                 _logger.LogInformation($"Recieved screenshot from {deviceFound.Environment.MachineName}");
-                deviceFound.DeviceScreenshot.Add(new DeviceScreenshot() { Device = deviceFound, ScreenshotFileName = fileName, Timestamp = DateTime.Now });
+
+                var ds = new DeviceScreenshot() { Device = deviceFound, ScreenshotFileName = fileName, Timestamp = DateTime.Now };
+
+                // If ScreenIndex is null (either using old clients or for clients which only supports multiple screen)
+                // Only Home.Windows.Service currently supports screenshots for multiple screens/screenshots
+                // (ToDo: *** Add this in the readme feature table)
+                // Add the screen to the screenshot to create a link
+                if (shot.ScreenIndex is not null)
+                {
+                    var screen = deviceFound.DeviceScreen.Where(p => p.ScreenIndex == shot.ScreenIndex).FirstOrDefault();
+                    if (screen != null)
+                    {
+                        ds.Screen = screen;
+                    }
+                }
+
+                deviceFound.DeviceScreenshot.Add(ds);
                 deviceFound.IsScreenshotRequired = false;
 
                 // Also append to event queue

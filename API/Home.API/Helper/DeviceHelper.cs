@@ -22,6 +22,7 @@ namespace Home.API.Helper
                                        .Include(p => p.DeviceCommand)
                                        .Include(p => p.DeviceMessage)
                                        .Include(p => p.DeviceWarning)
+                                       .Include(p => p.DeviceScreen)
                                        .Include(p => p.OstypeNavigation).Where(p => p.Guid == guid).FirstOrDefaultAsync();
         }
 
@@ -38,6 +39,7 @@ namespace Home.API.Helper
                                        .Include(p => p.DeviceCommand)
                                        .Include(p => p.DeviceMessage)
                                        .Include(p => p.DeviceWarning)
+                                       .Include(p => p.DeviceScreen)
                                        .Include(p => p.OstypeNavigation);
 
             if (noTracking)
@@ -59,6 +61,7 @@ namespace Home.API.Helper
                                            .Include(p => p.DeviceCommand)
                                            .Include(p => p.DeviceMessage)
                                            .Include(p => p.DeviceWarning)
+                                           .Include(p => p.DeviceScreen)
                                            .Include(p => p.OstypeNavigation).Where(d => d.Status).ToListAsync();
 
             return list.Where(d => d.LastSeen.Add(Program.GlobalConfig.RemoveInactiveClients) < DateTime.Now);

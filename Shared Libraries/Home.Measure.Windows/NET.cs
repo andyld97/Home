@@ -56,7 +56,6 @@ namespace Home.Measure.Windows
             return returnAddress;
         }
 
-
         /// <summary>
         /// Determines battery info related to the device!
         /// </summary>
@@ -79,6 +78,34 @@ namespace Home.Measure.Windows
 
             return true;
         }
+
+        public static byte[] CaputreScreen(System.Windows.Forms.Screen screen)
+        {
+            byte[] result = null;
+
+            try
+            {
+                using (System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(screen.Bounds.Width, screen.Bounds.Height))
+                {
+                    using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(bmp))
+                    {
+                        using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
+                        {
+                            g.CopyFromScreen(screen.Bounds.X, screen.Bounds.Y, 0, 0, bmp.Size);
+                            bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                            result = ms.ToArray();
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // ToDo: Log?
+            }
+
+            return result;
+        }
+
 
         public static byte[] CreateScreenshot(string fileName)
         {

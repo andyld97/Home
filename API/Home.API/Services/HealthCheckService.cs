@@ -64,6 +64,7 @@ namespace Home.API.Services
             {
                 await Task.Delay((int)Program.GlobalConfig.HealthCheckTimerInterval.TotalMilliseconds);
 
+                DateTime now = DateTime.Now;
                 var scope =  serviceProvider.CreateAsyncScope();
                 var homeContext = scope.ServiceProvider.GetService<HomeContext>();
 
@@ -115,10 +116,10 @@ namespace Home.API.Services
                         await UpdateDeviceStatusAsync(homeContext, device);
 
                         // Aquiring a new screenshot for all online devices (except android devices)
-                        await CheckForScreenshotsAsync(homeContext, device);
+                        await CheckForScreenshotExpiredAsync(homeContext, device, now);
 
-                        // Delete screenshots which are older than one day
-                        await CleanUpScreenshotsAsync(homeContext, device);
+                        // Delete screenshots which are older than the Program.GlobalConfig.RemoveOldScreenshots-Timestamp
+                        await CleanUpScreenshotsAsync(homeContext, device, now);
 
                         // Check if there are any warnings to remove
                         await UpdateDeviceWarningsAsync(homeContext, device);
@@ -185,7 +186,7 @@ namespace Home.API.Services
             }
         }
 
-        private async Task CheckForScreenshotsAsync(HomeContext homeContext, Device device)
+        private async Task CheckForScreenshotExpiredAsync(HomeContext homeContext, Device device, DateTime now)
         {
             // Only check for devices which are online
             if (!device.Status)
@@ -197,12 +198,13 @@ namespace Home.API.Services
             if (device.DeviceScreenshot.Count == 0)
                 return;
 
+            // Check for the last screenshot's age
             var shot = device.DeviceScreenshot.LastOrDefault();
             if (shot == null)
                 return;
 
             // Check age of this screenshot
-            if (shot.Timestamp.Add(Program.GlobalConfig.AquireNewScreenshot) < DateTime.Now)
+            if (shot.Timestamp.Add(Program.GlobalConfig.AquireNewScreenshot) < now)
             {
                 device.IsScreenshotRequired = true;
                 var logEntry = ModelConverter.CreateLogEntry(device, $"Last screenshot was older than {Program.GlobalConfig.AquireNewScreenshot.TotalHours}h. Aquiring a new screenshot ...", LogEntry.LogLevel.Information);
@@ -211,18 +213,45 @@ namespace Home.API.Services
             }
         }
 
-        private async Task CleanUpScreenshotsAsync(HomeContext homeContext, Device device)
+        private async Task CleanUpScreenshotsAsync(HomeContext homeContext, Device device, DateTime now)
         {
             if (device.DeviceScreenshot.Count == 0 || device.DeviceScreenshot.Count == 1)
-                return;
+                return;           
 
             List<DeviceScreenshot> screenshotsToRemove = new List<DeviceScreenshot>();
-            foreach (var shot in device.DeviceScreenshot.Take(device.DeviceScreenshot.Count - 1))
+
+            // Consider multiple screens screenshot handling!!!
+            // One screenshot must be remained either for a general screenshot or per each screen         
+            var nonAssociatedScreenshots = device.DeviceScreenshot.Where(p => p.ScreenId == null).ToList();
+            var assoicatedScreenshots = device.DeviceScreenshot.Where(p => p.ScreenId != null).GroupBy(p => p.ScreenId);
+
+            // 1. Add all "general" screenshots except one (if there is only one, just leave it)
+            if (nonAssociatedScreenshots.Count > 1)
             {
-                if (shot.Timestamp.Add(Program.GlobalConfig.RemoveOldScreenshots) < DateTime.Now)
+                foreach (var shot in nonAssociatedScreenshots.Take(nonAssociatedScreenshots.Count - 1))
                 {
-                    screenshotsToRemove.Add(shot);
-                    _logger.LogInformation($"Deleted screenshot {shot} from device {device.Name}, because it is older than one day!");
+                    if (shot.Timestamp.Add(Program.GlobalConfig.RemoveOldScreenshots) < now)
+                    {
+                        screenshotsToRemove.Add(shot);
+                        _logger.LogInformation($"Deleted screenshot {shot} from device {device.Name}, because it is older than {Program.GlobalConfig.RemoveOldScreenshots}!");
+                    }
+                }
+            }
+
+            // 2. Add all screenshots per screen except one (if there is only one, just leave it)
+            if (assoicatedScreenshots.Count() > 1)
+            {
+                foreach (var shot in assoicatedScreenshots) // group
+                {
+                    var shots = shot.ToList();
+                    foreach (var item in shots.Take(shots.Count - 1))
+                    {
+                        if (item.Timestamp.Add(Program.GlobalConfig.RemoveOldScreenshots) < now)
+                        {
+                            screenshotsToRemove.Add(item);
+                            _logger.LogInformation($"Deleted screenshot {item} from device {device.Name}, because it is older than {Program.GlobalConfig.RemoveOldScreenshots}!");
+                        }
+                    }
                 }
             }
 

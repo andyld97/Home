@@ -14,6 +14,7 @@ namespace Home.API.home.Models
             DeviceGraphic = new HashSet<DeviceGraphic>();
             DeviceLog = new HashSet<DeviceLog>();
             DeviceMessage = new HashSet<DeviceMessage>();
+            DeviceScreen = new HashSet<DeviceScreen>();
             DeviceScreenshot = new HashSet<DeviceScreenshot>();
             DeviceWarning = new HashSet<DeviceWarning>();
         }
@@ -43,6 +44,7 @@ namespace Home.API.home.Models
         public virtual ICollection<DeviceGraphic> DeviceGraphic { get; set; }
         public virtual ICollection<DeviceLog> DeviceLog { get; set; }
         public virtual ICollection<DeviceMessage> DeviceMessage { get; set; }
+        public virtual ICollection<DeviceScreen> DeviceScreen { get; set; }
         public virtual ICollection<DeviceScreenshot> DeviceScreenshot { get; set; }
         public virtual ICollection<DeviceWarning> DeviceWarning { get; set; }
     }

@@ -4,6 +4,7 @@ using Home.API.home.Models;
 using Home.Data;
 using Home.Data.Com;
 using Home.Model;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -136,6 +137,33 @@ namespace Home.API.Helper
                     updateDevice.DeviceGraphic.Add(new DeviceGraphic() { Device = updateDevice, Name = graphic });            
             }
 
+            // Screen(s) can be empty but ofc not null
+            foreach (var screen in device.Screens)
+            {
+                var dbScreen = updateDevice.DeviceScreen.Where(s => s.ScreenId == screen.ID).FirstOrDefault();
+                if (dbScreen == null)
+                    updateDevice.DeviceScreen.Add(ConvertScreen(screen, updateDevice));
+                else
+                {
+                    // Update
+                    dbScreen.IsPrimary = screen.IsPrimary;
+                    dbScreen.ScreenIndex = screen.Index;
+                    dbScreen.DeviceName = screen.DeviceName;
+                    dbScreen.Resolution = screen.Resolution;                    
+                }
+            }
+
+            // Check for screen(s) which not belong to the device anymore
+            foreach (var screen in device.Screens)
+            {
+                if (updateDevice.DeviceScreen.Any(sr => sr.ScreenId == screen.ID))
+                    continue;
+
+                // Delete it
+                var toRemove = updateDevice.DeviceScreen.FirstOrDefault(p => p.ScreenId == screen.ID);
+                homeContext.DeviceScreen.Remove(toRemove);
+            }
+
             return updateDevice;
         }
 
@@ -203,6 +231,10 @@ namespace Home.API.Helper
             // Hard disks or SSDs
             foreach (var disk in device.DeviceDiskDrive)
                 result.DiskDrives.Add(ConvertDisk(disk));
+
+            // Screens
+            foreach (var screen in device.DeviceScreen)
+                result.Screens.Add(ConvertScreen(screen));
 
             // Usage
             result.Usage = new Home.Model.DeviceUsage();
@@ -305,6 +337,37 @@ namespace Home.API.Helper
             dbDisk.MediaLoaded = diskDrive.MediaLoaded;
 
             return dbDisk;
+        }
+
+        public static Screen ConvertScreen(this home.Models.DeviceScreen deviceScreen)
+        {
+            return new Screen()
+            {
+                DeviceName = deviceScreen.DeviceName,
+                Index = deviceScreen.ScreenIndex,
+                IsPrimary = deviceScreen.IsPrimary,
+                Resolution = deviceScreen.Resolution,
+                BuiltDate = deviceScreen.BuiltDate,
+                ID = deviceScreen.ScreenId,
+                Serial = deviceScreen.Serial,
+                Manufacturer = deviceScreen.Manufacturer
+            };
+        }
+
+        public static home.Models.DeviceScreen ConvertScreen(this Screen screen, home.Models.Device device)
+        {
+            return new home.Models.DeviceScreen
+            {
+                Device = device,
+                DeviceName = screen.DeviceName,
+                IsPrimary = screen.IsPrimary,
+                Resolution= screen.Resolution,
+                ScreenIndex = screen.Index,
+                BuiltDate = screen.BuiltDate,
+                ScreenId = screen.ID,
+                Manufacturer= screen.Manufacturer,
+                Serial = screen.Serial,
+            };
         }
 
         public static Command ConvertCommand(home.Models.DeviceCommand deviceCommand)

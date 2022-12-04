@@ -28,6 +28,7 @@ namespace Home.API.home
         public virtual DbSet<DeviceLog> DeviceLog { get; set; }
         public virtual DbSet<DeviceMessage> DeviceMessage { get; set; }
         public virtual DbSet<DeviceOstype> DeviceOstype { get; set; }
+        public virtual DbSet<DeviceScreen> DeviceScreen { get; set; }
         public virtual DbSet<DeviceScreenshot> DeviceScreenshot { get; set; }
         public virtual DbSet<DeviceType> DeviceType { get; set; }
         public virtual DbSet<DeviceUsage> DeviceUsage { get; set; }
@@ -301,6 +302,36 @@ namespace Home.API.home
                     .IsUnicode(false);
             });
 
+            modelBuilder.Entity<DeviceScreen>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.BuiltDate).HasColumnType("text");
+
+                entity.Property(e => e.DeviceId).HasColumnName("DeviceID");
+
+                entity.Property(e => e.DeviceName).HasColumnType("text");
+
+                entity.Property(e => e.Manufacturer).HasColumnType("text");
+
+                entity.Property(e => e.Resolution)
+                    .IsRequired()
+                    .HasColumnType("text");
+
+                entity.Property(e => e.ScreenId)
+                    .IsRequired()
+                    .HasColumnType("text")
+                    .HasColumnName("ScreenID");
+
+                entity.Property(e => e.Serial).HasColumnType("text");
+
+                entity.HasOne(d => d.Device)
+                    .WithMany(p => p.DeviceScreen)
+                    .HasForeignKey(d => d.DeviceId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_DeviceScreen_Device");
+            });
+
             modelBuilder.Entity<DeviceScreenshot>(entity =>
             {
                 entity.HasKey(e => e.ScreenshotId);
@@ -316,6 +347,11 @@ namespace Home.API.home
                     .WithMany(p => p.DeviceScreenshot)
                     .HasForeignKey(d => d.DeviceId)
                     .HasConstraintName("FK_DeviceScreenshot_Device");
+
+                entity.HasOne(d => d.Screen)
+                    .WithMany(p => p.DeviceScreenshot)
+                    .HasForeignKey(d => d.ScreenId)
+                    .HasConstraintName("FK_DeviceScreenshot_DeviceScreen");
             });
 
             modelBuilder.Entity<DeviceType>(entity =>

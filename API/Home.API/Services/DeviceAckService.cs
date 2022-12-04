@@ -375,6 +375,39 @@ namespace Home.API.Services
                 var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"{prefix} detected IP change from {currentDevice.Ip} to {requestedDevice.IP}", LogEntry.LogLevel.Information, true);
                 await _context.DeviceLog.AddAsync(logEntry);
             }
+
+            // Screens
+            bool screenConfigChanged = false;
+            if (currentDevice.DeviceScreen.Count > 0)
+            {
+                // ToDo: *** Check if the screen itself changes? e.g. check if they are swapped?
+                // currently the notification will only be triggered if a screen will be added/removed
+                foreach (var screen in requestedDevice.Screens)
+                {
+                    if (!currentDevice.DeviceScreen.Any(p => p.ScreenId == screen.ID))
+                    {
+                        screenConfigChanged = true;
+                        break;
+                    }                   
+                }
+
+                foreach (var screen in currentDevice.DeviceScreen)
+                {
+                    if (!requestedDevice.Screens.Any(p => p.ID == screen.ScreenId))
+                    {
+                        screenConfigChanged = true;
+                        break;
+                    }
+                }
+
+                if (screenConfigChanged)
+                {
+                    string oldScreens = string.Join(Environment.NewLine, currentDevice.DeviceScreen.Select(p => p.DeviceName));
+                    string newScreens = string.Join(Environment.NewLine, requestedDevice.Screens.Select(p => p.DeviceName));
+                    var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"{prefix} detected screen changes.\n\nOld screens:\n{oldScreens}\n\nNew screens:\n{newScreens}", LogEntry.LogLevel.Information, true);
+                    await _context.DeviceLog.AddAsync(logEntry);
+                }
+            }
         }
 
         private async Task NotifyWebhookGraphicsChangeAsync(home.Models.Device currentDevice, Home.Model.Device requestedDevice)

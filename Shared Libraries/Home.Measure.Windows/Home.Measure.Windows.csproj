@@ -57,6 +57,7 @@
     <Compile Include="Native.cs" />
     <Compile Include="NET.cs" />
     <Compile Include="Performance.cs" />
+    <Compile Include="ScreenInterrogatory.cs" />
     <Compile Include="SMART\SmartAttribute.cs" />
     <Compile Include="SMART\SmartWMI.cs" />
     <Compile Include="WMI.cs" />
