@@ -342,5 +342,23 @@ namespace Home.Controls
         }
     }
 
+    public class DefaultConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is Home.Model.Screen sr && sr.DeviceName == "Default")
+                return "All";
+            else if (value is Home.Model.Screen screen)
+                return screen.Index;                
+
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     #endregion
 }

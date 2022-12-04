@@ -15,6 +15,7 @@
 
             <Grid.Resources>
                 <local:ResolutionConverter x:Key="resolutionConverter" />
+                <local:DefaultConverter x:Key="defaultConverter" />
             </Grid.Resources>
 
             <Border x:Name="SubBorder" BorderBrush="{DynamicResource WhiteBrush}" BorderThickness="0" CornerRadius="0">
@@ -89,7 +90,7 @@
 
                                 <Grid MaxHeight="50">
                                     <Image Source="../resources/icons/screen.png" />
-                                    <TextBlock Text="{Binding Index}" Margin="10,5" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="White" FontSize="14" />
+                                    <TextBlock Text="{Binding ., Converter={StaticResource defaultConverter}}" Margin="10,5" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="White" FontSize="14" />
                                 </Grid>
                                 <StackPanel Grid.Column="1" Margin="5,0,0,0">
                                     <TextBlock>
