@@ -13,6 +13,10 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
+            <Grid.Resources>
+                <local:ResolutionConverter x:Key="resolutionConverter" />
+            </Grid.Resources>
+
             <Border x:Name="SubBorder" BorderBrush="{DynamicResource WhiteBrush}" BorderThickness="0" CornerRadius="0">
                 <Grid>
                     <Grid HorizontalAlignment="Left">
@@ -90,7 +94,7 @@
                                 <StackPanel Grid.Column="1" Margin="5,0,0,0">
                                     <TextBlock>
                                         <Run Text="{Binding DeviceName}" FontWeight="Bold" />
-                                        <Run Text="(" /><Run Text="{Binding Resolution}" /><Run Text=")" />
+                                        <Run Text="{Binding Resolution, Converter={StaticResource resolutionConverter}}" Foreground="Gray" />
                                     </TextBlock>
                                     <TextBlock Text="{Binding Manufacturer}" />
                                     <TextBlock Text="{Binding BuiltDate}" />

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Collections.Generic;
+using System.Windows.Data;
 
 namespace Home.Controls
 {
@@ -322,4 +323,24 @@ namespace Home.Controls
             await UpdateScreenShotAsync(lastSelectedDevice);
         }
     }
+
+    #region Converter 
+
+    public class ResolutionConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!string.IsNullOrEmpty(value?.ToString()))
+                return $"({value})";
+
+            return string.Empty;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    #endregion
 }
