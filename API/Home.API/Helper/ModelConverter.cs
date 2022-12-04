@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Writers;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
@@ -104,19 +105,6 @@ namespace Home.API.Helper
                 }
             }
 
-            foreach (var screenshot in device.ScreenshotFileNames)
-            {
-                if (DateTime.TryParseExact(screenshot, Home.Data.Consts.SCREENSHOT_DATE_FILE_FORMAT, System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None, out DateTime dt))
-                {
-                    updateDevice.DeviceScreenshot.Add(new DeviceScreenshot()
-                    {
-                        Device = updateDevice,
-                        ScreenshotFileName = screenshot,
-                        Timestamp = dt
-                    });
-                }
-            }
-
             // Remove all cards which do not belong to this device anymore
             foreach (var graphic in updateDevice.DeviceGraphic)
             {
@@ -140,6 +128,8 @@ namespace Home.API.Helper
             // Screen(s) can be empty but ofc not null
             foreach (var screen in device.Screens)
             {
+                if (string.IsNullOrEmpty(screen.ID)) continue; // ID must be always set, otherwise we cannot continue
+
                 var dbScreen = updateDevice.DeviceScreen.Where(s => s.ScreenId == screen.ID).FirstOrDefault();
                 if (dbScreen == null)
                     updateDevice.DeviceScreen.Add(ConvertScreen(screen, updateDevice));
@@ -149,7 +139,11 @@ namespace Home.API.Helper
                     dbScreen.IsPrimary = screen.IsPrimary;
                     dbScreen.ScreenIndex = screen.Index;
                     dbScreen.DeviceName = screen.DeviceName;
-                    dbScreen.Resolution = screen.Resolution;                    
+                    dbScreen.Resolution = screen.Resolution;
+                    dbScreen.ScreenId = screen.ID;
+                    dbScreen.Manufacturer = screen.Manufacturer;
+                    dbScreen.Serial = screen.Serial;
+                    dbScreen.BuiltDate = screen.BuiltDate;
                 }
             }
 
@@ -218,7 +212,7 @@ namespace Home.API.Helper
 
             // Screenshot
             foreach (var item in device.DeviceScreenshot)
-                result.ScreenshotFileNames.Add(item.ScreenshotFileName);
+                result.Screenshots.Add(new Screenshot() { ScreenIndex = item.Screen?.ScreenIndex, Filename = item.ScreenshotFileName, Timestamp = item.Timestamp });
 
             // Log
             foreach (var item in device.DeviceLog)

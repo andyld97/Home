@@ -15,7 +15,8 @@ namespace Home.Converter
         {
             if (value is Device d)
             {
-                var lastExistingScreenshot = d.ScreenshotFileNames?.LastOrDefault();
+                // Main screen or all screens
+                var lastExistingScreenshot = d.Screenshots.LastOrDefault(x => x.ScreenIndex == 0 || x.ScreenIndex == null)?.Filename;
                 if (lastExistingScreenshot != null)
                 {
                     string path = System.IO.Path.Combine(MainWindow.CACHE_PATH, d.ID, lastExistingScreenshot) + ".png";

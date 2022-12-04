@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net;
+using System.Runtime.Intrinsics.X86;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -253,17 +254,20 @@ namespace Home.Service.Windows
             // "full screenshot"
             var apiResult = await api.SendScreenshotAsync(new Screenshot() { DeviceID = ServiceData.Instance.ID, Data = Convert.ToBase64String(result) });
 
-            // Single screenshot for each screen
-            int screenIndex = 0;
-            foreach (var screen in System.Windows.Forms.Screen.AllScreens)
+            // Single screenshot for each screen (only if there is more than one screen, otherwise if there is only 1 screen, we would have 2 equal screenshots)
+            if (System.Windows.Forms.Screen.AllScreens.Length > 1)
             {
-                var screenshot = Convert.ToBase64String(NET.CaputreScreen(screen));
-                var tempResult = await api.SendScreenshotAsync(new Screenshot()
+                int screenIndex = 0;
+                foreach (var screen in System.Windows.Forms.Screen.AllScreens)
                 {
-                    DeviceID = ServiceData.Instance.ID,
-                    ScreenIndex = screenIndex++,
-                    Data = screenshot
-                });
+                    var screenshot = Convert.ToBase64String(NET.CaputreScreen(screen));
+                    var tempResult = await api.SendScreenshotAsync(new Screenshot()
+                    {
+                        DeviceID = ServiceData.Instance.ID,
+                        ScreenIndex = screenIndex++,
+                        Data = screenshot
+                    });
+                }
             }
 #endif
         }

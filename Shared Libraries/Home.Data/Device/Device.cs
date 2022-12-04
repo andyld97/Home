@@ -217,11 +217,11 @@ namespace Home.Model
         #endif
         public ObservableCollection<LogEntry> LogEntries { get; set; } = new ObservableCollection<LogEntry>();
 
-        [JsonProperty("screenshots_file_names")]
+        [JsonProperty("screenshots")]
          #if !LEGACY
-        [System.Text.Json.Serialization.JsonPropertyName("screenshots_file_names")]
+        [System.Text.Json.Serialization.JsonPropertyName("screenshots")]
         #endif
-        public List<string> ScreenshotFileNames { get; set; } = new List<string>();
+        public List<Screenshot> Screenshots { get; set; } = new List<Screenshot>();
 
         [JsonProperty("environment")]
 #if !LEGACY
@@ -535,8 +535,12 @@ namespace Home.Model
                 IsLive = other.IsLive;
 
             // ToDo: *** Only add new screenshots (to prevent duplicate entries and long lists)
-            foreach (var shot in other.ScreenshotFileNames)
-                ScreenshotFileNames.Add(shot);
+            if (other.Screenshots.Count > 0)
+            {
+                Screenshots.Clear();
+                foreach (var shot in other.Screenshots)
+                    Screenshots.Add(shot);
+            }
 
             if (other.Screens.Count > 0)
             {
@@ -918,6 +922,18 @@ namespace Home.Model
         [JsonPropertyName("client_id")]
 #endif
         public string DeviceID { get; set; }
+
+        [JsonProperty("filename")]
+#if !LEGACY
+        [JsonPropertyName("filename")]
+#endif
+        public string Filename { get; set; }
+
+        [JsonProperty("timestamp")]
+#if !LEGACY
+        [JsonPropertyName("timestamp")]
+#endif
+        public DateTime? Timestamp { get; set; }
 
         [JsonProperty("screen_index")]
 #if !LEGACY

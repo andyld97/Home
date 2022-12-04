@@ -309,10 +309,8 @@ namespace Home
 
                 if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceScreenshotRecieved)
                 {
-                    // Get this shot
-                    string screenshotFileName = @event.EventData.EventDevice.ScreenshotFileNames.LastOrDefault();
-                    if (!string.IsNullOrEmpty(screenshotFileName))
-                        await GetScreenshot(@event.EventData.EventDevice, screenshotFileName);
+                    // Update screenshot viewer
+                    await ScreenshotViewer.UpdateScreenShotAsync(@event.EventData.EventDevice);
                 }
                 else
                 {
@@ -344,7 +342,7 @@ namespace Home
                                 RefreshDeviceHolder();
 
                                 if (update)
-                                    await GetScreenshot(oldDevice);
+                                    await ScreenshotViewer.UpdateScreenShotAsync(oldDevice);
                             }
                             else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.LogCleared || @event.EventDescription == Data.Events.EventQueueItem.EventKind.LogEntriesRecieved)
                             {
@@ -378,72 +376,7 @@ namespace Home
             {
                 isUpdating = false;
             }
-        }
-
-        private async Task GetScreenshot(Device device, string fileName = "")
-        {
-            byte[] data = null;
-            bool updateGui = (currentDevice?.ID == device.ID);
-
-            await API.DownloadScreenshotToCache(device, CACHE_PATH, fileName);
-
-            string screenShotFileName = fileName;
-            if (string.IsNullOrEmpty(fileName))
-                screenShotFileName = device.ScreenshotFileNames.LastOrDefault();
-
-            string path = System.IO.Path.Combine(CACHE_PATH, device.ID, screenShotFileName + ".png");
-
-            if (System.IO.File.Exists(path))
-            {
-                if (updateGui && DateTime.TryParseExact(screenShotFileName, Consts.SCREENSHOT_DATE_FILE_FORMAT, CultureInfo.CurrentCulture, DateTimeStyles.AssumeLocal, out DateTime result))
-                    ScreenshotViewer.UpdateDate(result.ToString(Properties.Resources.strDateTimeFormat));
-                else if (updateGui)
-                    ScreenshotViewer.UpdateDate(null);
-
-                try
-                {
-                    data = System.IO.File.ReadAllBytes(path);
-                }
-                catch
-                {
-                    // ignore
-                }
-            }
-            else if (updateGui)
-                ScreenshotViewer.UpdateDate(null);
-
-
-            if (!updateGui)
-                return;
-
-            using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
-            {
-                if (data != null)
-                {
-                    await ms.WriteAsync(data, 0, data.Length);
-                    ms.Seek(0, System.IO.SeekOrigin.Begin);
-                }
-
-                try
-                {
-                    BitmapImage bi = new BitmapImage();
-
-                    if (data != null)
-                        bi = ImageHelper.LoadImage(ms);
-                    else
-                        bi = ImageHelper.LoadImage(string.Empty, true);
-
-                    if (device.Status == Device.DeviceStatus.Offline)
-                        ScreenshotViewer.SetImageSource(ImageHelper.GrayscaleBitmap(bi));
-                    else
-                        ScreenshotViewer.SetImageSource(bi);
-                }
-                catch (Exception)
-                {
-                    ScreenshotViewer.SetImageSource(null);
-                }
-            }
-        }
+        }       
 
         private async void DeviceHolder_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
@@ -456,7 +389,7 @@ namespace Home
                 SwitchFileManager(false);
                 await RefreshSelectedItem();
                 RefreshSelection();
-                await GetScreenshot(currentDevice);
+                await ScreenshotViewer.UpdateScreenShotAsync(currentDevice);
 
                 DeviceInfo.Visibility = Visibility.Visible;
                 DeviceInfoHint.Visibility = Visibility.Collapsed;
@@ -528,7 +461,7 @@ namespace Home
                 currentParagraph.Inlines.Add(new InlineUIContainer(new Image() { Source = bi, Width = 15, Margin = new Thickness(2, 2, 5, 2) }) { BaselineAlignment = BaselineAlignment.Bottom });
                 currentParagraph.Inlines.Add(new Run($"[{entry.Timestamp.ToString(Properties.Resources.strDateTimeFormat)}]: ") { Foreground = new SolidColorBrush(Colors.Gray), BaselineAlignment = BaselineAlignment.TextTop });
                 currentParagraph.Inlines.Add(new Run(entry.Message) { Foreground = foregroundBrush, BaselineAlignment = BaselineAlignment.Bottom });
-                currentParagraph.Inlines.Add(new LineBreak());       
+                currentParagraph.Inlines.Add(new LineBreak());
             }
 
             flowDocument.Blocks.Add(currentParagraph);
@@ -551,7 +484,7 @@ namespace Home
 
             DeviceInfo.DataContext = null;
             DeviceInfo.DataContext = currentDevice;
-            ScreenshotViewer.UpdateDevice(currentDevice);
+            await ScreenshotViewer.UpdateDeviceAsync(currentDevice);
             DeviceInfoDisplay.UpdateDevice(currentDevice);
         }
 

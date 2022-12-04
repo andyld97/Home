@@ -37,6 +37,7 @@
     <None Remove="resources\icons\menu\exit.png" />
     <None Remove="resources\icons\menu\report.png" />
     <None Remove="resources\icons\menu\settings.png" />
+    <None Remove="resources\icons\screen.png" />
     <None Remove="resources\images\logo.png" />
     <None Remove="resources\report\disk_template.html" />
     <None Remove="resources\report\template.html" />
@@ -79,6 +80,7 @@
     <Resource Include="resources\icons\reset_view.png" />
     <Resource Include="resources\icons\devices\tablet.png" />
     <Resource Include="resources\icons\live\online.png" />
+    <Resource Include="resources\icons\screen.png" />
     <Resource Include="resources\images\logo.png" />
     <Resource Include="resources\images\screenshot_default.png" />
     <Resource Include="resources\icons\devices\pi.png" />

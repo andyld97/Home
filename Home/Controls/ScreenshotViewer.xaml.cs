@@ -2,12 +2,16 @@
 using Home.Model;
 using Microsoft.Win32;
 using System;
+using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
+using System.Collections.Generic;
 
 namespace Home.Controls
 {
@@ -16,11 +20,11 @@ namespace Home.Controls
     /// </summary>
     public partial class ScreenshotViewer : UserControl
     {
-        private bool isLittle = true;
+        private bool isSmall = true;
         private string lastDate = string.Empty;
         private Device lastSelectedDevice = null;
 
-        public delegate void resizeHandler(bool isLittle);
+        public delegate void resizeHandler(bool isSmall);
         public event resizeHandler OnResize;
 
         public event EventHandler OnScreenShotAquired;
@@ -30,10 +34,45 @@ namespace Home.Controls
             InitializeComponent();
         }
 
-        public void SetImageSource(ImageSource bi)
+        #region Image Source
+
+        private void SetImageSource(ImageSource bi)
         {
             ImageViewer.SetImageSource(bi);
         }
+
+        private async Task SetImageSourceAsync(byte[] data, string path, bool grayscale)
+        {
+            using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
+            {
+                if (data != null)
+                {
+                    await ms.WriteAsync(data, 0, data.Length);
+                    ms.Seek(0, System.IO.SeekOrigin.Begin);
+                }
+
+                try
+                {
+                    BitmapImage bi = new BitmapImage();
+
+                    if (data != null)
+                        bi = ImageHelper.LoadImage(ms);
+                    else
+                        bi = ImageHelper.LoadImage(path, true);
+
+                    if (grayscale)
+                        SetImageSource(ImageHelper.GrayscaleBitmap(bi));
+                    else
+                        SetImageSource(bi);
+                }
+                catch (Exception)
+                {
+                    SetImageSource(null);
+                }
+            }
+        }
+
+        #endregion
 
         public void UpdateDate(string text)
         {
@@ -45,22 +84,117 @@ namespace Home.Controls
             if (lastSelectedDevice.OS == Device.OSType.Android)
                 lastDate = text = $"{lastSelectedDevice.LastSeen.ToString(Properties.Resources.strDateTimeFormat)}";
 
-            if (lastSelectedDevice.IsLive != null && lastSelectedDevice.IsLive.HasValue && lastSelectedDevice.IsLive.Value)
+            if (lastSelectedDevice.IsLive is true)
                 TextLive.Text = $"Live - {text}";
             else
                 TextLive.Text = $"{text}";
         }
 
-        public void UpdateDevice(Device device)
+        public async Task UpdateDeviceAsync(Device device)
         {
             if (device == null)
                 return;
+
+            bool restoreIndex = false;
+
+            if (lastSelectedDevice?.ID == device.ID)
+                restoreIndex = true;
 
             lastSelectedDevice = device;
             bool enabled = device.Status != Device.DeviceStatus.Offline;
             bool status = device.IsLive ?? false;
 
+            int previousIndex = cmbScreens.SelectedIndex;
+
+            var screens = new List<Screen>();
+            if (device.Screens.Count != 1)
+                screens.Add(new Screen() { DeviceName = "Default" });
+            screens.AddRange(device.Screens);
+            cmbScreens.ItemsSource = screens;
+
+            if (previousIndex != -1 && device.Screens.Count > 0 && restoreIndex)
+                cmbScreens.SelectedIndex = previousIndex;
+            else if (screens.Count > 0)
+                cmbScreens.SelectedIndex = 0;
+
             UpdateLiveStatus(status, enabled);
+            await UpdateScreenShotAsync(device);
+        }
+
+        public async Task UpdateScreenShotAsync(Device device)
+        {
+            // Update the screenshot viewer, respecting the combobox which display is selected 
+            if (device == null)
+            {
+                SetImageSource(null);
+                return;
+            }
+
+            int selectedIndex = cmbScreens.SelectedIndex;
+            bool isOnlyOneScreen = device.Screens.Count == 1;
+            bool grayscale = device.Status == Device.DeviceStatus.Offline;
+            byte[] data = null;
+            string filePath = string.Empty;
+
+            if (device.Screenshots.Count == 0)
+            {
+                // nothing here
+            }
+            else if (isOnlyOneScreen)
+            {
+                if (device.Screenshots.Count > 0)
+                {
+                    var shot = device.Screenshots.LastOrDefault();
+                    if (shot != null)
+                        filePath = await DownloadScreenshotAsync(device, shot);
+                }
+            }
+            else if (selectedIndex != 0)
+            {
+                var shot = device.Screenshots.LastOrDefault(p => p.ScreenIndex == cmbScreens.SelectedIndex - 1); // don't forget item 0 is default and doesn't actually represents a physical screen
+                if (shot != null)
+                    filePath = await DownloadScreenshotAsync(device, shot);
+                else
+                {
+                    SetImageSource(null);
+                    return;
+                }
+            }
+            else
+            {
+                // Display last screenshot with (ScreenIndex == null) or if not available the last screenshot without (ScreenIndex == null)
+                var shot = device.Screenshots.LastOrDefault(p => p.ScreenIndex == null);
+                if (shot == null)
+                    shot = device.Screenshots.LastOrDefault();
+
+                if (shot == null)
+                {
+                    SetImageSource(null);
+                    return;
+                }
+
+                filePath = await DownloadScreenshotAsync(device, shot);
+            }
+
+            await SetImageSourceAsync(data, filePath, grayscale);
+        }
+
+        private async Task<string> DownloadScreenshotAsync(Device device, Screenshot screenshot)
+        {
+            string path = System.IO.Path.Combine(MainWindow.CACHE_PATH, device.ID, screenshot.Filename) + ".png";
+            if (!System.IO.File.Exists(path))
+            {
+                if (await MainWindow.API.DownloadScreenshotToCache(device, MainWindow.CACHE_PATH, screenshot.Filename))
+                {
+                    // succuessfully downloaded image to cache
+                }
+            }
+
+            // Display timestamp and return path
+            if (screenshot.Timestamp != null)
+                UpdateDate(screenshot.Timestamp.Value.ToString(Properties.Resources.strDateTimeFormat));
+
+            return path;
         }
 
         private void UpdateToggleButton(bool state, bool enabled)
@@ -114,8 +248,8 @@ namespace Home.Controls
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 AnimateButton(sender);
-                isLittle = !isLittle;
-                OnResize?.Invoke(isLittle);
+                isSmall = !isSmall;
+                OnResize?.Invoke(isSmall);
             }
         }
 
@@ -149,6 +283,7 @@ namespace Home.Controls
                 }
                 catch (Exception ex)
                 {
+                    // ToDo: *** Localize
                     MessageBox.Show($"Fehler beim Speichern des Bildes: {ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
@@ -161,6 +296,7 @@ namespace Home.Controls
                 AnimateButton(sender);
                 if (lastSelectedDevice?.Status == Device.DeviceStatus.Offline)
                 {
+                    // ToDo: *** Localize
                     MessageBox.Show("Das Gerät ist offline - wechseln in den Live Modus nicht möglich!", "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
@@ -179,6 +315,11 @@ namespace Home.Controls
                 AnimateButton(sender);
                 ImageViewer.Reset();
             }
+        }
+
+        private async void cmbScreens_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            await UpdateScreenShotAsync(lastSelectedDevice);
         }
     }
 }

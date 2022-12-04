@@ -60,7 +60,7 @@ namespace Home.API.Controllers
             {
                 _logger.LogWarning($"Client {client} was already logged in!");
 
-                // But updated LastClientRequest
+                // But update LastClientRequest anyways
                 lock (Program.EventQueues)
                 {
                     var queue = Program.EventQueues.Where(d => d.ClientID == client.ID).FirstOrDefault();
