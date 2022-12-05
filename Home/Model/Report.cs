@@ -76,6 +76,58 @@ namespace Model
             htmlTemplate = htmlTemplate.Replace("{h2}", f(ByteUnit.FromGB(Convert.ToUInt64(device.Environment.TotalRAM)).ToString()));
             htmlTemplate = htmlTemplate.Replace("{h3}", f(string.Join(Environment.NewLine, device.Environment.GraphicCards)));
 
+            if (device.Screens.Count == 0)
+                htmlTemplate = htmlTemplate.Replace("{screen}", string.Empty);
+            else
+            {
+                string screenTemplate = string.Empty;
+
+                // ToDo: *** Translate
+                screenTemplate = "<h3>Screens</h3>";
+                screenTemplate += "<table>";
+                screenTemplate += "<tr><th class=\"column\">{property}</th><th class=\"column2\">{value}</th></tr>";
+
+                foreach (var screen in device.Screens)
+                {
+                    string subTemplate = string.Empty;
+
+                    subTemplate += "<tr>";
+                    subTemplate += "<td class=\"property\">ID:</td>";
+                    subTemplate += $"<td>{screen.ID}</td>";
+                    subTemplate += "</tr>";
+
+                    subTemplate += "<tr>";
+                    subTemplate += "<td class=\"property\">Name:</td>";
+                    subTemplate += $"<td>{screen.DeviceName}</td>";
+                    subTemplate += "</tr>";
+
+                    subTemplate += "<tr>";
+                    subTemplate += "<td class=\"property\">Built Date:</td>";
+                    subTemplate += $"<td>{screen.BuiltDate}</td>";
+                    subTemplate += "</tr>";
+
+                    subTemplate += "<tr>";
+                    subTemplate += "<td class=\"property\">Resolution:</td>";
+                    subTemplate += $"<td>{screen.Resolution}</td>";
+                    subTemplate += "</tr>";
+
+                    subTemplate += "<tr>";
+                    subTemplate += "<td class=\"property\">Index:</td>";
+                    subTemplate += $"<td>{screen.Index}</td>";
+                    subTemplate += "</tr>";
+
+                    subTemplate += "<tr>";
+                    subTemplate += "<td class=\"property\">Is Primary:</td>";
+                    subTemplate += $"<td>{(screen.IsPrimary ? "true" : "false")}</td>";
+                    subTemplate += "</tr>";
+
+                    screenTemplate += subTemplate;
+                }
+
+                screenTemplate += "</table>";
+                htmlTemplate = htmlTemplate.Replace("{screen}", screenTemplate);
+            }
+
             // Warnings
             string warningsText = string.Empty;
 
