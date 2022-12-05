@@ -73,7 +73,7 @@ namespace Home.Measure.Windows
             JArray screens = new JArray();
             int index = 0;
 
-            foreach (var item in System.Windows.Forms.Screen.AllScreens)
+            foreach (var item in System.Windows.Forms.Screen.AllScreens.OrderBy(a => a.DeviceName))
             {
                 JObject screen = new JObject();
 
