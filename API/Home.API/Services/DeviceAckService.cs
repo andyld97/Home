@@ -404,8 +404,12 @@ namespace Home.API.Services
                 {
                     string oldScreens = string.Join(Environment.NewLine, currentDevice.DeviceScreen.Select(p => p.DeviceName));
                     string newScreens = string.Join(Environment.NewLine, requestedDevice.Screens.Select(p => p.DeviceName));
-                    var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"{prefix} detected screen changes.\n\nOld screens:\n{oldScreens}\n\nNew screens:\n{newScreens}", LogEntry.LogLevel.Information, true);
-                    await _context.DeviceLog.AddAsync(logEntry);
+
+                    if (oldScreens.Trim() != newScreens.Trim())
+                    {
+                        var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"{prefix} detected screen changes.\n\nOld screens:\n{oldScreens}\n\nNew screens:\n{newScreens}", LogEntry.LogLevel.Information, true);
+                        await _context.DeviceLog.AddAsync(logEntry);
+                    }
                 }
             }
         }
