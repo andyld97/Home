@@ -118,6 +118,11 @@ namespace Home.Controls
             else if (screens.Count > 0)
                 cmbScreens.SelectedIndex = 0;
 
+            if (device.Screens.Count == 0)
+                cmbScreens.Visibility = Visibility.Collapsed;
+            else
+                cmbScreens.Visibility = Visibility.Visible;
+
             UpdateLiveStatus(status, enabled);
             await UpdateScreenShotAsync(device);
         }
