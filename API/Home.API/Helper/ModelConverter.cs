@@ -148,15 +148,19 @@ namespace Home.API.Helper
             }
 
             // Check for screen(s) which not belong to the device anymore
-            foreach (var screen in device.Screens)
+
+            List<DeviceScreen> toRemove = new List<DeviceScreen>();
+            foreach (var screen in updateDevice.DeviceScreen)
             {
-                if (updateDevice.DeviceScreen.Any(sr => sr.ScreenId == screen.ID))
+                if (device.Screens.Any(sr => sr.ID == screen.ScreenId))
                     continue;
 
                 // Delete it
-                var toRemove = updateDevice.DeviceScreen.FirstOrDefault(p => p.ScreenId == screen.ID);
-                homeContext.DeviceScreen.Remove(toRemove);
+                toRemove.Add(screen);   
             }
+
+            foreach (var item in toRemove)
+                homeContext.DeviceScreen.Remove(item);
 
             return updateDevice;
         }
