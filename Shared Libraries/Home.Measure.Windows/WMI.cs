@@ -85,7 +85,12 @@ namespace Home.Measure.Windows
                     screen["built_date"] = wmiInfo[index]["built_date"];
                 }
                 else
+                {
                     screen["id"] = item.DeviceName;
+                    screen["manufacturer"] = "Unknown";
+                    screen["serial"] = "Unknown";
+                    screen["built_date"] = "Unknown";
+                }
 
                 screen["index"] = index++;
                 screen["is_primary"] = item.Primary;
@@ -98,8 +103,11 @@ namespace Home.Measure.Windows
                 }
                 catch
                 {
-                    screenName = item.DeviceName;
+                    
                 }
+
+                if (string.IsNullOrEmpty(screenName?.Trim()))
+                    screenName = item.DeviceName;
 
                 screen["device_name"] = screenName;
                 screen["resolution"] = $"{item.Bounds.Width}x{item.Bounds.Height}";

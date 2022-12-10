@@ -424,10 +424,7 @@ namespace Home.API.Helper
             var now = DateTime.Now;
 
             if (notifyWebHook && Program.GlobalConfig.UseWebHook)
-            {
-                string webHookMessage = $"[{now.ToString(Program.GlobalConfig.WebHookDateTimeFormat)}]: {message}";
-                Program.WebHookLogging.Enqueue(webHookMessage);
-            }
+                Program.WebHookLogging.Enqueue(message);
 
             return new DeviceLog()
             {

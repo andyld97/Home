@@ -69,34 +69,18 @@ Source: "bin\Release\net7.0-windows\publish\Home.Service.Windows.exe.config"; De
 Source: "bin\Release\net7.0-windows\publish\Home.Service.Windows.pdb"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\Home.Service.Windows.runtimeconfig.json"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\Microsoft.Bcl.AsyncInterfaces.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net7.0-windows\publish\Microsoft.Win32.Registry.AccessControl.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net7.0-windows\publish\Microsoft.Win32.SystemEvents.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\Serialization.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net7.0-windows\publish\System.CodeDom.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\System.ComponentModel.Composition.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\System.ComponentModel.Composition.Registration.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net7.0-windows\publish\System.Configuration.ConfigurationManager.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\System.Data.Odbc.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\System.Data.OleDb.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\System.Data.SqlClient.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net7.0-windows\publish\System.Diagnostics.EventLog.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net7.0-windows\publish\System.Diagnostics.PerformanceCounter.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net7.0-windows\publish\System.DirectoryServices.AccountManagement.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net7.0-windows\publish\System.DirectoryServices.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net7.0-windows\publish\System.DirectoryServices.Protocols.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net7.0-windows\publish\System.Drawing.Common.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net7.0-windows\publish\System.Formats.Asn1.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net7.0-windows\publish\System.IO.Packaging.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\System.IO.Ports.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\System.Management.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\System.Private.ServiceModel.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\System.Reflection.Context.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\System.Runtime.Caching.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net7.0-windows\publish\System.Security.Cryptography.Pkcs.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net7.0-windows\publish\System.Security.Cryptography.ProtectedData.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net7.0-windows\publish\System.Security.Cryptography.Xml.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net7.0-windows\publish\System.Security.Permissions.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\System.ServiceModel.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\System.ServiceModel.Duplex.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\System.ServiceModel.Http.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -106,12 +90,7 @@ Source: "bin\Release\net7.0-windows\publish\System.ServiceModel.Security.dll"; D
 Source: "bin\Release\net7.0-windows\publish\System.ServiceModel.Syndication.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\System.ServiceProcess.ServiceController.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\System.Speech.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net7.0-windows\publish\System.Text.Encoding.CodePages.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net7.0-windows\publish\System.Text.Encodings.Web.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net7.0-windows\publish\System.Text.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net7.0-windows\publish\System.Threading.AccessControl.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\System.Web.Services.Description.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net7.0-windows\publish\System.Windows.Extensions.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

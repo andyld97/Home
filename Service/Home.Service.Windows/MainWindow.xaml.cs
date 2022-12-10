@@ -8,6 +8,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Net;
 using System.Runtime.Intrinsics.X86;
 using System.Threading.Tasks;
@@ -258,7 +259,7 @@ namespace Home.Service.Windows
             if (System.Windows.Forms.Screen.AllScreens.Length > 1)
             {
                 int screenIndex = 0;
-                foreach (var screen in System.Windows.Forms.Screen.AllScreens)
+                foreach (var screen in System.Windows.Forms.Screen.AllScreens.OrderBy(p => p.DeviceName))
                 {
                     var screenshot = Convert.ToBase64String(NET.CaputreScreen(screen));
                     var tempResult = await api.SendScreenshotAsync(new Screenshot()

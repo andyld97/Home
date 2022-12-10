@@ -18,8 +18,8 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
+using WebhookAPI;
 using static Home.API.Helper.ModelConverter;
-
 namespace Home.API
 {
     public class Program
@@ -30,6 +30,7 @@ namespace Home.API
         public readonly static Dictionary<Client, List<string>> LiveModeAssoc = new Dictionary<Client, List<string>>();
         public readonly static Dictionary<string, bool> AckErrorSentAssoc = new Dictionary<string, bool>();
         public static ConcurrentQueue<string> WebHookLogging = new ConcurrentQueue<string>();
+        public static Webhook WebHook;
 
         public static Config GlobalConfig;
 
@@ -62,6 +63,9 @@ namespace Home.API
                 _logger.LogInformation("No config file found ...");
                 GlobalConfig = new Config();
             }
+
+            // Initalize webhook
+            WebHook = new Webhook(GlobalConfig.WebHookUrl, "Home");
 
             CreateHostBuilder(args).Build().Run();
         }
