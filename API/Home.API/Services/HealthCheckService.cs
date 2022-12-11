@@ -17,6 +17,7 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
+using WebhookAPI;
 using Device = Home.API.home.Models.Device;
 
 namespace Home.API.Services
@@ -144,8 +145,8 @@ namespace Home.API.Services
                     // Send log messages
                     while (!Program.WebHookLogging.IsEmpty)
                     {
-                        if (Program.WebHookLogging.TryDequeue(out string message))
-                            await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Info, message, "Message Queue");
+                        if (Program.WebHookLogging.TryDequeue(out (Webhook.LogLevel, string) value))
+                            await Program.WebHook.PostWebHookAsync(value.Item1, value.Item2, "Message Queue");
                         else
                             break;
                     }

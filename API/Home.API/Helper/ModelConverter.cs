@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using WebhookAPI;
 using static Home.Model.Device;
 using Device = Home.Model.Device;
 
@@ -424,7 +425,7 @@ namespace Home.API.Helper
             var now = DateTime.Now;
 
             if (notifyWebHook && Program.GlobalConfig.UseWebHook)
-                Program.WebHookLogging.Enqueue(message);
+                Program.WebHookLogging.Enqueue((ConvertLogLevelForWebhook(level), message));
 
             return new DeviceLog()
             {
@@ -438,7 +439,7 @@ namespace Home.API.Helper
         public static DeviceLog ConvertLogEntry(home.Models.Device device, LogEntry logEntry)
         {
             if (logEntry.NotifyWebHook && Program.GlobalConfig.UseWebHook)
-                Program.WebHookLogging.Enqueue(logEntry.Message);
+                Program.WebHookLogging.Enqueue((ConvertLogLevelForWebhook(logEntry.Level), logEntry.Message));
 
             return new DeviceLog()
             {
@@ -447,6 +448,20 @@ namespace Home.API.Helper
                 Timestamp = logEntry.Timestamp,
                 LogLevel = (int)logEntry.Level
             };
+        }
+
+        private static Webhook.LogLevel ConvertLogLevelForWebhook(LogEntry.LogLevel level)
+        {
+            Webhook.LogLevel dLevel = Webhook.LogLevel.Info;
+            switch (level)
+            {
+                case LogEntry.LogLevel.Debug:
+                case LogEntry.LogLevel.Information: dLevel = Webhook.LogLevel.Info; break;
+                case LogEntry.LogLevel.Warning: dLevel = Webhook.LogLevel.Warning; break;
+                case LogEntry.LogLevel.Error: dLevel = Webhook.LogLevel.Error; break;
+            }
+
+            return dLevel;
         }
     }
 }
