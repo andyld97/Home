@@ -40,6 +40,7 @@
     <None Remove="resources\icons\screen.png" />
     <None Remove="resources\images\logo.png" />
     <None Remove="resources\report\disk_template.html" />
+    <None Remove="resources\report\display_template.html" />
     <None Remove="resources\report\template.html" />
     <None Remove="resources\report\warning_template.html" />
   </ItemGroup>
@@ -138,6 +139,7 @@
     <Resource Include="resources\icons\devices\desktop_linux.png" />
     <Content Include="resources\icons\devices\desktop_mint.png" />
     <EmbeddedResource Include="resources\report\disk_template.html" />
+    <EmbeddedResource Include="resources\report\display_template.html" />
     <EmbeddedResource Include="resources\report\template.html" />
     <EmbeddedResource Include="resources\report\warning_template.html" />
     <Resource Include="resources\icons\devices\pi.old.png" />

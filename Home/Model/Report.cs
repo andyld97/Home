@@ -84,47 +84,22 @@ namespace Model
 
                 // ToDo: *** Translate
                 screenTemplate = "<h3>Screens</h3>";
-                screenTemplate += "<table>";
-                screenTemplate += "<tr><th class=\"column\">{property}</th><th class=\"column2\">{value}</th></tr>";
 
+                string tmp = GetHtmlTemplate("display_template");
                 foreach (var screen in device.Screens)
                 {
-                    string subTemplate = string.Empty;
+                    string subTemplate = tmp;
 
-                    subTemplate += "<tr>";
-                    subTemplate += "<td class=\"property\">ID:</td>";
-                    subTemplate += $"<td>{screen.ID}</td>";
-                    subTemplate += "</tr>";
+                    subTemplate = subTemplate.Replace("{dp0}", screen.ID);
+                    subTemplate = subTemplate.Replace("{dp1}", screen.DeviceName);
+                    subTemplate = subTemplate.Replace("{dp2}", screen.BuiltDate);
+                    subTemplate = subTemplate.Replace("{dp3}", screen.Resolution);
+                    subTemplate = subTemplate.Replace("{dp4}", screen.Index.ToString());
+                    subTemplate = subTemplate.Replace("{dp5}", screen.IsPrimary ? "Yes" : "No");
 
-                    subTemplate += "<tr>";
-                    subTemplate += "<td class=\"property\">Name:</td>";
-                    subTemplate += $"<td>{screen.DeviceName}</td>";
-                    subTemplate += "</tr>";
-
-                    subTemplate += "<tr>";
-                    subTemplate += "<td class=\"property\">Built Date:</td>";
-                    subTemplate += $"<td>{screen.BuiltDate}</td>";
-                    subTemplate += "</tr>";
-
-                    subTemplate += "<tr>";
-                    subTemplate += "<td class=\"property\">Resolution:</td>";
-                    subTemplate += $"<td>{screen.Resolution}</td>";
-                    subTemplate += "</tr>";
-
-                    subTemplate += "<tr>";
-                    subTemplate += "<td class=\"property\">Index:</td>";
-                    subTemplate += $"<td>{screen.Index}</td>";
-                    subTemplate += "</tr>";
-
-                    subTemplate += "<tr>";
-                    subTemplate += "<td class=\"property\">Is Primary:</td>";
-                    subTemplate += $"<td>{(screen.IsPrimary ? "true" : "false")}</td>";
-                    subTemplate += "</tr>";
-
-                    screenTemplate += subTemplate;
+                    screenTemplate += $"{subTemplate}<hr />";
                 }
 
-                screenTemplate += "</table>";
                 htmlTemplate = htmlTemplate.Replace("{screen}", screenTemplate);
             }
 

@@ -136,7 +136,7 @@ namespace Home.API.Services
                         _logger.LogError($"Critical Exception from HealthCheck-Service: {ex.ToString()}");
 
                         if (ShouldNotifyWebHook())
-                            await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, $"CRICTIAL EXCEPTION from Background Service: {ex.ToString()}", "HealtCheckService");
+                            await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, $"CRICTIAL EXCEPTION from Background Service: {ex.ToString()}", "HealthCheckService");
                     }
                 }
  
@@ -163,7 +163,7 @@ namespace Home.API.Services
                         _logger.LogError($"Critical Exception from HealthCheck-Service (while saving): {ex.Message}");
 
                         if (ShouldNotifyWebHook())
-                            await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, $"CRICTIAL EXCEPTION from Background Service: {ex.ToString()}", "HealtCheckService");
+                            await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, $"CRICTIAL EXCEPTION from Background Service: {ex.ToString()}", "HealthCheckService");
                     }
                 }
             }
