@@ -58,14 +58,14 @@
     </PackageReference>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Web.WebView2">
-      <Version>1.0.1418.22</Version>
+      <Version>1.0.1462.37</Version>
     </PackageReference>
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.6.0-preview3.19128.7" />
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.355802">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.0" />
-    <PackageReference Include="WebhookAPI" Version="1.0.0" />
+    <PackageReference Include="WebhookAPI" Version="1.0.1" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="resources\icons\explorer\html_file.png" />
