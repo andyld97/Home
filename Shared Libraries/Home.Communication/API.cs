@@ -16,7 +16,7 @@ namespace Home.Communication
     {
         private readonly string host = string.Empty;
 
-        public static readonly HttpClient httpClient = new HttpClient() { Timeout = TimeSpan.FromSeconds(5)  };
+        public static readonly HttpClient httpClient = new HttpClient() { Timeout = TimeSpan.FromSeconds(10)  };
         public static readonly string BASE_URL = "{0}/api/v1/";
         public static readonly string COMMUNICATION_C = "communication";
         public static readonly string DEVICE_C = "device";
@@ -321,9 +321,12 @@ namespace Home.Communication
 
             if (string.IsNullOrEmpty(fileName))
             {
-                if (device.ScreenshotFileNames.Any())
+                if (device.Screenshots.Any())
                 {
-                    string lastFileName = device.ScreenshotFileNames.LastOrDefault();
+                    string lastFileName = device.Screenshots.LastOrDefault(x => x.ScreenIndex == null)?.Filename;
+                    if (string.IsNullOrEmpty(lastFileName))
+                        lastFileName = device.Screenshots.LastOrDefault()?.Filename;
+
                     string path = System.IO.Path.Combine(cacheDevicePath, lastFileName + ".png");
 
                     if (System.IO.File.Exists(path))

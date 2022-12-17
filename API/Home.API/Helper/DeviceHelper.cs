@@ -13,15 +13,15 @@ namespace Home.API.Helper
         {
             return await context.Device.Include(d => d.DeviceLog)
                                        .Include(p => p.DeviceGraphic)
-                                       .Include(p => p.Environment)
-                                       .ThenInclude(p => p.Battery)
+                                       .Include(p => p.Environment).ThenInclude(p => p.Battery)
                                        .Include(p => p.DeviceDiskDrive)
                                        .Include(p => p.DeviceType)
-                                       .Include(p => p.DeviceScreenshot)
                                        .Include(p => p.DeviceUsage)
                                        .Include(p => p.DeviceCommand)
                                        .Include(p => p.DeviceMessage)
                                        .Include(p => p.DeviceWarning)
+                                       .Include(p => p.DeviceScreen)
+                                       .Include(p => p.DeviceScreenshot).ThenInclude(p => p.Screen) 
                                        .Include(p => p.OstypeNavigation).Where(p => p.Guid == guid).FirstOrDefaultAsync();
         }
 
@@ -29,15 +29,15 @@ namespace Home.API.Helper
         {
             var devices = context.Device.Include(d => d.DeviceLog)
                                        .Include(p => p.DeviceGraphic)
-                                       .Include(p => p.Environment)
-                                       .ThenInclude(p => p.Battery)
+                                       .Include(p => p.Environment).ThenInclude(p => p.Battery)
                                        .Include(p => p.DeviceDiskDrive)
                                        .Include(p => p.DeviceType)
-                                       .Include(p => p.DeviceScreenshot)
                                        .Include(p => p.DeviceUsage)
                                        .Include(p => p.DeviceCommand)
                                        .Include(p => p.DeviceMessage)
                                        .Include(p => p.DeviceWarning)
+                                       .Include(p => p.DeviceScreen)
+                                       .Include(p => p.DeviceScreenshot).ThenInclude(p => p.Screen)
                                        .Include(p => p.OstypeNavigation);
 
             if (noTracking)
@@ -50,15 +50,15 @@ namespace Home.API.Helper
         {
             var list = await context.Device.Include(d => d.DeviceLog)
                                            .Include(p => p.DeviceGraphic)
-                                           .Include(p => p.Environment)
-                                           .ThenInclude(p => p.Battery)
+                                           .Include(p => p.Environment).ThenInclude(p => p.Battery)
                                            .Include(p => p.DeviceDiskDrive)
                                            .Include(p => p.DeviceType)
-                                           .Include(p => p.DeviceScreenshot)
                                            .Include(p => p.DeviceUsage)
                                            .Include(p => p.DeviceCommand)
                                            .Include(p => p.DeviceMessage)
                                            .Include(p => p.DeviceWarning)
+                                           .Include(p => p.DeviceScreen)
+                                           .Include(p => p.DeviceScreenshot).ThenInclude(p => p.Screen)
                                            .Include(p => p.OstypeNavigation).Where(d => d.Status).ToListAsync();
 
             return list.Where(d => d.LastSeen.Add(Program.GlobalConfig.RemoveInactiveClients) < DateTime.Now);

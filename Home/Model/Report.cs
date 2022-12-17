@@ -76,6 +76,33 @@ namespace Model
             htmlTemplate = htmlTemplate.Replace("{h2}", f(ByteUnit.FromGB(Convert.ToUInt64(device.Environment.TotalRAM)).ToString()));
             htmlTemplate = htmlTemplate.Replace("{h3}", f(string.Join(Environment.NewLine, device.Environment.GraphicCards)));
 
+            if (device.Screens.Count == 0)
+                htmlTemplate = htmlTemplate.Replace("{screen}", string.Empty);
+            else
+            {
+                string screenTemplate = string.Empty;
+
+                // ToDo: *** Translate
+                screenTemplate = "<h3>Screens</h3>";
+
+                string tmp = GetHtmlTemplate("display_template");
+                foreach (var screen in device.Screens)
+                {
+                    string subTemplate = tmp;
+
+                    subTemplate = subTemplate.Replace("{dp0}", screen.ID);
+                    subTemplate = subTemplate.Replace("{dp1}", screen.DeviceName);
+                    subTemplate = subTemplate.Replace("{dp2}", screen.BuiltDate);
+                    subTemplate = subTemplate.Replace("{dp3}", screen.Resolution);
+                    subTemplate = subTemplate.Replace("{dp4}", screen.Index.ToString());
+                    subTemplate = subTemplate.Replace("{dp5}", screen.IsPrimary ? "Yes" : "No");
+
+                    screenTemplate += $"{subTemplate}<hr />";
+                }
+
+                htmlTemplate = htmlTemplate.Replace("{screen}", screenTemplate);
+            }
+
             // Warnings
             string warningsText = string.Empty;
 

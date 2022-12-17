@@ -4,14 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Home.Controls"
-             xmlns:res="clr-namespace:Home.Properties"
-            mc:Ignorable="d">
+             xmlns:res="clr-namespace:Home.Properties" xmlns:fluent="urn:fluent-ribbon"
+             mc:Ignorable="d">
     <Border x:Name="MainBorder" BorderBrush="LightGray" BorderThickness="1" CornerRadius="0">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="42" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
+
+            <Grid.Resources>
+                <local:ResolutionConverter x:Key="resolutionConverter" />
+                <local:DefaultConverter x:Key="defaultConverter" />
+            </Grid.Resources>
 
             <Border x:Name="SubBorder" BorderBrush="{DynamicResource WhiteBrush}" BorderThickness="0" CornerRadius="0">
                 <Grid>
@@ -74,6 +79,32 @@
 
             <Grid Grid.Row="1">
                 <local:ZoomImageViewer x:Name="ImageViewer" />
+                <fluent:ComboBox x:Name="cmbScreens" SelectionChanged="cmbScreens_SelectionChanged" Margin="-9,0,0,0" IsEditable="False" VerticalAlignment="Bottom" MinHeight="50">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Grid MaxHeight="50">
+                                    <Image Source="../resources/icons/screen.png" />
+                                    <TextBlock Text="{Binding ., Converter={StaticResource defaultConverter}}" Margin="10,5" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="White" FontSize="14" />
+                                </Grid>
+                                <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                                    <TextBlock>
+                                        <Run Text="{Binding DeviceName}" FontWeight="Bold" />
+                                        <Run Text="{Binding Resolution, Converter={StaticResource resolutionConverter}}" Foreground="Gray" />
+                                    </TextBlock>
+                                    <TextBlock Text="{Binding Manufacturer}" />
+                                    <TextBlock Text="{Binding BuiltDate}" />
+                                    <!--<TextBlock Text="{Binding ID}" /> -->
+                                </StackPanel>
+                            </Grid>                            
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </fluent:ComboBox>
             </Grid>
         </Grid>
     </Border>

@@ -4,10 +4,13 @@ using Home.Measure.Windows;
 using Home.Model;
 using Home.Service.Windows.Model;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Net;
+using System.Runtime.Intrinsics.X86;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -88,7 +91,8 @@ namespace Home.Service.Windows
                     OSVersion = Environment.OSVersion.ToString(),
                     RunningTime = now.Subtract(startTimestamp),
                     StartTimestamp = startTimestamp
-                }
+                },
+                Screens = GetScreenInformation(),
             };
 
             // Run tick manually on first_start
@@ -112,6 +116,28 @@ namespace Home.Service.Windows
             ackTimer.Tick += AckTimer_Tick;
             ackTimer.Interval = TimeSpan.FromMinutes(1);
             ackTimer.Start();
+        }
+
+        private List<Screen> GetScreenInformation()
+        {
+            List<Screen> screens = new List<Screen>();
+
+            foreach (var screen in WMI.GetScreenInformation())
+            {
+                screens.Add(new Screen()
+                {
+                    ID = screen["id"].Value<string>(),
+                    Manufacturer = screen["manufacturer"].Value<string>(),
+                    Serial = screen["serial"].Value<string>(),
+                    BuiltDate  = screen["built_date"].Value<string>(),
+                    Index = screen["index"].Value<int>(),
+                    IsPrimary = screen["is_primary"].Value<bool>(),
+                    DeviceName = screen["device_name"].Value<string>(),
+                    Resolution = screen["resolution"].Value<string>(),
+                });
+            }
+
+            return screens;
         }
 
         private async void AckTimer_Tick(object sender, EventArgs e)
@@ -169,6 +195,7 @@ namespace Home.Service.Windows
             currentDevice.Environment.Product = product;
             currentDevice.Environment.Description = description;
             currentDevice.Environment.Vendor = vendor;
+            currentDevice.Screens = GetScreenInformation();
 
             bool batteryResult = Home.Measure.Windows.NET.DetermineBatteryInfo(out int batteryPercentage, out bool isCharging);
             if (batteryResult)
@@ -225,7 +252,24 @@ namespace Home.Service.Windows
 #if LEGACY
             var apiResult = legacyAPI.SendScreenshotAsync(new Screenshot() { ClientID = ServiceData.Instance.ID, Data = Convert.ToBase64String(result) });
 #else
+            // "full screenshot"
             var apiResult = await api.SendScreenshotAsync(new Screenshot() { DeviceID = ServiceData.Instance.ID, Data = Convert.ToBase64String(result) });
+
+            // Single screenshot for each screen (only if there is more than one screen, otherwise if there is only 1 screen, we would have 2 equal screenshots)
+            if (System.Windows.Forms.Screen.AllScreens.Length > 1)
+            {
+                int screenIndex = 0;
+                foreach (var screen in System.Windows.Forms.Screen.AllScreens.OrderBy(p => p.DeviceName))
+                {
+                    var screenshot = Convert.ToBase64String(NET.CaputreScreen(screen));
+                    var tempResult = await api.SendScreenshotAsync(new Screenshot()
+                    {
+                        DeviceID = ServiceData.Instance.ID,
+                        ScreenIndex = screenIndex++,
+                        Data = screenshot
+                    });
+                }
+            }
 #endif
         }
 

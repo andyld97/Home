@@ -171,7 +171,7 @@ namespace Home.API.Services
 
                 // Send a notification once
                 if (send && Program.GlobalConfig.UseWebHook)
-                    await WebHook.NotifyWebHookAsync(Program.GlobalConfig.WebHookUrl, $"ACK-ERROR [{requestedDevice.Name}] OCCURED: {ex.ToString()}");
+                    await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, $"ACK-ERROR [{requestedDevice.Name}] OCCURED: {ex.ToString()}", "DeviceAckService");
 
                 return DeviceAckServiceResult.BuildFailure(ex.ToString());
             }
@@ -320,7 +320,7 @@ namespace Home.API.Services
             // Check if a newer client version is used
             if (currentDevice.ServiceClientVersion != requestedDevice.ServiceClientVersion && !string.IsNullOrEmpty(currentDevice.ServiceClientVersion))
             {
-                var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"{prefix} detected new client version: {requestedDevice.ServiceClientVersion}", LogEntry.LogLevel.Information, true);
+                var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"{prefix} detected new client version: {requestedDevice.ServiceClientVersion} (Old version: {currentDevice.ServiceClientVersion})", LogEntry.LogLevel.Information, true);
                 await _context.DeviceLog.AddAsync(logEntry);
             }
 
@@ -374,6 +374,41 @@ namespace Home.API.Services
             {
                 var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"{prefix} detected IP change from {currentDevice.Ip} to {requestedDevice.IP}", LogEntry.LogLevel.Information, true);
                 await _context.DeviceLog.AddAsync(logEntry);
+            }
+
+            // Screens
+            bool screenConfigChanged = false;
+
+            // ToDo: *** Check if the screen itself changes? e.g. check if they are swapped?
+            // currently the notification will only be triggered if a screen will be added/removed
+            foreach (var screen in requestedDevice.Screens)
+            {
+                if (!currentDevice.DeviceScreen.Any(p => p.ScreenId == screen.ID))
+                {
+                    screenConfigChanged = true;
+                    break;
+                }
+            }
+
+            foreach (var screen in currentDevice.DeviceScreen)
+            {
+                if (!requestedDevice.Screens.Any(p => p.ID == screen.ScreenId))
+                {
+                    screenConfigChanged = true;
+                    break;
+                }
+            }
+
+            if (screenConfigChanged)
+            {
+                string oldScreens = string.Join(Environment.NewLine, currentDevice.DeviceScreen.Select(p => p.DeviceName));
+                string newScreens = string.Join(Environment.NewLine, requestedDevice.Screens.Select(p => p.DeviceName));
+
+                if (oldScreens.Trim() != newScreens.Trim())
+                {
+                    var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"{prefix} detected screen changes.\n\nOld screen(s):\n{oldScreens}\n\nNew screen(s):\n{newScreens}", LogEntry.LogLevel.Information, true);
+                    await _context.DeviceLog.AddAsync(logEntry);
+                }
             }
         }
 

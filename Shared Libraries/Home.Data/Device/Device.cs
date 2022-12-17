@@ -217,11 +217,11 @@ namespace Home.Model
         #endif
         public ObservableCollection<LogEntry> LogEntries { get; set; } = new ObservableCollection<LogEntry>();
 
-        [JsonProperty("screenshots_file_names")]
+        [JsonProperty("screenshots")]
          #if !LEGACY
-        [System.Text.Json.Serialization.JsonPropertyName("screenshots_file_names")]
+        [System.Text.Json.Serialization.JsonPropertyName("screenshots")]
         #endif
-        public List<string> ScreenshotFileNames { get; set; } = new List<string>();
+        public List<Screenshot> Screenshots { get; set; } = new List<Screenshot>();
 
         [JsonProperty("environment")]
 #if !LEGACY
@@ -246,6 +246,12 @@ namespace Home.Model
         [JsonPropertyName("usage")]
 #endif
         public DeviceUsage Usage { get; set; } = new DeviceUsage();
+
+        [JsonProperty("screens")]
+#if !LEGACY
+        [JsonPropertyName("screens")]
+#endif
+        public List<Screen> Screens { get; set; } = new List<Screen>();
 
 #if !LEGACY
         #region Properties for Internal API Usage
@@ -529,8 +535,19 @@ namespace Home.Model
                 IsLive = other.IsLive;
 
             // ToDo: *** Only add new screenshots (to prevent duplicate entries and long lists)
-            foreach (var shot in other.ScreenshotFileNames)
-                ScreenshotFileNames.Add(shot);
+            if (other.Screenshots.Count > 0)
+            {
+                Screenshots.Clear();
+                foreach (var shot in other.Screenshots)
+                    Screenshots.Add(shot);
+            }
+
+            if (other.Screens.Count > 0)
+            {
+                Screens.Clear();
+                foreach (var screen in other.Screens)
+                    Screens.Add(screen);
+            }
 
 #if !LEGACY
             IsScreenshotRequired = other.IsScreenshotRequired;
@@ -905,6 +922,24 @@ namespace Home.Model
         [JsonPropertyName("client_id")]
 #endif
         public string DeviceID { get; set; }
+
+        [JsonProperty("filename")]
+#if !LEGACY
+        [JsonPropertyName("filename")]
+#endif
+        public string Filename { get; set; }
+
+        [JsonProperty("timestamp")]
+#if !LEGACY
+        [JsonPropertyName("timestamp")]
+#endif
+        public DateTime? Timestamp { get; set; }
+
+        [JsonProperty("screen_index")]
+#if !LEGACY
+        [JsonPropertyName("screen_index")]
+#endif
+        public int? ScreenIndex { get; set; }
     }
 
     public class DeviceUsage
@@ -996,6 +1031,57 @@ namespace Home.Model
         [JsonPropertyName("battery_level")]
 #endif
         public int BatteryLevelInPercent { get; set; }
+    }
+
+    public class Screen
+    {
+        [JsonProperty("id")]
+#if !LEGACY
+        [JsonPropertyName("id")]
+#endif
+        public string ID { get; set; }
+
+        [JsonProperty("serial")]
+#if !LEGACY
+        [JsonPropertyName("serial")]
+#endif
+        public string Serial { get; set; }
+
+        [JsonProperty("built_date")]
+#if !LEGACY
+        [JsonPropertyName("built_date")]
+#endif
+        public string BuiltDate { get; set; }
+
+        [JsonProperty("manufacturer")]
+#if !LEGACY
+        [JsonPropertyName("manufacturer")]
+#endif
+        public string Manufacturer { get; set; }
+
+        [JsonProperty("index")]
+#if !LEGACY
+        [JsonPropertyName("index")]
+#endif
+        public int Index { get; set; }
+
+        [JsonProperty("is_primary")]
+#if !LEGACY
+        [JsonPropertyName("is_primary")]
+#endif
+        public bool IsPrimary { get; set; }
+
+        [JsonProperty("device_name")]
+#if !LEGACY
+        [JsonPropertyName("device_name")]
+#endif
+        public string DeviceName { get; set; }
+
+        [JsonProperty("resolution")]
+#if !LEGACY
+        [JsonPropertyName("resolution")]
+#endif
+        public string Resolution { get; set; }
     }
 
 

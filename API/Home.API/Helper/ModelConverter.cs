@@ -4,16 +4,19 @@ using Home.API.home.Models;
 using Home.Data;
 using Home.Data.Com;
 using Home.Model;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Writers;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using WebhookAPI;
 using static Home.Model.Device;
 using Device = Home.Model.Device;
 
@@ -103,19 +106,6 @@ namespace Home.API.Helper
                 }
             }
 
-            foreach (var screenshot in device.ScreenshotFileNames)
-            {
-                if (DateTime.TryParseExact(screenshot, Home.Data.Consts.SCREENSHOT_DATE_FILE_FORMAT, System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None, out DateTime dt))
-                {
-                    updateDevice.DeviceScreenshot.Add(new DeviceScreenshot()
-                    {
-                        Device = updateDevice,
-                        ScreenshotFileName = screenshot,
-                        Timestamp = dt
-                    });
-                }
-            }
-
             // Remove all cards which do not belong to this device anymore
             foreach (var graphic in updateDevice.DeviceGraphic)
             {
@@ -135,6 +125,43 @@ namespace Home.API.Helper
                 if (!updateDevice.DeviceGraphic.Any(x => x.Name == graphic))
                     updateDevice.DeviceGraphic.Add(new DeviceGraphic() { Device = updateDevice, Name = graphic });            
             }
+
+            // Screen(s) can be empty but ofc not null
+            foreach (var screen in device.Screens)
+            {
+                if (string.IsNullOrEmpty(screen.ID)) continue; // ID must be always set, otherwise we cannot continue
+
+                var dbScreen = updateDevice.DeviceScreen.Where(s => s.ScreenId == screen.ID).FirstOrDefault();
+                if (dbScreen == null)
+                    updateDevice.DeviceScreen.Add(ConvertScreen(screen, updateDevice));
+                else
+                {
+                    // Update
+                    dbScreen.IsPrimary = screen.IsPrimary;
+                    dbScreen.ScreenIndex = screen.Index;
+                    dbScreen.DeviceName = screen.DeviceName;
+                    dbScreen.Resolution = screen.Resolution;
+                    dbScreen.ScreenId = screen.ID;
+                    dbScreen.Manufacturer = screen.Manufacturer;
+                    dbScreen.Serial = screen.Serial;
+                    dbScreen.BuiltDate = screen.BuiltDate;
+                }
+            }
+
+            // Check for screen(s) which not belong to the device anymore
+
+            List<DeviceScreen> toRemove = new List<DeviceScreen>();
+            foreach (var screen in updateDevice.DeviceScreen)
+            {
+                if (device.Screens.Any(sr => sr.ID == screen.ScreenId))
+                    continue;
+
+                // Delete it
+                toRemove.Add(screen);   
+            }
+
+            foreach (var item in toRemove)
+                homeContext.DeviceScreen.Remove(item);
 
             return updateDevice;
         }
@@ -190,7 +217,7 @@ namespace Home.API.Helper
 
             // Screenshot
             foreach (var item in device.DeviceScreenshot)
-                result.ScreenshotFileNames.Add(item.ScreenshotFileName);
+                result.Screenshots.Add(new Screenshot() { ScreenIndex = item.Screen?.ScreenIndex, Filename = item.ScreenshotFileName, Timestamp = item.Timestamp });
 
             // Log
             foreach (var item in device.DeviceLog)
@@ -203,6 +230,10 @@ namespace Home.API.Helper
             // Hard disks or SSDs
             foreach (var disk in device.DeviceDiskDrive)
                 result.DiskDrives.Add(ConvertDisk(disk));
+
+            // Screens
+            foreach (var screen in device.DeviceScreen)
+                result.Screens.Add(ConvertScreen(screen));
 
             // Usage
             result.Usage = new Home.Model.DeviceUsage();
@@ -307,6 +338,37 @@ namespace Home.API.Helper
             return dbDisk;
         }
 
+        public static Screen ConvertScreen(this home.Models.DeviceScreen deviceScreen)
+        {
+            return new Screen()
+            {
+                DeviceName = deviceScreen.DeviceName,
+                Index = deviceScreen.ScreenIndex,
+                IsPrimary = deviceScreen.IsPrimary,
+                Resolution = deviceScreen.Resolution,
+                BuiltDate = deviceScreen.BuiltDate,
+                ID = deviceScreen.ScreenId,
+                Serial = deviceScreen.Serial,
+                Manufacturer = deviceScreen.Manufacturer
+            };
+        }
+
+        public static home.Models.DeviceScreen ConvertScreen(this Screen screen, home.Models.Device device)
+        {
+            return new home.Models.DeviceScreen
+            {
+                Device = device,
+                DeviceName = screen.DeviceName,
+                IsPrimary = screen.IsPrimary,
+                Resolution= screen.Resolution,
+                ScreenIndex = screen.Index,
+                BuiltDate = screen.BuiltDate,
+                ScreenId = screen.ID,
+                Manufacturer= screen.Manufacturer,
+                Serial = screen.Serial,
+            };
+        }
+
         public static Command ConvertCommand(home.Models.DeviceCommand deviceCommand)
         {
             return new Command()
@@ -363,10 +425,7 @@ namespace Home.API.Helper
             var now = DateTime.Now;
 
             if (notifyWebHook && Program.GlobalConfig.UseWebHook)
-            {
-                string webHookMessage = $"[{now.ToString(Program.GlobalConfig.WebHookDateTimeFormat)}]: {message}";
-                Program.WebHookLogging.Enqueue(webHookMessage);
-            }
+                Program.WebHookLogging.Enqueue((ConvertLogLevelForWebhook(level), message));
 
             return new DeviceLog()
             {
@@ -380,7 +439,7 @@ namespace Home.API.Helper
         public static DeviceLog ConvertLogEntry(home.Models.Device device, LogEntry logEntry)
         {
             if (logEntry.NotifyWebHook && Program.GlobalConfig.UseWebHook)
-                Program.WebHookLogging.Enqueue(logEntry.Message);
+                Program.WebHookLogging.Enqueue((ConvertLogLevelForWebhook(logEntry.Level), logEntry.Message));
 
             return new DeviceLog()
             {
@@ -389,6 +448,20 @@ namespace Home.API.Helper
                 Timestamp = logEntry.Timestamp,
                 LogLevel = (int)logEntry.Level
             };
+        }
+
+        private static Webhook.LogLevel ConvertLogLevelForWebhook(LogEntry.LogLevel level)
+        {
+            Webhook.LogLevel dLevel = Webhook.LogLevel.Info;
+            switch (level)
+            {
+                case LogEntry.LogLevel.Debug:
+                case LogEntry.LogLevel.Information: dLevel = Webhook.LogLevel.Info; break;
+                case LogEntry.LogLevel.Warning: dLevel = Webhook.LogLevel.Warning; break;
+                case LogEntry.LogLevel.Error: dLevel = Webhook.LogLevel.Error; break;
+            }
+
+            return dLevel;
         }
     }
 }
