@@ -180,7 +180,8 @@ namespace Home.API.Services
                 // If a device turns offline, usually the user wants to end the live state if the device is shutdown for example
                 device.IsLive = false;
                 bool notifyWebHook = (device.DeviceTypeId != (int)Home.Model.Device.DeviceType.Smartphone) && (device.DeviceTypeId == (int)Home.Model.Device.DeviceType.SingleBoardDevice || device.DeviceTypeId == (int)Home.Model.Device.DeviceType.Server);
-                var logEntry = ModelConverter.CreateLogEntry(device, $"No activity detected ... Device \"{device.Name}\" was flagged as offline!", LogEntry.LogLevel.Information, notifyWebHook);
+                var level = (notifyWebHook ? LogEntry.LogLevel.Information : LogEntry.LogLevel.Debug);
+                var logEntry = ModelConverter.CreateLogEntry(device, $"No activity detected ... Device \"{device.Name}\" was flagged as offline!", level, notifyWebHook);
                 await homeContext.DeviceLog.AddAsync(logEntry);
 
                 ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.DeviceChangedState, device);
@@ -339,7 +340,9 @@ namespace Home.API.Services
                 {
                     var entry = entries.FirstOrDefault();
                     entry.Device = null;
-                    device.DeviceLog.Remove(entry);
+                    // device.DeviceLog.Remove(entry);
+
+                    homeContext.DeviceLog.Remove(entry);
                     entries.RemoveAt(0);
                 }
 
