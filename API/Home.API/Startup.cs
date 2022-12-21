@@ -40,7 +40,10 @@ namespace Home.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<HomeContext>(options => { 
-                options.UseSqlServer(Program.GlobalConfig.ConnectionString);
+                options.UseSqlServer(Program.GlobalConfig.ConnectionString, options =>
+                {
+                    options.EnableRetryOnFailure();
+                });
                 // ToDo: *** Use split queries 
                 options.ConfigureWarnings(x => x.Ignore(RelationalEventId.MultipleCollectionIncludeWarning));
 
