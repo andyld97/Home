@@ -10,7 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client.Extensions.Msal;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -137,7 +136,7 @@ namespace Home.API.Services
                         _logger.LogError($"Critical Exception from HealthCheck-Service: {ex.ToString()}");
 
                         if (ShouldNotifyWebHook())
-                            await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, $"CRICTIAL EXCEPTION from Background Service: {ex.ToString()}", "HealthCheckService");
+                            await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, $"CRICTIAL EXCEPTION from HealthCheck-Service: {ex.ToString()}", "HealthCheckService");
                     }
                 }
  
