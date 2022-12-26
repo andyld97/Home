@@ -224,7 +224,7 @@ namespace Home.API.Services
 
                 // Add storage warning
                 // But ensure that the warning is only once per device and will be added again if dismissed by the user
-                if (dds.Count > 0)
+                if (dds.Any())
                 {
                     foreach (var disk in dds)
                     {

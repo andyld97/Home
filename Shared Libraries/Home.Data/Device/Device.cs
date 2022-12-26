@@ -760,7 +760,7 @@ namespace Home.Model
 #if !LEGACY
         [JsonPropertyName("media_signature")]
 #endif
-        public uint MediaSignature { get; set; }
+        public ulong MediaSignature { get; set; }
 
         [JsonProperty("media_status")]
 #if !LEGACY

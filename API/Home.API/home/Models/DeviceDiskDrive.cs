@@ -15,7 +15,7 @@ namespace Home.API.home.Models
         public string DiskModel { get; set; }
         public string DiskInterface { get; set; }
         public string MediaType { get; set; }
-        public int? MediaSignature { get; set; }
+        public long? MediaSignature { get; set; }
         public string DriveName { get; set; }
         public string DriveId { get; set; }
         public bool DriveCompressed { get; set; }

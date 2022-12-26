@@ -296,13 +296,13 @@ namespace Home.API.Helper
                 DiskModel = dbDisk.DiskModel,
                 DiskName = dbDisk.DiskName,
                 DriveCompressed = dbDisk.DriveCompressed,
-                DriveID = dbDisk.DiskName,
+                DriveID = dbDisk.DriveId,
                 DriveMediaType = (uint)dbDisk.DriveMediaType,
-                DriveName = dbDisk.DiskName,
+                DriveName = dbDisk.DriveName,
                 DriveType = (uint)dbDisk.DriveType,
                 FileSystem = dbDisk.FileSystem,
                 FreeSpace = (ulong)dbDisk.FreeSpace,
-                MediaSignature = (uint)dbDisk.MediaSignature,
+                MediaSignature = (ulong)dbDisk.MediaSignature,
                 MediaType = dbDisk.MediaType,
                 PhysicalName = dbDisk.PhysicalName,
                 TotalSpace = (ulong)dbDisk.TotalSpace,
@@ -324,7 +324,7 @@ namespace Home.API.Helper
             dbDisk.DriveType = (int)diskDrive.DriveType;
             dbDisk.DriveName = diskDrive.DriveName;
             dbDisk.FileSystem = diskDrive.FileSystem;
-            dbDisk.MediaSignature = (int)diskDrive.MediaSignature;
+            dbDisk.MediaSignature = (long)diskDrive.MediaSignature;
             dbDisk.MediaType = diskDrive.MediaType;
             dbDisk.PhysicalName = diskDrive.PhysicalName;
             dbDisk.TotalSpace = (long)diskDrive.TotalSpace;
@@ -413,7 +413,10 @@ namespace Home.API.Helper
                 {
                     storageWarning.StorageID = entries[0];
                     storageWarning.DiskName = entries[1];
-
+                }
+                else if (entries.Length == 1)
+                {
+                    storageWarning.StorageID = entries[0];
                 }
             }
 

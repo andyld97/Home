@@ -279,7 +279,7 @@ namespace Home.Measure.Windows
                                     var capabilities = (ushort[])d.Properties["Capabilities"].Value; // 3,4,7 - random access, supports writing, 7=removable device
                                     var mediaLoaded = Convert.ToBoolean(d.Properties["MediaLoaded"].Value); // bool
                                     var mediaType = Convert.ToString(d.Properties["MediaType"].Value); // Fixed hard disk media
-                                    var mediaSignature = Convert.ToUInt32(d.Properties["Signature"].Value); // int32
+                                    var mediaSignature = Convert.ToInt64(d.Properties["Signature"].Value); // int32
                                     var mediaStatus = Convert.ToString(d.Properties["Status"].Value); // OK
 
                                     var driveName = Convert.ToString(ld.Properties["Name"].Value); // C:
