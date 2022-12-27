@@ -35,7 +35,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "german"; MessagesFile: "compiler:Languages\German.isl"
 
 [Tasks]
-Name: "StartMenuEntry" ; Description: "Start my app when Windows starts" ; GroupDescription: "Windows Startup"; MinVersion: 4,4;
+;Name: "StartMenuEntry" ; Description: "Start my app when Windows starts" ; GroupDescription: "Windows Startup"; MinVersion: 4,4;
 ;Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
@@ -53,6 +53,8 @@ Source: "bin\Release\net7.0-windows\publish\runtimes\*"; DestDir: "{app}\runtime
 Source: "bin\Release\net7.0-windows\publish\tr\*"; DestDir: "{app}\tr"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "bin\Release\net7.0-windows\publish\zh-Hans\*"; DestDir: "{app}\zh-Hans"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "bin\Release\net7.0-windows\publish\zh-Hant\*"; DestDir: "{app}\zh-Hant"; Flags: ignoreversion recursesubdirs createallsubdirs
+; MUST BE COMPILED IN RELEASE BEFORE!
+Source: "..\..\Helper Applications\Notification\bin\Release\*"; DestDir: "{app}\Notification"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "bin\Release\net7.0-windows\publish\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\App.config"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\Home.Communication.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -94,9 +96,9 @@ Source: "bin\Release\net7.0-windows\publish\System.Web.Services.Description.dll"
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
+;Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 ;Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
-Name: "{userstartup}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks:;
+;Name: "{userstartup}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks:;
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: runascurrentuser nowait postinstall skipifsilent
