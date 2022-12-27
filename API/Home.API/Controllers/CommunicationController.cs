@@ -262,10 +262,12 @@ namespace Home.API.Controllers
             var device = await _context.Device.Include(d => d.DeviceLog).Where(p => p.Guid == deviceID).FirstOrDefaultAsync();
             if (device != null)
             {
-                device.DeviceLog.Clear();
-                
                 _logger.LogInformation($"Clearing log of {device.Name} ...");
-                ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LogCleared, device);
+
+                device.DeviceLog.Clear();
+                await _context.SaveChangesAsync();                
+                
+                ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LogCleared, deviceID);
                 return Ok(AnswerExtensions.Success("ok"));
             }
             else
@@ -343,7 +345,10 @@ namespace Home.API.Controllers
             device.IsLive = live;
             ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LiveModeChanged, device);
             var logEntry = ModelConverter.CreateLogEntry(device, $"Device \"{device.Name}\" status changed to {(live ? "live" : "normal")} by client {client.Name}!", LogEntry.LogLevel.Information, false);
+            
+            
             await _context.DeviceLog.AddAsync(logEntry);
+            await _context.SaveChangesAsync();
 
             return Ok(AnswerExtensions.Success("ok"));
         }

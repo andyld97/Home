@@ -33,5 +33,24 @@ namespace Home.API.Helper
         {
             NotifyClientQueues(eventKind, ModelConverter.ConvertDevice(device));
         }
+
+        /// <summary>
+        /// Notifies all active client queues that there is a new event for the device
+        /// </summary>
+        /// <param name="eventKind"></param>
+        /// <param name="deviceId"></param>
+        public static void NotifyClientQueues(EventQueueItem.EventKind eventKind, string deviceId)
+        {
+            var now = DateTime.Now;
+
+            lock (Program.EventQueues)
+            {
+                foreach (var queue in Program.EventQueues)
+                {
+                    queue.LastEvent = now;
+                    queue.Events.Enqueue(new EventQueueItem() { DeviceID = deviceId, EventDescription = eventKind, EventOccured = now });
+                }
+            }
+        }
     }
 }

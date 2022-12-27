@@ -344,9 +344,14 @@ namespace Home
                                 if (update)
                                     await ScreenshotViewer.UpdateScreenShotAsync(oldDevice);
                             }
-                            else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.LogCleared || @event.EventDescription == Data.Events.EventQueueItem.EventKind.LogEntriesRecieved)
+                            else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.LogCleared)
                             {
-                                // ToDo: *** Only clear log
+                                oldDevice.LogEntries.Clear();
+                                await RefreshSelectedItem();
+                            }
+                            else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.LogEntriesRecieved)
+                            {
+                                // ToDo: ***
                             }
                             else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceScreenshotRecieved)
                             {
@@ -496,6 +501,8 @@ namespace Home
                 return;
 
             var result = await API.ClearDeviceLogAsync(currentDevice);
+
+            // ToDo: *** Display result
         }
 
         private void MenuButtonSendMessage_Click(object sender, RoutedEventArgs e)
