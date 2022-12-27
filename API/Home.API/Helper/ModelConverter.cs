@@ -149,7 +149,6 @@ namespace Home.API.Helper
             }
 
             // Check for screen(s) which not belong to the device anymore
-
             List<DeviceScreen> toRemove = new List<DeviceScreen>();
             foreach (var screen in updateDevice.DeviceScreen)
             {

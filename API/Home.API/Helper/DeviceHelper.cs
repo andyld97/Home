@@ -21,7 +21,7 @@ namespace Home.API.Helper
                                        .Include(p => p.DeviceWarning)
                                        .Include(p => p.DeviceScreen)
                                        .Include(p => p.DeviceScreenshot).ThenInclude(p => p.Screen) 
-                                       .Include(p => p.OstypeNavigation).Where(p => p.Guid == guid).FirstOrDefaultAsync();
+                                       .Include(p => p.OstypeNavigation).Where(p => p.Guid == guid).AsSplitQuery().FirstOrDefaultAsync();
         }
 
         public static async Task<List<home.Models.Device>> GetAllDevicesAsync(this HomeContext context, bool noTracking)
@@ -36,7 +36,7 @@ namespace Home.API.Helper
                                        .Include(p => p.DeviceWarning)
                                        .Include(p => p.DeviceScreen)
                                        .Include(p => p.DeviceScreenshot).ThenInclude(p => p.Screen)
-                                       .Include(p => p.OstypeNavigation);
+                                       .Include(p => p.OstypeNavigation).AsSplitQuery();
 
             if (noTracking)
                 return await devices.AsNoTracking().ToListAsync();
@@ -56,7 +56,7 @@ namespace Home.API.Helper
                                            .Include(p => p.DeviceWarning)
                                            .Include(p => p.DeviceScreen)
                                            .Include(p => p.DeviceScreenshot).ThenInclude(p => p.Screen)
-                                           .Include(p => p.OstypeNavigation).Where(d => d.Status).ToListAsync();
+                                           .Include(p => p.OstypeNavigation).Where(d => d.Status).AsSplitQuery().ToListAsync();
 
             return list.Where(d => d.LastSeen.Add(Program.GlobalConfig.RemoveInactiveClients) < DateTime.Now);
         }
