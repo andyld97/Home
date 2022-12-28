@@ -134,7 +134,8 @@ namespace Home.API.Controllers
 
                         if (!found)
                         {
-                            ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LiveModeChanged, partictularDevice);
+                            // Fully materialize device here
+                            ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LiveModeChanged, (await _context.GetDeviceByIdAsync(partictularDevice.Guid)));
                             partictularDevice.IsLive = false;
                             var logEntry = ModelConverter.CreateLogEntry(partictularDevice, $"Device \"{partictularDevice.Name}\" status changed to normal, because one or multiple clients (those that have aquired live view) have logged off!", LogEntry.LogLevel.Information, false);
                             await _context.DeviceLog.AddAsync(logEntry);
@@ -289,7 +290,6 @@ namespace Home.API.Controllers
             if (device == null)
                 return BadRequest(AnswerExtensions.Fail("Device doesn't exists!"));                
 
-            _logger.LogInformation($"Sent message to {device.Name}: {message}");
             device.DeviceMessage.Add(new home.Models.DeviceMessage() { Content = message.Content, Title = message.Title, Type = (short)message.Type, Timestamp = DateTime.Now, IsRecieved = false });
             
             LogEntry.LogLevel level = LogEntry.LogLevel.Information;
@@ -300,8 +300,10 @@ namespace Home.API.Controllers
                 case Message.MessageImage.Error: level = LogEntry.LogLevel.Error; break;
             }
 
-            await _context.DeviceLog.AddAsync(ModelConverter.CreateLogEntry(device, $"Recieved message: {message}", level, false));
+            await _context.DeviceLog.AddAsync(ModelConverter.CreateLogEntry(device, $"Received message: {message}", level, false));
             await _context.SaveChangesAsync();
+
+            _logger.LogInformation($"Sent message to {device.Name}: {message}");
 
             ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
             return Ok(AnswerExtensions.Success("ok"));
@@ -318,12 +320,15 @@ namespace Home.API.Controllers
         [HttpGet("status/{clientId}/{deviceId}/{live:bool}")]
         public async Task<IActionResult> SetLiveStatusAsync(string clientId, string deviceId, bool live)
         {
-            var device = await _context.Device.Include(d => d.DeviceLog).Where(p => p.Guid == deviceId).FirstOrDefaultAsync();
+            var device = await _context.GetDeviceByIdAsync(deviceId);
             if (device == null)
                 return BadRequest(AnswerExtensions.Fail($"Device couldn't be found: {deviceId}"));
 
-            if (!device.Status) // == Device.DeviceStatus.Offline)
+            if (!device.Status)
                 return BadRequest(AnswerExtensions.Fail("Cannot set live status if device is offline!"));
+            
+            if (device.Ostype == (int)Model.Device.OSType.Android)
+                return BadRequest(AnswerExtensions.Fail("Cannot set live status if device is an Android device!"));
 
             Client client;
             lock (Program.Clients)
@@ -343,12 +348,12 @@ namespace Home.API.Controllers
             }
 
             device.IsLive = live;
-            ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LiveModeChanged, device);
             var logEntry = ModelConverter.CreateLogEntry(device, $"Device \"{device.Name}\" status changed to {(live ? "live" : "normal")} by client {client.Name}!", LogEntry.LogLevel.Information, false);
-            
-            
+                        
             await _context.DeviceLog.AddAsync(logEntry);
             await _context.SaveChangesAsync();
+
+            ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LiveModeChanged, device);
 
             return Ok(AnswerExtensions.Success("ok"));
         }
@@ -387,23 +392,23 @@ namespace Home.API.Controllers
                 return BadRequest(AnswerExtensions.Fail("Invalid device data!"));
 
             // Check if this devices exists
-            home.Models.Device device = await _context.GetDeviceByIdAsync(command.DeviceID); // Include(d => d.DeviceCommand).Include(d => d.DeviceLog).Where(p => p.Guid == command.DeviceID).FirstOrDefaultAsync();
+            home.Models.Device device = await _context.GetDeviceByIdAsync(command.DeviceID);
 
             if (device == null)
                 return BadRequest(AnswerExtensions.Fail("Device doesn't exists!"));
 
-            _logger.LogInformation($"Sent command to {device.Name}: {command}");
             device.DeviceCommand.Add(new home.Models.DeviceCommand() { Executable = command.Executable, IsExceuted = false, Parameter = command.Parameter, Timestamp = DateTime.Now });
             await _context.DeviceLog.AddAsync(ModelConverter.CreateLogEntry(device, $"Recieved command: {command}", LogEntry.LogLevel.Information, false));
 
-            ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
-            
             await _context.SaveChangesAsync();
+            _logger.LogInformation($"Sent command to {device.Name}: {command}");
+            ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);          
+            
             return Ok(AnswerExtensions.Success("ok"));
         }
 
         /// <summary>
-        /// A connection test
+        /// Can be called to test the connection (also makes a dummy db call)
         /// </summary>
         /// <returns>Ok on success</returns>
         [HttpGet("test")]

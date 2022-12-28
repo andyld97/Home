@@ -31,7 +31,7 @@ namespace Home.API.Helper
 
             updateDevice.Guid = device.ID;
             updateDevice.DeviceGroup = device.DeviceGroup;
-            updateDevice.IsLive = device.IsLive;
+            // updateDevice.IsLive = device.IsLive; // This isn't to be updated, because the ack device don't know about the livve status
             updateDevice.DeviceTypeId = (int)device.Type;
             updateDevice.Name = device.Name;
             updateDevice.Ostype = (int)device.OS;
@@ -99,9 +99,8 @@ namespace Home.API.Helper
                 if (!device.DiskDrives.Any(d => d.UniqueID == disk.Guid))
                 {
                     disk.Device = null;
-                    // ToDo: *** Also notify webhook (using device log)
+                    // ToDo: *** Also notify webhook (using device log, if it's not a removable device)?
                     logger.LogWarning($"Removed disk {disk.DiskName} from Device {updateDevice.Name} ...");
-                    // updateDevice.DeviceDiskDrive.Remove(disk);
                     homeContext.DeviceDiskDrive.Remove(disk);
                 }
             }

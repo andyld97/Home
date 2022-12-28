@@ -28,6 +28,7 @@ using Home.Data.Helper;
 using Model;
 using Microsoft.Win32;
 using Controls.Dialogs;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 
 namespace Home
 {
@@ -310,7 +311,7 @@ namespace Home
                 if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceScreenshotRecieved)
                 {
                     // Update screenshot viewer
-                    await ScreenshotViewer.UpdateScreenShotAsync(@event.EventData.EventDevice);
+                    await ScreenshotViewer.UpdateScreenshotAsync(@event.EventData.EventDevice);
                 }
                 else
                 {
@@ -322,11 +323,11 @@ namespace Home
                         {
                             if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.ACK)
                             {
-                                bool update = false;
+                                bool updateScreenshot = false;
                                 if (oldDevice.Status == DeviceStatus.Active && @event.EventData.EventDevice.Status == DeviceStatus.Offline)
                                 {
                                     // Update grayscale shot
-                                    update = true;
+                                    updateScreenshot = true;
                                 }
 
                                 // deviceList[deviceList.IndexOf(oldDevice)] = device.EventData.EventDevice;
@@ -341,8 +342,8 @@ namespace Home
                                 await RefreshSelectedItem();
                                 RefreshDeviceHolder();
 
-                                if (update)
-                                    await ScreenshotViewer.UpdateScreenShotAsync(oldDevice);
+                                if (updateScreenshot)
+                                    await ScreenshotViewer.UpdateScreenshotAsync(oldDevice);
                             }
                             else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.LogCleared)
                             {
@@ -351,7 +352,20 @@ namespace Home
                             }
                             else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.LogEntriesRecieved)
                             {
-                                // ToDo: ***
+                                oldDevice.LogEntries.Clear();
+                                foreach (var item in @event.EventData.EventDevice.LogEntries)
+                                    oldDevice.LogEntries.Add(item);
+
+                                await RefreshSelectedItem();
+                            }
+                            else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.LiveModeChanged)
+                            {
+                                oldDevice.LogEntries.Clear();
+                                foreach (var item in @event.EventData.EventDevice.LogEntries)
+                                    oldDevice.LogEntries.Add(item);
+
+                                oldDevice.IsLive = @event.EventData.EventDevice.IsLive;
+                                await RefreshSelectedItem();
                             }
                             else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceScreenshotRecieved)
                             {
@@ -394,7 +408,7 @@ namespace Home
                 SwitchFileManager(false);
                 await RefreshSelectedItem();
                 RefreshSelection();
-                await ScreenshotViewer.UpdateScreenShotAsync(currentDevice);
+                await ScreenshotViewer.UpdateScreenshotAsync(currentDevice);
 
                 DeviceInfo.Visibility = Visibility.Visible;
                 DeviceInfoHint.Visibility = Visibility.Collapsed;

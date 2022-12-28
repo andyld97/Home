@@ -67,7 +67,7 @@ namespace Home.API.Services
 
                 DateTime now = DateTime.Now;
                 var scope =  serviceProvider.CreateAsyncScope();
-                var homeContext = scope.ServiceProvider.GetService<HomeContext>();
+                var context = scope.ServiceProvider.GetService<HomeContext>();
 
                 // Check event queues
                 List<string> clientIDsToRemove = new List<string>();
@@ -103,7 +103,7 @@ namespace Home.API.Services
                 try
                 {
                     // [INFO]: We have to include all tables here to ensure that the event queues can be notified (device conversation)
-                    var devices = await homeContext.GetAllDevicesAsync(false);
+                    var devices = await context.GetAllDevicesAsync(false);
 
                     ParallelOptions parallelOptions = new ParallelOptions()
                     {
@@ -113,30 +113,19 @@ namespace Home.API.Services
 
                     await Parallel.ForEachAsync(devices, parallelOptions, async (device, token) =>
                     {
-                        // Update the device status if it is inactive
-                        await UpdateDeviceStatusAsync(homeContext, device);
-
-                        // Aquiring a new screenshot for all online devices (except android devices)
-                        await CheckForScreenshotExpiredAsync(homeContext, device, now);
-
-                        // Delete screenshots which are older than the Program.GlobalConfig.RemoveOldScreenshots-Timestamp
-                        await CleanUpScreenshotsAsync(homeContext, device, now);
-
-                        // Check if there are any warnings to remove
-                        await UpdateDeviceWarningsAsync(homeContext, device);
-
-                        // Ensure that the device log doesn't blow up
-                        await TruncateDeviceLogAsync(homeContext, device);
+                        await RunHealthCheckAsync(context, device, token, now);
                     });
                 }
                 catch (Exception ex)
                 {
                     if (ex is not TaskCanceledException)
                     {
-                        _logger.LogError($"Critical Exception from HealthCheck-Service: {ex.ToString()}");
+                        string message = $"Critical Exception from HealthCheck-Service: {ex.ToString()}";
+
+                        _logger.LogError(message);
 
                         if (ShouldNotifyWebHook())
-                            await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, $"CRICTIAL EXCEPTION from HealthCheck-Service: {ex.ToString()}", "HealthCheckService");
+                            await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, message, "HealthCheckService");
                     }
                 }
  
@@ -154,22 +143,56 @@ namespace Home.API.Services
 
                 try
                 {
-                    await homeContext.SaveChangesAsync();
+                    await context.SaveChangesAsync();
                 }
                 catch (Exception ex)
                 {
                     if (ex is not TaskCanceledException)
                     {
-                        _logger.LogError($"Critical Exception from HealthCheck-Service (while saving): {ex.Message}");
+                        string message = $"Critical Exception from HealthCheck-Service (while saving): {ex.Message}";
+                        _logger.LogError(message);
 
                         if (ShouldNotifyWebHook())
-                            await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, $"CRICTIAL EXCEPTION from Background Service: {ex.ToString()}", "HealthCheckService");
+                            await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, message, "HealthCheckService");
                     }
                 }
             }
         }
 
         #region Health Service Tasks
+
+        private async Task RunHealthCheckAsync(HomeContext context, Device device, CancellationToken token, DateTime now)
+        {
+            try
+            {
+                // Update the device status if it is inactive
+                await UpdateDeviceStatusAsync(context, device);
+
+                // Aquiring a new screenshot for all online devices (except android devices)
+                await CheckForScreenshotExpiredAsync(context, device, now);
+
+                // Delete screenshots which are older than the Program.GlobalConfig.RemoveOldScreenshots-Timestamp
+                await CleanUpScreenshotsAsync(context, device, now);
+
+                // Check if there are any warnings to remove
+                await UpdateDeviceWarningsAsync(context, device);
+
+                // Ensure that the device log doesn't blow up
+                await TruncateDeviceLogAsync(context, device);
+            }
+            catch (Exception ex)
+            {
+                if (ex is not TaskCanceledException)
+                {
+                    string message = $"Critical Exception [{device.Name}] from HealthCheck-Service: {ex.ToString()}";
+
+                    _logger.LogError(message);
+
+                    if (ShouldNotifyWebHook())
+                        await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, message, $"HCS/{device.Name}");
+                }
+            }
+        }
 
         private async Task UpdateDeviceStatusAsync(HomeContext homeContext, Device device)
         {
@@ -235,7 +258,7 @@ namespace Home.API.Services
                     if (shot.Timestamp.Add(Program.GlobalConfig.RemoveOldScreenshots) < now)
                     {
                         screenshotsToRemove.Add(shot);
-                        _logger.LogInformation($"Deleted screenshot {shot} from device {device.Name}, because it is older than {Program.GlobalConfig.RemoveOldScreenshots}!");
+                        _logger.LogInformation($"Deleted screenshot {shot.ScreenshotFileName} from device {device.Name}, because it is older than {Program.GlobalConfig.RemoveOldScreenshots}!");
                     }
                 }
             }
@@ -251,7 +274,7 @@ namespace Home.API.Services
                         if (item.Timestamp.Add(Program.GlobalConfig.RemoveOldScreenshots) < now)
                         {
                             screenshotsToRemove.Add(item);
-                            _logger.LogInformation($"Deleted screenshot {item} from device {device.Name}, because it is older than {Program.GlobalConfig.RemoveOldScreenshots}!");
+                            _logger.LogInformation($"Deleted screenshot {item.ScreenshotFileName} from device {device.Name}, because it is older than {Program.GlobalConfig.RemoveOldScreenshots}!");
                         }
                     }
                 }
@@ -339,9 +362,11 @@ namespace Home.API.Services
                 while (device.DeviceLog.Count != 100 - 2)
                 {
                     var entry = entries.FirstOrDefault();
+                    if (entry == null)
+                        continue;
                     entry.Device = null;
                     // device.DeviceLog.Remove(entry);
-
+                     
                     homeContext.DeviceLog.Remove(entry);
                     entries.RemoveAt(0);
                 }

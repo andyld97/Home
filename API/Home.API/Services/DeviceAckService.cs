@@ -45,7 +45,7 @@ namespace Home.API.Services
                 if (currentDevice != null)
                 {
                     // Check if device was previously offline
-                    if (currentDevice.Status == false) // Device.DeviceStatus.Offline)
+                    if (currentDevice.Status == false)
                     {
                         currentDevice.Status = true;
                         currentDevice.IsScreenshotRequired = true;
@@ -401,6 +401,9 @@ namespace Home.API.Services
 
             if (screenConfigChanged)
             {
+                // Require also a new screenshot
+                currentDevice.IsScreenshotRequired = true;
+
                 string oldScreens = string.Join(Environment.NewLine, currentDevice.DeviceScreen.Select(p => p.DeviceName));
                 string newScreens = string.Join(Environment.NewLine, requestedDevice.Screens.Select(p => p.DeviceName));
 

@@ -124,10 +124,10 @@ namespace Home.Controls
                 cmbScreens.Visibility = Visibility.Visible;
 
             UpdateLiveStatus(status, enabled);
-            await UpdateScreenShotAsync(device);
+            await UpdateScreenshotAsync(device);
         }
 
-        public async Task UpdateScreenShotAsync(Device device)
+        public async Task UpdateScreenshotAsync(Device device)
         {
             // Update the screenshot viewer, respecting the combobox which display is selected 
             if (device == null)
@@ -325,7 +325,7 @@ namespace Home.Controls
 
         private async void cmbScreens_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            await UpdateScreenShotAsync(lastSelectedDevice);
+            await UpdateScreenshotAsync(lastSelectedDevice);
         }
     }
 

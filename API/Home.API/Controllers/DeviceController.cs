@@ -70,29 +70,24 @@ namespace Home.API.Controllers
             if (device == null)
                 return BadRequest(AnswerExtensions.Fail("Invalid device given"));
 
-            bool result = false;
-
             // Check if device exists
             if (!(await _context.Device.AnyAsync(p => p.Guid == device.ID)))
             {
                 device.Status = Device.DeviceStatus.Active;
                 device.LastSeen = now;
                 device.LogEntries.Clear();
-                device.LogEntries.Add(new LogEntry(now, $"Device {device.Name} was successfully added!", LogEntry.LogLevel.Information));
+                device.LogEntries.Add(new LogEntry(now, $"Device {device.Name} was successfully added!", LogEntry.LogLevel.Information, true));
                 _logger.LogInformation($"New device {device.Environment.MachineName} has just logged in!");
                 device.IsScreenshotRequired = true;
 
                 var dbDevice = ModelConverter.ConvertDevice(_context, _logger, device);
                 await _context.Device.AddAsync(dbDevice);
-
-                ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.NewDeviceConnected, device);
                 await _context.SaveChangesAsync();
 
-                result = true;
-            }
+                ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.NewDeviceConnected, device);
 
-            if (result)
                 return Ok(AnswerExtensions.Success(true));
+            }
 
             return BadRequest(AnswerExtensions.Fail("Device-Register couldn't be processed!"));
         }
@@ -169,12 +164,8 @@ namespace Home.API.Controllers
                     }
                 }
 
-                // Add filename to list and append to log
-                var logEntry = ModelConverter.CreateLogEntry(deviceFound, "Recieved screenshot from this device!", LogEntry.LogLevel.Information);
-                await _context.DeviceLog.AddAsync(logEntry);
-                _logger.LogInformation($"Recieved screenshot from {deviceFound.Environment.MachineName}");
-
-                var ds = new DeviceScreenshot() { Device = deviceFound, ScreenshotFileName = fileName, Timestamp = DateTime.Now };
+                // Add filename to list and append to log               
+                var ds = new DeviceScreenshot() { Device = deviceFound, ScreenshotFileName = fileName, Timestamp = now };
 
                 // If ScreenIndex is null (either using old clients or for clients which only supports multiple screen)
                 // Only Home.Windows.Service currently supports screenshots for multiple screens/screenshots
@@ -186,7 +177,17 @@ namespace Home.API.Controllers
                     if (screen != null)
                     {
                         ds.Screen = screen;
+
+                        var logEntry = ModelConverter.CreateLogEntry(deviceFound, $"Recieved screenshot from this device [{screen.DeviceName}]!", LogEntry.LogLevel.Information);
+                        await _context.DeviceLog.AddAsync(logEntry);
+                        _logger.LogInformation($"Recieved screenshot from {deviceFound.Environment.MachineName} [{screen.DeviceName}]");
                     }
+                }
+                else
+                {
+                    var logEntry = ModelConverter.CreateLogEntry(deviceFound, "Recieved screenshot from this device!", LogEntry.LogLevel.Information);
+                    await _context.DeviceLog.AddAsync(logEntry);
+                    _logger.LogInformation($"Recieved screenshot from {deviceFound.Environment.MachineName}");
                 }
 
                 deviceFound.DeviceScreenshot.Add(ds);
