@@ -65,6 +65,29 @@ namespace Home.Service.Windows
             }
         }
 
+        public static string GetComputerName()
+        {
+            try
+            {
+                // https://stackoverflow.com/questions/1233217/difference-between-systeminformation-computername-environment-machinename-and
+                // Hostname with umlauts won't work with Envoirnment.MachineName (e.g. BšRO-RECHNER)
+                // Fallback with localhost/Hostname/then MachineName
+
+                string name = System.Net.Dns.GetHostEntry("localhost").HostName;
+                if (string.IsNullOrEmpty(name))
+                    name = System.Net.Dns.GetHostName();
+
+                if (!string.IsNullOrEmpty(name))
+                    return name.ToUpper();
+            }
+            catch
+            {
+                
+            }
+
+            return Environment.MachineName;
+        }
+
         private async Task InitalizeService()
         {
             api = new Communication.API(ServiceData.Instance.APIUrl);
@@ -77,7 +100,7 @@ namespace Home.Service.Windows
                 IP = NET.DetermineIPAddress(),
                 DeviceGroup = ServiceData.Instance.DeviceGroup,
                 Location = ServiceData.Instance.Location,
-                Name = Environment.MachineName,
+                Name = GetComputerName(),
                 OS = ServiceData.Instance.SystemType,
                 Type = ServiceData.Instance.Type,
                 DiskDrives = JsonConvert.DeserializeObject<List<DiskDrive>>(WMI.DetermineDiskDrives()),

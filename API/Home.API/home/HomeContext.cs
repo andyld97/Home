@@ -36,8 +36,6 @@ namespace Home.API.home
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.UseCollation("Latin1_General_CI_AS");
-
             modelBuilder.Entity<Device>(entity =>
             {
                 entity.HasIndex(e => e.EnvironmentId, "IX_Device")
@@ -45,34 +43,36 @@ namespace Home.API.home
 
                 entity.Property(e => e.DeviceGroup)
                     .HasMaxLength(50)
-                    .IsUnicode(false);
+                    .UseCollation("Latin1_General_100_CI_AS_SC_UTF8");
 
                 entity.Property(e => e.Guid)
                     .IsRequired()
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("GUID");
+                    .HasColumnName("GUID")
+                    .UseCollation("Latin1_General_100_CI_AS_SC_UTF8");
 
                 entity.Property(e => e.Ip)
                     .HasMaxLength(50)
-                    .HasColumnName("IP");
+                    .HasColumnName("IP")
+                    .UseCollation("Latin1_General_100_CI_AS_SC_UTF8");
 
                 entity.Property(e => e.LastSeen).HasColumnType("datetime");
 
                 entity.Property(e => e.Location)
                     .HasMaxLength(50)
-                    .IsUnicode(false);
+                    .UseCollation("Latin1_General_100_CI_AS_SC_UTF8");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
-                    .IsUnicode(false);
+                    .HasMaxLength(255)
+                    .UseCollation("Latin1_General_100_CI_AS_SC_UTF8");
 
                 entity.Property(e => e.Ostype).HasColumnName("OSType");
 
                 entity.Property(e => e.ServiceClientVersion)
                     .IsRequired()
                     .HasMaxLength(50)
-                    .IsUnicode(false);
+                    .UseCollation("Latin1_General_100_CI_AS_SC_UTF8");
 
                 entity.HasOne(d => d.DeviceType)
                     .WithMany(p => p.Device)
@@ -107,9 +107,13 @@ namespace Home.API.home
 
             modelBuilder.Entity<DeviceCommand>(entity =>
             {
-                entity.Property(e => e.Executable).HasColumnType("text");
+                entity.Property(e => e.Executable)
+                    .HasColumnType("text")
+                    .UseCollation("Latin1_General_CI_AS");
 
-                entity.Property(e => e.Parameter).HasColumnType("text");
+                entity.Property(e => e.Parameter)
+                    .HasColumnType("text")
+                    .UseCollation("Latin1_General_CI_AS");
 
                 entity.Property(e => e.Timestamp).HasColumnType("datetime");
 
@@ -129,34 +133,56 @@ namespace Home.API.home
 
                 entity.Property(e => e.DeviceId).HasColumnName("DeviceID");
 
-                entity.Property(e => e.DiskInterface).HasColumnType("text");
+                entity.Property(e => e.DiskInterface)
+                    .HasColumnType("text")
+                    .UseCollation("Latin1_General_CI_AS");
 
-                entity.Property(e => e.DiskModel).HasColumnType("text");
+                entity.Property(e => e.DiskModel)
+                    .HasColumnType("text")
+                    .UseCollation("Latin1_General_CI_AS");
 
-                entity.Property(e => e.DiskName).HasColumnType("text");
+                entity.Property(e => e.DiskName)
+                    .HasColumnType("text")
+                    .UseCollation("Latin1_General_CI_AS");
 
                 entity.Property(e => e.DriveId)
                     .HasColumnType("text")
-                    .HasColumnName("DriveID");
+                    .HasColumnName("DriveID")
+                    .UseCollation("Latin1_General_CI_AS");
 
-                entity.Property(e => e.DriveName).HasColumnType("text");
+                entity.Property(e => e.DriveName)
+                    .HasColumnType("text")
+                    .UseCollation("Latin1_General_CI_AS");
 
-                entity.Property(e => e.FileSystem).HasColumnType("text");
+                entity.Property(e => e.FileSystem)
+                    .HasColumnType("text")
+                    .UseCollation("Latin1_General_CI_AS");
 
                 entity.Property(e => e.Guid)
                     .HasMaxLength(50)
                     .IsUnicode(false)
-                    .HasColumnName("GUID");
+                    .HasColumnName("GUID")
+                    .UseCollation("Latin1_General_CI_AS");
 
-                entity.Property(e => e.MediaStatus).HasColumnType("text");
+                entity.Property(e => e.MediaStatus)
+                    .HasColumnType("text")
+                    .UseCollation("Latin1_General_CI_AS");
 
-                entity.Property(e => e.MediaType).HasColumnType("text");
+                entity.Property(e => e.MediaType)
+                    .HasColumnType("text")
+                    .UseCollation("Latin1_General_CI_AS");
 
-                entity.Property(e => e.PhysicalName).HasColumnType("text");
+                entity.Property(e => e.PhysicalName)
+                    .HasColumnType("text")
+                    .UseCollation("Latin1_General_CI_AS");
 
-                entity.Property(e => e.VolumeName).HasColumnType("text");
+                entity.Property(e => e.VolumeName)
+                    .HasColumnType("text")
+                    .UseCollation("Latin1_General_CI_AS");
 
-                entity.Property(e => e.VolumeSerial).HasColumnType("text");
+                entity.Property(e => e.VolumeSerial)
+                    .HasColumnType("text")
+                    .UseCollation("Latin1_General_CI_AS");
 
                 entity.HasOne(d => d.Device)
                     .WithMany(p => p.DeviceDiskDrive)
@@ -178,37 +204,49 @@ namespace Home.API.home
 
                 entity.Property(e => e.Cpuname)
                     .HasColumnType("text")
-                    .HasColumnName("CPUName");
+                    .HasColumnName("CPUName")
+                    .UseCollation("Latin1_General_CI_AS");
 
                 entity.Property(e => e.Cpuusage).HasColumnName("CPUUsage");
 
-                entity.Property(e => e.Description).HasColumnType("text");
+                entity.Property(e => e.Description)
+                    .HasColumnType("text")
+                    .UseCollation("Latin1_General_CI_AS");
 
                 entity.Property(e => e.DomainName)
                     .HasMaxLength(50)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .UseCollation("Latin1_General_CI_AS");
 
                 entity.Property(e => e.FreeRam)
                     .HasColumnType("text")
-                    .HasColumnName("FreeRAM");
+                    .HasColumnName("FreeRAM")
+                    .UseCollation("Latin1_General_CI_AS");
 
                 entity.Property(e => e.Is64BitOs).HasColumnName("Is64BitOS");
 
                 entity.Property(e => e.MachineName)
                     .IsRequired()
-                    .HasColumnType("text");
+                    .HasColumnType("text")
+                    .UseCollation("Latin1_General_CI_AS");
 
-                entity.Property(e => e.Motherboard).HasColumnType("text");
+                entity.Property(e => e.Motherboard)
+                    .HasColumnType("text")
+                    .UseCollation("Latin1_General_CI_AS");
 
                 entity.Property(e => e.Osname)
                     .HasColumnType("text")
-                    .HasColumnName("OSName");
+                    .HasColumnName("OSName")
+                    .UseCollation("Latin1_General_CI_AS");
 
                 entity.Property(e => e.Osversion)
                     .HasColumnType("text")
-                    .HasColumnName("OSVersion");
+                    .HasColumnName("OSVersion")
+                    .UseCollation("Latin1_General_CI_AS");
 
-                entity.Property(e => e.Product).HasColumnType("text");
+                entity.Property(e => e.Product)
+                    .HasColumnType("text")
+                    .UseCollation("Latin1_General_CI_AS");
 
                 entity.Property(e => e.StartTimestamp).HasColumnType("datetime");
 
@@ -216,9 +254,12 @@ namespace Home.API.home
 
                 entity.Property(e => e.UserName)
                     .HasMaxLength(50)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .UseCollation("Latin1_General_CI_AS");
 
-                entity.Property(e => e.Vendor).HasColumnType("text");
+                entity.Property(e => e.Vendor)
+                    .HasColumnType("text")
+                    .UseCollation("Latin1_General_CI_AS");
 
                 entity.HasOne(d => d.Battery)
                     .WithMany(p => p.DeviceEnvironment)
@@ -237,7 +278,8 @@ namespace Home.API.home
 
                 entity.Property(e => e.Name)
                     .IsRequired()
-                    .HasColumnType("text");
+                    .HasColumnType("text")
+                    .UseCollation("Latin1_General_CI_AS");
 
                 entity.HasOne(d => d.Device)
                     .WithMany(p => p.DeviceGraphic)
@@ -254,7 +296,8 @@ namespace Home.API.home
 
                 entity.Property(e => e.Blob)
                     .IsRequired()
-                    .HasColumnType("text");
+                    .HasColumnType("text")
+                    .UseCollation("Latin1_General_CI_AS");
 
                 entity.Property(e => e.DeviceId).HasColumnName("DeviceID");
 
@@ -270,11 +313,15 @@ namespace Home.API.home
             {
                 entity.HasKey(e => e.MessageId);
 
-                entity.Property(e => e.Content).HasColumnType("text");
+                entity.Property(e => e.Content)
+                    .HasColumnType("text")
+                    .UseCollation("Latin1_General_CI_AS");
 
                 entity.Property(e => e.Timestamp).HasColumnType("datetime");
 
-                entity.Property(e => e.Title).HasColumnType("text");
+                entity.Property(e => e.Title)
+                    .HasColumnType("text")
+                    .UseCollation("Latin1_General_CI_AS");
 
                 entity.HasOne(d => d.Device)
                     .WithMany(p => p.DeviceMessage)
@@ -295,35 +342,47 @@ namespace Home.API.home
 
                 entity.Property(e => e.Description)
                     .IsRequired()
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .UseCollation("Latin1_General_CI_AS");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .UseCollation("Latin1_General_CI_AS");
             });
 
             modelBuilder.Entity<DeviceScreen>(entity =>
             {
                 entity.Property(e => e.Id).HasColumnName("ID");
 
-                entity.Property(e => e.BuiltDate).HasColumnType("text");
+                entity.Property(e => e.BuiltDate)
+                    .HasColumnType("text")
+                    .UseCollation("Latin1_General_CI_AS");
 
                 entity.Property(e => e.DeviceId).HasColumnName("DeviceID");
 
-                entity.Property(e => e.DeviceName).HasColumnType("text");
+                entity.Property(e => e.DeviceName)
+                    .HasColumnType("text")
+                    .UseCollation("Latin1_General_CI_AS");
 
-                entity.Property(e => e.Manufacturer).HasColumnType("text");
+                entity.Property(e => e.Manufacturer)
+                    .HasColumnType("text")
+                    .UseCollation("Latin1_General_CI_AS");
 
                 entity.Property(e => e.Resolution)
                     .IsRequired()
-                    .HasColumnType("text");
+                    .HasColumnType("text")
+                    .UseCollation("Latin1_General_CI_AS");
 
                 entity.Property(e => e.ScreenId)
                     .IsRequired()
                     .HasColumnType("text")
-                    .HasColumnName("ScreenID");
+                    .HasColumnName("ScreenID")
+                    .UseCollation("Latin1_General_CI_AS");
 
-                entity.Property(e => e.Serial).HasColumnType("text");
+                entity.Property(e => e.Serial)
+                    .HasColumnType("text")
+                    .UseCollation("Latin1_General_CI_AS");
 
                 entity.HasOne(d => d.Device)
                     .WithMany(p => p.DeviceScreen)
@@ -339,7 +398,8 @@ namespace Home.API.home
                 entity.Property(e => e.ScreenshotFileName)
                     .IsRequired()
                     .HasMaxLength(260)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .UseCollation("Latin1_General_CI_AS");
 
                 entity.Property(e => e.Timestamp).HasColumnType("datetime");
 
@@ -368,31 +428,39 @@ namespace Home.API.home
 
                 entity.Property(e => e.Type)
                     .IsRequired()
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .UseCollation("Latin1_General_CI_AS");
             });
 
             modelBuilder.Entity<DeviceUsage>(entity =>
             {
-                entity.Property(e => e.Battery).HasColumnType("text");
+                entity.Property(e => e.Battery)
+                    .HasColumnType("text")
+                    .UseCollation("Latin1_General_CI_AS");
 
                 entity.Property(e => e.Cpu)
                     .HasColumnType("text")
-                    .HasColumnName("CPU");
+                    .HasColumnName("CPU")
+                    .UseCollation("Latin1_General_CI_AS");
 
                 entity.Property(e => e.Disk)
                     .HasColumnType("text")
-                    .HasColumnName("DISK");
+                    .HasColumnName("DISK")
+                    .UseCollation("Latin1_General_CI_AS");
 
                 entity.Property(e => e.Ram)
                     .HasColumnType("text")
-                    .HasColumnName("RAM");
+                    .HasColumnName("RAM")
+                    .UseCollation("Latin1_General_CI_AS");
             });
 
             modelBuilder.Entity<DeviceWarning>(entity =>
             {
                 entity.HasKey(e => e.WarningId);
 
-                entity.Property(e => e.AdditionalInfo).HasColumnType("text");
+                entity.Property(e => e.AdditionalInfo)
+                    .HasColumnType("text")
+                    .UseCollation("Latin1_General_CI_AS");
 
                 entity.Property(e => e.Timestamp).HasColumnType("datetime");
 
