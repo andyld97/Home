@@ -209,7 +209,7 @@ namespace Home.Service.Windows
             currentDevice.Environment.CPUUsage = Performance.GetCPUUsage();
             currentDevice.Environment.DiskUsage = Performance.GetDiskUsage();
             currentDevice.Environment.Is64BitOS = Environment.Is64BitOperatingSystem;
-            currentDevice.Environment.MachineName = Environment.MachineName;
+            currentDevice.Environment.MachineName = GetComputerName();
             currentDevice.Environment.UserName = Environment.UserName;
             currentDevice.Environment.DomainName = Environment.UserDomainName;
             currentDevice.Environment.GraphicCards = WMI.DetermineGraphicsCardNames();

@@ -169,7 +169,7 @@ namespace Home
             DeviceHolderActive.Items.Clear();
             deviceItems.Clear();
 
-            foreach (var device in deviceList.OrderBy(p => p.Status))
+            foreach (var device in deviceList.OrderBy(p => p.Name).ThenBy(p => p.Status))
             {
                 DeviceItem di = new DeviceItem() { DataContext = device };
                 deviceItems.Add(di);

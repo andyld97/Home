@@ -120,7 +120,7 @@ namespace Home.API.Services
                 {
                     if (ex is not TaskCanceledException)
                     {
-                        string message = $"Critical Exception from HealthCheck-Service: {ex.ToString()}";
+                        string message = $"Critical Exception from HealthCheckService: {ex.ToString()}";
 
                         _logger.LogError(message);
 
@@ -149,7 +149,7 @@ namespace Home.API.Services
                 {
                     if (ex is not TaskCanceledException)
                     {
-                        string message = $"Critical Exception from HealthCheck-Service (while saving): {ex.Message}";
+                        string message = $"Critical Exception from HealthCheckService (while saving): {ex.Message}";
                         _logger.LogError(message);
 
                         if (ShouldNotifyWebHook())
@@ -211,7 +211,7 @@ namespace Home.API.Services
             }
         }
 
-        private async Task CheckForScreenshotExpiredAsync(HomeContext homeContext, Device device, DateTime now)
+        private async Task CheckForScreenshotExpiredAsync(HomeContext context, Device device, DateTime now)
         {
             // Only check for devices which are online
             if (!device.Status)
@@ -233,7 +233,7 @@ namespace Home.API.Services
             {
                 device.IsScreenshotRequired = true;
                 var logEntry = ModelConverter.CreateLogEntry(device, $"Last screenshot was older than {Program.GlobalConfig.AquireNewScreenshot.TotalHours}h. Aquiring a new screenshot ...", LogEntry.LogLevel.Information);
-                await homeContext.DeviceLog.AddRangeAsync(logEntry);
+                await context.DeviceLog.AddAsync(logEntry);
                 ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
             }
         }
@@ -288,7 +288,8 @@ namespace Home.API.Services
                 string path = System.IO.Path.Combine(Config.SCREENSHOTS_PATH, device.Guid, $"{shot.ScreenshotFileName}.png");
                 try
                 {
-                    System.IO.File.Delete(path);
+                    if (System.IO.File.Exists(path))
+                        System.IO.File.Delete(path);
                 }
                 catch (Exception ex)
                 {
@@ -297,7 +298,7 @@ namespace Home.API.Services
             }
         }
 
-        private async Task UpdateDeviceWarningsAsync(HomeContext homeContext, Device device)
+        private async Task UpdateDeviceWarningsAsync(HomeContext context, Device device)
         {
             // Battery Warnings
             var batteryWarning = device.DeviceWarning.Where(w => w.WarningType == (int)WarningType.BatteryWarning).FirstOrDefault();
@@ -306,9 +307,9 @@ namespace Home.API.Services
             if ((batteryWarning != null && device.Environment.Battery == null) || (batteryWarning != null && GeneralHelper.ConvertNullableValue(device.Environment.Battery.Percentage, out int per) && ModelConverter.ConvertBatteryWarning(batteryWarning).CanBeRemoved(per, Program.GlobalConfig.BatteryWarningPercentage)))
             {
                 batteryWarning.Device = null;
-                homeContext.DeviceWarning.Remove(batteryWarning);
+                context.DeviceWarning.Remove(batteryWarning);
                 var logEntry = ModelConverter.CreateLogEntry(device, $"[Battery Warning]: Removed for device {device.Name}!", LogEntry.LogLevel.Information, true);
-                await homeContext.DeviceLog.AddAsync(logEntry);
+                await context.DeviceLog.AddAsync(logEntry);
             }
 
             // Storage Warnings
@@ -340,7 +341,7 @@ namespace Home.API.Services
                         // Add log entry
                         toRemove.Add(warning.p);                                               
                         var logEntry = ModelConverter.CreateLogEntry(device, $"[Storage Warning]: Removed for DISK \"{associatedDisk.DriveName}\"", LogEntry.LogLevel.Information, true);
-                        await homeContext.DeviceLog.AddAsync(logEntry);
+                        await context.DeviceLog.AddAsync(logEntry);
                         ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
                     }
                 }
@@ -348,27 +349,36 @@ namespace Home.API.Services
                 foreach (var warning in toRemove)
                 {
                     warning.Device = null;
-                    homeContext.DeviceWarning.Remove(warning);
+                    context.DeviceWarning.Remove(warning);
                 }
             }
         }
 
+        private const int MAX_LOG_ENTRIES_PER_DEVICE = 200;
+
         private async Task TruncateDeviceLogAsync(HomeContext homeContext, Device device)
         {
-            if (device.DeviceLog.Count >= 200)
+            // Explanation:
+            // So we want to truncate the log if there are more than MAX_LOG_ENTRIES.
+            // => So removing only one log entry would result in constantly truncating log and the log is always "full"!
+            // => The idea is to cut down the log down to MAX_LOG_ENTRIES / 2, so there is more space then
+            // Why -1 => Because one log entry "truncated log" will be added though 
+
+            if (device.DeviceLog.Count >= MAX_LOG_ENTRIES_PER_DEVICE)
             {
                 var entries = device.DeviceLog.OrderBy(p => p.Timestamp).ToList();
 
-                while (device.DeviceLog.Count != 100 - 2)
+                int count = device.DeviceLog.Count;
+                while (count > (MAX_LOG_ENTRIES_PER_DEVICE / 2) - 1)
                 {
                     var entry = entries.FirstOrDefault();
                     if (entry == null)
                         continue;
                     entry.Device = null;
-                    // device.DeviceLog.Remove(entry);
-                     
+
                     homeContext.DeviceLog.Remove(entry);
                     entries.RemoveAt(0);
+                    count--;
                 }
 
                 var logEntry = ModelConverter.CreateLogEntry(device, "Truncated log file of this device!", LogEntry.LogLevel.Information);
