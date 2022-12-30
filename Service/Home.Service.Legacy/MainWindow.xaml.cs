@@ -90,6 +90,8 @@ namespace Home.Service.Legacy
                 }
             };
 
+            // currentDevice.Screens = GetScreenInformation();
+
             // Run tick manually on first_start
             if (ServiceData.Instance.HasLoggedInOnce)
                 isInitalized = true;
@@ -159,7 +161,7 @@ namespace Home.Service.Legacy
             currentDevice.Environment.Product = product;
             currentDevice.Environment.Description = description;
             currentDevice.Environment.Vendor = vendor;
-            currentDevice.Screens = GetScreenInformation();
+            //currentDevice.Screens = GetScreenInformation();
 
             bool batteryResult = Home.Measure.Windows.NET.DetermineBatteryInfo(out int batteryPercentage, out bool isCharging);
             if (batteryResult)
