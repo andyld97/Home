@@ -23,7 +23,6 @@ namespace Home.Service.Linux
     {
         #region Private Members
         private static readonly Device currentDevice = new Device();
-        private static readonly Version ClientVersion = new Version(0, 0, 7);
         private static readonly DateTime startTime = DateTime.Now;
         private static Home.Communication.API api;
         private static JObject jInfo = null;
@@ -270,7 +269,7 @@ namespace Home.Service.Linux
             currentDevice.Environment.Is64BitOS = Environment.Is64BitOperatingSystem;
             currentDevice.Environment.UserName = Environment.UserName;
             currentDevice.Environment.DomainName = Environment.UserDomainName;
-            currentDevice.ServiceClientVersion = $"vLinux{ClientVersion.ToString(3)}";
+            currentDevice.ServiceClientVersion = $"vLinux{Consts.HomeServiceLinuxClientVersion}";
             currentDevice.Environment.RunningTime = DateTime.Now.Subtract(startTime);
 
             bool result = ParseHardwareInfo(Helper.ExecuteSystemCommand("lshw", "-json"), currentDevice);

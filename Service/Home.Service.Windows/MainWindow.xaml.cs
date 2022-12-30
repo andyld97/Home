@@ -65,29 +65,6 @@ namespace Home.Service.Windows
             }
         }
 
-        public static string GetComputerName()
-        {
-            try
-            {
-                // https://stackoverflow.com/questions/1233217/difference-between-systeminformation-computername-environment-machinename-and
-                // Hostname with umlauts won't work with Envoirnment.MachineName (e.g. BšRO-RECHNER)
-                // Fallback with localhost/Hostname/then MachineName
-
-                string name = System.Net.Dns.GetHostEntry("localhost").HostName;
-                if (string.IsNullOrEmpty(name))
-                    name = System.Net.Dns.GetHostName();
-
-                if (!string.IsNullOrEmpty(name))
-                    return name.ToUpper();
-            }
-            catch
-            {
-                
-            }
-
-            return Environment.MachineName;
-        }
-
         private async Task InitalizeService()
         {
             api = new Communication.API(ServiceData.Instance.APIUrl);
@@ -100,7 +77,7 @@ namespace Home.Service.Windows
                 IP = NET.DetermineIPAddress(),
                 DeviceGroup = ServiceData.Instance.DeviceGroup,
                 Location = ServiceData.Instance.Location,
-                Name = GetComputerName(),
+                Name = NET.GetMachineName(),
                 OS = ServiceData.Instance.SystemType,
                 Type = ServiceData.Instance.Type,
                 DiskDrives = JsonConvert.DeserializeObject<List<DiskDrive>>(WMI.DetermineDiskDrives()),
@@ -209,7 +186,7 @@ namespace Home.Service.Windows
             currentDevice.Environment.CPUUsage = Performance.GetCPUUsage();
             currentDevice.Environment.DiskUsage = Performance.GetDiskUsage();
             currentDevice.Environment.Is64BitOS = Environment.Is64BitOperatingSystem;
-            currentDevice.Environment.MachineName = GetComputerName();
+            currentDevice.Environment.MachineName = NET.GetMachineName();
             currentDevice.Environment.UserName = Environment.UserName;
             currentDevice.Environment.DomainName = Environment.UserDomainName;
             currentDevice.Environment.GraphicCards = WMI.DetermineGraphicsCardNames();

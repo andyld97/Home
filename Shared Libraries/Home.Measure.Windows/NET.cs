@@ -57,6 +57,34 @@ namespace Home.Measure.Windows
         }
 
         /// <summary>
+        /// Determine the MachineName with correct umlauts
+        /// </summary>
+        /// <returns></returns>
+        public static string GetMachineName()
+        {
+            try
+            {
+                // https://stackoverflow.com/questions/1233217/difference-between-systeminformation-computername-environment-machinename-and
+                // Hostname with umlauts won't work with Envoirnment.MachineName (e.g. BšRO-RECHNER)
+                // Fallback with localhost/Hostname/then MachineName
+
+                string name = System.Net.Dns.GetHostEntry("localhost").HostName;
+                if (string.IsNullOrEmpty(name))
+                    name = System.Net.Dns.GetHostName();
+
+                if (!string.IsNullOrEmpty(name))
+                    return name.ToUpper();
+            }
+            catch
+            {
+
+            }
+
+            return Environment.MachineName;
+        }
+
+
+        /// <summary>
         /// Determines battery info related to the device!
         /// </summary>
         /// <param name="percentage"></param>

@@ -4,6 +4,7 @@ using Home.Measure.Windows;
 using Home.Model;
 using Home.Service.Windows.Model;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -59,8 +60,6 @@ namespace Home.Service.Legacy
         {
             if (e.ExceptionObject != null)
                 MessageBox.Show((e.ExceptionObject as Exception).ToString());
-
-            MessageBox.Show("test");
         }
 
         private void InitalizeService()
@@ -74,7 +73,7 @@ namespace Home.Service.Legacy
                 IP = NET.DetermineIPAddress(),
                 DeviceGroup = ServiceData.Instance.DeviceGroup,
                 Location = ServiceData.Instance.Location,
-                Name = Environment.MachineName,
+                Name = NET.GetMachineName(),
                 OS = ServiceData.Instance.SystemType,
                 Type = ServiceData.Instance.Type,
                 DiskDrives = JsonConvert.DeserializeObject<List<DiskDrive>>(WMI.DetermineDiskDrives()),
@@ -151,7 +150,7 @@ namespace Home.Service.Legacy
             currentDevice.Environment.CPUUsage = Performance.GetCPUUsage();
             currentDevice.Environment.DiskUsage = Performance.GetDiskUsage();
             currentDevice.Environment.Is64BitOS = Environment.Is64BitOperatingSystem;
-            currentDevice.Environment.MachineName = Environment.MachineName;
+            currentDevice.Environment.MachineName = NET.GetMachineName();
             currentDevice.Environment.UserName = Environment.UserName;
             currentDevice.Environment.DomainName = Environment.UserDomainName;
             currentDevice.Environment.GraphicCards = WMI.DetermineGraphicsCardNames();
@@ -160,6 +159,7 @@ namespace Home.Service.Legacy
             currentDevice.Environment.Product = product;
             currentDevice.Environment.Description = description;
             currentDevice.Environment.Vendor = vendor;
+            currentDevice.Screens = GetScreenInformation();
 
             bool batteryResult = Home.Measure.Windows.NET.DetermineBatteryInfo(out int batteryPercentage, out bool isCharging);
             if (batteryResult)
@@ -201,6 +201,29 @@ namespace Home.Service.Legacy
                 }
             }
         }
+
+        private List<Screen> GetScreenInformation()
+        {
+            List<Screen> screens = new List<Screen>();
+
+            foreach (var screen in WMI.GetScreenInformation())
+            {
+                screens.Add(new Screen()
+                {
+                    ID = screen["id"].Value<string>(),
+                    Manufacturer = screen["manufacturer"].Value<string>(),
+                    Serial = screen["serial"].Value<string>(),
+                    BuiltDate = screen["built_date"].Value<string>(),
+                    Index = screen["index"].Value<int>(),
+                    IsPrimary = screen["is_primary"].Value<bool>(),
+                    DeviceName = screen["device_name"].Value<string>(),
+                    Resolution = screen["resolution"].Value<string>(),
+                });
+            }
+
+            return screens;
+        }
+
 
         public void PostScreenshot()
         {

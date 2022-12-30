@@ -7,13 +7,14 @@
              xmlns:converter="clr-namespace:Home.Converter"
              mc:Ignorable="d"
              xmlns:Fluent="urn:fluent-ribbon"
-             xmlns:res="clr-namespace:Home.Properties"
+             xmlns:res="clr-namespace:Home.Properties" xmlns:controls="clr-namespace:Home.Controls"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <home:EmptyConverter x:Key="emptyConverter" />
         <home:BatteryInfoConverter x:Key="batteryInfoConverter" />
         <converter:OSNameConverter x:Key="osNameConverter" />
         <converter:OS64BitConverter x:Key="os64BitConverter" />
+        <controls:ServiceVersionTextColorConverter x:Key="serviceVersionTextColorConverter" />
 
         <Style x:Key="infoBox" TargetType="{x:Type TextBlock}">
             <Setter Property="Margin" Value="2,0,2,2" />
@@ -91,7 +92,7 @@
                     </TextBlock.Text>
                 </TextBlock>
                 <TextBlock Text="{Binding Location, Converter={StaticResource emptyConverter}}" />
-                <TextBlock Text="{Binding ServiceClientVersion, Converter={StaticResource emptyConverter}}"/>
+                <TextBlock Text="{Binding ServiceClientVersion, Converter={StaticResource emptyConverter}}" Foreground="{Binding ServiceClientVersion, Converter={StaticResource serviceVersionTextColorConverter}}" />
             </StackPanel>
         </Grid>
 
