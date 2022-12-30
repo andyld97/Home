@@ -565,4 +565,37 @@
   <data name="strRAMDescription" xml:space="preserve">
     <value>RAM:</value>
   </data>
+  <data name="strAndroidDeviceNoShutdownSupport" xml:space="preserve">
+    <value>Ein Android Gerät kann nicht heruntergefahren oder neugestartet werden!</value>
+  </data>
+  <data name="strDoYouReallyWantToRestartDevice" xml:space="preserve">
+    <value>Sind Sie sich sicher, dass Sie das Gerät {0} neu starten möchten?</value>
+  </data>
+  <data name="strDoYouReallyWantToShutdownDevice" xml:space="preserve">
+    <value>Sind Sie sich sicher, dass Sie das Gerät {0} herunterfahren möchten?</value>
+  </data>
+  <data name="strFailedToClearDeviceLog" xml:space="preserve">
+    <value>Fehler beim Leeren des Geräte-Logs: {0}</value>
+  </data>
+  <data name="strSuccessfullyClearedDeviceLog" xml:space="preserve">
+    <value>Das Geräte-Log wurde erfolgreich geleert!</value>
+  </data>
+  <data name="strAreYouSureToDeleteDevice" xml:space="preserve">
+    <value>Sind Sie sich sicher, dass Sie das Gerät {0} löschen möchten?</value>
+  </data>
+  <data name="strAreYouSure" xml:space="preserve">
+    <value>Sicher?</value>
+  </data>
+  <data name="strTheDeviceWasDeletedSuccessfully" xml:space="preserve">
+    <value>Das Gerät wurde erfolgreich gelöscht!</value>
+  </data>
+  <data name="strCharging" xml:space="preserve">
+    <value>Lädt</value>
+  </data>
+  <data name="strDeviceOfflineCannotExecuteCommand" xml:space="preserve">
+    <value>Das ausgewählte Gerät ist derzeit offline! Es können keine weiteren Operationen durchgeführt werden!</value>
+  </data>
+  <data name="strFeatureIsNotSupportedOnSelectedDevice" xml:space="preserve">
+    <value>Das Feature ist aktuell nur auf neueren Windows-Systemen (Windows 7 SP1 oder neuer) oder Linux verfügbar!</value>
+  </data>
 </root>

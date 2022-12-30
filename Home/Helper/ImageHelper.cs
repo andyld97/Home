@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -6,6 +7,8 @@ namespace Home.Helper
 {
     public static class ImageHelper
     {
+        private static readonly Dictionary<string, BitmapImage> cache = new Dictionary<string, BitmapImage>();
+
         public static BitmapImage LoadImage(string bitmapSourceUri, bool isScreenshot)
         {
             // ToDo: *** Cache resource images (prevent loading in multiple times)
@@ -13,6 +16,12 @@ namespace Home.Helper
             {
                 // Replace with default image uri
                 bitmapSourceUri = "pack://application:,,,/Home;Component/resources/images/screenshot_default.png";
+            }
+
+            if (!isScreenshot)
+            {
+                if (cache.ContainsKey(bitmapSourceUri))
+                    return cache[bitmapSourceUri];
             }
 
             try
@@ -23,6 +32,9 @@ namespace Home.Helper
                 bi.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
                 bi.UriSource = new Uri(bitmapSourceUri);
                 bi.EndInit();
+
+                if (!isScreenshot)
+                    cache.Add(bitmapSourceUri, bi);
 
                 return bi;
             }

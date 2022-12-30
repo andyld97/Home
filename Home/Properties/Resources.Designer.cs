@@ -151,6 +151,33 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die An Android device cannot be shutdown or restarted! ähnelt.
+        /// </summary>
+        public static string strAndroidDeviceNoShutdownSupport {
+            get {
+                return ResourceManager.GetString("strAndroidDeviceNoShutdownSupport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Sure? ähnelt.
+        /// </summary>
+        public static string strAreYouSure {
+            get {
+                return ResourceManager.GetString("strAreYouSure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Are you sure you want to delete the device {0}? ähnelt.
+        /// </summary>
+        public static string strAreYouSureToDeleteDevice {
+            get {
+                return ResourceManager.GetString("strAreYouSureToDeleteDevice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Battery: ähnelt.
         /// </summary>
         public static string strBattery {
@@ -165,6 +192,15 @@ namespace Home.Properties {
         public static string strBit {
             get {
                 return ResourceManager.GetString("strBit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Charging ähnelt.
+        /// </summary>
+        public static string strCharging {
+            get {
+                return ResourceManager.GetString("strCharging", resourceCulture);
             }
         }
         
@@ -286,6 +322,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die This device is currently offline! No operations can be executed! ähnelt.
+        /// </summary>
+        public static string strDeviceOfflineCannotExecuteCommand {
+            get {
+                return ResourceManager.GetString("strDeviceOfflineCannotExecuteCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Uptime:  ähnelt.
         /// </summary>
         public static string strDeviceOnlineTime {
@@ -309,6 +354,24 @@ namespace Home.Properties {
         public static string strDisk {
             get {
                 return ResourceManager.GetString("strDisk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Are you sure you want to restart the machine {0}? ähnelt.
+        /// </summary>
+        public static string strDoYouReallyWantToRestartDevice {
+            get {
+                return ResourceManager.GetString("strDoYouReallyWantToRestartDevice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Are you sure you want to shutdown the machine {0}? ähnelt.
+        /// </summary>
+        public static string strDoYouReallyWantToShutdownDevice {
+            get {
+                return ResourceManager.GetString("strDoYouReallyWantToShutdownDevice", resourceCulture);
             }
         }
         
@@ -340,11 +403,29 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Failed to clear device log: {0} ähnelt.
+        /// </summary>
+        public static string strFailedToClearDeviceLog {
+            get {
+                return ResourceManager.GetString("strFailedToClearDeviceLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Failed to save the report! ähnelt.
         /// </summary>
         public static string strFailedToSaveReport {
             get {
                 return ResourceManager.GetString("strFailedToSaveReport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die This feature is currently only supported on newer Windows systems (Windows 7 SP1 or newer) or on Linux Systems! ähnelt.
+        /// </summary>
+        public static string strFeatureIsNotSupportedOnSelectedDevice {
+            get {
+                return ResourceManager.GetString("strFeatureIsNotSupportedOnSelectedDevice", resourceCulture);
             }
         }
         
@@ -1308,6 +1389,24 @@ namespace Home.Properties {
         public static string strSuccess {
             get {
                 return ResourceManager.GetString("strSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Successfully cleared the device log! ähnelt.
+        /// </summary>
+        public static string strSuccessfullyClearedDeviceLog {
+            get {
+                return ResourceManager.GetString("strSuccessfullyClearedDeviceLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die The device was deleted successfully! ähnelt.
+        /// </summary>
+        public static string strTheDeviceWasDeletedSuccessfully {
+            get {
+                return ResourceManager.GetString("strTheDeviceWasDeletedSuccessfully", resourceCulture);
             }
         }
         

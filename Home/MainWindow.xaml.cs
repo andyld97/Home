@@ -220,21 +220,20 @@ namespace Home
             if (d == null)
                 return;
 
-            // ToDo: *** Translate
             if (d.OS.IsAndroid())
             {
-                MessageBox.Show($"Ein Android Gerät kann nicht heruntergefahren oder neugestartet werden!", "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Home.Properties.Resources.strAndroidDeviceNoShutdownSupport, Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (shutdown)
             {
-                if (MessageBox.Show($"Sind Sie sich sicher, dass Sie das Gerät {d.Name} herunterfahren möchten?", "Wirklich?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+                if (MessageBox.Show(string.Format(Home.Properties.Resources.strDoYouReallyWantToShutdownDevice, d.Name), "Wirklich?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
                     return;
             }
             else
             {
-                if (MessageBox.Show($"Sind Sie sich sicher, dass Sie das Gerät {d.Name} neustarten möchten?", "Wirklich?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+                if (MessageBox.Show(string.Format(Home.Properties.Resources.strDoYouReallyWantToRestartDevice, d.Name), "Wirklich?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
                     return;
             }
 
@@ -488,7 +487,6 @@ namespace Home
             // Remember old scroll position
             double oldScrollPosition = LogScrollViewer.VerticalOffset;
             LogHolder.Document = flowDocument;
-            //LogScrollViewer.ScrollToEnd();
 
             // Restore old scroll position
             if (!scrollToEnd)
@@ -516,7 +514,10 @@ namespace Home
 
             var result = await API.ClearDeviceLogAsync(currentDevice);
 
-            // ToDo: *** Display result
+            if (result.Success)
+                MessageBox.Show(Home.Properties.Resources.strSuccessfullyClearedDeviceLog, Properties.Resources.strSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
+            else
+                MessageBox.Show(string.Format(Home.Properties.Resources.strFailedToClearDeviceLog, result.ErrorMessage), Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
         private void MenuButtonSendMessage_Click(object sender, RoutedEventArgs e)
@@ -535,7 +536,6 @@ namespace Home
         {
             LogScrollViewer.ScrollToVerticalOffset(LogScrollViewer.VerticalOffset - e.Delta);
         }
-
 
         private void MenuButtonChangeTheme_Click(object sender, RoutedEventArgs e)
         {
@@ -582,13 +582,13 @@ namespace Home
         {
             if (currentDevice != null)
             {
-                if (MessageBox.Show(this, $"Sind Sie sich sicher, dass Sie das Gerät {currentDevice.Name} löschen möchten?", "Sicher?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                if (MessageBox.Show(this, string.Format(Home.Properties.Resources.strAreYouSureToDeleteDevice, currentDevice.Name), Home.Properties.Resources.strAreYouSure, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
                     var result = await API.DeleteDeviceAsync(currentDevice);
                     if (result.Success)
-                        MessageBox.Show("Erfolg!", "Erfolg!", MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show(Home.Properties.Resources.strTheDeviceWasDeletedSuccessfully, Properties.Resources.strSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
                     else
-                        MessageBox.Show(result.ErrorMessage, "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show(result.ErrorMessage, Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
@@ -612,15 +612,16 @@ namespace Home
             if (currentDevice == null)
                 return;
 
+            // ToDo: *** Localize
             if (currentDevice.Status == DeviceStatus.Offline)
             {
-                MessageBox.Show("This devices is currently offline! No io operations can be executed!", "Offline-Mode", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Home.Properties.Resources.strDeviceOfflineCannotExecuteCommand, Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (currentDevice.OS.IsWindowsLegacy() || currentDevice.OS.IsAndroid())
             {
-                MessageBox.Show("This feature is currently only supported on newer Windows systems (Windows 7 SP1 or newer) or on Linux Systems", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Home.Properties.Resources.strFeatureIsNotSupportedOnSelectedDevice, Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -839,7 +840,7 @@ namespace Home
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is Battery b)
-                return $"{b.BatteryLevelInPercent}% (Charging: {(b.IsCharging ? "Yes" : "No")})";
+                return $"{b.BatteryLevelInPercent}% ({Home.Properties.Resources.strCharging}: {(b.IsCharging ? Properties.Resources.strYes : Properties.Resources.strNo)})";
 
             return "n/a";
         }

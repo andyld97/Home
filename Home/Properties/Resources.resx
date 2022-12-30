@@ -610,4 +610,37 @@
   <data name="strBattery" xml:space="preserve">
     <value>Battery:</value>
   </data>
+  <data name="strAndroidDeviceNoShutdownSupport" xml:space="preserve">
+    <value>An Android device cannot be shutdown or restarted!</value>
+  </data>
+  <data name="strDoYouReallyWantToShutdownDevice" xml:space="preserve">
+    <value>Are you sure you want to shutdown the machine {0}?</value>
+  </data>
+  <data name="strDoYouReallyWantToRestartDevice" xml:space="preserve">
+    <value>Are you sure you want to restart the machine {0}?</value>
+  </data>
+  <data name="strSuccessfullyClearedDeviceLog" xml:space="preserve">
+    <value>Successfully cleared the device log!</value>
+  </data>
+  <data name="strFailedToClearDeviceLog" xml:space="preserve">
+    <value>Failed to clear device log: {0}</value>
+  </data>
+  <data name="strTheDeviceWasDeletedSuccessfully" xml:space="preserve">
+    <value>The device was deleted successfully!</value>
+  </data>
+  <data name="strAreYouSure" xml:space="preserve">
+    <value>Sure?</value>
+  </data>
+  <data name="strAreYouSureToDeleteDevice" xml:space="preserve">
+    <value>Are you sure you want to delete the device {0}?</value>
+  </data>
+  <data name="strDeviceOfflineCannotExecuteCommand" xml:space="preserve">
+    <value>This device is currently offline! No operations can be executed!</value>
+  </data>
+  <data name="strFeatureIsNotSupportedOnSelectedDevice" xml:space="preserve">
+    <value>This feature is currently only supported on newer Windows systems (Windows 7 SP1 or newer) or on Linux Systems!</value>
+  </data>
+  <data name="strCharging" xml:space="preserve">
+    <value>Charging</value>
+  </data>
 </root>
