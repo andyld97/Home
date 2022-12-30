@@ -60,7 +60,10 @@ namespace Model
             htmlTemplate = htmlTemplate.Replace("{oem10}", f(device.ServiceClientVersion));
 
             // OS
-            htmlTemplate = htmlTemplate.Replace("{os0}", f($"{device.OS.GetDescription()} ({(device.Environment.Is64BitOS ? "64" : "32")} {Home.Properties.Resources.strBit})"));
+            if (device.OS.IsWindows(true))
+                htmlTemplate = htmlTemplate.Replace("{os0}", f($"{device.Environment.OSName} ({(device.Environment.Is64BitOS ? "64" : "32")} {Home.Properties.Resources.strBit})"));
+            else
+                htmlTemplate = htmlTemplate.Replace("{os0}", f($"{device.OS.GetDescription()} ({(device.Environment.Is64BitOS ? "64" : "32")} {Home.Properties.Resources.strBit})"));
             htmlTemplate = htmlTemplate.Replace("{os1}", f(device.Environment.OSVersion));
             htmlTemplate = htmlTemplate.Replace("{os2}", f(device.Environment.UserName));
             htmlTemplate = htmlTemplate.Replace("{os3}", f(device.Environment.DomainName));

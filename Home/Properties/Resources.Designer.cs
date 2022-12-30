@@ -160,7 +160,7 @@ namespace Home.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Bits ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Bit ähnelt.
         /// </summary>
         public static string strBit {
             get {

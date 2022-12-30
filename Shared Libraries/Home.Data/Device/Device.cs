@@ -534,7 +534,6 @@ namespace Home.Model
             if (other.IsLive != null)
                 IsLive = other.IsLive;
 
-            // ToDo: *** Only add new screenshots (to prevent duplicate entries and long lists)
             if (other.Screenshots.Count > 0)
             {
                 Screenshots.Clear();

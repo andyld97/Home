@@ -169,7 +169,6 @@ namespace Home.API.Controllers
 
                 // If ScreenIndex is null (either using old clients or for clients which only supports multiple screen)
                 // Only Home.Windows.Service currently supports screenshots for multiple screens/screenshots
-                // (ToDo: *** Add this in the readme feature table)
                 // Add the screen to the screenshot to create a link
                 if (shot.ScreenIndex is not null)
                 {

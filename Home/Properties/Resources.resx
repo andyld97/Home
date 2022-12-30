@@ -355,7 +355,7 @@
     <value>No</value>
   </data>
   <data name="strBit" xml:space="preserve">
-    <value>Bits</value>
+    <value>Bit</value>
   </data>
   <data name="strNoWarnings" xml:space="preserve">
     <value>No warnings!</value>

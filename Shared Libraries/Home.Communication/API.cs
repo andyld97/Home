@@ -354,12 +354,9 @@ namespace Home.Communication
                     return false;
                 }
             }
-
             return false;
         }
 
-        // MUST BE bool? (nullable), otherwise parsing to NULL causing an exception!
-        // ToDo: *** Check for other API methods which return bool!
         public async Task<Answer<bool?>> AquireScreenshotAsync(Client client, Device device)
         {
             try
