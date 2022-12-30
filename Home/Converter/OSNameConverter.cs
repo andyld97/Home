@@ -3,6 +3,8 @@ using System.Globalization;
 using System.Windows.Data;
 using static Home.Model.Device;
 using static Home.Data.Helper.GeneralHelper;
+using Home.Controls;
+using Home.Model;
 
 namespace Home.Converter
 {
@@ -10,8 +12,13 @@ namespace Home.Converter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is OSType type)
-                return type.GetDescription();
+            if (value is Device d)
+            {
+                if (d.OS.IsWindows(true))
+                    return d.Environment.OSName;
+                else 
+                    return d.OS.GetDescription();
+            }
 
             return value;
         }

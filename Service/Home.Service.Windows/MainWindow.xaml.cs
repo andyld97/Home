@@ -3,6 +3,7 @@ using Home.Data.Com;
 using Home.Measure.Windows;
 using Home.Model;
 using Home.Service.Windows.Model;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -86,7 +87,7 @@ namespace Home.Service.Windows
                     CPUCount = Environment.ProcessorCount,
                     CPUName = WMI.DetermineCPUName(),
                     TotalRAM = Native.DetermineTotalRAM(),
-                    OSName = ServiceData.Instance.OSName,
+                    OSName = NET.GetOsFriendlyName(ServiceData.Instance.OSName),
                     Motherboard = WMI.DetermineMotherboard(),
                     OSVersion = Environment.OSVersion.ToString(),
                     RunningTime = now.Subtract(startTimestamp),

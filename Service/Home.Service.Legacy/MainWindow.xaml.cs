@@ -83,7 +83,7 @@ namespace Home.Service.Legacy
                     CPUName = WMI.DetermineCPUName(),
                     Motherboard = WMI.DetermineMotherboard(),
                     TotalRAM = Native.DetermineTotalRAM(),
-                    OSName = ServiceData.Instance.OSName,
+                    OSName = NET.GetOsFriendlyName(ServiceData.Instance.OSName),
                     OSVersion = Environment.OSVersion.ToString(),
                     RunningTime = now.Subtract(startTimestamp),
                     StartTimestamp = startTimestamp

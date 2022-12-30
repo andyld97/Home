@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Linq;
+using System.Management;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -54,6 +56,55 @@ namespace Home.Measure.Windows
             }
 
             return returnAddress;
+        }
+
+
+        /// <summary>
+        /// Determines the OS-friendly name like "Windows 11 Pro Insider Preview (22H2)" with version!
+        /// </summary>
+        /// <param name="defaultValue">If there is an error the defaultValue will be returned</param>
+        /// <returns></returns>
+        public static string GetOsFriendlyName(string defaultValue)
+        {
+            try
+            {
+                var name = (from x in new ManagementObjectSearcher("SELECT Caption FROM Win32_OperatingSystem").Get().Cast<ManagementObject>()
+                            select x.GetPropertyValue("Caption")).FirstOrDefault();
+
+                // Helpful links for getting os versions and numbers correctly:
+                // https://stackoverflow.com/questions/69885021/determine-the-windows-os-version-details
+                // https://www.prugg.at/2019/09/09/properly-detect-windows-version-in-c-net-even-windows-10/
+
+                string winVer = string.Empty;
+                try
+                {
+                    if (Environment.OSVersion.Version.Major >= 10)
+                    {
+                        string HKLMWinNTCurrent = @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion";
+
+                        if (Environment.OSVersion.Version.Build <= 19042)
+                            winVer = Registry.GetValue(HKLMWinNTCurrent, "ReleaseId", "").ToString();
+                        else
+                            winVer = Registry.GetValue(HKLMWinNTCurrent, "DisplayVersion", "").ToString();
+                    }
+                }
+                catch
+                {
+                    // ignore
+                }
+
+                if (name != null && !string.IsNullOrEmpty(name.ToString()))
+                {
+                    if (string.IsNullOrEmpty(winVer))
+                        return name.ToString();
+
+                    return $"{name} ({winVer})";
+                }
+            }
+            catch
+            { }
+
+            return defaultValue;
         }
 
         /// <summary>
