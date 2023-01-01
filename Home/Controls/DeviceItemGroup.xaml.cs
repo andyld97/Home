@@ -125,7 +125,7 @@ namespace Home.Controls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is Device d)
-                return ImageHelper.LoadImage($"pack://application:,,,/Home;Component/resources/icons/devices/{d.DetermineDeviceImage()}", false);
+                return ImageHelper.LoadImage($"pack://application:,,,/Home;Component/resources/icons/devices/{d.DetermineDeviceImage()}", false, d.Type == Device.DeviceType.Smartphone);
 
             return null;
         }

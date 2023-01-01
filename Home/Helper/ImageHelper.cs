@@ -9,13 +9,16 @@ namespace Home.Helper
     {
         private static readonly Dictionary<string, BitmapImage> cache = new Dictionary<string, BitmapImage>();
 
-        public static BitmapImage LoadImage(string bitmapSourceUri, bool isScreenshot)
+        public static BitmapImage LoadImage(string bitmapSourceUri, bool isScreenshot, bool isPhone)
         {
             // ToDo: *** Cache resource images (prevent loading in multiple times)
             if (isScreenshot && !System.IO.File.Exists(bitmapSourceUri))
             {
                 // Replace with default image uri
-                bitmapSourceUri = "pack://application:,,,/Home;Component/resources/images/screenshot_default.png";
+                if (!isPhone)
+                    bitmapSourceUri = "pack://application:,,,/Home;Component/resources/images/screenshot_default.png";
+                else
+                    bitmapSourceUri = "pack://application:,,,/Home;Component/resources/images/default_phone.png";
             }
 
             if (!isScreenshot)

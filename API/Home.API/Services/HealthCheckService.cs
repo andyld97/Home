@@ -149,7 +149,7 @@ namespace Home.API.Services
                 {
                     if (ex is not TaskCanceledException)
                     {
-                        string message = $"Critical Exception from HealthCheckService (while saving): {ex.Message}";
+                        string message = $"Critical Exception from HealthCheckService (while saving): {ex.ToString()}";
                         _logger.LogError(message);
 
                         if (ShouldNotifyWebHook())
@@ -198,7 +198,7 @@ namespace Home.API.Services
         {
             if (device.Status && device.LastSeen.Add(Program.GlobalConfig.RemoveInactiveClients) < DateTime.Now)
             {
-                device.Status = false; // Device.DeviceStatus.Offline;
+                device.Status = false;
 
                 // If a device turns offline, usually the user wants to end the live state if the device is shutdown for example
                 device.IsLive = false;
@@ -340,7 +340,7 @@ namespace Home.API.Services
                     {
                         // Add log entry
                         toRemove.Add(warning.p);                                               
-                        var logEntry = ModelConverter.CreateLogEntry(device, $"[Storage Warning]: Removed for DISK \"{associatedDisk.DriveName}\"", LogEntry.LogLevel.Information, true);
+                        var logEntry = ModelConverter.CreateLogEntry(device, $"[Storage Warning]: Removed for device \"{device.Name}\" DISK \"{associatedDisk.DriveName}\"", LogEntry.LogLevel.Information, true);
                         await context.DeviceLog.AddAsync(logEntry);
                         ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
                     }
@@ -354,8 +354,6 @@ namespace Home.API.Services
             }
         }
 
-        private const int MAX_LOG_ENTRIES_PER_DEVICE = 200;
-
         private async Task TruncateDeviceLogAsync(HomeContext homeContext, Device device)
         {
             // Explanation:
@@ -363,13 +361,12 @@ namespace Home.API.Services
             // => So removing only one log entry would result in constantly truncating log and the log is always "full"!
             // => The idea is to cut down the log down to MAX_LOG_ENTRIES / 2, so there is more space then
             // Why -1 => Because one log entry "truncated log" will be added though 
-
-            if (device.DeviceLog.Count >= MAX_LOG_ENTRIES_PER_DEVICE)
+            if (device.DeviceLog.Count >= Consts.MAX_LOG_ENTRIES_PER_DEVICE)
             {
                 var entries = device.DeviceLog.OrderBy(p => p.Timestamp).ToList();
 
                 int count = device.DeviceLog.Count;
-                while (count > (MAX_LOG_ENTRIES_PER_DEVICE / 2) - 1)
+                while (count > (Consts.MAX_LOG_ENTRIES_PER_DEVICE / 2) - 1)
                 {
                     var entry = entries.FirstOrDefault();
                     if (entry == null)

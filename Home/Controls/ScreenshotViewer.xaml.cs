@@ -42,7 +42,7 @@ namespace Home.Controls
             ImageViewer.SetImageSource(bi);
         }
 
-        private async Task SetImageSourceAsync(byte[] data, string path, bool grayscale)
+        private async Task SetImageSourceAsync(byte[] data, string path, bool grayscale, Device device)
         {
             using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
             {
@@ -59,7 +59,7 @@ namespace Home.Controls
                     if (data != null)
                         bi = ImageHelper.LoadImage(ms);
                     else
-                        bi = ImageHelper.LoadImage(path, true);
+                        bi = ImageHelper.LoadImage(path, true, device.Type == Device.DeviceType.Smartphone);
 
                     if (grayscale)
                         SetImageSource(ImageHelper.GrayscaleBitmap(bi));
@@ -182,7 +182,7 @@ namespace Home.Controls
                 filePath = await DownloadScreenshotAsync(device, shot);
             }
 
-            await SetImageSourceAsync(data, filePath, grayscale);
+            await SetImageSourceAsync(data, filePath, grayscale, device);
         }
 
         private async Task<string> DownloadScreenshotAsync(Device device, Screenshot screenshot)
@@ -213,7 +213,7 @@ namespace Home.Controls
                 image = "offline";     
 
             string path = $"pack://application:,,,/Home;Component/resources/icons/live/{image}.png";
-            ImageToggleLive.Source = ImageHelper.LoadImage(path, false);
+            ImageToggleLive.Source = ImageHelper.LoadImage(path, false, lastSelectedDevice?.Type == Device.DeviceType.Smartphone);
         }
 
         private void UpdateLiveImage(bool state, bool enabled)
@@ -223,7 +223,7 @@ namespace Home.Controls
                 image = "online";
 
             string path = $"pack://application:,,,/Home;Component/resources/icons/live/{image}.png";
-            ImageLive.Source = ImageHelper.LoadImage(path, false);
+            ImageLive.Source = ImageHelper.LoadImage(path, false, lastSelectedDevice?.Type == Device.DeviceType.Smartphone);
         }
 
         private void UpdateLiveStatus(bool state, bool enabled)

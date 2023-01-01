@@ -23,9 +23,9 @@ namespace Home.Converter
                     if (!System.IO.File.Exists(path))
                         Task.Run(async () => await MainWindow.API.DownloadScreenshotToCache(d, MainWindow.CACHE_PATH)).Wait();
 
-                    return ImageHelper.LoadImage(path, true);
+                    return ImageHelper.LoadImage(path, true, d.Type == Device.DeviceType.Smartphone);
                 }
-                else return ImageHelper.LoadImage(string.Empty, true);
+                else return ImageHelper.LoadImage(string.Empty, true, d.Type == Device.DeviceType.Smartphone);
             }
 
             // ToDo: *** Return default screenshot
