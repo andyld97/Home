@@ -224,7 +224,7 @@ namespace Home.API.Services
                 return;
 
             // Check for the last screenshot's age
-            var shot = device.DeviceScreenshot.LastOrDefault();
+            var shot = device.DeviceScreenshot.OrderByDescending(s => s.Timestamp).FirstOrDefault();
             if (shot == null)
                 return;
 

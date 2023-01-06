@@ -444,7 +444,7 @@ namespace Home
             FlowDocument flowDocument = new FlowDocument { FontFamily = new FontFamily("Cascadia Code") };
             Paragraph currentParagraph = new Paragraph();
 
-            foreach (var entry in currentDevice.LogEntries)
+            foreach (var entry in currentDevice.LogEntries.OrderBy(e => e.Timestamp))
             {
                 // Get image
                 BitmapImage bi;
