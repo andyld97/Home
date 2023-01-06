@@ -310,7 +310,20 @@ namespace Home
                 if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceScreenshotRecieved)
                 {
                     // Update screenshot viewer
-                    await ScreenshotViewer.UpdateScreenshotAsync(@event.EventData.EventDevice);
+                    bool refresh = false;
+                    if (currentDevice != null && currentDevice.ID == @event.DeviceID)
+                    {
+                        await ScreenshotViewer.UpdateScreenshotAsync(@event.EventData.EventDevice);
+                        refresh = true;
+                    }
+
+                    currentDevice.Update(@event.EventData.EventDevice, @event.EventData.EventDevice.LastSeen, @event.EventData.EventDevice.Status, true);
+
+                    if (refresh)
+                    {
+                        await RefreshSelectedItem();
+                        RefreshDeviceHolder();
+                    }
                 }
                 else
                 {
