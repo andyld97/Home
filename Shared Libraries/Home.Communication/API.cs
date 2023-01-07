@@ -278,26 +278,20 @@ namespace Home.Communication
             }
         }
 
-        public async Task<Answer<Screenshot>> RecieveScreenshotAsync(Device device, string fileName)
+        public async Task<byte[]> RecieveScreenshotAsync(Device device, string fileName)
         {
             try
             {
                 string url = $"{GenerateEpUrl(true, RECIEVE_SCREENSHOT)}/{device.ID}/{fileName}";
                 var result = await httpClient.GetAsync(url); 
 
-                var content = await result.Content.ReadAsStringAsync();
-                if (!string.IsNullOrEmpty(content))
-                {
-                    var item = System.Text.Json.JsonSerializer.Deserialize<Answer<Screenshot>>(content);
-                    return item;
-                }
-                else
-                    return AnswerExtensions.Fail<Screenshot>("Empty content!");
+                var content = await result.Content.ReadAsByteArrayAsync();
+                return content;
             }
             catch (Exception ex)
             {
                 // LOG
-                return AnswerExtensions.Fail<Screenshot>(ex.Message);
+                return null;
             }
         }
 
@@ -341,12 +335,12 @@ namespace Home.Communication
 
             // Download latest screenshot
             var result = await RecieveScreenshotAsync(device, fileName);
-            if (result.Success)
+            if (result != null)
             {
                 string path = System.IO.Path.Combine(cacheDevicePath, fileName + ".png");
                 try
                 {
-                    System.IO.File.WriteAllBytes(path, Convert.FromBase64String(result.Result.Data));
+                    System.IO.File.WriteAllBytes(path, result);
                     return true;
                 }
                 catch

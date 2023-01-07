@@ -13,6 +13,8 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Collections.Generic;
 using System.Windows.Data;
+using System.Collections.Concurrent;
+using System.Windows.Threading;
 
 namespace Home.Controls
 {
@@ -24,6 +26,14 @@ namespace Home.Controls
         private bool isSmall = true;
         private string lastDate = string.Empty;
         private Device lastSelectedDevice = null;
+        private bool ignoreCmbScreenSelectionChanged = false;
+
+        #region Download Queue
+        private ConcurrentQueue<(Device, Screenshot)> downloadQueue = new ConcurrentQueue<(Device, Screenshot)>();
+        private DispatcherTimer queueTimer = new DispatcherTimer();
+        private bool isDownloading = false;
+        private object sync = new object();
+        #endregion
 
         public delegate void resizeHandler(bool isSmall);
         public event resizeHandler OnResize;
@@ -33,9 +43,96 @@ namespace Home.Controls
         public ScreenshotViewer()
         {
             InitializeComponent();
+            queueTimer.Tick += QueueTimer_Tick;
+            queueTimer.Interval = TimeSpan.FromMilliseconds(500);
+            queueTimer.Start();
         }
 
-        #region Image Source
+        #region Set Screenshot/Display Screenshot
+
+        private Screenshot screenshotToDisplay = null;
+
+        private async Task SetScreenshotToDisplay(Screenshot value)
+        {
+            if (screenshotToDisplay != value || value == null)
+            {
+                screenshotToDisplay = value;
+
+                if (screenshotToDisplay == null)
+                {
+                    UpdateDate(lastSelectedDevice.LastSeen.ToString(Properties.Resources.strDateTimeFormat));
+                    await SetImageSourceAsync(null, string.Empty, (lastSelectedDevice.Type != Device.DeviceType.Smartphone && lastSelectedDevice.Status == Device.DeviceStatus.Offline), lastSelectedDevice);
+                }
+                else
+                {
+                    // Display it if it exists (otherwise put it to the queue)
+                    var path = GetScreenshotPath(lastSelectedDevice, screenshotToDisplay);
+
+                    if (!string.IsNullOrEmpty(path))
+                        await DisplayScreenshotAsync(path, lastSelectedDevice);
+                    else
+                    {
+                        await SetImageSourceAsync(null, string.Empty, (lastSelectedDevice.Type != Device.DeviceType.Smartphone && lastSelectedDevice.Status == Device.DeviceStatus.Offline), lastSelectedDevice);
+                        downloadQueue.Enqueue((lastSelectedDevice, value));
+                    }
+                }
+            }
+        }
+
+        private async Task DisplayScreenshotAsync(string path, Device device)
+        {
+            if (screenshotToDisplay == null)
+                return;
+
+            await SetImageSourceAsync(null, path, lastSelectedDevice.Status == Device.DeviceStatus.Offline, lastSelectedDevice);
+
+            if (screenshotToDisplay.Timestamp != null)
+                UpdateDate(screenshotToDisplay.Timestamp.Value.ToString(Properties.Resources.strDateTimeFormat));
+        }
+        #endregion    
+
+        #region Screenshot Download Queue
+
+        private async void QueueTimer_Tick(object sender, EventArgs e)
+        {
+            lock (sync)
+            {
+                if (isDownloading)
+                    return;
+                else
+                    isDownloading = true;
+            }
+
+            if (downloadQueue.TryDequeue(out var data))
+            {
+                var device = data.Item1;
+                var screenshot = data.Item2;    
+
+                string path = System.IO.Path.Combine(MainWindow.CACHE_PATH, device.ID, screenshot.Filename) + ".png";
+                if (!System.IO.File.Exists(path))
+                {
+                    if (await MainWindow.API.DownloadScreenshotToCache(device, MainWindow.CACHE_PATH, screenshot.Filename))
+                    {
+                        // succuessfully downloaded image to cache
+                        if (screenshotToDisplay != null && screenshotToDisplay == screenshot)
+                            await DisplayScreenshotAsync(path, device);
+                    }
+                }
+            }
+
+            lock (sync)
+                isDownloading = false;
+        }
+
+        public void QueueScreenshotDownload(Device device, Screenshot screenshot)
+        {
+            if (string.IsNullOrEmpty(GetScreenshotPath(device, screenshot)))
+                downloadQueue.Enqueue((device, screenshot));
+        }
+
+        #endregion
+
+        #region Set Image Source
 
         private void SetImageSource(ImageSource bi)
         {
@@ -75,6 +172,7 @@ namespace Home.Controls
 
         #endregion
 
+        #region Update
         public void UpdateDate(string text)
         {
             if (lastSelectedDevice == null)
@@ -93,6 +191,7 @@ namespace Home.Controls
 
         public async Task UpdateDeviceAsync(Device device)
         {
+            ignoreCmbScreenSelectionChanged = true;
             if (device == null)
                 return;
 
@@ -125,6 +224,7 @@ namespace Home.Controls
 
             UpdateLiveStatus(status, enabled);
             await UpdateScreenshotAsync(device);
+            ignoreCmbScreenSelectionChanged = false;
         }
 
         public async Task UpdateScreenshotAsync(Device device)
@@ -139,68 +239,33 @@ namespace Home.Controls
             int selectedIndex = cmbScreens.SelectedIndex;
             bool isOnlyOneScreen = device.Screens.Count == 1;
             bool grayscale = device.Status == Device.DeviceStatus.Offline;
-            byte[] data = null;
-            string filePath = string.Empty;
 
             if (device.Screenshots.Count == 0)
-            {
-                // nothing here
-            }
+                await SetScreenshotToDisplay(null);
             else if (isOnlyOneScreen)
             {
                 if (device.Screenshots.Count > 0)
                 {
-                    var shot = device.Screenshots.LastOrDefault();
+                    var shot = device.Screenshots.OrderBy(s => s.Timestamp).LastOrDefault();
                     if (shot != null)
-                        filePath = await DownloadScreenshotAsync(device, shot);
+                        await SetScreenshotToDisplay(shot);
                 }
             }
             else if (selectedIndex != 0)
             {
-                var shot = device.Screenshots.LastOrDefault(p => p.ScreenIndex == cmbScreens.SelectedIndex - 1); // don't forget item 0 is default and doesn't actually represents a physical screen
+                var shot = device.Screenshots.OrderBy(s => s.Timestamp).LastOrDefault(p => p.ScreenIndex == cmbScreens.SelectedIndex - 1); // don't forget item 0 is default and doesn't actually represents a physical screen
                 if (shot != null)
-                    filePath = await DownloadScreenshotAsync(device, shot);
+                    await SetScreenshotToDisplay(shot);
                 else
-                {
-                    SetImageSource(null);
-                    return;
-                }
+                    await SetScreenshotToDisplay(null);
             }
             else
             {
                 // Display last screenshot with (ScreenIndex == null) or if not available the last screenshot without (ScreenIndex == null)
-                var shot = device.Screenshots.LastOrDefault(p => p.ScreenIndex == null);
-                if (shot == null)
-                    shot = device.Screenshots.LastOrDefault();
-
-                if (shot == null)
-                {
-                    SetImageSource(null);
-                    return;
-                }
-
-                filePath = await DownloadScreenshotAsync(device, shot);
+                var shot = device.Screenshots.OrderBy(s => s.Timestamp).LastOrDefault(p => p.ScreenIndex == null);
+                if (shot != null)
+                    await SetScreenshotToDisplay(shot);
             }
-
-            await SetImageSourceAsync(data, filePath, grayscale, device);
-        }
-
-        private async Task<string> DownloadScreenshotAsync(Device device, Screenshot screenshot)
-        {
-            string path = System.IO.Path.Combine(MainWindow.CACHE_PATH, device.ID, screenshot.Filename) + ".png";
-            if (!System.IO.File.Exists(path))
-            {
-                if (await MainWindow.API.DownloadScreenshotToCache(device, MainWindow.CACHE_PATH, screenshot.Filename))
-                {
-                    // succuessfully downloaded image to cache
-                }
-            }
-
-            // Display timestamp and return path
-            if (screenshot.Timestamp != null)
-                UpdateDate(screenshot.Timestamp.Value.ToString(Properties.Resources.strDateTimeFormat));
-
-            return path;
         }
 
         private void UpdateToggleButton(bool state, bool enabled)
@@ -210,7 +275,7 @@ namespace Home.Controls
             if (enabled)
                 image = !state ? "toggle" : "offline";
             else
-                image = "offline";     
+                image = "offline";
 
             string path = $"pack://application:,,,/Home;Component/resources/icons/live/{image}.png";
             ImageToggleLive.Source = ImageHelper.LoadImage(path, false, lastSelectedDevice?.Type == Device.DeviceType.Smartphone);
@@ -229,7 +294,7 @@ namespace Home.Controls
         private void UpdateLiveStatus(bool state, bool enabled)
         {
             UpdateToggleButton(state, enabled);
-            UpdateLiveImage(state, enabled);       
+            UpdateLiveImage(state, enabled);
 
             if (state)
             {
@@ -242,6 +307,17 @@ namespace Home.Controls
                 TextLive.Text = lastDate;
             }
         }
+        #endregion
+
+        #region Events / Helper Methods
+        private string GetScreenshotPath(Device device, Screenshot screenshot)
+        {
+            string path = System.IO.Path.Combine(MainWindow.CACHE_PATH, device.ID, screenshot.Filename) + ".png";
+            if (System.IO.File.Exists(path))
+                return path;
+
+            return string.Empty;
+        }     
 
         private void AnimateButton(object sender)
         {
@@ -307,7 +383,7 @@ namespace Home.Controls
                     return;
                 }
 
-                if (lastSelectedDevice.IsLive.HasValue)
+                if (lastSelectedDevice.IsLive == true)
                     await MainWindow.API.SetLiveStatusAsync(MainWindow.CLIENT, lastSelectedDevice, !lastSelectedDevice.IsLive.Value);
                 else
                     await MainWindow.API.SetLiveStatusAsync(MainWindow.CLIENT, lastSelectedDevice, true);
@@ -325,8 +401,12 @@ namespace Home.Controls
 
         private async void cmbScreens_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (ignoreCmbScreenSelectionChanged)
+                return;
+
             await UpdateScreenshotAsync(lastSelectedDevice);
         }
+        #endregion
     }
 
     #region Converter 
@@ -352,7 +432,7 @@ namespace Home.Controls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is Home.Model.Screen sr && sr.DeviceName == "Default")
-                return "All";
+                return "All"; // ToDo: *** Localize
             else if (value is Home.Model.Screen screen)
                 return screen.Index;                
 

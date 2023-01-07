@@ -227,21 +227,17 @@ namespace Home.API.Controllers
         /// <param name="fileName">The screenshot filename</param>
         /// <returns>Ok on success</returns>
         [HttpGet("recieve_screenshot/{deviceId}/{fileName}")]
-        public IActionResult RecieveScreenshot(string deviceId, string fileName)
+        public async Task<IActionResult> RecieveScreenshot(string deviceId, string fileName)
         {
             if (string.IsNullOrEmpty(deviceId))
                 return BadRequest(AnswerExtensions.Fail("Invalid device data"));
 
             try
-            {
+            {                
                 string screenshotFilePath = System.IO.Path.Combine(Config.SCREENSHOTS_PATH, deviceId, $"{fileName}.png");
-                Screenshot screenshot = new Screenshot()
-                {
-                    DeviceID = null,
-                    Data = Convert.ToBase64String(System.IO.File.ReadAllBytes(screenshotFilePath))
-                };
+                var data = await System.IO.File.ReadAllBytesAsync(screenshotFilePath);
 
-                return Ok(AnswerExtensions.Success(screenshot));
+                return File(data, "image/png");
             }
             catch (Exception ex)
             {

@@ -310,19 +310,22 @@ namespace Home
                 if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceScreenshotRecieved)
                 {
                     // Update screenshot viewer
-                    bool refresh = false;
                     if (currentDevice != null && currentDevice.ID == @event.DeviceID)
                     {
-                        await ScreenshotViewer.UpdateScreenshotAsync(@event.EventData.EventDevice);
-                        refresh = true;
-                    }
-
-                    currentDevice.Update(@event.EventData.EventDevice, @event.EventData.EventDevice.LastSeen, @event.EventData.EventDevice.Status, true);
-
-                    if (refresh)
-                    {
+                        currentDevice.Update(@event.EventData.EventDevice, @event.EventData.EventDevice.LastSeen, @event.EventData.EventDevice.Status, true);
+                        await ScreenshotViewer.UpdateScreenshotAsync(currentDevice);
                         await RefreshSelectedItem();
                         RefreshDeviceHolder();
+                    }
+                    else
+                    {
+                        // Refresh other device an try to download the screenshot in advance
+                        var otherDevice = deviceList.FirstOrDefault(d => d.ID == @event.DeviceID);
+                        if (otherDevice != null)
+                        {
+                            otherDevice.Update(@event.EventData.EventDevice, @event.EventData.EventDevice.LastSeen, @event.EventData.EventDevice.Status, true);
+                            otherDevice.Screenshots.ForEach(s => ScreenshotViewer.QueueScreenshotDownload(otherDevice, s));
+                        }
                     }
                 }
                 else
