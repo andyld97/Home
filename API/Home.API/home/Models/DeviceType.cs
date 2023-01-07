@@ -3,18 +3,13 @@
 using System;
 using System.Collections.Generic;
 
-namespace Home.API.home.Models
+namespace Home.API.home.Models;
+
+public partial class DeviceType
 {
-    public partial class DeviceType
-    {
-        public DeviceType()
-        {
-            Device = new HashSet<Device>();
-        }
+    public int TypeId { get; set; }
 
-        public int TypeId { get; set; }
-        public string Type { get; set; }
+    public string Type { get; set; }
 
-        public virtual ICollection<Device> Device { get; set; }
-    }
+    public virtual ICollection<Device> Device { get; } = new List<Device>();
 }

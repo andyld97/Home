@@ -3,21 +3,19 @@
 using System;
 using System.Collections.Generic;
 
-namespace Home.API.home.Models
+namespace Home.API.home.Models;
+
+public partial class DeviceUsage
 {
-    public partial class DeviceUsage
-    {
-        public DeviceUsage()
-        {
-            Device = new HashSet<Device>();
-        }
+    public int DeviceUsageId { get; set; }
 
-        public int DeviceUsageId { get; set; }
-        public string Cpu { get; set; }
-        public string Ram { get; set; }
-        public string Disk { get; set; }
-        public string Battery { get; set; }
+    public string Cpu { get; set; }
 
-        public virtual ICollection<Device> Device { get; set; }
-    }
+    public string Ram { get; set; }
+
+    public string Disk { get; set; }
+
+    public string Battery { get; set; }
+
+    public virtual ICollection<Device> Device { get; } = new List<Device>();
 }

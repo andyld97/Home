@@ -5,19 +5,15 @@ using System.Collections.Generic;
 
 namespace Home.API.home.Models;
 
-public partial class DeviceCommand
+public partial class DeviceChange
 {
-    public int DeviceCommandId { get; set; }
+    public int Id { get; set; }
 
-    public int? DeviceId { get; set; }
-
-    public string Executable { get; set; }
-
-    public string Parameter { get; set; }
+    public int DeviceId { get; set; }
 
     public DateTime Timestamp { get; set; }
 
-    public bool IsExceuted { get; set; }
+    public string Description { get; set; }
 
     public virtual Device Device { get; set; }
 }

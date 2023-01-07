@@ -3,18 +3,23 @@
 using System;
 using System.Collections.Generic;
 
-namespace Home.API.home.Models
-{
-    public partial class DeviceMessage
-    {
-        public int MessageId { get; set; }
-        public int? DeviceId { get; set; }
-        public string Title { get; set; }
-        public string Content { get; set; }
-        public short Type { get; set; }
-        public DateTime? Timestamp { get; set; }
-        public bool IsRecieved { get; set; }
+namespace Home.API.home.Models;
 
-        public virtual Device Device { get; set; }
-    }
+public partial class DeviceMessage
+{
+    public int MessageId { get; set; }
+
+    public int? DeviceId { get; set; }
+
+    public string Title { get; set; }
+
+    public string Content { get; set; }
+
+    public short Type { get; set; }
+
+    public DateTime? Timestamp { get; set; }
+
+    public bool IsRecieved { get; set; }
+
+    public virtual Device Device { get; set; }
 }

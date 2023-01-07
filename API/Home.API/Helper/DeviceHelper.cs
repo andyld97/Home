@@ -20,6 +20,7 @@ namespace Home.API.Helper
                                        .Include(p => p.DeviceMessage)
                                        .Include(p => p.DeviceWarning)
                                        .Include(p => p.DeviceScreen)
+                                       .Include(p => p.DeviceChange)
                                        .Include(p => p.DeviceScreenshot).ThenInclude(p => p.Screen) 
                                        .Include(p => p.OstypeNavigation).Where(p => p.Guid == guid).AsSplitQuery().FirstOrDefaultAsync();
         }
@@ -35,6 +36,7 @@ namespace Home.API.Helper
                                        .Include(p => p.DeviceMessage)
                                        .Include(p => p.DeviceWarning)
                                        .Include(p => p.DeviceScreen)
+                                       .Include(p => p.DeviceChange)
                                        .Include(p => p.DeviceScreenshot).ThenInclude(p => p.Screen)
                                        .Include(p => p.OstypeNavigation).AsSplitQuery();
 
@@ -55,6 +57,7 @@ namespace Home.API.Helper
                                            .Include(p => p.DeviceMessage)
                                            .Include(p => p.DeviceWarning)
                                            .Include(p => p.DeviceScreen)
+                                           .Include(p => p.DeviceChange)
                                            .Include(p => p.DeviceScreenshot).ThenInclude(p => p.Screen)
                                            .Include(p => p.OstypeNavigation).Where(d => d.Status).AsSplitQuery().ToListAsync();
 

@@ -3,16 +3,19 @@
 using System;
 using System.Collections.Generic;
 
-namespace Home.API.home.Models
-{
-    public partial class DeviceLog
-    {
-        public int LogEntryId { get; set; }
-        public int? DeviceId { get; set; }
-        public string Blob { get; set; }
-        public DateTime? Timestamp { get; set; }
-        public int LogLevel { get; set; }
+namespace Home.API.home.Models;
 
-        public virtual Device Device { get; set; }
-    }
+public partial class DeviceLog
+{
+    public int LogEntryId { get; set; }
+
+    public int? DeviceId { get; set; }
+
+    public string Blob { get; set; }
+
+    public DateTime? Timestamp { get; set; }
+
+    public int LogLevel { get; set; }
+
+    public virtual Device Device { get; set; }
 }

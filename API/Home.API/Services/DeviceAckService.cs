@@ -69,7 +69,7 @@ namespace Home.API.Services
                     }
 
                     // If there is a change, append it in the log and notify webhook
-                    await DetectAnyDevicesChangesAndLogAsync(currentDevice, requestedDevice);
+                    await DetectAnyDevicesChangesAndLogAsync(currentDevice, requestedDevice, now);
 
                     isScreenshotRequired = currentDevice.IsScreenshotRequired;
 
@@ -312,70 +312,53 @@ namespace Home.API.Services
 
         #region Logging and Webhook
 
-        private async Task DetectAnyDevicesChangesAndLogAsync(home.Models.Device currentDevice, Home.Model.Device requestedDevice)
+        private async Task RegisterDeviceChangeAsync(string message, home.Models.Device device, DateTime now)
+        {
+            await _context.DeviceChange.AddAsync(new DeviceChange() { Device = device, Description = message, Timestamp = now });
+            await _context.DeviceLog.AddAsync(ModelConverter.CreateLogEntry(device, message, LogEntry.LogLevel.Information, true));
+
+            _logger.LogInformation(message);
+        }
+
+        private async Task DetectAnyDevicesChangesAndLogAsync(home.Models.Device currentDevice, Home.Model.Device requestedDevice, DateTime now)
         {
             // Detect any device changes and log them (also log to Webhook)            
             string prefix = $"Device \"{requestedDevice.Name}\"";
 
             // Check if a newer client version is used
             if (currentDevice.ServiceClientVersion != requestedDevice.ServiceClientVersion && !string.IsNullOrEmpty(currentDevice.ServiceClientVersion))
-            {
-                var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"{prefix} detected new client version: {requestedDevice.ServiceClientVersion} (Old version: {currentDevice.ServiceClientVersion})", LogEntry.LogLevel.Information, true);
-                await _context.DeviceLog.AddAsync(logEntry);
-            }
+                await RegisterDeviceChangeAsync($"{prefix} detected new client version: {requestedDevice.ServiceClientVersion} (Old version: {currentDevice.ServiceClientVersion})", currentDevice, now);           
 
             // Check if os name changed
             if (currentDevice.OstypeNavigation.Name != requestedDevice.OS.ToString())
-            {
-                var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"{prefix} detected OS change from {currentDevice.OstypeNavigation.Name} to {requestedDevice.OS}", LogEntry.LogLevel.Information, true);
-                await _context.DeviceLog.AddAsync(logEntry);
-            }
+                await RegisterDeviceChangeAsync($"{prefix} detected OS change from {currentDevice.OstypeNavigation.Name} to {requestedDevice.OS}", currentDevice, now);
 
             // Check if os version changed (don't ignore updates in general)
             if (currentDevice.Environment.Osversion != requestedDevice.Environment.OSVersion && !string.IsNullOrEmpty(currentDevice.Environment.Osversion))
-            {
-                var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"{prefix} detected new os version: {requestedDevice.Environment.OSVersion} (Old version: {currentDevice.Environment.Osversion})", LogEntry.LogLevel.Information, true);
-                await _context.DeviceLog.AddAsync(logEntry);
-            }
+                await RegisterDeviceChangeAsync($"{prefix} detected new os version: {requestedDevice.Environment.OSVersion} (Old version: {currentDevice.Environment.Osversion})", currentDevice, now);
 
             // CPU
             if (currentDevice.Environment.Cpuname != requestedDevice.Environment.CPUName && !string.IsNullOrEmpty(requestedDevice.Environment.CPUName))
-            {
-                var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"{prefix} detected CPU change. CPU {currentDevice.Environment.Cpuname} got replaced with {requestedDevice.Environment.CPUName}", LogEntry.LogLevel.Information, true);
-                await _context.DeviceLog.AddAsync(logEntry);
-            }
+                await RegisterDeviceChangeAsync($"{prefix} detected CPU change. CPU {currentDevice.Environment.Cpuname} got replaced with {requestedDevice.Environment.CPUName}", currentDevice, now);
 
             // CPU Count
             if (currentDevice.Environment.Cpucount != requestedDevice.Environment.CPUCount && requestedDevice.Environment.CPUCount > 0)
-            {
-                var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"{prefix} detected CPU-Count change from {currentDevice.Environment.Cpucount} to {requestedDevice.Environment.CPUCount}", LogEntry.LogLevel.Information, true);
-                await _context.DeviceLog.AddAsync(logEntry);
-            }
+                await RegisterDeviceChangeAsync($"{prefix} detected CPU-Count change from {currentDevice.Environment.Cpucount} to {requestedDevice.Environment.CPUCount}", currentDevice, now);
 
             // Motherboard
             if (currentDevice.Environment.Motherboard != requestedDevice.Environment.Motherboard && !string.IsNullOrEmpty(requestedDevice.Environment.Motherboard))
-            {
-                var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"{prefix} detected Motherboard change from {currentDevice.Environment.Motherboard} to {requestedDevice.Environment.Motherboard}", LogEntry.LogLevel.Information, true);
-                await _context.DeviceLog.AddAsync(logEntry);
-            }
+                await RegisterDeviceChangeAsync($"{prefix} detected Motherboard change from {currentDevice.Environment.Motherboard} to {requestedDevice.Environment.Motherboard}", currentDevice, now);
 
             // Graphics
-            await NotifyWebhookGraphicsChangeAsync(currentDevice, requestedDevice);
+            await NotifyWebhookGraphicsChangeAsync(currentDevice, requestedDevice, now);
 
             // RAM
             if (currentDevice.Environment.TotalRam != requestedDevice.Environment.TotalRAM && requestedDevice.Environment.TotalRAM > 0)
-            {
-                var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"{prefix} detected RAM change from {currentDevice.Environment.TotalRam} GB to {requestedDevice.Environment.TotalRAM} GB", LogEntry.LogLevel.Information, true);
-                await _context.DeviceLog.AddAsync(logEntry);
-            }
+                await RegisterDeviceChangeAsync($"{prefix} detected RAM change from {currentDevice.Environment.TotalRam} GB to {requestedDevice.Environment.TotalRAM} GB", currentDevice, now);
 
             // IP Change
             if (currentDevice.Ip.Replace("/24", string.Empty) != requestedDevice.IP.Replace("/24", string.Empty) && !string.IsNullOrEmpty(requestedDevice.IP))
-            {
-                var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"{prefix} detected IP change from {currentDevice.Ip} to {requestedDevice.IP}", LogEntry.LogLevel.Information, true);
-                await _context.DeviceLog.AddAsync(logEntry);
-            }
-
+                await RegisterDeviceChangeAsync($"{prefix} detected IP change from {currentDevice.Ip} to {requestedDevice.IP}", currentDevice, now);
             // Screens
             bool screenConfigChanged = false;
 
@@ -408,14 +391,11 @@ namespace Home.API.Services
                 string newScreens = string.Join(Environment.NewLine, requestedDevice.Screens.Select(p => p.DeviceName));
 
                 if (oldScreens.Trim() != newScreens.Trim())
-                {
-                    var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"{prefix} detected screen changes.\n\nOld screen(s):\n{oldScreens}\n\nNew screen(s):\n{newScreens}", LogEntry.LogLevel.Information, true);
-                    await _context.DeviceLog.AddAsync(logEntry);
-                }
+                    await RegisterDeviceChangeAsync($"{prefix} detected screen changes.\n\nOld screen(s):\n{oldScreens}\n\nNew screen(s):\n{newScreens}", currentDevice, now);
             }
         }
 
-        private async Task NotifyWebhookGraphicsChangeAsync(home.Models.Device currentDevice, Home.Model.Device requestedDevice)
+        private async Task NotifyWebhookGraphicsChangeAsync(home.Models.Device currentDevice, Home.Model.Device requestedDevice, DateTime now)
         {
             bool log = false;
             if (currentDevice.DeviceGraphic.Count != requestedDevice.Environment.GraphicCards.Count)
@@ -448,8 +428,7 @@ namespace Home.API.Services
                 string oldCards = string.Join(Environment.NewLine, currentDevice.DeviceGraphic.Select(p => p.Name));
                 string newCards = string.Join(Environment.NewLine, requestedDevice.Environment.GraphicCards);
 
-                var logEntry = ModelConverter.CreateLogEntry(currentDevice, $"Device \"{requestedDevice.Name}\" detected graphics change:\n\nOld card(s):\n {oldCards}\n\nNew card(s):\n {newCards}", LogEntry.LogLevel.Information, true);
-                await _context.DeviceLog.AddAsync(logEntry);
+                await RegisterDeviceChangeAsync($"Device \"{requestedDevice.Name}\" detected graphics change:\n\nOld card(s):\n {oldCards}\n\nNew card(s):\n {newCards}", currentDevice, now);
             }
         }
         #endregion

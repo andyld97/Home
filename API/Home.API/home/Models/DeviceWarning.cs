@@ -3,17 +3,21 @@
 using System;
 using System.Collections.Generic;
 
-namespace Home.API.home.Models
-{
-    public partial class DeviceWarning
-    {
-        public int WarningId { get; set; }
-        public int? DeviceId { get; set; }
-        public short WarningType { get; set; }
-        public long CriticalValue { get; set; }
-        public string AdditionalInfo { get; set; }
-        public DateTime Timestamp { get; set; }
+namespace Home.API.home.Models;
 
-        public virtual Device Device { get; set; }
-    }
+public partial class DeviceWarning
+{
+    public int WarningId { get; set; }
+
+    public int? DeviceId { get; set; }
+
+    public short WarningType { get; set; }
+
+    public long CriticalValue { get; set; }
+
+    public string AdditionalInfo { get; set; }
+
+    public DateTime Timestamp { get; set; }
+
+    public virtual Device Device { get; set; }
 }

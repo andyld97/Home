@@ -3,19 +3,15 @@
 using System;
 using System.Collections.Generic;
 
-namespace Home.API.home.Models
+namespace Home.API.home.Models;
+
+public partial class DeviceBattery
 {
-    public partial class DeviceBattery
-    {
-        public DeviceBattery()
-        {
-            DeviceEnvironment = new HashSet<DeviceEnvironment>();
-        }
+    public int BatteryId { get; set; }
 
-        public int BatteryId { get; set; }
-        public bool IsCharging { get; set; }
-        public double? Percentage { get; set; }
+    public bool IsCharging { get; set; }
 
-        public virtual ICollection<DeviceEnvironment> DeviceEnvironment { get; set; }
-    }
+    public double? Percentage { get; set; }
+
+    public virtual ICollection<DeviceEnvironment> DeviceEnvironment { get; } = new List<DeviceEnvironment>();
 }

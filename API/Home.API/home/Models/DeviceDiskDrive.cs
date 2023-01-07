@@ -3,32 +3,51 @@
 using System;
 using System.Collections.Generic;
 
-namespace Home.API.home.Models
-{
-    public partial class DeviceDiskDrive
-    {
-        public int DiskDriveId { get; set; }
-        public int? DeviceId { get; set; }
-        public string Guid { get; set; }
-        public string PhysicalName { get; set; }
-        public string DiskName { get; set; }
-        public string DiskModel { get; set; }
-        public string DiskInterface { get; set; }
-        public string MediaType { get; set; }
-        public long? MediaSignature { get; set; }
-        public string DriveName { get; set; }
-        public string DriveId { get; set; }
-        public bool DriveCompressed { get; set; }
-        public int? DriveType { get; set; }
-        public string FileSystem { get; set; }
-        public long? TotalSpace { get; set; }
-        public long? FreeSpace { get; set; }
-        public int? DriveMediaType { get; set; }
-        public string VolumeName { get; set; }
-        public string VolumeSerial { get; set; }
-        public bool? MediaLoaded { get; set; }
-        public string MediaStatus { get; set; }
+namespace Home.API.home.Models;
 
-        public virtual Device Device { get; set; }
-    }
+public partial class DeviceDiskDrive
+{
+    public int DiskDriveId { get; set; }
+
+    public int? DeviceId { get; set; }
+
+    public string Guid { get; set; }
+
+    public string PhysicalName { get; set; }
+
+    public string DiskName { get; set; }
+
+    public string DiskModel { get; set; }
+
+    public string DiskInterface { get; set; }
+
+    public string MediaType { get; set; }
+
+    public long? MediaSignature { get; set; }
+
+    public string DriveName { get; set; }
+
+    public string DriveId { get; set; }
+
+    public bool DriveCompressed { get; set; }
+
+    public int? DriveType { get; set; }
+
+    public string FileSystem { get; set; }
+
+    public long? TotalSpace { get; set; }
+
+    public long? FreeSpace { get; set; }
+
+    public int? DriveMediaType { get; set; }
+
+    public string VolumeName { get; set; }
+
+    public string VolumeSerial { get; set; }
+
+    public bool? MediaLoaded { get; set; }
+
+    public string MediaStatus { get; set; }
+
+    public virtual Device Device { get; set; }
 }

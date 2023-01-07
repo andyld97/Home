@@ -1,5 +1,5 @@
 ﻿{
-   "CodeGenerationMode": 2,
+   "CodeGenerationMode": 3,
    "ContextClassName": "HomeContext",
    "ContextNamespace": null,
    "DefaultDacpacSchema": null,
@@ -20,6 +20,10 @@
       },
       {
          "Name": "[dbo].[DeviceBattery]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[DeviceChange]",
          "ObjectType": 0
       },
       {
@@ -72,6 +76,7 @@
       }
    ],
    "UiHint": "sql1.home",
+   "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,
    "UseDbContextSplitting": false,
@@ -81,9 +86,7 @@
    "UseInflector": false,
    "UseLegacyPluralizer": false,
    "UseManyToManyEntity": false,
-   "UseNoConstructor": false,
    "UseNoDefaultConstructor": false,
-   "UseNoNavigations": false,
    "UseNoObjectFilter": false,
    "UseNodaTime": false,
    "UseNullableReferences": false,

@@ -3,17 +3,21 @@
 using System;
 using System.Collections.Generic;
 
-namespace Home.API.home.Models
-{
-    public partial class DeviceScreenshot
-    {
-        public int ScreenshotId { get; set; }
-        public int? DeviceId { get; set; }
-        public string ScreenshotFileName { get; set; }
-        public DateTime Timestamp { get; set; }
-        public int? ScreenId { get; set; }
+namespace Home.API.home.Models;
 
-        public virtual Device Device { get; set; }
-        public virtual DeviceScreen Screen { get; set; }
-    }
+public partial class DeviceScreenshot
+{
+    public int ScreenshotId { get; set; }
+
+    public int? DeviceId { get; set; }
+
+    public string ScreenshotFileName { get; set; }
+
+    public DateTime Timestamp { get; set; }
+
+    public int? ScreenId { get; set; }
+
+    public virtual Device Device { get; set; }
+
+    public virtual DeviceScreen Screen { get; set; }
 }

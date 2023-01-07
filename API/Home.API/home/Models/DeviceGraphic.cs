@@ -3,14 +3,15 @@
 using System;
 using System.Collections.Generic;
 
-namespace Home.API.home.Models
-{
-    public partial class DeviceGraphic
-    {
-        public int DeviceGraphicsId { get; set; }
-        public int DeviceId { get; set; }
-        public string Name { get; set; }
+namespace Home.API.home.Models;
 
-        public virtual Device Device { get; set; }
-    }
+public partial class DeviceGraphic
+{
+    public int DeviceGraphicsId { get; set; }
+
+    public int DeviceId { get; set; }
+
+    public string Name { get; set; }
+
+    public virtual Device Device { get; set; }
 }
