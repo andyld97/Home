@@ -16,6 +16,7 @@ using Home.Data.Helper;
 using System.Xml.Serialization;
 using JsonIgnoreAttribute = Newtonsoft.Json.JsonIgnoreAttribute;
 using System.Text;
+using System.Text.Json;
 
 namespace Home.Model
 {
@@ -33,6 +34,8 @@ namespace Home.Model
         private string deviceGroup;
         private string location;
         private bool? isLive;
+        private string serviceClientVersion;
+        private DeviceEnvironment environment = new DeviceEnvironment();
 
         [JsonProperty("name")]
 #if !LEGACY
@@ -221,25 +224,47 @@ namespace Home.Model
          #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("screenshots")]
         #endif
-        public List<Screenshot> Screenshots { get; set; } = new List<Screenshot>();
+        public ObservableCollection<Screenshot> Screenshots { get; set; } = new ObservableCollection<Screenshot>();
 
         [JsonProperty("environment")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("environment")]
 #endif
-        public DeviceEnvironment Environment { get; set; } = new DeviceEnvironment();
+        public DeviceEnvironment Environment
+        { 
+            get => environment; 
+            set
+            {
+                if (value != environment)
+                {
+                    environment = value;
+                    OnPropertyChanged(nameof(Environment));
+                }
+            }
+        }
 
         [JsonProperty("disk_drives")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("disk_drives")]
 #endif
-        public List<DiskDrive> DiskDrives { get; set; } = new List<DiskDrive>();
+        public ObservableCollection<DiskDrive> DiskDrives { get; set; } = new ObservableCollection<DiskDrive>();
 
         [JsonProperty("service_client_version")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("service_client_version")]
 #endif
-        public string ServiceClientVersion { get; set; }
+        public string ServiceClientVersion
+        {
+            get => serviceClientVersion;
+            set
+            {
+                if (value != serviceClientVersion)
+                {
+                    serviceClientVersion = value;
+                    OnPropertyChanged(nameof(ServiceClientVersion));
+                }
+            }
+        }
 
         [JsonProperty("usage")]
 #if !LEGACY
@@ -251,7 +276,7 @@ namespace Home.Model
 #if !LEGACY
         [JsonPropertyName("screens")]
 #endif
-        public List<Screen> Screens { get; set; } = new List<Screen>();
+        public ObservableCollection<Screen> Screens { get; set; } = new ObservableCollection<Screen>();
 
 #if !LEGACY
         #region Properties for Internal API Usage
@@ -281,7 +306,7 @@ namespace Home.Model
         #endregion
 
         [JsonPropertyName("storage_warnings")]
-        public List<StorageWarning> StorageWarnings { get; set; } = new List<StorageWarning>();
+        public ObservableCollection<StorageWarning> StorageWarnings { get; set; } = new ObservableCollection<StorageWarning>();
 
         /// <summary>
         /// The battery warning for this device (if null there is no warning)
@@ -506,8 +531,35 @@ namespace Home.Model
             OS = other.OS;
             DeviceGroup = other.DeviceGroup;
             Location = other.location;
-            Environment = other.Environment;
-            DiskDrives = other.DiskDrives;
+
+            // Update environment
+            Environment.CPUCount = other.Environment.CPUCount;
+            Environment.CPUName = other.Environment.CPUName;
+            Environment.CPUUsage = other.Environment.CPUUsage;
+            Environment.Description = other.Environment.Description;
+            Environment.DiskUsage = other.Environment.DiskUsage;
+            Environment.DomainName = other.Environment.DomainName;
+            Environment.FreeRAM = other.Environment.FreeRAM;
+            Environment.Graphics = other.Environment.Graphics;
+            Environment.Is64BitOS = other.Environment.Is64BitOS;
+            Environment.MachineName = other.Environment.MachineName;
+            Environment.Motherboard = other.Environment.Motherboard;
+            Environment.OSName = other.Environment.OSName;
+            Environment.OSVersion = other.Environment.OSVersion;
+            Environment.Product = other.Environment.Product;
+            Environment.RunningTime = other.Environment.RunningTime;
+            Environment.StartTimestamp = other.Environment.StartTimestamp;
+            Environment.TotalRAM = other.Environment.TotalRAM;
+            Environment.UserName = other.Environment.UserName;
+            Environment.Vendor = other.Environment.Vendor;             
+
+            Environment.GraphicCards.Clear();
+            foreach (var card in other.Environment.GraphicCards)
+                Environment.GraphicCards.Add(card);
+
+            DiskDrives.Clear();
+            foreach (var disk in other.DiskDrives)
+                DiskDrives.Add(disk);
             ServiceClientVersion = other.ServiceClientVersion;
             BatteryInfo = other.BatteryInfo;
 
@@ -573,123 +625,347 @@ namespace Home.Model
         }
     }
 
-    public class DeviceEnvironment
+    public class DeviceEnvironment : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private string product;
+        private string description;
+        private string vendor;
+        private string osName;
+        private string osVersion;
+        private string cpuName;
+        private int cpuCount;
+        
+        private double cpuUsage;
+        private double diskUsage;
+
+        private string motherboard;
+        private string graphics;
+        private double totalRAM;
+        private string freeRAM;
+        
+        private string machineName;
+        private string userName;
+        private string domainName;
+
+        private bool is64BitOS;
+        private TimeSpan runningTime;
+        private DateTime startTimestamp;
+
         [JsonProperty("product")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("product")]
 #endif
-        public string Product { get; set; }
+        public string Product
+        {
+            get => product;
+            set
+            {
+                if (value != product)
+                {
+                    product = value;
+                    OnPropertyChanged(nameof(Product));
+                }
+            }
+        }
 
         [JsonProperty("description")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("description")]
 #endif
-        public string Description { get; set; }
+        public string Description
+        {
+            get => description;
+            set
+            {
+                if (value != description)
+                {
+                    description = value;
+                    OnPropertyChanged(nameof(Description));
+                }
+            }
+        }
 
         [JsonProperty("vendor")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("vendor")]
 #endif
-        public string Vendor { get; set; }
+        public string Vendor
+        {
+            get => vendor;
+            set
+            {
+                if (value != vendor)
+                {
+                    vendor = value;
+                    OnPropertyChanged(nameof(Vendor));
+                }
+            }
+        }
 
         [JsonProperty("os_name")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("os_name")]
 #endif
-        public string OSName { get; set; }
+        public string OSName
+        {
+            get => osName;
+            set 
+            {
+                if (value != osName)
+                {
+                    osName = value;
+                    OnPropertyChanged(nameof(OSName));
+                }
+            }
+        }
 
         [JsonProperty("os_version")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("os_version")]
 #endif
-        public string OSVersion { get; set; }
+        public string OSVersion
+        {
+            get => osVersion;
+            set
+            {
+                if (value != osVersion)
+                {
+                    osVersion = value;
+                    OnPropertyChanged(nameof(OSVersion));
+                }
+            }
+        }
 
         [JsonProperty("cpu_name")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("cpu_name")]
 #endif
-        public string CPUName { get; set; }
+        public string CPUName
+        {
+            get => cpuName;
+            set
+            {
+                if (value != cpuName)
+                {
+                    cpuName = value;
+                    OnPropertyChanged(nameof(CPUName));
+                }
+            }
+        }
 
         [JsonProperty("cpu_count")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("cpu_count")]
 #endif
-        public int CPUCount { get; set; }
+        public int CPUCount
+        {
+            get => cpuCount;
+            set
+            {
+                if (value != cpuCount)
+                {
+                    cpuCount = value;
+                    OnPropertyChanged(nameof(CPUCount));
+                }
+            }
+        }
 
         [JsonProperty("cpu_usage")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("cpu_usage")]
 #endif
-        public double CPUUsage { get; set; }
+        public double CPUUsage
+        {
+            get => cpuUsage;
+            set
+            {
+                if (value != cpuUsage)
+                {
+                    cpuUsage= value;
+                    OnPropertyChanged(nameof(CPUUsage));
+                }
+            }
+        }
 
         [JsonProperty("motherboard")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("motherboard")]
 #endif
-        public string Motherboard { get; set; }
+        public string Motherboard
+        {
+            get => motherboard;
+            set
+            {
+                if (value != motherboard)
+                {
+                    motherboard = value;
+                    OnPropertyChanged(nameof(Motherboard));
+                }
+            }
+        }
 
         [Obsolete()]
         [JsonProperty("graphics")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("graphics")]
 #endif
-        public string Graphics { get; set; }
+        public string Graphics
+        {
+            get => graphics;
+            set
+            {
+                if (value != graphics)
+                {
+                    graphics = value;
+                    OnPropertyChanged(nameof(Graphics));
+                }
+            }
+        }
 
         [JsonProperty("graphic_cards")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("graphic_cards")]
 #endif
-        public List<string> GraphicCards { get; set; } = new List<string>();
+        public ObservableCollection<string> GraphicCards { get; set; } = new ObservableCollection<string>();
 
         [JsonProperty("total_ram")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("total_ram")]
 #endif
-        public double TotalRAM { get; set; }
+        public double TotalRAM
+        {
+            get => totalRAM;
+            set
+            {
+                if (value != totalRAM)
+                {
+                    totalRAM = value;
+                    OnPropertyChanged(nameof(TotalRAM));
+                }
+            }
+        }
 
         [JsonProperty("free_ram")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("free_ram")]
 #endif
-        public string FreeRAM { get; set; }
+        public string FreeRAM
+        {
+            get => freeRAM;
+            set
+            {
+                if (value != freeRAM)
+                {
+                    freeRAM = value;
+                    OnPropertyChanged(nameof(FreeRAM));
+                }
+            }
+        }
 
         [JsonProperty("disk_usage")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("disk_usage")]
 #endif
-        public double DiskUsage { get; set; }
+        public double DiskUsage
+        {
+            get => diskUsage;
+            set
+            {
+                if (value != diskUsage)
+                {
+                    diskUsage = value;
+                    OnPropertyChanged(nameof(DiskUsage));
+                }
+            }
+        }
 
         [JsonProperty("is_64bit_os")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("is_64bit_os")]
 #endif
-        public bool Is64BitOS { get; set; }
+        public bool Is64BitOS
+        {
+            get => is64BitOS;
+            set
+            {
+                if (value != is64BitOS)
+                {
+                    is64BitOS = true;
+                    OnPropertyChanged(nameof(Is64BitOS));
+                }
+            }
+        }
 
         [JsonProperty("machine_name")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("machine_name")]
 #endif
-        public string MachineName { get; set; }
+        public string MachineName
+        {
+            get => machineName;
+            set
+            {
+                if (value != machineName)
+                {
+                    machineName = value;
+                    OnPropertyChanged(nameof(MachineName));
+                }
+            }
+        }
 
         [JsonProperty("user_name")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("user_name")]
 #endif
-        public string UserName { get; set; }
+        public string UserName
+        {
+            get => userName;
+            set
+            {
+                if (value != userName)
+                {
+                    userName = value;
+                    OnPropertyChanged(nameof(UserName));
+                }
+            }
+        }
 
         [JsonProperty("domain_name")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("domain_name")]
 #endif
-        public string DomainName { get; set; }
+        public string DomainName
+        {
+            get => domainName;
+            set
+            {
+                if (value != domainName)
+                {
+                    domainName = value;
+                    OnPropertyChanged(nameof(DomainName));
+                }
+            }
+        }
 
         [XmlIgnore]
         [JsonIgnore()]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonIgnore]
 #endif
-        public TimeSpan RunningTime { get; set; }
+        public TimeSpan RunningTime
+        {
+            get => runningTime;
+            set
+            {
+                if (value != runningTime)
+                {
+                    runningTime = value;
+                    OnPropertyChanged(nameof(RunningTime));
+                }
+            }
+        }
 
         [JsonProperty("running_time")]
 #if !LEGACY
@@ -705,13 +981,29 @@ namespace Home.Model
 #if !LEGACY
         [JsonPropertyName("start_time")]
 #endif
-        public DateTime StartTimestamp { get; set; }
+        public DateTime StartTimestamp
+        {
+            get => startTimestamp;
+            set
+            {
+                if (value != startTimestamp)
+                {
+                    startTimestamp = value;
+                    OnPropertyChanged(nameof(StartTimestamp));
+                }
+            }
+        }
 
         public override string ToString()
         {
             string rn = Environment.NewLine;
             string graphics = GraphicCards.Count == 0 ? Graphics : string.Join(Environment.NewLine, GraphicCards.Count);
             return $"OS: {OSName}{rn}OS-VER: {OSVersion}{rn}CPU: {CPUName}{rn}CPU-COUNT: {CPUCount}{rn}Motherboard: {Motherboard}{rn}Graphics: {graphics}{rn}RAM: {TotalRAM} GB{rn}FREE: {FreeRAM}{rn}Running-Time: {XmlRunningTime}";
+        }
+
+        public void OnPropertyChanged(string propertyName) // Cannot use [CallerMemberName] due to compability issues
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 

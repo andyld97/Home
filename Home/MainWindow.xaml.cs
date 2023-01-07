@@ -324,7 +324,8 @@ namespace Home
                         if (otherDevice != null)
                         {
                             otherDevice.Update(@event.EventData.EventDevice, @event.EventData.EventDevice.LastSeen, @event.EventData.EventDevice.Status, true);
-                            otherDevice.Screenshots.ForEach(s => ScreenshotViewer.QueueScreenshotDownload(otherDevice, s));
+                            foreach (var shot in otherDevice.Screenshots)
+                                ScreenshotViewer.QueueScreenshotDownload(otherDevice, shot);
                         }
                     }
                 }
