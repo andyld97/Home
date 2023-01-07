@@ -629,7 +629,6 @@ namespace Home
             if (currentDevice == null)
                 return;
 
-            // ToDo: *** Localize
             if (currentDevice.Status == DeviceStatus.Offline)
             {
                 MessageBox.Show(Home.Properties.Resources.strDeviceOfflineCannotExecuteCommand, Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);

@@ -74,7 +74,7 @@ namespace Model
             htmlTemplate = htmlTemplate.Replace("{b2}", device.BatteryInfo != null ? (device.BatteryInfo.IsCharging ? Home.Properties.Resources.strYes : Home.Properties.Resources.strNo) : f());
 
             // Hardware
-            htmlTemplate = htmlTemplate.Replace("{h0}", f($"{device.Environment.CPUName} (Cores: {device.Environment.CPUCount})"));
+            htmlTemplate = htmlTemplate.Replace("{h0}", f($"{device.Environment.CPUName} ({Home.Properties.Resources.strCores}: {device.Environment.CPUCount})"));
             htmlTemplate = htmlTemplate.Replace("{h1}", f(device.Environment.Motherboard));
             htmlTemplate = htmlTemplate.Replace("{h2}", f(ByteUnit.FromGB(Convert.ToUInt64(device.Environment.TotalRAM)).ToString()));
             htmlTemplate = htmlTemplate.Replace("{h3}", f(string.Join(Environment.NewLine, device.Environment.GraphicCards)));
@@ -84,9 +84,7 @@ namespace Model
             else
             {
                 string screenTemplate = string.Empty;
-
-                // ToDo: *** Translate
-                screenTemplate = "<h3>Screens</h3>";
+                screenTemplate = $"<h3>{Home.Properties.Resources.strScreens}</h3>";
 
                 string tmp = GetHtmlTemplate("display_template");
                 foreach (var screen in device.Screens)
@@ -98,7 +96,7 @@ namespace Model
                     subTemplate = subTemplate.Replace("{dp2}", screen.BuiltDate);
                     subTemplate = subTemplate.Replace("{dp3}", screen.Resolution);
                     subTemplate = subTemplate.Replace("{dp4}", screen.Index.ToString());
-                    subTemplate = subTemplate.Replace("{dp5}", screen.IsPrimary ? "Yes" : "No");
+                    subTemplate = subTemplate.Replace("{dp5}", screen.IsPrimary ? Home.Properties.Resources.strYes : Home.Properties.Resources.strNo);
 
                     screenTemplate += $"{subTemplate}<hr />";
                 }
@@ -181,6 +179,11 @@ namespace Model
             htmlTemplate = htmlTemplate.Replace("{strWarningType}", Home.Properties.Resources.strReport_WarningType);
             htmlTemplate = htmlTemplate.Replace("{strWarningMessage}", Home.Properties.Resources.strReport_WarningMessage);
             htmlTemplate = htmlTemplate.Replace("{strWarningOccuredDate}", Home.Properties.Resources.strReport_WarningOccured);
+
+            // Display
+            htmlTemplate = htmlTemplate.Replace("{strBuiltDate}", Home.Properties.Resources.strReport_BuiltDate);
+            htmlTemplate = htmlTemplate.Replace("{strResolution}", Home.Properties.Resources.strReport_Resolution);
+            htmlTemplate = htmlTemplate.Replace("{strIsPrimary}", Home.Properties.Resources.strReport_IsPrimary);
 
             return htmlTemplate;
         }

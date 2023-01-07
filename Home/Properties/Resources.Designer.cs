@@ -142,6 +142,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die All ähnelt.
+        /// </summary>
+        public static string strAll {
+            get {
+                return ResourceManager.GetString("strAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die AllDevices: {0} ähnelt.
         /// </summary>
         public static string strAllDevicesTab {
@@ -214,6 +223,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Cores ähnelt.
+        /// </summary>
+        public static string strCores {
+            get {
+                return ResourceManager.GetString("strCores", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die CPU: ähnelt.
         /// </summary>
         public static string strCPUDescription {
@@ -282,6 +300,15 @@ namespace Home.Properties {
         public static string strDevice {
             get {
                 return ResourceManager.GetString("strDevice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die The unit is offline - switching to live mode is not possible! ähnelt.
+        /// </summary>
+        public static string strDeviceCannotSwitchToLiveMode {
+            get {
+                return ResourceManager.GetString("strDeviceCannotSwitchToLiveMode", resourceCulture);
             }
         }
         
@@ -417,6 +444,15 @@ namespace Home.Properties {
         public static string strFailedToSaveReport {
             get {
                 return ResourceManager.GetString("strFailedToSaveReport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Error saving the image: {0} ähnelt.
+        /// </summary>
+        public static string strFailedToSaveScreenshotAsImage {
+            get {
+                return ResourceManager.GetString("strFailedToSaveScreenshotAsImage", resourceCulture);
             }
         }
         
@@ -727,6 +763,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Png Image(*.png)|*.png ähnelt.
+        /// </summary>
+        public static string strPngFilter {
+            get {
+                return ResourceManager.GetString("strPngFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Product:  ähnelt.
         /// </summary>
         public static string strProduct {
@@ -813,6 +858,15 @@ namespace Home.Properties {
         public static string strReport_BatteryRemaningPercentage {
             get {
                 return ResourceManager.GetString("strReport_BatteryRemaningPercentage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Built Date ähnelt.
+        /// </summary>
+        public static string strReport_BuiltDate {
+            get {
+                return ResourceManager.GetString("strReport_BuiltDate", resourceCulture);
             }
         }
         
@@ -979,6 +1033,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Is Primary ähnelt.
+        /// </summary>
+        public static string strReport_IsPrimary {
+            get {
+                return ResourceManager.GetString("strReport_IsPrimary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Location ähnelt.
         /// </summary>
         public static string strReport_Location {
@@ -1029,6 +1092,15 @@ namespace Home.Properties {
         public static string strReport_RAM {
             get {
                 return ResourceManager.GetString("strReport_RAM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Resolution ähnelt.
+        /// </summary>
+        public static string strReport_Resolution {
+            get {
+                return ResourceManager.GetString("strReport_Resolution", resourceCulture);
             }
         }
         
@@ -1119,6 +1191,15 @@ namespace Home.Properties {
         public static string strSaveReport {
             get {
                 return ResourceManager.GetString("strSaveReport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Screens ähnelt.
+        /// </summary>
+        public static string strScreens {
+            get {
+                return ResourceManager.GetString("strScreens", resourceCulture);
             }
         }
         

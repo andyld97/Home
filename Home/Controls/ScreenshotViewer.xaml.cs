@@ -354,7 +354,7 @@ namespace Home.Controls
                     var encoder = new PngBitmapEncoder();
                     encoder.Frames.Add(BitmapFrame.Create((BitmapSource)ImageViewer.ImageDisplay.Source));
 
-                    SaveFileDialog sfd = new SaveFileDialog { Filter = "Png Bild (*.png)|*.png" };
+                    SaveFileDialog sfd = new SaveFileDialog { Filter = Home.Properties.Resources.strPngFilter };
                     var result = sfd.ShowDialog();
 
                     if (result.HasValue && result.Value)
@@ -365,8 +365,7 @@ namespace Home.Controls
                 }
                 catch (Exception ex)
                 {
-                    // ToDo: *** Localize
-                    MessageBox.Show($"Fehler beim Speichern des Bildes: {ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(string.Format(Home.Properties.Resources.strFailedToSaveScreenshotAsImage, ex.Message), Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
@@ -378,8 +377,7 @@ namespace Home.Controls
                 AnimateButton(sender);
                 if (lastSelectedDevice?.Status == Device.DeviceStatus.Offline)
                 {
-                    // ToDo: *** Localize
-                    MessageBox.Show("Das Gerät ist offline - wechseln in den Live Modus nicht möglich!", "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(Home.Properties.Resources.strDeviceCannotSwitchToLiveMode, Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
@@ -432,7 +430,7 @@ namespace Home.Controls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is Home.Model.Screen sr && sr.DeviceName == "Default")
-                return "All"; // ToDo: *** Localize
+                return Home.Properties.Resources.strAll;
             else if (value is Home.Model.Screen screen)
                 return screen.Index;                
 

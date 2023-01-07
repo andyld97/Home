@@ -598,4 +598,31 @@
   <data name="strFeatureIsNotSupportedOnSelectedDevice" xml:space="preserve">
     <value>Das Feature ist aktuell nur auf neueren Windows-Systemen (Windows 7 SP1 oder neuer) oder Linux verfügbar!</value>
   </data>
+  <data name="strAll" xml:space="preserve">
+    <value>Alle</value>
+  </data>
+  <data name="strCores" xml:space="preserve">
+    <value>Kerne</value>
+  </data>
+  <data name="strDeviceCannotSwitchToLiveMode" xml:space="preserve">
+    <value>Das Gerät ist offline - wechseln in den Live Modus nicht möglich!</value>
+  </data>
+  <data name="strFailedToSaveScreenshotAsImage" xml:space="preserve">
+    <value>Fehler beim Speichern des Bildes: {0}</value>
+  </data>
+  <data name="strPngFilter" xml:space="preserve">
+    <value>Png Bild (*.png)|*.png</value>
+  </data>
+  <data name="strScreens" xml:space="preserve">
+    <value>Bildschirme</value>
+  </data>
+  <data name="strReport_Resolution" xml:space="preserve">
+    <value>Auflösung</value>
+  </data>
+  <data name="strReport_BuiltDate" xml:space="preserve">
+    <value>Herstellungsdatum</value>
+  </data>
+  <data name="strReport_IsPrimary" xml:space="preserve">
+    <value>Primär</value>
+  </data>
 </root>

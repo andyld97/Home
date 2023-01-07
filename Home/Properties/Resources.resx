@@ -643,4 +643,34 @@
   <data name="strCharging" xml:space="preserve">
     <value>Charging</value>
   </data>
+  <data name="strPngFilter" xml:space="preserve">
+    <value>Png Image(*.png)|*.png</value>
+  </data>
+  <data name="strFailedToSaveScreenshotAsImage" xml:space="preserve">
+    <value>Error saving the image: {0}</value>
+  </data>
+  <data name="strDeviceCannotSwitchToLiveMode" xml:space="preserve">
+    <value>The unit is offline - switching to live mode is not possible!</value>
+  </data>
+  <data name="strAll" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="strCores" xml:space="preserve">
+    <value>Cores</value>
+  </data>
+  <data name="strScreens" xml:space="preserve">
+    <value>Screens</value>
+  </data>
+  <data name="strReport_BuiltDate" xml:space="preserve">
+    <value>Built Date</value>
+    <comment>Report</comment>
+  </data>
+  <data name="strReport_Resolution" xml:space="preserve">
+    <value>Resolution</value>
+    <comment>Report</comment>
+  </data>
+  <data name="strReport_IsPrimary" xml:space="preserve">
+    <value>Is Primary</value>
+    <comment>Report</comment>
+  </data>
 </root>

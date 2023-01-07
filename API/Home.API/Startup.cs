@@ -44,7 +44,6 @@ namespace Home.API
                 {
                     options.EnableRetryOnFailure();
                 });
-                // ToDo: *** Use split queries 
                 options.ConfigureWarnings(x => x.Ignore(RelationalEventId.MultipleCollectionIncludeWarning));
 
 #if DEBUG
