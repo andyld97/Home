@@ -41,6 +41,7 @@ namespace Home.API.Helper
             updateDevice.Ip = device.IP;
             updateDevice.Status = (status == DeviceStatus.Active);  // nullable, when Inactive?
             updateDevice.LastSeen = device.LastSeen;
+            updateDevice.IsScreenshotRequired = device.IsScreenshotRequired;
 
             if (device.LastSeen == DateTime.MinValue)
                 updateDevice.LastSeen = (DateTime)System.Data.SqlTypes.SqlDateTime.MinValue;

@@ -152,7 +152,7 @@ namespace Home.Service.Android
             {
                 GLSurfaceView glSurfaceView = FindViewById<GLSurfaceView>(Resource.Id.surface);
                 Renderer renderer = new Renderer();
-                renderer.OnInfosRecieved += delegate (string vendor, string renderer) { currentDevice.Environment.GraphicCards = new List<string> { $"{vendor} {renderer}" }; };
+                renderer.OnInfosRecieved += delegate (string vendor, string renderer) { currentDevice.Environment.GraphicCards = new System.Collections.ObjectModel.ObservableCollection<string> { $"{vendor} {renderer}" }; };
                 glSurfaceView.SetRenderer(renderer);
             }
             else

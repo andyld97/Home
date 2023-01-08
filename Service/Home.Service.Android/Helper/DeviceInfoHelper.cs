@@ -256,7 +256,7 @@ namespace Home.Service.Android.Helper
 
             var dd = new DiskDrive() { VolumeName = "/", DriveName = "/", DriveID = "android_default_storage", PhysicalName = "android_default_storage" };
             ReadDF(dd);
-            currentDevice.DiskDrives = new List<DiskDrive>() { dd };
+            currentDevice.DiskDrives = new System.Collections.ObjectModel.ObservableCollection<DiskDrive>() { dd };
         }
     }
 }

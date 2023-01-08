@@ -11,12 +11,12 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 #if !LEGACY
 using System.Text.Json.Serialization;
+using System.Text.Json;
 using Home.Data.Helper;
 #endif
 using System.Xml.Serialization;
 using JsonIgnoreAttribute = Newtonsoft.Json.JsonIgnoreAttribute;
 using System.Text;
-using System.Text.Json;
 
 namespace Home.Model
 {
@@ -369,7 +369,7 @@ namespace Home.Model
             WindowsXP,
 
             [Description("Windows Vista")]
-            WindowsaVista,
+            WindowsVista,
 
             [Description("Windows 7")]
             Windows7,
@@ -421,7 +421,7 @@ namespace Home.Model
                             case OSType.LinuxMint: prequel += "mint"; break;
                             case OSType.LinuxUbuntu: prequel += "ubuntu"; break;
                             case OSType.WindowsXP: prequel += "windows_xp"; break;
-                            case OSType.WindowsaVista: prequel += "windows_vista"; break;
+                            case OSType.WindowsVista: prequel += "windows_vista"; break;
                             case OSType.Windows7: prequel += "windows_7"; break;
                             case OSType.Windows8: prequel += "windows_8"; break;
                             case OSType.Windows10: prequel += "windows_10"; break;

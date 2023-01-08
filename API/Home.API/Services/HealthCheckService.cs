@@ -221,12 +221,22 @@ namespace Home.API.Services
                 return;
 
             if (device.DeviceScreenshot.Count == 0)
+            {
+                // If there is no screenshot avaiable for the device a new one should be aquired
+                if (device.Ostype != (int)Home.Model.Device.OSType.Android)
+                    device.IsScreenshotRequired = true;
                 return;
+            }
 
             // Check for the last screenshot's age
             var shot = device.DeviceScreenshot.OrderByDescending(s => s.Timestamp).FirstOrDefault();
             if (shot == null)
+            {
+                // See {Line}-10
+                if (device.Ostype != (int)Home.Model.Device.OSType.Android)
+                    device.IsScreenshotRequired = true;
                 return;
+            }
 
             // Check age of this screenshot
             if (shot.Timestamp.Add(Program.GlobalConfig.AquireNewScreenshot) < now)

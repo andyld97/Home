@@ -30,7 +30,7 @@ namespace Home.Data.Helper
         /// <returns>true for XP and VISTA</returns>
         public static bool IsWindowsLegacy(this OSType value)
         {
-            return (value == OSType.WindowsXP || value == OSType.WindowsaVista);
+            return (value == OSType.WindowsXP || value == OSType.WindowsVista);
         }
 
         /// <summary>

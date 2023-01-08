@@ -81,7 +81,7 @@ namespace Home.Service.Windows
                 Name = NET.GetMachineName(),
                 OS = ServiceData.Instance.SystemType,
                 Type = ServiceData.Instance.Type,
-                DiskDrives = JsonConvert.DeserializeObject<List<DiskDrive>>(WMI.DetermineDiskDrives()),
+                DiskDrives = new System.Collections.ObjectModel.ObservableCollection<DiskDrive>(JsonConvert.DeserializeObject<List<DiskDrive>>(WMI.DetermineDiskDrives())),
                 Environment = new DeviceEnvironment()
                 {
                     CPUCount = Environment.ProcessorCount,
@@ -93,7 +93,7 @@ namespace Home.Service.Windows
                     RunningTime = now.Subtract(startTimestamp),
                     StartTimestamp = startTimestamp
                 },
-                Screens = GetScreenInformation(),
+                Screens = new System.Collections.ObjectModel.ObservableCollection<Screen>(GetScreenInformation()),
             };
 
             // Run tick manually on first_start
@@ -178,7 +178,7 @@ namespace Home.Service.Windows
             var now = DateTime.Now;
 
             currentDevice.IP = NET.DetermineIPAddress();
-            currentDevice.DiskDrives = JsonConvert.DeserializeObject<List<DiskDrive>>(WMI.DetermineDiskDrives());
+            currentDevice.DiskDrives = new System.Collections.ObjectModel.ObservableCollection<DiskDrive>(JsonConvert.DeserializeObject<List<DiskDrive>>(WMI.DetermineDiskDrives()));
             currentDevice.Environment.RunningTime = now.Subtract(startTimestamp); // Environment.TickCount?
             currentDevice.Environment.OSVersion = Environment.OSVersion.ToString();
             currentDevice.Environment.CPUCount = Environment.ProcessorCount;
@@ -190,13 +190,13 @@ namespace Home.Service.Windows
             currentDevice.Environment.MachineName = NET.GetMachineName();
             currentDevice.Environment.UserName = Environment.UserName;
             currentDevice.Environment.DomainName = Environment.UserDomainName;
-            currentDevice.Environment.GraphicCards = WMI.DetermineGraphicsCardNames();
+            currentDevice.Environment.GraphicCards = new System.Collections.ObjectModel.ObservableCollection<string>(WMI.DetermineGraphicsCardNames());
             currentDevice.ServiceClientVersion = $"vWindows{typeof(MainWindow).Assembly.GetName().Version.ToString(3)}";
             WMI.GetVendorInfo(out string product, out string description, out string vendor);
             currentDevice.Environment.Product = product;
             currentDevice.Environment.Description = description;
             currentDevice.Environment.Vendor = vendor;
-            currentDevice.Screens = GetScreenInformation();
+            currentDevice.Screens = new System.Collections.ObjectModel.ObservableCollection<Screen>(GetScreenInformation());
 
             bool batteryResult = Home.Measure.Windows.NET.DetermineBatteryInfo(out int batteryPercentage, out bool isCharging);
             if (batteryResult)

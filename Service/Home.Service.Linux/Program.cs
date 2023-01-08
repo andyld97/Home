@@ -475,7 +475,7 @@ namespace Home.Service.Linux
             else if (childClass == "processor" && string.IsNullOrEmpty(device.Environment.CPUName))
                 device.Environment.CPUName = child.Value<string>("product");
             if (childClass == "display")
-                device.Environment.GraphicCards = new List<string> { child.Value<string>("product") };
+                device.Environment.GraphicCards = new System.Collections.ObjectModel.ObservableCollection<string> { child.Value<string>("product") };
             else if (childClass == "network" && string.IsNullOrEmpty(device.IP))
                 device.IP = child.Value<JObject>("configuration").Value<string>("ip");
             else if (childClass == "disk" || childClass == "volume")

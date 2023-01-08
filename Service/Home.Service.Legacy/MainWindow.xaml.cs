@@ -60,10 +60,13 @@ namespace Home.Service.Legacy
         {
             if (e.ExceptionObject != null)
                 MessageBox.Show((e.ExceptionObject as Exception).ToString());
+
+            // Debug:
+            // MessageBox.Show("Debug");
         }
 
         private void InitalizeService()
-        {
+        {            
             api = new API(ServiceData.Instance.APIUrl);
 
             var now = DateTime.Now;
@@ -76,7 +79,7 @@ namespace Home.Service.Legacy
                 Name = NET.GetMachineName(),
                 OS = ServiceData.Instance.SystemType,
                 Type = ServiceData.Instance.Type,
-                DiskDrives = JsonConvert.DeserializeObject<List<DiskDrive>>(WMI.DetermineDiskDrives()),
+                DiskDrives = new System.Collections.ObjectModel.ObservableCollection<DiskDrive>(JsonConvert.DeserializeObject<List<DiskDrive>>(WMI.DetermineDiskDrives())),
                 Environment = new DeviceEnvironment()
                 {
                     CPUCount = Environment.ProcessorCount,
@@ -143,7 +146,7 @@ namespace Home.Service.Legacy
             var now = DateTime.Now;
 
             currentDevice.IP = NET.DetermineIPAddress();
-            currentDevice.DiskDrives = JsonConvert.DeserializeObject<List<DiskDrive>>(WMI.DetermineDiskDrives());
+            currentDevice.DiskDrives = new System.Collections.ObjectModel.ObservableCollection<DiskDrive>(JsonConvert.DeserializeObject<List<DiskDrive>>(WMI.DetermineDiskDrives()));
             currentDevice.Environment.RunningTime = now.Subtract(startTimestamp); // Environment.TickCount?
             currentDevice.Environment.OSVersion = Environment.OSVersion.ToString();
             currentDevice.Environment.CPUCount = Environment.ProcessorCount;
@@ -155,7 +158,7 @@ namespace Home.Service.Legacy
             currentDevice.Environment.MachineName = NET.GetMachineName();
             currentDevice.Environment.UserName = Environment.UserName;
             currentDevice.Environment.DomainName = Environment.UserDomainName;
-            currentDevice.Environment.GraphicCards = WMI.DetermineGraphicsCardNames();
+            currentDevice.Environment.GraphicCards = new System.Collections.ObjectModel.ObservableCollection<string>(WMI.DetermineGraphicsCardNames());
             currentDevice.ServiceClientVersion = $"vLegacy{typeof(MainWindow).Assembly.GetName().Version.ToString(3)}";
             WMI.GetVendorInfo(out string product, out string description, out string vendor);
             currentDevice.Environment.Product = product;
@@ -169,6 +172,8 @@ namespace Home.Service.Legacy
 
             // Send ack
             var ackResult = api.SendAckAsync(currentDevice);
+            if (ackResult != null && !ackResult.Success)
+                System.Diagnostics.Trace.TraceError("Failed to send ack: " + ackResult.ErrorMessage);
 
             // Process ack answer
             if (ackResult != null && ackResult.Success && ackResult.Result.Result.HasFlag(Data.Com.AckResult.Ack.OK))
@@ -246,7 +251,7 @@ namespace Home.Service.Legacy
         {
             // Apply settings
             string host = TextAPIUrl.Text;
-            OSType os = (CmbOS.SelectedIndex == 0 ? OSType.WindowsXP : OSType.WindowsaVista);
+            OSType os = (CmbOS.SelectedIndex == 0 ? OSType.WindowsXP : OSType.WindowsVista);
             DeviceType dt = (DeviceType)CmbDeviceType.SelectedIndex;
             string location = TextLocation.Text;
             string deviceGroup = TextGroup.Text;

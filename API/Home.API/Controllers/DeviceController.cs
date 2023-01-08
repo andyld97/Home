@@ -82,10 +82,10 @@ namespace Home.API.Controllers
 
                 var dbDevice = ModelConverter.ConvertDevice(_context, _logger, device);
                 await _context.Device.AddAsync(dbDevice);
+                await _context.DeviceChange.AddAsync(new DeviceChange() { Timestamp = now, Device = dbDevice, Description = $"Device \"{dbDevice.Name}\" added to the system initally!" });
                 await _context.SaveChangesAsync();
 
                 ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.NewDeviceConnected, device);
-
                 return Ok(AnswerExtensions.Success(true));
             }
 
