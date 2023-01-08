@@ -52,7 +52,7 @@ namespace Model
             htmlTemplate = htmlTemplate.Replace("{oem2}", f(device.Environment.Vendor));
             htmlTemplate = htmlTemplate.Replace("{oem3}", f(device.Environment.Product));
             htmlTemplate = htmlTemplate.Replace("{oem4}", f(device.Environment.Description));
-            htmlTemplate = htmlTemplate.Replace("{oem5}", f(device.Environment.StartTimestamp.ToString()));
+            htmlTemplate = htmlTemplate.Replace("{oem5}", f(device.Environment.StartTimestamp.ToString(Home.Properties.Resources.strDateTimeFormat)));
             htmlTemplate = htmlTemplate.Replace("{oem6}", f(runningTime));
             htmlTemplate = htmlTemplate.Replace("{oem7}", f(device.Location));
             htmlTemplate = htmlTemplate.Replace("{oem8}", f(device.DeviceGroup));

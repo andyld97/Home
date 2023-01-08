@@ -11,7 +11,7 @@ using Android.App;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Home.Service.Android")]
-[assembly: AssemblyCopyright("Copyright ©  2021-2022")]
+[assembly: AssemblyCopyright("Copyright © 2021-2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
