@@ -32,6 +32,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="resources\icons\change.png" />
     <None Remove="resources\icons\devices\androidtvstick.png" />
     <None Remove="resources\icons\menu\about.png" />
     <None Remove="resources\icons\menu\exit.png" />
@@ -69,6 +70,7 @@
     <PackageReference Include="WebhookAPI" Version="1.0.1" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="resources\icons\menu\change.png" />
     <Resource Include="resources\icons\explorer\html_file.png" />
     <Resource Include="resources\icons\explorer\image_file.png" />
     <Resource Include="resources\icons\explorer\text_file.png" />

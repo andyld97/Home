@@ -313,6 +313,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Hardware Protocol ähnelt.
+        /// </summary>
+        public static string strDeviceChanges {
+            get {
+                return ResourceManager.GetString("strDeviceChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Client-Version:  ähnelt.
         /// </summary>
         public static string strDeviceClientVersion {

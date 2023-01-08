@@ -625,4 +625,7 @@
   <data name="strReport_IsPrimary" xml:space="preserve">
     <value>Primär</value>
   </data>
+  <data name="strDeviceChanges" xml:space="preserve">
+    <value>Hardware Protokoll</value>
+  </data>
 </root>

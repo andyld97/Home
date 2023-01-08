@@ -234,6 +234,10 @@ namespace Home.API.Helper
             foreach (var screen in device.DeviceScreen)
                 result.Screens.Add(ConvertScreen(screen));
 
+            // Device changes
+            foreach (var change in device.DeviceChange)
+                result.DevicesChanges.Add(new DeviceChangeEntry() { Timestamp = change.Timestamp, Description = change.Description });
+
             // Usage
             result.Usage = new Home.Model.DeviceUsage();
             if (device.DeviceUsage != null)

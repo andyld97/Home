@@ -209,7 +209,7 @@ namespace Home
             TextAllDevices.Text = string.Format(Properties.Resources.strAllDevicesTab, deviceList.Count);
             TextActiveDevices.Text = string.Format(Properties.Resources.strActiveDevicesTab, deviceList.Where(p => p.Status != DeviceStatus.Offline).Count());
             TextOfflineDevices.Text = string.Format(Properties.Resources.strOfflineDevicesTab, deviceList.Where(p => p.Status == DeviceStatus.Offline).Count());
-
+            
             RefreshSelection();
             ignoreSelectionChanged = false;
             RefreshOverview();
@@ -518,6 +518,8 @@ namespace Home
 
             DeviceInfo.DataContext = null;
             DeviceInfo.DataContext = currentDevice;
+            ListDeviceChanges.ItemsSource = currentDevice.DevicesChanges;
+
             await ScreenshotViewer.UpdateDeviceAsync(currentDevice);
             DeviceInfoDisplay.UpdateDevice(currentDevice);
         }

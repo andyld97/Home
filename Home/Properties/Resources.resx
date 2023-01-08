@@ -673,4 +673,7 @@
     <value>Is Primary</value>
     <comment>Report</comment>
   </data>
+  <data name="strDeviceChanges" xml:space="preserve">
+    <value>Hardware Protocol</value>
+  </data>
 </root>

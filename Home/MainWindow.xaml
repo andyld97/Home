@@ -175,7 +175,7 @@
 
                         <Border Grid.Column="1" Grid.Row="1" BorderThickness="2" CornerRadius="5" BorderBrush="Gray" Margin="5">
                             <Grid>
-                                <Grid x:Name="DeviceInfoHint">
+                                <Grid x:Name="DeviceInfoHint" Visibility="Visible">
                                     <TextBlock Text="{x:Static res:Resources.strNoDeviceSelected}" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Foreground="{DynamicResource BlackBrush}" FontSize="33" />
                                 </Grid>
 
@@ -313,6 +313,34 @@
                                                 </StackPanel>
                                             </TabItem.Header>
                                             <wpf1:WebView2 x:Name="webViewReport" />
+                                        </TabItem>
+                                        <TabItem>
+                                            <TabItem.Header>
+                                                <StackPanel Orientation="Horizontal" Height="20">
+                                                    <Image Source="resources/icons/menu/change.png" Width="16" />
+                                                    <TextBlock Margin="5,0,0,0" Text="{x:Static res:Resources.strDeviceChanges}" TextAlignment="Center" />
+                                                </StackPanel>
+                                            </TabItem.Header>
+
+                                            <ListBox x:Name="ListDeviceChanges" Foreground="{DynamicResource BlackBrush}" Background="{DynamicResource WhiteBrush}">
+                                                <ListBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="Auto" />
+                                                                <ColumnDefinition Width="*" />
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <Image Margin="2" VerticalAlignment="Top" Source="resources/icons/menu/change.png" Width="48" />
+
+                                                            <StackPanel Grid.Column="1">                                                            
+                                                                <TextBlock Text="{Binding Timestamp, StringFormat={x:Static res:Resources.strDateTimeFormat}}" FontWeight="Bold" />
+                                                                <TextBlock Text="{Binding Description}" />
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </ListBox.ItemTemplate>
+                                            </ListBox>
                                         </TabItem>
                                     </TabControl>
 

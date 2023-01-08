@@ -17,6 +17,7 @@ using Home.Data.Helper;
 using System.Xml.Serialization;
 using JsonIgnoreAttribute = Newtonsoft.Json.JsonIgnoreAttribute;
 using System.Text;
+using System.Linq;
 
 namespace Home.Model
 {
@@ -308,6 +309,9 @@ namespace Home.Model
         [JsonPropertyName("storage_warnings")]
         public ObservableCollection<StorageWarning> StorageWarnings { get; set; } = new ObservableCollection<StorageWarning>();
 
+        [JsonPropertyName("device_changes")]
+        public ObservableCollection<DeviceChangeEntry> DevicesChanges { get; set; } = new ObservableCollection<DeviceChangeEntry>();
+
         /// <summary>
         /// The battery warning for this device (if null there is no warning)
         /// </summary>
@@ -577,6 +581,12 @@ namespace Home.Model
 
             if (Environment.GraphicCards.Count == 0 && !string.IsNullOrEmpty(other.Environment.Graphics))
                 Environment.GraphicCards.Add(other.Environment.Graphics);
+
+#if !LEGACY
+            DevicesChanges.Clear();
+            foreach (var change in other.DevicesChanges.OrderByDescending(c => c.Timestamp))
+                DevicesChanges.Add(change);
+#endif
 
             // In an API Context we should not update the usage here
             if (isLocal)
@@ -1377,6 +1387,15 @@ namespace Home.Model
 
 
 #if !LEGACY
+
+    public class DeviceChangeEntry
+    {
+        [JsonPropertyName("timestamp")]
+        public DateTime Timestamp { get; set; }
+
+        [JsonPropertyName("description")]
+        public string Description { get; set; }
+    }
 
     public abstract class Warning<T>
     {
