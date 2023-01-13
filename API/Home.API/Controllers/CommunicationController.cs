@@ -6,6 +6,7 @@ using Home.Data.Com;
 using Home.Data.Events;
 using Home.Model;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic;
@@ -362,14 +363,56 @@ namespace Home.API.Controllers
         [HttpDelete("delete/{guid}")]
         public async Task<IActionResult> DeleteDeviceAsync(string guid)
         {
-            var device = await _context.Device.Where(p => p.Guid == guid).FirstOrDefaultAsync();
+            var device = await DeviceHelper.GetDeviceByIdAsync(_context, guid);
 
             if (device != null)
             {
-                _context.Device.Remove(device);
+                string deviceName = device.Name;
+
+                foreach (var item in device.DeviceChange)
+                    _context.DeviceChange.Remove(item);
+
+                foreach (var item in device.DeviceCommand)
+                    _context.DeviceCommand.Remove(item);
+
+                foreach (var item in device.DeviceDiskDrive)
+                    _context.DeviceDiskDrive.Remove(item);
+
+                foreach (var item in device.DeviceLog)
+                    _context.DeviceLog.Remove(item);
+
+                foreach (var item in device.DeviceGraphic)
+                    _context.DeviceGraphic.Remove(item);
+
+                foreach (var item in device.DeviceMessage)
+                    _context.DeviceMessage.Remove(item);
+
+                foreach (var item in device.DeviceScreen)
+                    _context.DeviceScreen.Remove(item);
+
+                // ToDo: *** Also remove the screenshot files from the server!
+                foreach (var item in device.DeviceScreenshot)
+                    _context.DeviceScreenshot.Remove(item);
+
+                foreach (var item in device.DeviceWarning)
+                    _context.DeviceWarning.Remove(item);
+
+                if (device.DeviceUsage != null)
+                 _context.DeviceUsage.Remove(device.DeviceUsage);
                 
-                // ToDo: *** Remove all other related entries from other tables
-                await _context.SaveChangesAsync();
+                //_context.DeviceEnvironment.Remove(device.Environment);
+                _context.Device.Remove(device);
+
+                try
+                {
+                 
+                    await _context.SaveChangesAsync();
+                    await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Success, $"Device \"{deviceName}\" removed!", "Communication");
+                }
+                catch (Exception ex)
+                {
+                    await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, $"Failed to remove \"{deviceName}\": {ex}", "Communication");
+                }
                 return Ok(AnswerExtensions.Success("ok"));
             }
             else
