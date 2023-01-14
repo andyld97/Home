@@ -33,11 +33,15 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="resources\icons\change.png" />
+    <None Remove="resources\icons\cpu.png" />
     <None Remove="resources\icons\devices\androidtvstick.png" />
+    <None Remove="resources\icons\graphics.png" />
     <None Remove="resources\icons\menu\about.png" />
     <None Remove="resources\icons\menu\exit.png" />
     <None Remove="resources\icons\menu\report.png" />
     <None Remove="resources\icons\menu\settings.png" />
+    <None Remove="resources\icons\motherboard.png" />
+    <None Remove="resources\icons\ram.png" />
     <None Remove="resources\icons\screen.png" />
     <None Remove="resources\images\default_phone.png" />
     <None Remove="resources\images\logo.png" />
@@ -70,6 +74,8 @@
     <PackageReference Include="WebhookAPI" Version="1.0.1" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="resources\icons\cpu.png" />
+    <Resource Include="resources\icons\graphics.png" />
     <Resource Include="resources\icons\menu\change.png" />
     <Resource Include="resources\icons\explorer\html_file.png" />
     <Resource Include="resources\icons\explorer\image_file.png" />
@@ -82,6 +88,8 @@
     <Resource Include="resources\icons\explorer\undo.png" />
     <Resource Include="resources\icons\menu\exit.png" />
     <Resource Include="resources\icons\menu\report.png" />
+    <Resource Include="resources\icons\motherboard.png" />
+    <Resource Include="resources\icons\ram.png" />
     <Resource Include="resources\icons\reset_view.png" />
     <Resource Include="resources\icons\devices\tablet.png" />
     <Resource Include="resources\icons\live\online.png" />
@@ -146,7 +154,6 @@
     <EmbeddedResource Include="resources\report\display_template.html" />
     <EmbeddedResource Include="resources\report\template.html" />
     <EmbeddedResource Include="resources\report\warning_template.html" />
-    <Resource Include="resources\icons\devices\pi.old.png" />
     <Resource Include="resources\icons\devices\desktop_ubuntu.png" />
     <Resource Include="resources\icons\devices\desktop_windows_10.png" />
     <Resource Include="resources\icons\devices\desktop_windows_7.png" />

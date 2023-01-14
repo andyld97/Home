@@ -29,6 +29,8 @@ using Model;
 using Microsoft.Win32;
 using Controls.Dialogs;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using static Home.Model.DeviceChangeEntry;
 
 namespace Home
 {
@@ -518,7 +520,7 @@ namespace Home
 
             DeviceInfo.DataContext = null;
             DeviceInfo.DataContext = currentDevice;
-            ListDeviceChanges.ItemsSource = currentDevice.DevicesChanges;
+            DeviceHardwareProtocol.Update(currentDevice);
 
             await ScreenshotViewer.UpdateDeviceAsync(currentDevice);
             DeviceInfoDisplay.UpdateDevice(currentDevice);

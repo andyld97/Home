@@ -1395,6 +1395,22 @@ namespace Home.Model
 
         [JsonPropertyName("description")]
         public string Description { get; set; }
+
+        [JsonPropertyName("type")]
+        public DeviceChangeType Type { get; set; } 
+
+        public enum DeviceChangeType
+        {
+            CPU = 0,
+            RAM = 1,
+            Motherboard = 2,
+            Graphics = 3,
+            OS = 4,
+            IP = 5,
+            DiskDrive = 6,
+
+            None = 10000
+        }
     }
 
     public abstract class Warning<T>

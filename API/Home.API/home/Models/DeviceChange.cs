@@ -13,6 +13,8 @@ public partial class DeviceChange
 
     public DateTime Timestamp { get; set; }
 
+    public int Type { get; set; }
+
     public string Description { get; set; }
 
     public virtual Device Device { get; set; }

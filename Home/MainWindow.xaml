@@ -322,25 +322,7 @@
                                                 </StackPanel>
                                             </TabItem.Header>
 
-                                            <ListBox x:Name="ListDeviceChanges" Foreground="{DynamicResource BlackBrush}" Background="{DynamicResource WhiteBrush}">
-                                                <ListBox.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <Grid>
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="Auto" />
-                                                                <ColumnDefinition Width="*" />
-                                                            </Grid.ColumnDefinitions>
-
-                                                            <Image Margin="2" VerticalAlignment="Top" Source="resources/icons/menu/change.png" Width="48" />
-
-                                                            <StackPanel Grid.Column="1">                                                            
-                                                                <TextBlock Text="{Binding Timestamp, StringFormat={x:Static res:Resources.strDateTimeFormat}}" FontWeight="Bold" />
-                                                                <TextBlock Text="{Binding Description}" />
-                                                            </StackPanel>
-                                                        </Grid>
-                                                    </DataTemplate>
-                                                </ListBox.ItemTemplate>
-                                            </ListBox>
+                                            <controls:DeviceChanges x:Name="DeviceHardwareProtocol" />
                                         </TabItem>
                                     </TabControl>
 

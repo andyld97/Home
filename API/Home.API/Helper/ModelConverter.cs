@@ -236,7 +236,7 @@ namespace Home.API.Helper
 
             // Device changes
             foreach (var change in device.DeviceChange)
-                result.DevicesChanges.Add(new DeviceChangeEntry() { Timestamp = change.Timestamp, Description = change.Description });
+                result.DevicesChanges.Add(new DeviceChangeEntry() { Timestamp = change.Timestamp, Description = change.Description, Type = (DeviceChangeEntry.DeviceChangeType)change.Type });
 
             // Usage
             result.Usage = new Home.Model.DeviceUsage();

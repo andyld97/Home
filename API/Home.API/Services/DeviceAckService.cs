@@ -312,10 +312,15 @@ namespace Home.API.Services
 
         #region Logging and Webhook
 
-        private async Task RegisterDeviceChangeAsync(string message, home.Models.Device device, DateTime now)
+        private async Task RegisterDeviceChangeAsync(string prefix, string message, DeviceChangeEntry.DeviceChangeType type, home.Models.Device device, DateTime now)
         {
-            await _context.DeviceChange.AddAsync(new DeviceChange() { Device = device, Description = message, Timestamp = now });
-            await _context.DeviceLog.AddAsync(ModelConverter.CreateLogEntry(device, message, LogEntry.LogLevel.Information, true));
+            if (type != DeviceChangeEntry.DeviceChangeType.None)            
+            {
+                string chgMessage = $"Detected {message}";
+                await _context.DeviceChange.AddAsync(new DeviceChange() { Device = device, Description = chgMessage, Type = (int)type, Timestamp = now });
+            }
+
+            await _context.DeviceLog.AddAsync(ModelConverter.CreateLogEntry(device, $"{prefix} detected {message}", LogEntry.LogLevel.Information, true));
 
             _logger.LogInformation(message);
         }
@@ -327,38 +332,39 @@ namespace Home.API.Services
 
             // Check if a newer client version is used
             if (currentDevice.ServiceClientVersion != requestedDevice.ServiceClientVersion && !string.IsNullOrEmpty(currentDevice.ServiceClientVersion))
-                await RegisterDeviceChangeAsync($"{prefix} detected new client version: {requestedDevice.ServiceClientVersion} (Old version: {currentDevice.ServiceClientVersion})", currentDevice, now);           
+                await RegisterDeviceChangeAsync(prefix, $"new client version: {requestedDevice.ServiceClientVersion} (Old version: {currentDevice.ServiceClientVersion})", DeviceChangeEntry.DeviceChangeType.None, currentDevice, now);           
 
             // Check if os name changed
             if (currentDevice.OstypeNavigation.Name != requestedDevice.OS.ToString())
-                await RegisterDeviceChangeAsync($"{prefix} detected OS change from {currentDevice.OstypeNavigation.Name} to {requestedDevice.OS}", currentDevice, now);
+                await RegisterDeviceChangeAsync(prefix, $"OS change from {currentDevice.OstypeNavigation.Name} to {requestedDevice.OS}", DeviceChangeEntry.DeviceChangeType.OS, currentDevice, now);
 
             // Check if os version changed (don't ignore updates in general)
             if (currentDevice.Environment.Osversion != requestedDevice.Environment.OSVersion && !string.IsNullOrEmpty(currentDevice.Environment.Osversion))
-                await RegisterDeviceChangeAsync($"{prefix} detected new os version: {requestedDevice.Environment.OSVersion} (Old version: {currentDevice.Environment.Osversion})", currentDevice, now);
+                await RegisterDeviceChangeAsync(prefix, $"new os version: {requestedDevice.Environment.OSVersion} (Old version: {currentDevice.Environment.Osversion})", DeviceChangeEntry.DeviceChangeType.OS, currentDevice, now);
 
             // CPU
             if (currentDevice.Environment.Cpuname != requestedDevice.Environment.CPUName && !string.IsNullOrEmpty(requestedDevice.Environment.CPUName))
-                await RegisterDeviceChangeAsync($"{prefix} detected CPU change. CPU {currentDevice.Environment.Cpuname} got replaced with {requestedDevice.Environment.CPUName}", currentDevice, now);
+                await RegisterDeviceChangeAsync(prefix, $"CPU change. CPU {currentDevice.Environment.Cpuname} got replaced with {requestedDevice.Environment.CPUName}", DeviceChangeEntry.DeviceChangeType.CPU,  currentDevice, now);
 
             // CPU Count
             if (currentDevice.Environment.Cpucount != requestedDevice.Environment.CPUCount && requestedDevice.Environment.CPUCount > 0)
-                await RegisterDeviceChangeAsync($"{prefix} detected CPU-Count change from {currentDevice.Environment.Cpucount} to {requestedDevice.Environment.CPUCount}", currentDevice, now);
+                await RegisterDeviceChangeAsync(prefix, $"CPU-Count change from {currentDevice.Environment.Cpucount} to {requestedDevice.Environment.CPUCount}", DeviceChangeEntry.DeviceChangeType.CPU, currentDevice, now);
 
             // Motherboard
             if (currentDevice.Environment.Motherboard != requestedDevice.Environment.Motherboard && !string.IsNullOrEmpty(requestedDevice.Environment.Motherboard))
-                await RegisterDeviceChangeAsync($"{prefix} detected Motherboard change from {currentDevice.Environment.Motherboard} to {requestedDevice.Environment.Motherboard}", currentDevice, now);
+                await RegisterDeviceChangeAsync(prefix, $"Motherboard change from {currentDevice.Environment.Motherboard} to {requestedDevice.Environment.Motherboard}", DeviceChangeEntry.DeviceChangeType.Motherboard, currentDevice, now);
 
             // Graphics
-            await NotifyWebhookGraphicsChangeAsync(currentDevice, requestedDevice, now);
+            await NotifyWebhookGraphicsChangeAsync(prefix, currentDevice, requestedDevice, now);
 
             // RAM
             if (currentDevice.Environment.TotalRam != requestedDevice.Environment.TotalRAM && requestedDevice.Environment.TotalRAM > 0)
-                await RegisterDeviceChangeAsync($"{prefix} detected RAM change from {currentDevice.Environment.TotalRam} GB to {requestedDevice.Environment.TotalRAM} GB", currentDevice, now);
+                await RegisterDeviceChangeAsync(prefix, $"RAM change from {currentDevice.Environment.TotalRam} GB to {requestedDevice.Environment.TotalRAM} GB", DeviceChangeEntry.DeviceChangeType.RAM, currentDevice, now);
 
             // IP Change
             if (currentDevice.Ip.Replace("/24", string.Empty) != requestedDevice.IP.Replace("/24", string.Empty) && !string.IsNullOrEmpty(requestedDevice.IP))
-                await RegisterDeviceChangeAsync($"{prefix} detected IP change from {currentDevice.Ip} to {requestedDevice.IP}", currentDevice, now);
+                await RegisterDeviceChangeAsync(prefix, $"IP change from {currentDevice.Ip} to {requestedDevice.IP}", DeviceChangeEntry.DeviceChangeType.IP, currentDevice, now);
+
             // Screens
             bool screenConfigChanged = false;
 
@@ -390,12 +396,13 @@ namespace Home.API.Services
                 string oldScreens = string.Join(Environment.NewLine, currentDevice.DeviceScreen.Select(p => p.DeviceName));
                 string newScreens = string.Join(Environment.NewLine, requestedDevice.Screens.Select(p => p.DeviceName));
 
+                // Do not count this as a device change (only log)!
                 if (oldScreens.Trim() != newScreens.Trim())
-                    await RegisterDeviceChangeAsync($"{prefix} detected screen changes.\n\nOld screen(s):\n{oldScreens}\n\nNew screen(s):\n{newScreens}", currentDevice, now);
+                    await RegisterDeviceChangeAsync(prefix, $"screen changes.\n\nOld screen(s):\n{oldScreens}\n\nNew screen(s):\n{newScreens}", DeviceChangeEntry.DeviceChangeType.None, currentDevice, now);    
             }
         }
 
-        private async Task NotifyWebhookGraphicsChangeAsync(home.Models.Device currentDevice, Home.Model.Device requestedDevice, DateTime now)
+        private async Task NotifyWebhookGraphicsChangeAsync(string prefix, home.Models.Device currentDevice, Home.Model.Device requestedDevice, DateTime now)
         {
             bool log = false;
             if (currentDevice.DeviceGraphic.Count != requestedDevice.Environment.GraphicCards.Count)
@@ -428,7 +435,7 @@ namespace Home.API.Services
                 string oldCards = string.Join(Environment.NewLine, currentDevice.DeviceGraphic.Select(p => p.Name));
                 string newCards = string.Join(Environment.NewLine, requestedDevice.Environment.GraphicCards);
 
-                await RegisterDeviceChangeAsync($"Device \"{requestedDevice.Name}\" detected graphics change:\n\nOld card(s):\n {oldCards}\n\nNew card(s):\n {newCards}", currentDevice, now);
+                await RegisterDeviceChangeAsync(prefix, $"graphics change:\n\nOld card(s):\n {oldCards}\n\nNew card(s):\n {newCards}", DeviceChangeEntry.DeviceChangeType.Graphics, currentDevice, now);
             }
         }
         #endregion
