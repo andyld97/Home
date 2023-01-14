@@ -1433,8 +1433,9 @@ namespace Home.Model
         /// </summary>
         /// <param name="dd"></param>
         /// <param name="percentage">Percentage</param>
+        /// <param name="offsetPercentage">A value that is added to percentage to prevent continuously adding/removing the warning if the value is on the boundary</param>
         /// <returns>true if the warning is obsolete</returns>
-        public abstract bool CanBeRemoved(T param, int percentage);
+        public abstract bool CanBeRemoved(T param, int percentage, int offsetPercentage = 10);
 
         /// <summary>
         /// Create a log entry of this warning
@@ -1473,7 +1474,7 @@ namespace Home.Model
         [XmlIgnore]
         public override string Text => $"DISK: \"{DiskName}\" is low on storage. Free space left: {ByteUnit.FindUnit(Value)}";
 
-        public override bool CanBeRemoved(DiskDrive dd, int percentage)
+        public override bool CanBeRemoved(DiskDrive dd, int percentage, int offsetPercentage = 10)
         {
             if (dd == null)
                 throw new ArgumentNullException("dd");
@@ -1481,7 +1482,7 @@ namespace Home.Model
             if (dd.UniqueID != StorageID)
                 throw new ArgumentException("DiskDrive with the wrong id specified!");
 
-            var result = dd.IsFull(percentage);
+            var result = dd.IsFull(percentage + offsetPercentage);
             return (result == null || result.HasValue && !result.Value);
         }
 
@@ -1513,7 +1514,7 @@ namespace Home.Model
         [XmlIgnore]
         public override string Text => $"Battery is low: {Value}% left!";
 
-        public override bool CanBeRemoved(Device param, int percentage)
+        public override bool CanBeRemoved(Device param, int percentage, int offsetPercentage)
         {
             if (param.BatteryInfo == null)
                 return true;
@@ -1521,7 +1522,7 @@ namespace Home.Model
             if (param.BatteryInfo.IsCharging)
                 return true;
 
-            return CanBeRemoved(param.BatteryInfo.BatteryLevelInPercent, percentage);
+            return CanBeRemoved(param.BatteryInfo.BatteryLevelInPercent, percentage + offsetPercentage);
         }
 
         public bool CanBeRemoved(int devicePercentage, int percentage)
