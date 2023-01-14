@@ -1,0 +1,30 @@
+﻿<UserControl x:Class="Home.Controls.DeviceChanges"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Home.Controls"
+             xmlns:res="clr-namespace:Home.Properties"
+             mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <local:DeviceChangeImageConverter x:Key="deviceChangeImageConverter" />
+        <DataTemplate x:Key="DeviceChangeTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Image Margin="2" VerticalAlignment="Top" Source="{Binding Type, Converter={StaticResource deviceChangeImageConverter}}" Width="48" />
+
+                <StackPanel Grid.Column="1" Margin="3,3">
+                    <TextBlock Text="{Binding Timestamp, StringFormat={x:Static res:Resources.strDateTimeFormat}}" FontWeight="Bold" />
+                    <TextBlock Text="{Binding Description}" />
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+    
+    <StackPanel x:Name="ViewHolder" />
+</UserControl>

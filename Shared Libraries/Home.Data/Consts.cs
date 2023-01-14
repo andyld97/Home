@@ -1,4 +1,6 @@
-﻿namespace Home.Data
+﻿using System;
+
+namespace Home.Data
 {
     public static class Consts
     {
@@ -8,5 +10,12 @@
         public static readonly string[] TEXT_EXTENSIONS = new string[] { ".txt", ".ini", ".log", ".json", ".xml", ".yaml", ".cs", ".vb", ".csproj", ".vbproj", ".sln", ".js", ".css", ".vbs", ".php", ".py", ".cpp", ".c", ".h" };
         public static readonly string[] HTML_EXTENSIONS = new string[] { ".html", ".htm" };
         public static readonly string[] IMG_EXTENSIONS = new string[] { ".jpg", ".jpeg", ".jpe", ".jif", ".jfif", ".jfi", ".png", ".gif", ".tiff", ".tif", ".bmp", ".jp2", ".j2k", ".jpf", ".jpx", ".jpm", ".mj2", ".heif", ".heic" };
+
+        public static readonly DateTime ReleaseDate = new DateTime(2022, 12, 30, 11, 17, 0);
+
+        public const string HomeServiceWindowsClientVersion = "1.2.0";
+        public const string HomeServiceLegacyClientVersion = "1.0.5";
+        public const string HomeServiceLinuxClientVersion = "1.0.9";
+        public const string HomeServiceAndroidClientVersion = "1.0.8";
     }
 }

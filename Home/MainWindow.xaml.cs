@@ -24,6 +24,13 @@ using System.Windows.Threading;
 using static Home.Model.Device;
 using static Home.Data.Helper.GeneralHelper;
 using Microsoft.Web.WebView2.Core;
+using Home.Data.Helper;
+using Model;
+using Microsoft.Win32;
+using Controls.Dialogs;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using static Home.Model.DeviceChangeEntry;
 
 namespace Home
 {
@@ -35,9 +42,12 @@ namespace Home
         /// <summary>
         /// ToDo: *** Move to a Consts.cs file
         /// </summary>
-        public static readonly string CACHE_PATH = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "cache");
+        public static readonly string CACHE_PATH = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Home", "Cache");
+        public static readonly string WEBVIEW_CACHE_PATH = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Home", "WebView2Cache");
+
         public static Client CLIENT = new Client() { IsRealClient = true };
         public static Communication.API API = null;
+        public static MainWindow W_INSTANCE = null;
 
         private readonly DispatcherTimer updateTimer = new DispatcherTimer();
         private CoreWebView2Environment webView2Environment;
@@ -47,19 +57,44 @@ namespace Home
         private readonly List<DeviceItem> deviceItems = new List<DeviceItem>(); // gui
         private Device currentDevice = null;
         private bool ignoreSelectionChanged = false;
+        private bool scrollToEnd = true;
         private int oldDeviceCount = -1;
+
+        static MainWindow()
+        {
+            try
+            {
+                System.IO.Directory.CreateDirectory(CACHE_PATH);
+            }
+            catch
+            { }
+
+            try
+            {
+                System.IO.Directory.CreateDirectory(WEBVIEW_CACHE_PATH);
+            }
+            catch
+            { }
+        }
 
         public MainWindow()
         {
             InitializeComponent();
-            API = new Communication.API("http://192.168.178.38:83");
+            W_INSTANCE = this;
+
+            if (string.IsNullOrEmpty(Settings.Instance.Host))
+            {
+                var result = new SettingsDialog(false).ShowDialog();
+                if (result.HasValue && !result.Value)
+                    return;
+            }
+
+            API = new Communication.API(Settings.Instance.Host);
             CLIENT.ID = ClientData.Instance.ClientID;
 
             Closing += MainWindow_Closing;
             ScreenshotViewer.OnResize += ScreenshotViewer_OnResize;
             ScreenshotViewer.OnScreenShotAquired += ScreenshotViewer_OnScreenShotAquired;
-
-            InitalizeDeviceActivityPlot();
             App.OnShutdownOrRestart += App_OnShutdownOrRestart;
         }
 
@@ -102,7 +137,9 @@ namespace Home
         protected override async void OnContentRendered(EventArgs e)
         {
             base.OnContentRendered(e);
-            webView2Environment = await CoreWebView2Environment.CreateAsync();
+
+            webView2Environment = await CoreWebView2Environment.CreateAsync(userDataFolder: WEBVIEW_CACHE_PATH);
+            await webViewReport.EnsureCoreWebView2Async(webView2Environment);
         }
 
         private async void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
@@ -119,7 +156,7 @@ namespace Home
             if (result.Success)
                 RefreshDeviceHolder();
             else
-                MessageBox.Show(result.ErrorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(result.ErrorMessage, Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
 
             updateTimer.Interval = TimeSpan.FromSeconds(5);
             updateTimer.Tick += UpdateTimer_Tick;
@@ -134,7 +171,7 @@ namespace Home
             DeviceHolderActive.Items.Clear();
             deviceItems.Clear();
 
-            foreach (var device in deviceList.OrderBy(p => p.Status))
+            foreach (var device in deviceList.OrderBy(p => p.Name).ThenBy(p => p.Status))
             {
                 DeviceItem di = new DeviceItem() { DataContext = device };
                 deviceItems.Add(di);
@@ -170,9 +207,11 @@ namespace Home
                     DeviceHolderActive.SelectedIndex = offIndex;
             }
 
-            TextAllDevices.Text = $"Alle Geräte: {deviceList.Count}";
-            TextActiveDevices.Text = $"Aktive Geräte {deviceList.Where(p => p.Status != DeviceStatus.Offline).Count()}";
-            TextOfflineDevices.Text = $"Inaktive Geräte: {deviceList.Where(p => p.Status == DeviceStatus.Offline).Count()}";
+            // Update left tab headers
+            TextAllDevices.Text = string.Format(Properties.Resources.strAllDevicesTab, deviceList.Count);
+            TextActiveDevices.Text = string.Format(Properties.Resources.strActiveDevicesTab, deviceList.Where(p => p.Status != DeviceStatus.Offline).Count());
+            TextOfflineDevices.Text = string.Format(Properties.Resources.strOfflineDevicesTab, deviceList.Where(p => p.Status == DeviceStatus.Offline).Count());
+            
             RefreshSelection();
             ignoreSelectionChanged = false;
             RefreshOverview();
@@ -185,18 +224,18 @@ namespace Home
 
             if (d.OS.IsAndroid())
             {
-                MessageBox.Show($"Ein Android Gerät kann nicht heruntergefahren oder neugestartet werden!", "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Home.Properties.Resources.strAndroidDeviceNoShutdownSupport, Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (shutdown)
             {
-                if (MessageBox.Show($"Sind Sie sich sicher, dass Sie das Gerät {d.Name} herunterfahren möchten?", "Wirklich?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+                if (MessageBox.Show(string.Format(Home.Properties.Resources.strDoYouReallyWantToShutdownDevice, d.Name), "Wirklich?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
                     return;
             }
             else
             {
-                if (MessageBox.Show($"Sind Sie sich sicher, dass Sie das Gerät {d.Name} neustarten möchten?", "Wirklich?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+                if (MessageBox.Show(string.Format(Home.Properties.Resources.strDoYouReallyWantToRestartDevice, d.Name), "Wirklich?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
                     return;
             }
 
@@ -212,10 +251,9 @@ namespace Home
                 return;
             oldDeviceCount = onlineDevices;
 
-            PanelOverview.Children.Clear();     
+            PanelOverview.Children.Clear();
 
             var groups = from device in deviceList where device.Status != DeviceStatus.Offline group device by device.Location into gr orderby gr.Count() descending select gr;
-
             List<Device> notAssociatedDevices = new List<Device>();
 
             foreach (var group in groups)
@@ -225,7 +263,6 @@ namespace Home
                 {
                     foreach (var device in group.OrderBy(d => d.Name))
                         notAssociatedDevices.Add(device);
-
                     continue;
                 }
 
@@ -247,7 +284,7 @@ namespace Home
             {
                 DeviceItemGroup dig = new DeviceItemGroup
                 {
-                    GroupName = "Nicht zugeordnet",
+                    GroupName = Properties.Resources.strDeviceLocationNotAssigend,
                     Devices = notAssociatedDevices,
                     IsScreenshotView = ChkOverviewShowScreenshots.IsChecked.Value
                 };
@@ -270,50 +307,102 @@ namespace Home
             var result = await API.UpdateAsync(CLIENT);
             if (result.Success && result.Result != null)
             {
-                var device = result.Result;
+                var @event = result.Result;
 
-                if (device.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceScreenshotRecieved)
+                if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceScreenshotRecieved)
                 {
-                    // Get this shot
-                    string screenshotFileName = device.EventData.EventDevice.ScreenshotFileNames.LastOrDefault();
-                    if (!string.IsNullOrEmpty(screenshotFileName))
-                        await GetScreenshot(device.EventData.EventDevice, screenshotFileName);
+                    // Update screenshot viewer
+                    if (currentDevice != null && currentDevice.ID == @event.DeviceID)
+                    {
+                        currentDevice.Update(@event.EventData.EventDevice, @event.EventData.EventDevice.LastSeen, @event.EventData.EventDevice.Status, true);
+                        await ScreenshotViewer.UpdateScreenshotAsync(currentDevice);
+                        await RefreshSelectedItem();
+                        RefreshDeviceHolder();
+                    }
+                    else
+                    {
+                        // Refresh other device an try to download the screenshot in advance
+                        var otherDevice = deviceList.FirstOrDefault(d => d.ID == @event.DeviceID);
+                        if (otherDevice != null)
+                        {
+                            otherDevice.Update(@event.EventData.EventDevice, @event.EventData.EventDevice.LastSeen, @event.EventData.EventDevice.Status, true);
+                            foreach (var shot in otherDevice.Screenshots)
+                                ScreenshotViewer.QueueScreenshotDownload(otherDevice, shot);
+                        }
+                    }
                 }
                 else
                 {
-                    if (deviceList.Any(d => d.ID == device.DeviceID))
+                    if (deviceList.Any(d => d.ID == @event.DeviceID))
                     {
                         // Update 
-                        var oldDevice = deviceList.Where(d => d.ID == device.DeviceID).FirstOrDefault();
+                        var oldDevice = deviceList.Where(d => d.ID == @event.DeviceID).FirstOrDefault();
                         if (oldDevice != null)
                         {
-                            bool update = false;
-                            if (oldDevice.Status == DeviceStatus.Active && device.EventData.EventDevice.Status == DeviceStatus.Offline)
+                            if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.ACK)
                             {
-                                // Update grayscale shot
-                                update = true;
+                                bool updateScreenshot = false;
+                                if (oldDevice.Status == DeviceStatus.Active && @event.EventData.EventDevice.Status == DeviceStatus.Offline)
+                                {
+                                    // Update grayscale shot
+                                    updateScreenshot = true;
+                                }
+
+                                // deviceList[deviceList.IndexOf(oldDevice)] = device.EventData.EventDevice;
+                                oldDevice.Update(@event.EventData.EventDevice, @event.EventData.EventDevice.LastSeen, @event.EventData.EventDevice.Status, true);
+
+                                if (currentDevice == oldDevice)
+                                {
+                                    // lastSelectedDevice = device.EventData.EventDevice;
+                                    // RefreshSelectedItem();
+                                }
+
+                                await RefreshSelectedItem();
+                                RefreshDeviceHolder();
+
+                                if (updateScreenshot)
+                                    await ScreenshotViewer.UpdateScreenshotAsync(oldDevice);
                             }
-
-                            // deviceList[deviceList.IndexOf(oldDevice)] = device.EventData.EventDevice;
-                            oldDevice.Update(device.EventData.EventDevice, device.EventData.EventDevice.LastSeen, device.EventData.EventDevice.Status, true);
-
-                            if (currentDevice == oldDevice)
+                            else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.LogCleared)
                             {
-                                // lastSelectedDevice = device.EventData.EventDevice;
-                                // RefreshSelectedItem();
+                                oldDevice.LogEntries.Clear();
+                                await RefreshSelectedItem();
                             }
+                            else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.LogEntriesRecieved)
+                            {
+                                oldDevice.LogEntries.Clear();
+                                foreach (var item in @event.EventData.EventDevice.LogEntries)
+                                    oldDevice.LogEntries.Add(item);
 
-                            await RefreshSelectedItem();
-                            RefreshDeviceHolder();
+                                await RefreshSelectedItem();
+                            }
+                            else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.LiveModeChanged)
+                            {
+                                oldDevice.LogEntries.Clear();
+                                foreach (var item in @event.EventData.EventDevice.LogEntries)
+                                    oldDevice.LogEntries.Add(item);
 
-                            if (update)
-                                await GetScreenshot(oldDevice);
+                                oldDevice.IsLive = @event.EventData.EventDevice.IsLive;
+                                await RefreshSelectedItem();
+                            }
+                            else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceScreenshotRecieved)
+                            {
+                                // ToDo: *** Only recieve screenshot (probably await GetScreenshot(oldDevice)
+
+                            }
+                            else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceChangedState)
+                            {
+                                oldDevice.Status = @event.EventData.EventDevice.Status;
+
+                                // Refresh gui
+                                await RefreshSelectedItem();
+                                RefreshDeviceHolder();
+                            }
                         }
                     }
                     else
                     {
-                        // Add
-                        deviceList.Add(device.EventData.EventDevice);
+                        deviceList.Add(@event.EventData.EventDevice);
                         MessageBox.Show("New device added!", "New device!", MessageBoxButton.OK, MessageBoxImage.Information);
                         RefreshDeviceHolder();
                     }
@@ -324,72 +413,7 @@ namespace Home
             {
                 isUpdating = false;
             }
-        }
-        
-        private async Task GetScreenshot(Device device, string fileName = "")
-        {
-            byte[] data = null;
-            bool updateGui = (currentDevice?.ID == device.ID);
-
-            await API.DownloadScreenshotToCache(device, CACHE_PATH, fileName);
-
-            string screenShotFileName = fileName;
-            if (string.IsNullOrEmpty(fileName))
-                screenShotFileName = device.ScreenshotFileNames.LastOrDefault();
-
-            string path = System.IO.Path.Combine(CACHE_PATH, device.ID, screenShotFileName + ".png");
-
-            if (System.IO.File.Exists(path))
-            {
-                if (updateGui && DateTime.TryParseExact(screenShotFileName, Consts.SCREENSHOT_DATE_FILE_FORMAT, CultureInfo.CurrentCulture, DateTimeStyles.AssumeLocal, out DateTime result))
-                    ScreenshotViewer.UpdateDate($"{result.ToShortDateString()} @ {result.ToShortTimeString()}");
-                else if (updateGui)
-                    ScreenshotViewer.UpdateDate(null);
-
-                try
-                {
-                    data = System.IO.File.ReadAllBytes(path);
-                }
-                catch
-                {
-                    // ignore
-                }
-            }
-            else if (updateGui)
-                ScreenshotViewer.UpdateDate(null);
-
-
-            if (!updateGui)
-                return;
-
-            using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
-            {
-                if (data != null)
-                {
-                    await ms.WriteAsync(data, 0, data.Length);
-                    ms.Seek(0, System.IO.SeekOrigin.Begin);
-                }
-
-                try
-                {
-                    BitmapImage bi = new BitmapImage();
-
-                    if (data != null)
-                        bi = ImageHelper.LoadImage(ms);
-                    else
-                        bi = ImageHelper.LoadImage(string.Empty, true);
-
-                    if (device.Status == Device.DeviceStatus.Offline)
-                        ScreenshotViewer.SetImageSource(ImageHelper.GrayscaleBitmap(bi));
-                    else
-                        ScreenshotViewer.SetImageSource(bi);
-                }
-                catch (Exception)
-                {
-                    ScreenshotViewer.SetImageSource(null);
-                }
-            }
-        }
+        }       
 
         private async void DeviceHolder_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
@@ -402,11 +426,15 @@ namespace Home
                 SwitchFileManager(false);
                 await RefreshSelectedItem();
                 RefreshSelection();
-                await GetScreenshot(currentDevice);
+                await ScreenshotViewer.UpdateScreenshotAsync(currentDevice);
 
                 DeviceInfo.Visibility = Visibility.Visible;
                 DeviceInfoHint.Visibility = Visibility.Collapsed;
                 MenuButtonSendMessage.IsEnabled = true;
+                scrollToEnd = true;
+
+                await webViewReport.EnsureCoreWebView2Async(webView2Environment);
+                webViewReport.NavigateToString(Report.GenerateHtmlDeviceReport(currentDevice, Properties.Resources.strDateTimeFormat));
             }
             else
             {
@@ -429,13 +457,13 @@ namespace Home
         private async Task RefreshSelectedItem()
         {
             if (currentDevice == null)
-                return;          
+                return;
 
             // Generate log entries FlowDocument
-            FlowDocument flowDocument = new FlowDocument { FontFamily = new FontFamily("Consolas") };
+            FlowDocument flowDocument = new FlowDocument { FontFamily = new FontFamily("Cascadia Code") };
             Paragraph currentParagraph = new Paragraph();
 
-            foreach (var entry in currentDevice.LogEntries)
+            foreach (var entry in currentDevice.LogEntries.OrderBy(e => e.Timestamp))
             {
                 // Get image
                 BitmapImage bi;
@@ -465,165 +493,38 @@ namespace Home
                         break;
                 }
 
-                bi = ImageHelper.LoadImage($"pack://application:,,,/Home;Component/resources/icons/{resourceName}", false);
+                bi = ImageHelper.LoadImage($"pack://application:,,,/Home;Component/resources/icons/{resourceName}", false, false);
 
-                currentParagraph.Inlines.Add(new InlineUIContainer(new Image() { Source = bi, Width = 20, Margin = new Thickness(0, 2, 2, 0) }) { BaselineAlignment = BaselineAlignment.Bottom });
-                currentParagraph.Inlines.Add(new Run($"[{entry.Timestamp.ToShortDateString()} {entry.Timestamp.ToShortTimeString()}]: ") { Foreground = new SolidColorBrush(Colors.Green), BaselineAlignment = BaselineAlignment.TextTop });
+                currentParagraph.Inlines.Add(new InlineUIContainer(new Image() { Source = bi, Width = 15, Margin = new Thickness(2, 2, 5, 2) }) { BaselineAlignment = BaselineAlignment.Bottom });
+                currentParagraph.Inlines.Add(new Run($"[{entry.Timestamp.ToString(Properties.Resources.strDateTimeFormat)}]: ") { Foreground = new SolidColorBrush(Colors.Gray), BaselineAlignment = BaselineAlignment.TextTop });
                 currentParagraph.Inlines.Add(new Run(entry.Message) { Foreground = foregroundBrush, BaselineAlignment = BaselineAlignment.Bottom });
                 currentParagraph.Inlines.Add(new LineBreak());
             }
 
-
             flowDocument.Blocks.Add(currentParagraph);
-            LogHolder.Document = flowDocument;
-            LogScrollViewer.ScrollToEnd();
 
-            RenderPlot();
+            // Remember old scroll position
+            double oldScrollPosition = LogScrollViewer.VerticalOffset;
+            LogHolder.Document = flowDocument;
+
+            // Restore old scroll position
+            if (!scrollToEnd)
+                LogScrollViewer.ScrollToVerticalOffset(oldScrollPosition);
+            else
+            {
+                scrollToEnd = false;
+                LogScrollViewer.ScrollToEnd();
+            }
+
+            DeviceActivityPlot.RenderPlot(currentDevice);
 
             DeviceInfo.DataContext = null;
             DeviceInfo.DataContext = currentDevice;
-            ScreenshotViewer.UpdateDevice(currentDevice);
-            CmbGraphics.SelectedIndex = 0;
+            DeviceHardwareProtocol.Update(currentDevice);
+
+            await ScreenshotViewer.UpdateDeviceAsync(currentDevice);
+            DeviceInfoDisplay.UpdateDevice(currentDevice);
         }
-
-        #region Activity Plot
-
-        private double NormalizeValue(double input)
-        {
-            // 0.19 => 19%
-            if (Math.Round(input, 0) == 0)
-                return input * 100;
-
-            // 500% => 50%
-            if (input > 100)
-                return Math.Round(input / 100, 2);
-
-            return input;
-        }
-
-        private void RenderPlot()
-        {
-            if (currentDevice == null)
-                return;
-
-            List<Point> cpuPoints = new List<Point>();
-            List<Point> ramPoints = new List<Point>();
-            List<Point> diskPoints = new List<Point>();
-            List<Point> batteryPoints = new List<Point>();
-
-            int cpuCounter = 1;
-            foreach (var cpu in currentDevice.Usage.CPU)
-                cpuPoints.Add(new Point(cpuCounter++, NormalizeValue(cpu)));
-
-            int ramCounter = 1;
-            foreach (var ram in currentDevice.Usage.RAM)
-                ramPoints.Add(new Point(ramCounter++, Math.Round((ram / currentDevice.Environment.TotalRAM) * 100, 2)));
-
-            int diskCounter = 1;
-            foreach (var disk in currentDevice.Usage.DISK)
-                diskPoints.Add(new Point(diskCounter++, NormalizeValue(disk)));
-
-            if (currentDevice.BatteryInfo != null)
-            {
-                int batteryCounter = 1;
-                foreach (var bPercent in currentDevice.Usage.Battery)
-                    batteryPoints.Add(new Point(batteryCounter++, bPercent));
-            }
-
-            //  Fill = new SolidColorPaint(SkiaSharp.SKColors.LightBlue.WithAlpha(128)),
-
-            void mapping(Point s, ChartPoint e)
-            {
-                e.SecondaryValue = s.X; 
-                e.PrimaryValue = s.Y;
-            }
-
-            var cpuSeries = new LineSeries<Point>()
-            {
-                Values = cpuPoints,
-                Mapping = mapping,
-                Stroke = new SolidColorPaint(SkiaSharp.SKColors.AliceBlue, 3),
-                Fill = null,
-                GeometrySize = 0,
-                Name = "CPU Usage (%)",
-                TooltipLabelFormatter = (s) => $"CPU: {s.PrimaryValue} %",
-            };
-
-            var ramSeries = new LineSeries<Point>()
-            {
-                Values = ramPoints,
-                Mapping = mapping,
-                Stroke = new SolidColorPaint(SkiaSharp.SKColors.Violet, 3),
-                Fill = null,
-                GeometrySize = 0,
-                Name = "RAM Usage (%)",
-                TooltipLabelFormatter = (s) => $"RAM: {s.PrimaryValue} %",
-            };
-
-            var diskSeries = new LineSeries<Point>()
-            {
-                Values = diskPoints,
-                Mapping = mapping,
-                Stroke = new SolidColorPaint(SkiaSharp.SKColors.Orange, 3),
-                Fill = null,
-                GeometrySize = 0,
-                Name = "DISK Usage (%)",
-                TooltipLabelFormatter = (s) => $"DISK: {s.PrimaryValue} %",
-            };
-
-            var batterySeries = new LineSeries<Point>()
-            {
-                Values = batteryPoints,
-                Mapping = mapping,
-                Stroke = new SolidColorPaint(SkiaSharp.SKColors.Green, 3),
-                Fill = null,
-                GeometrySize = 0,
-                Name = "Battery Remaning (%)",
-                TooltipLabelFormatter = (s) => $"Battery Remaning: {s.PrimaryValue} %"
-            };
-
-            List<ISeries> series = new List<ISeries>(); // { cpuSeries, ramSeries, diskSeries };
-
-            if (ChkCPULegend.IsChecked.Value)
-                series.Add(cpuSeries);
-
-            if (ChkRAMLegend.IsChecked.Value)
-                series.Add(ramSeries);
-
-            if (ChkDiskLegend.IsChecked.Value)
-                series.Add(diskSeries);
-
-            if (ChkBatteryLegend.IsChecked.Value && currentDevice.BatteryInfo != null)
-                series.Add(batterySeries);
-
-            DeviceActivityPlot.Series = series;
-        }
-
-        private void InitalizeDeviceActivityPlot()
-        {
-            // This legened is always switching colors, so I am going to use my own legend!
-            DeviceActivityPlot.LegendPosition = LiveChartsCore.Measure.LegendPosition.Hidden; // top
-            DeviceActivityPlot.LegendOrientation = LiveChartsCore.Measure.LegendOrientation.Horizontal;
-            DeviceActivityPlot.LegendBackground = FindResource("WhiteBrush") as SolidColorBrush;
-            DeviceActivityPlot.LegendTextBrush = FindResource("BlackBrush") as SolidColorBrush;
-
-            var xaxis = DeviceActivityPlot.XAxes.FirstOrDefault();
-            var yaxis = DeviceActivityPlot.YAxes.FirstOrDefault();
-            yaxis.Labeler = (y) => $"{y}%";
-            xaxis.Labeler = (x) => {
-                if (currentDevice == null)
-                    return string.Empty;
-
-                if (currentDevice.LastSeen == DateTime.MinValue)
-                    return String.Empty;
-                
-                // 60 is not true if there are not 60 values in the list
-                // and remember that all values (cpu, ram, disk) MUST have the same amount, also if they get cleard (they get all cleard)
-                var n = currentDevice.LastSeen.AddMinutes(-(currentDevice.Usage.CPU.Count - x));
-                return n.ToString("HH:mm");
-            };
-        }
-        #endregion
 
         #region Menu
 
@@ -633,12 +534,17 @@ namespace Home
                 return;
 
             var result = await API.ClearDeviceLogAsync(currentDevice);
+
+            if (result.Success)
+                MessageBox.Show(Home.Properties.Resources.strSuccessfullyClearedDeviceLog, Properties.Resources.strSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
+            else
+                MessageBox.Show(string.Format(Home.Properties.Resources.strFailedToClearDeviceLog, result.ErrorMessage), Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
         private void MenuButtonSendMessage_Click(object sender, RoutedEventArgs e)
         {
             if (currentDevice != null)
-                new SendMessage(currentDevice, API).ShowDialog();
+                new SendMessageDialog(currentDevice, API).ShowDialog();
         }
 
         private void MenuButtonSendCommand_Click(object sender, RoutedEventArgs e)
@@ -652,7 +558,6 @@ namespace Home
             LogScrollViewer.ScrollToVerticalOffset(LogScrollViewer.VerticalOffset - e.Delta);
         }
 
-
         private void MenuButtonChangeTheme_Click(object sender, RoutedEventArgs e)
         {
             ThemeManager.Current.ThemeSyncMode = ThemeSyncMode.DoNotSync;
@@ -662,13 +567,13 @@ namespace Home
 
         private async void MenuButtonShutdown_Click(object sender, RoutedEventArgs e)
         {
-            await ShutdownOrRestartAsync(currentDevice, true);      
+            await ShutdownOrRestartAsync(currentDevice, true);
         }
 
         private async void MenuButtonReboot_Click(object sender, RoutedEventArgs e)
         {
-            await ShutdownOrRestartAsync(currentDevice, false);   
-        }    
+            await ShutdownOrRestartAsync(currentDevice, false);
+        }
 
         #endregion
 
@@ -698,13 +603,13 @@ namespace Home
         {
             if (currentDevice != null)
             {
-                if (MessageBox.Show(this, $"Sind Sie sich sicher, dass Sie das Gerät {currentDevice.Name} löschen möchten?", "Sicher?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                if (MessageBox.Show(this, string.Format(Home.Properties.Resources.strAreYouSureToDeleteDevice, currentDevice.Name), Home.Properties.Resources.strAreYouSure, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
                     var result = await API.DeleteDeviceAsync(currentDevice);
                     if (result.Success)
-                        MessageBox.Show("Erfolg!", "Erfolg!", MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show(Home.Properties.Resources.strTheDeviceWasDeletedSuccessfully, Properties.Resources.strSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
                     else
-                        MessageBox.Show(result.ErrorMessage, "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show(result.ErrorMessage, Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
@@ -730,13 +635,13 @@ namespace Home
 
             if (currentDevice.Status == DeviceStatus.Offline)
             {
-                MessageBox.Show("This devices is currently offline! No io operations can be executed!", "Offline-Mode", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Home.Properties.Resources.strDeviceOfflineCannotExecuteCommand, Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (currentDevice.OS.IsWindowsLegacy() || currentDevice.OS.IsAndroid())
             {
-                MessageBox.Show("This feature is currently only supported on newer Windows systems (Windows 7 SP1 or newer) or on Linux Systems", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Home.Properties.Resources.strFeatureIsNotSupportedOnSelectedDevice, Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -750,7 +655,7 @@ namespace Home
                     driveName = dd.DriveName;
                 else if (currentDevice.OS.IsLinux())
                 {
-                    if (dd.VolumeName.Contains(","))
+                    if (dd.VolumeName.Contains(','))
                         driveName = dd.VolumeName.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
                     else
                         driveName = dd.VolumeName;
@@ -766,24 +671,53 @@ namespace Home
             SwitchFileManager(false);
         }
 
-        private void ChkCPULegend_Checked(object sender, RoutedEventArgs e)
+        private async void MenuButtonGenerateReport_Click(object sender, RoutedEventArgs e)
         {
-            RenderPlot();
+            if (currentDevice == null)
+                return;
+
+            var report = Report.GenerateHtmlDeviceReport(currentDevice, Properties.Resources.strDateTimeFormat);
+
+            SaveFileDialog sfd = new SaveFileDialog() { Filter = "HTML Report File (*.html)|*.html" };
+            sfd.FileName = $"{currentDevice.Name}.html";
+            var result = sfd.ShowDialog();
+
+            if (result.HasValue && result.Value)
+            {
+                try
+                {
+                    await System.IO.File.WriteAllTextAsync(sfd.FileName, report);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(this, $"{Home.Properties.Resources.strFailedToSaveReport}{Environment.NewLine}{ex.Message}", Home.Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
 
-        private void ChkRAMLegend_Checked(object sender, RoutedEventArgs e)
+        private void MenuButtonExit_Click(object sender, RoutedEventArgs e)
         {
-            RenderPlot();
+            Application.Current.Shutdown();
         }
 
-        private void ChkDiskLegend_Checked(object sender, RoutedEventArgs e)
+        private void MenuButtonOpenSettings_Click(object sender, RoutedEventArgs e)
         {
-            RenderPlot();
+            new SettingsDialog(true).ShowDialog();
         }
 
-        private void ChkBatteryLegend_Checked(object sender, RoutedEventArgs e)
+        public void UpdateGlowingBrush()
         {
-            RenderPlot();
+            if (Settings.Instance.ActivateGlowingBrush)
+                GlowBrush = new SolidColorBrush((System.Windows.Media.Color)FindResource("Fluent.Ribbon.Colors.AccentColor60"));
+            else
+                GlowBrush = null;
+
+            NonActiveBorderBrush = GlowBrush;
+        }
+
+        private void MenuButtonOpenAbout_Click(object sender, RoutedEventArgs e)
+        {
+            new AboutDialog().Show();
         }
     }
 
@@ -820,7 +754,7 @@ namespace Home
 
                 try
                 {
-                    return ImageHelper.LoadImage($"pack://application:,,,/Home;Component/resources/icons/media/{image}.png", false);
+                    return ImageHelper.LoadImage($"pack://application:,,,/Home;Component/resources/icons/media/{image}.png", false, false);
                 }
                 catch
                 {
@@ -906,7 +840,11 @@ namespace Home
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (string.IsNullOrEmpty(value?.ToString()))
-                return "Unbekannt";
+                return Properties.Resources.strUnkown;
+            string[] newLine = new string[] { System.Environment.NewLine, "\r", "\n", "\r\n" };
+
+            if (value is string str && newLine.Any(n => str.Contains(n)))
+                return str.Split(newLine, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
 
             return value;
         }
@@ -922,7 +860,7 @@ namespace Home
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is Battery b)
-                return $"{b.BatteryLevelInPercent}% (Charging: {(b.IsCharging ? "Yes" : "No")})";
+                return $"{b.BatteryLevelInPercent}% ({Home.Properties.Resources.strCharging}: {(b.IsCharging ? Properties.Resources.strYes : Properties.Resources.strNo)})";
 
             return "n/a";
         }

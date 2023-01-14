@@ -22,7 +22,6 @@ namespace Notification
             // Debug:
             // MessageBox.Show(Convert.ToBase64String(System.Text.Encoding.Default.GetBytes(JsonConvert.SerializeObject(new Message("Dies ist ein Test", "TEst-Text", Message.MessageImage.Error)))));
             string[] args = Environment.GetCommandLineArgs();
-
             if (args.Length >= 2)
             {
                 try

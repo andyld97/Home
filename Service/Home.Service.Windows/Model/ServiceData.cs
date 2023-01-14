@@ -7,8 +7,27 @@ namespace Home.Service.Windows.Model
 {
     public class ServiceData : INotifyPropertyChanged
     {
-        public static readonly string DATA_PATH = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data.xml");
+        public static readonly string DATA_PATH = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Home", "Client", "data.xml");
+        public static readonly string SCREENSHOT_PATH = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Home", "Client", "Screenshots");
+
         public static readonly ServiceData Instance = ServiceData.Load();
+
+        static ServiceData()
+        {
+            try
+            {
+                System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(DATA_PATH));
+            }
+            catch
+            { }
+
+            try
+            {
+                System.IO.Directory.CreateDirectory(SCREENSHOT_PATH);
+            }
+            catch
+            { }
+        }
 
         private string id = Guid.NewGuid().ToString();
         private string deviceGroup;

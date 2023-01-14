@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{name}</title>
+    <style>
+
+        * {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        h2 {
+            color: rgb(6, 17, 104);
+            border-bottom: 1px solid #CCC;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+
+        h3 {
+            color: rgb(6, 17, 104);
+            border-bottom: 1px solid #CCC;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }        
+
+        table {
+            border: 0;
+        }
+
+        tr {
+            text-align: left;
+        }
+
+        .column {
+            width: 200px;
+            font-size: smaller;
+        }
+
+        .column2 {
+            font-size: smaller;
+        }
+
+        .property {
+            color: black;
+        }
+
+        .value {
+            color: black;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>{name}</h2>
+    <h3>OEM Info</h3>
+
+    <table>
+        <tr>
+            <th class="column">{property}</th>
+            <th class="column2">{value}</th>
+        </tr>
+        <tr>
+            <td class="property">{strDeviceId}:</td>
+            <td class="value">{oem0}</td>
+        </tr>
+        <tr>
+            <td class="property">{strDeviceType}:</td>
+            <td class="value">{oem1}</td>
+        </tr>
+        <tr>
+            <td class="property">{strVendor}:</td>
+            <td class="value">{oem2}</td>
+        </tr>
+        <tr>
+            <td class="property">{strProduct}:</td>
+            <td class="value">{oem3}</td>
+        </tr>
+        <tr>
+            <td class="property">{strDescription}:</td>
+            <td class="value">{oem4}</td>
+        </tr>
+        <tr>
+            <td class="property">{strStartTime}:</td>
+            <td class="value">{oem5}</td>
+        </tr>
+        <tr>
+            <td class="property">{strUptime}:</td>
+            <td class="value">{oem6}</td>
+        </tr>
+        <tr>
+            <td class="property">{strLocation}:</td>
+            <td class="value">{oem7}</td>
+        </tr>
+        <tr>
+            <td class="property">{strGroup}:</td>
+            <td class="value">{oem8}</td>
+        </tr>
+        <tr>
+            <td class="property">{strIPAdress}:</td>
+            <td class="value">{oem9}</td>
+        </tr>
+        <tr>
+            <td class="property">{strHomeClientVersion}:</td>
+            <td class="value">{oem10}</td>
+        </tr>
+    </table>
+
+    <h3>{strOS}</h3>
+    <table>
+        <tr>
+            <th class="column">{property}</th>
+            <th class="column2">{value}</th>
+        </tr>
+        <tr>
+            <td class="property">{strOsName}:</td>
+            <td class="value">{os0}</td>
+        </tr>
+        <tr>
+            <td class="property">{strOsVersion}:</td>
+            <td class="value">{os1}</td>
+        </tr>
+        <tr>
+            <td class="property">{strUser}:</td>
+            <td class="value">{os2}</td>
+        </tr>
+        <tr>
+            <td class="property">{strDomain}:</td>
+            <td class="value">{os3}</td>
+        </tr>
+    </table>
+
+
+    <h3>{strHardware}</h3>
+
+    <table>
+        <tr>
+            <th class="column">{property}</th>
+            <th class="column2">{value}</th>
+        </tr>
+        <tr>
+            <td class="property">{strCPU}:</td>
+            <td class="value">{h0}</td>
+        </tr>
+        <tr>
+            <td class="property">{strMotherboard}:</td>
+            <td class="value">{h1}</td>
+        </tr>
+        <tr>
+            <td class="property">{strRAM}:</td>
+            <td class="value">{h2}</td>
+        </tr>
+        <tr>
+            <td class="property">{strGraphics}:</td>
+            <td class="value">{h3}</td>
+        </tr>
+
+    </table>
+
+    {screen}
+
+    <h3>{strBattery}</h3>
+    <table>
+        <tr>
+            <th class="column">{property}</th>
+            <th class="column2">{value}</th>
+        </tr>
+        <tr>
+            <td class="property">{strBatteryExists}:</td>
+            <td class="value">{b0}</td>
+        </tr>
+        <tr>
+            <td class="property">{strBatteryRemaningPercentage}:</td>
+            <td class="value">{b1} %</td>
+        </tr>
+        <tr>
+            <td class="property">{strBatteryIsCharging}:</td>
+            <td class="value">{b2}</td>
+        </tr>
+    </table>
+
+    <h3>{strDisks}</h3>
+    {disks}
+
+    <h3>{strWarnings}</h3>
+    {warnings}
+
+    <h3>{strDeviceLog}</h3>
+    <textarea readonly>{log}</textarea>
+</body>
+</html>

@@ -1,4 +1,5 @@
 ﻿using ControlzEx.Theming;
+using Helper;
 using Home.Model;
 using System;
 using System.Windows;
@@ -16,10 +17,14 @@ namespace Home
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            ThemeManager.Current.ThemeSyncMode = ThemeSyncMode.SyncWithAppMode;
-            ThemeManager.Current.SyncTheme();
+#if DEBUG
+            // Change lang to en to debug
+            System.Globalization.CultureInfo ci = new System.Globalization.CultureInfo("en-US");
+            System.Threading.Thread.CurrentThread.CurrentCulture =
+            System.Threading.Thread.CurrentThread.CurrentUICulture = ci;
+#endif
 
-            ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(Int32.MaxValue));
+            ThemeHelper.ApplyTheme();
             base.OnStartup(e);
         }
 

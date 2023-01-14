@@ -3,11 +3,15 @@ using Home.Data.Com;
 using Home.Measure.Windows;
 using Home.Model;
 using Home.Service.Windows.Model;
+using Microsoft.Win32;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Net;
+using System.Runtime.Intrinsics.X86;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -74,21 +78,22 @@ namespace Home.Service.Windows
                 IP = NET.DetermineIPAddress(),
                 DeviceGroup = ServiceData.Instance.DeviceGroup,
                 Location = ServiceData.Instance.Location,
-                Name = Environment.MachineName,
+                Name = NET.GetMachineName(),
                 OS = ServiceData.Instance.SystemType,
                 Type = ServiceData.Instance.Type,
-                DiskDrives = JsonConvert.DeserializeObject<List<DiskDrive>>(WMI.DetermineDiskDrives()),
+                DiskDrives = new System.Collections.ObjectModel.ObservableCollection<DiskDrive>(JsonConvert.DeserializeObject<List<DiskDrive>>(WMI.DetermineDiskDrives())),
                 Environment = new DeviceEnvironment()
                 {
                     CPUCount = Environment.ProcessorCount,
                     CPUName = WMI.DetermineCPUName(),
                     TotalRAM = Native.DetermineTotalRAM(),
-                    OSName = ServiceData.Instance.OSName,
+                    OSName = NET.GetOsFriendlyName(ServiceData.Instance.OSName),
                     Motherboard = WMI.DetermineMotherboard(),
                     OSVersion = Environment.OSVersion.ToString(),
                     RunningTime = now.Subtract(startTimestamp),
                     StartTimestamp = startTimestamp
-                }
+                },
+                Screens = new System.Collections.ObjectModel.ObservableCollection<Screen>(GetScreenInformation()),
             };
 
             // Run tick manually on first_start
@@ -112,6 +117,28 @@ namespace Home.Service.Windows
             ackTimer.Tick += AckTimer_Tick;
             ackTimer.Interval = TimeSpan.FromMinutes(1);
             ackTimer.Start();
+        }
+
+        private List<Screen> GetScreenInformation()
+        {
+            List<Screen> screens = new List<Screen>();
+
+            foreach (var screen in WMI.GetScreenInformation())
+            {
+                screens.Add(new Screen()
+                {
+                    ID = screen["id"].Value<string>(),
+                    Manufacturer = screen["manufacturer"].Value<string>(),
+                    Serial = screen["serial"].Value<string>(),
+                    BuiltDate  = screen["built_date"].Value<string>(),
+                    Index = screen["index"].Value<int>(),
+                    IsPrimary = screen["is_primary"].Value<bool>(),
+                    DeviceName = screen["device_name"].Value<string>(),
+                    Resolution = screen["resolution"].Value<string>(),
+                });
+            }
+
+            return screens;
         }
 
         private async void AckTimer_Tick(object sender, EventArgs e)
@@ -151,7 +178,7 @@ namespace Home.Service.Windows
             var now = DateTime.Now;
 
             currentDevice.IP = NET.DetermineIPAddress();
-            currentDevice.DiskDrives = JsonConvert.DeserializeObject<List<DiskDrive>>(WMI.DetermineDiskDrives());
+            currentDevice.DiskDrives = new System.Collections.ObjectModel.ObservableCollection<DiskDrive>(JsonConvert.DeserializeObject<List<DiskDrive>>(WMI.DetermineDiskDrives()));
             currentDevice.Environment.RunningTime = now.Subtract(startTimestamp); // Environment.TickCount?
             currentDevice.Environment.OSVersion = Environment.OSVersion.ToString();
             currentDevice.Environment.CPUCount = Environment.ProcessorCount;
@@ -160,15 +187,16 @@ namespace Home.Service.Windows
             currentDevice.Environment.CPUUsage = Performance.GetCPUUsage();
             currentDevice.Environment.DiskUsage = Performance.GetDiskUsage();
             currentDevice.Environment.Is64BitOS = Environment.Is64BitOperatingSystem;
-            currentDevice.Environment.MachineName = Environment.MachineName;
+            currentDevice.Environment.MachineName = NET.GetMachineName();
             currentDevice.Environment.UserName = Environment.UserName;
             currentDevice.Environment.DomainName = Environment.UserDomainName;
-            currentDevice.Environment.GraphicCards = WMI.DetermineGraphicsCardNames();
+            currentDevice.Environment.GraphicCards = new System.Collections.ObjectModel.ObservableCollection<string>(WMI.DetermineGraphicsCardNames());
             currentDevice.ServiceClientVersion = $"vWindows{typeof(MainWindow).Assembly.GetName().Version.ToString(3)}";
             WMI.GetVendorInfo(out string product, out string description, out string vendor);
             currentDevice.Environment.Product = product;
             currentDevice.Environment.Description = description;
             currentDevice.Environment.Vendor = vendor;
+            currentDevice.Screens = new System.Collections.ObjectModel.ObservableCollection<Screen>(GetScreenInformation());
 
             bool batteryResult = Home.Measure.Windows.NET.DetermineBatteryInfo(out int batteryPercentage, out bool isCharging);
             if (batteryResult)
@@ -194,7 +222,8 @@ namespace Home.Service.Windows
                     // Show message
                     try
                     {
-                        System.Diagnostics.Process.Start("Notification.exe", Convert.ToBase64String(System.Text.Encoding.Default.GetBytes(ackResult.Result.JsonData)));
+                        // Notification is in a different folder, otherwise there are problems with different versions of Newtonsoft.JSOn
+                        System.Diagnostics.Process.Start(@"Notification\Notification.exe", Convert.ToBase64String(System.Text.Encoding.Default.GetBytes(ackResult.Result.JsonData)));
                     }
                     catch (Exception ex)
                     {
@@ -219,13 +248,30 @@ namespace Home.Service.Windows
 
         public async Task PostScreenshot()
         {
-            string fileName = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"capture{DateTime.Now.ToString(Consts.SCREENSHOT_DATE_FILE_FORMAT)}.png");
+            string fileName = System.IO.Path.Combine(ServiceData.SCREENSHOT_PATH, $"capture{DateTime.Now.ToString(Consts.SCREENSHOT_DATE_FILE_FORMAT)}.png");
             var result = NET.CreateScreenshot(fileName);
 
 #if LEGACY
             var apiResult = legacyAPI.SendScreenshotAsync(new Screenshot() { ClientID = ServiceData.Instance.ID, Data = Convert.ToBase64String(result) });
 #else
-            var apiResult = await api.SendScreenshotAsync(new Screenshot() { ClientID = ServiceData.Instance.ID, Data = Convert.ToBase64String(result) });
+            // "full screenshot"
+            var apiResult = await api.SendScreenshotAsync(new Screenshot() { DeviceID = ServiceData.Instance.ID, Data = Convert.ToBase64String(result) });
+
+            // Single screenshot for each screen (only if there is more than one screen, otherwise if there is only 1 screen, we would have 2 equal screenshots)
+            if (System.Windows.Forms.Screen.AllScreens.Length > 1)
+            {
+                int screenIndex = 0;
+                foreach (var screen in System.Windows.Forms.Screen.AllScreens.OrderBy(p => p.DeviceName))
+                {
+                    var screenshot = Convert.ToBase64String(NET.CaputreScreen(screen));
+                    var tempResult = await api.SendScreenshotAsync(new Screenshot()
+                    {
+                        DeviceID = ServiceData.Instance.ID,
+                        ScreenIndex = screenIndex++,
+                        Data = screenshot
+                    });
+                }
+            }
 #endif
         }
 

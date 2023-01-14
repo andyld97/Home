@@ -16,7 +16,7 @@ namespace Home.Communication
     {
         private readonly string host = string.Empty;
 
-        public static readonly HttpClient httpClient = new HttpClient() { Timeout = TimeSpan.FromSeconds(5)  };
+        public static readonly HttpClient httpClient = new HttpClient() { Timeout = TimeSpan.FromSeconds(10)  };
         public static readonly string BASE_URL = "{0}/api/v1/";
         public static readonly string COMMUNICATION_C = "communication";
         public static readonly string DEVICE_C = "device";
@@ -34,6 +34,7 @@ namespace Home.Communication
         public static readonly string SEND_COMMAND = "send_command";
         public static readonly string STATUS = "status";
         public static readonly string DELETE = "delete";
+        public static readonly string TEST = "test";
 
         public API(string host)
         {
@@ -62,6 +63,25 @@ namespace Home.Communication
             catch (Exception ex)
             {
                 return AnswerExtensions.Fail<List<Device>>(ex.Message);
+            }
+        }
+
+        public async Task<(bool, string)> TestConnectionAsync()
+        {
+            try
+            {
+                string url = GenerateEpUrl(true, TEST);
+                var result = await httpClient.GetAsync(url);
+
+                if (result.IsSuccessStatusCode)
+                    return (true, string.Empty);
+                else
+                    throw new Exception($"Http Status Code: {result.StatusCode}");
+
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
             }
         }
 
@@ -258,26 +278,20 @@ namespace Home.Communication
             }
         }
 
-        public async Task<Answer<Screenshot>> RecieveScreenshotAsync(Device device, string fileName)
+        public async Task<byte[]> RecieveScreenshotAsync(Device device, string fileName)
         {
             try
             {
                 string url = $"{GenerateEpUrl(true, RECIEVE_SCREENSHOT)}/{device.ID}/{fileName}";
                 var result = await httpClient.GetAsync(url); 
 
-                var content = await result.Content.ReadAsStringAsync();
-                if (!string.IsNullOrEmpty(content))
-                {
-                    var item = System.Text.Json.JsonSerializer.Deserialize<Answer<Screenshot>>(content);
-                    return item;
-                }
-                else
-                    return AnswerExtensions.Fail<Screenshot>("Empty content!");
+                var content = await result.Content.ReadAsByteArrayAsync();
+                return content;
             }
             catch (Exception ex)
             {
                 // LOG
-                return AnswerExtensions.Fail<Screenshot>(ex.Message);
+                return null;
             }
         }
 
@@ -301,9 +315,12 @@ namespace Home.Communication
 
             if (string.IsNullOrEmpty(fileName))
             {
-                if (device.ScreenshotFileNames.Any())
+                if (device.Screenshots.Any())
                 {
-                    string lastFileName = device.ScreenshotFileNames.LastOrDefault();
+                    string lastFileName = device.Screenshots.LastOrDefault(x => x.ScreenIndex == null)?.Filename;
+                    if (string.IsNullOrEmpty(lastFileName))
+                        lastFileName = device.Screenshots.LastOrDefault()?.Filename;
+
                     string path = System.IO.Path.Combine(cacheDevicePath, lastFileName + ".png");
 
                     if (System.IO.File.Exists(path))
@@ -318,12 +335,12 @@ namespace Home.Communication
 
             // Download latest screenshot
             var result = await RecieveScreenshotAsync(device, fileName);
-            if (result.Success)
+            if (result != null)
             {
                 string path = System.IO.Path.Combine(cacheDevicePath, fileName + ".png");
                 try
                 {
-                    System.IO.File.WriteAllBytes(path, Convert.FromBase64String(result.Result.Data));
+                    System.IO.File.WriteAllBytes(path, result);
                     return true;
                 }
                 catch
@@ -331,12 +348,9 @@ namespace Home.Communication
                     return false;
                 }
             }
-
             return false;
         }
 
-        // MUST BE bool? (nullable), otherwise parsing to NULL causing an exception!
-        // ToDo: *** Check for other API methods which return bool!
         public async Task<Answer<bool?>> AquireScreenshotAsync(Client client, Device device)
         {
             try
@@ -388,7 +402,7 @@ namespace Home.Communication
             try
             {
                 string url = $"{GenerateEpUrl(true, DELETE)}/{device.ID}";
-                var result = await httpClient.GetAsync(url);
+                var result = await httpClient.DeleteAsync(url);
 
                 var content = await result.Content.ReadAsStringAsync();
                 if (!string.IsNullOrEmpty(content))

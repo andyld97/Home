@@ -37,6 +37,15 @@ namespace Home.Service.Android
         private string xmlDevicePath = string.Empty;
         private string xmlSettingsPath = string.Empty;
 
+        private Dictionary<int, Device.DeviceType> spinnerAssoc = new Dictionary<int, Device.DeviceType>()
+        {
+            { 0, Device.DeviceType.Smartphone },
+            { 1, Device.DeviceType.SmartTV },
+            { 2, Device.DeviceType.SetTopBox },
+            { 3, Device.DeviceType.Tablet },
+            { 4, Device.DeviceType.AndroidTVStick },
+        };
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -129,8 +138,13 @@ namespace Home.Service.Android
                 textHost.Text = currentSettings.Host;
                 textLocation.Text = currentDevice.Location;
                 textGroup.Text = currentDevice.DeviceGroup;
-                spinnerDeviceType.SetSelection((int)(currentDevice.Type - 5));
+
+                foreach (var item in spinnerAssoc)
+                    if (item.Value == currentDevice.Type)
+                        spinnerDeviceType.SetSelection(item.Key);
             }
+
+            textGroup.NextFocusDownId = Resource.Id.spinnerDeviceType;
 
 #if !NOGL
             // Only determine graphics when it's not set, because GLSurfaceView/a valid Open GL Context is required
@@ -138,7 +152,7 @@ namespace Home.Service.Android
             {
                 GLSurfaceView glSurfaceView = FindViewById<GLSurfaceView>(Resource.Id.surface);
                 Renderer renderer = new Renderer();
-                renderer.OnInfosRecieved += delegate (string vendor, string renderer) { currentDevice.Environment.GraphicCards = new List<string> { $"{vendor} {renderer}" }; };
+                renderer.OnInfosRecieved += delegate (string vendor, string renderer) { currentDevice.Environment.GraphicCards = new System.Collections.ObjectModel.ObservableCollection<string> { $"{vendor} {renderer}" }; };
                 glSurfaceView.SetRenderer(renderer);
             }
             else
@@ -149,7 +163,7 @@ namespace Home.Service.Android
 #else
             /*if (string.IsNullOrEmpty(currentDevice.Environment.Graphics))
                 currentDevice.Environment.Graphics = "Unknown";*/
-            if (currentDevice.Environment.GraphicCards.Count == 0)
+                if (currentDevice.Environment.GraphicCards.Count == 0)
                 currentDevice.Environment.GraphicCards.Add("Unknown");
 #endif
 
@@ -182,12 +196,7 @@ namespace Home.Service.Android
 
             currentDevice.DeviceGroup = group;
             currentDevice.Location = location;
-            var type = (Device.DeviceType)(spinnerDeviceType.SelectedItemId + 5);
-            currentDevice.Type = type;
-
-            // 0 => Smartphone : 5
-            // 1 => SmartTV    : 6
-            // 2 => SetTopBox  : 7
+            currentDevice.Type = spinnerAssoc[(int)spinnerDeviceType.SelectedItemId];
             Home.Communication.API api = new Home.Communication.API(host);
 
             var registerResult = await api.RegisterDeviceAsync(currentDevice);
@@ -214,10 +223,10 @@ namespace Home.Service.Android
             
                 ServiceHelper.StartAckService(this);
                 RefreshServiceStatus();
-                Toast.MakeText(this, $"Das Gerät wurde erfolgreich registriert!", ToastLength.Short).Show();
+                Toast.MakeText(this, $"The device was registered succuessfully!", ToastLength.Short).Show();
             }
             else
-                Toast.MakeText(this, $"Fehler beim Registrieren des Gerätes!", ToastLength.Short).Show();
+                Toast.MakeText(this, $"Failed to register device!", ToastLength.Short).Show();
         }
 
         private void BtnShowInfos_Click(object sender, System.EventArgs e)
@@ -234,9 +243,6 @@ namespace Home.Service.Android
             buttonToggleService.Enabled = currentSettings.IsDeviceRegistered;
         }
 
-        /// <summary>
-        ///  ToDo: This methods need to be called in a timer periodically
-        /// </summary>
         private void RefreshServiceStatus()
         {
             bool isServiceRunning = ServiceHelper.IsMyServiceRunning(this, typeof(AckService));
@@ -245,14 +251,14 @@ namespace Home.Service.Android
             SetGuiState(!isDeviceRegistered);
 
             // Assign leds
-            ledIsDeviceRegistered.SetImageResource(isDeviceRegistered ? Resource.Drawable.led_on : Resource.Drawable.led_off  );
+            ledIsDeviceRegistered.SetImageResource(isDeviceRegistered ? Resource.Drawable.led_on : Resource.Drawable.led_off);
             ledIsServiceRunning.SetImageResource(isServiceRunning ? Resource.Drawable.led_on : Resource.Drawable.led_off);
 
             // Assing texts
-            textRegister.Text = (isDeviceRegistered ? $"Das Gerät {currentDevice.Name} ist registiert!" : $"Das Gerät {currentDevice.Name} nicht ist registiert!");
-            textService.Text = (isServiceRunning ? "Home.Service.Android ist aktiv!" : "Home.Service.Android nicht ist aktiv!");
+            textRegister.Text = (isDeviceRegistered ? string.Format(GetString(Resource.String.strDeviceRegisteredText), currentDevice.Name) : string.Format(GetString(Resource.String.strDeviceNotRegisteredText), currentDevice.Name));
+            textService.Text = (isServiceRunning ? GetString(Resource.String.strServiceActiveText) : GetString(Resource.String.strServiceInActiveText));
 
-            buttonToggleService.Text = (isServiceRunning ? "Service beenden" : "Service starten");
+            buttonToggleService.Text = (isServiceRunning ? GetString(Resource.String.strStopService) : GetString(Resource.String.strStartService));
         }
 
         private void ButtonToggleService_Click(object sender, System.EventArgs e)
@@ -271,6 +277,6 @@ namespace Home.Service.Android
         {
             RefreshServiceStatus();
         }
-#endregion
+        #endregion
     }
 }

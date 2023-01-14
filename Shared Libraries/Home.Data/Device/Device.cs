@@ -11,11 +11,13 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 #if !LEGACY
 using System.Text.Json.Serialization;
+using System.Text.Json;
 using Home.Data.Helper;
 #endif
 using System.Xml.Serialization;
 using JsonIgnoreAttribute = Newtonsoft.Json.JsonIgnoreAttribute;
 using System.Text;
+using System.Linq;
 
 namespace Home.Model
 {
@@ -33,6 +35,8 @@ namespace Home.Model
         private string deviceGroup;
         private string location;
         private bool? isLive;
+        private string serviceClientVersion;
+        private DeviceEnvironment environment = new DeviceEnvironment();
 
         [JsonProperty("name")]
 #if !LEGACY
@@ -217,35 +221,63 @@ namespace Home.Model
         #endif
         public ObservableCollection<LogEntry> LogEntries { get; set; } = new ObservableCollection<LogEntry>();
 
-        [JsonProperty("screenshots_file_names")]
+        [JsonProperty("screenshots")]
          #if !LEGACY
-        [System.Text.Json.Serialization.JsonPropertyName("screenshots_file_names")]
+        [System.Text.Json.Serialization.JsonPropertyName("screenshots")]
         #endif
-        public List<string> ScreenshotFileNames { get; set; } = new List<string>();
+        public ObservableCollection<Screenshot> Screenshots { get; set; } = new ObservableCollection<Screenshot>();
 
         [JsonProperty("environment")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("environment")]
 #endif
-        public DeviceEnvironment Environment { get; set; } = new DeviceEnvironment();
+        public DeviceEnvironment Environment
+        { 
+            get => environment; 
+            set
+            {
+                if (value != environment)
+                {
+                    environment = value;
+                    OnPropertyChanged(nameof(Environment));
+                }
+            }
+        }
 
         [JsonProperty("disk_drives")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("disk_drives")]
 #endif
-        public List<DiskDrive> DiskDrives { get; set; } = new List<DiskDrive>();
+        public ObservableCollection<DiskDrive> DiskDrives { get; set; } = new ObservableCollection<DiskDrive>();
 
         [JsonProperty("service_client_version")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("service_client_version")]
 #endif
-        public string ServiceClientVersion { get; set; }
+        public string ServiceClientVersion
+        {
+            get => serviceClientVersion;
+            set
+            {
+                if (value != serviceClientVersion)
+                {
+                    serviceClientVersion = value;
+                    OnPropertyChanged(nameof(ServiceClientVersion));
+                }
+            }
+        }
 
         [JsonProperty("usage")]
 #if !LEGACY
         [JsonPropertyName("usage")]
 #endif
         public DeviceUsage Usage { get; set; } = new DeviceUsage();
+
+        [JsonProperty("screens")]
+#if !LEGACY
+        [JsonPropertyName("screens")]
+#endif
+        public ObservableCollection<Screen> Screens { get; set; } = new ObservableCollection<Screen>();
 
 #if !LEGACY
         #region Properties for Internal API Usage
@@ -262,7 +294,7 @@ namespace Home.Model
         [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         [XmlIgnore]
-        public Queue<Message> Messages { get; set; } = new Queue<Message>();
+        public List<Message> Messages { get; set; } = new List<Message>();
 
         /// <summary>
         /// Only for internal api usage
@@ -270,13 +302,15 @@ namespace Home.Model
         [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         [XmlIgnore]
-        public Queue<Command> Commands { get; set; } = new Queue<Command>();
+        public List<Command> Commands { get; set; } = new List<Command>();
 
         #endregion
 
-
         [JsonPropertyName("storage_warnings")]
-        public List<StorageWarning> StorageWarnings { get; set; } = new List<StorageWarning>();
+        public ObservableCollection<StorageWarning> StorageWarnings { get; set; } = new ObservableCollection<StorageWarning>();
+
+        [JsonPropertyName("device_changes")]
+        public ObservableCollection<DeviceChangeEntry> DevicesChanges { get; set; } = new ObservableCollection<DeviceChangeEntry>();
 
         /// <summary>
         /// The battery warning for this device (if null there is no warning)
@@ -317,22 +351,46 @@ namespace Home.Model
             SmartTV,
             SetTopBox,
             Tablet,
-            VirtualMachine
+            VirtualMachine,
+            AndroidTVStick
         }
 
         public enum OSType
         {
+            [Description("Android")]
             Android,
+
+            [Description("Linux")]
             Linux,
+
+            [Description("Mint (Linux)")]
             LinuxMint,
+
+            [Description("Ubuntu (Linux)")]
             LinuxUbuntu,
+
+            [Description("Windows XP")]
             WindowsXP,
-            WindowsaVista,
+
+            [Description("Windows Vista")]
+            WindowsVista,
+
+            [Description("Windows 7")]
             Windows7,
+
+            [Description("Windows 8")]
             Windows8,
+
+            [Description("Windows 10")]
             Windows10,
+
+            [Description("Windows 11")]
             Windows11,
+
+            [Description("Unix")]
             Unix,
+
+            [Description("Other")]
             Other
         }
 
@@ -345,6 +403,7 @@ namespace Home.Model
                 case DeviceType.Smartphone: image = "smartphone"; break;
                 case DeviceType.SmartTV: image = "smarttv"; break;
                 case DeviceType.SetTopBox: image = "settopbox"; break;
+                case DeviceType.AndroidTVStick: image = "androidtvstick"; break;
                 case DeviceType.MiniPC:
                 case DeviceType.Server:
                 case DeviceType.Desktop:
@@ -366,7 +425,7 @@ namespace Home.Model
                             case OSType.LinuxMint: prequel += "mint"; break;
                             case OSType.LinuxUbuntu: prequel += "ubuntu"; break;
                             case OSType.WindowsXP: prequel += "windows_xp"; break;
-                            case OSType.WindowsaVista: prequel += "windows_vista"; break;
+                            case OSType.WindowsVista: prequel += "windows_vista"; break;
                             case OSType.Windows7: prequel += "windows_7"; break;
                             case OSType.Windows8: prequel += "windows_8"; break;
                             case OSType.Windows10: prequel += "windows_10"; break;
@@ -476,8 +535,35 @@ namespace Home.Model
             OS = other.OS;
             DeviceGroup = other.DeviceGroup;
             Location = other.location;
-            Environment = other.Environment;
-            DiskDrives = other.DiskDrives;
+
+            // Update environment
+            Environment.CPUCount = other.Environment.CPUCount;
+            Environment.CPUName = other.Environment.CPUName;
+            Environment.CPUUsage = other.Environment.CPUUsage;
+            Environment.Description = other.Environment.Description;
+            Environment.DiskUsage = other.Environment.DiskUsage;
+            Environment.DomainName = other.Environment.DomainName;
+            Environment.FreeRAM = other.Environment.FreeRAM;
+            Environment.Graphics = other.Environment.Graphics;
+            Environment.Is64BitOS = other.Environment.Is64BitOS;
+            Environment.MachineName = other.Environment.MachineName;
+            Environment.Motherboard = other.Environment.Motherboard;
+            Environment.OSName = other.Environment.OSName;
+            Environment.OSVersion = other.Environment.OSVersion;
+            Environment.Product = other.Environment.Product;
+            Environment.RunningTime = other.Environment.RunningTime;
+            Environment.StartTimestamp = other.Environment.StartTimestamp;
+            Environment.TotalRAM = other.Environment.TotalRAM;
+            Environment.UserName = other.Environment.UserName;
+            Environment.Vendor = other.Environment.Vendor;             
+
+            Environment.GraphicCards.Clear();
+            foreach (var card in other.Environment.GraphicCards)
+                Environment.GraphicCards.Add(card);
+
+            DiskDrives.Clear();
+            foreach (var disk in other.DiskDrives)
+                DiskDrives.Add(disk);
             ServiceClientVersion = other.ServiceClientVersion;
             BatteryInfo = other.BatteryInfo;
 
@@ -496,6 +582,12 @@ namespace Home.Model
             if (Environment.GraphicCards.Count == 0 && !string.IsNullOrEmpty(other.Environment.Graphics))
                 Environment.GraphicCards.Add(other.Environment.Graphics);
 
+#if !LEGACY
+            DevicesChanges.Clear();
+            foreach (var change in other.DevicesChanges.OrderByDescending(c => c.Timestamp))
+                DevicesChanges.Add(change);
+#endif
+
             // In an API Context we should not update the usage here
             if (isLocal)
                 Usage = other.Usage;
@@ -504,9 +596,19 @@ namespace Home.Model
             if (other.IsLive != null)
                 IsLive = other.IsLive;
 
-            // ToDo: *** Only add new screenshots (to prevent duplicate entries and long lists)
-            foreach (var shot in other.ScreenshotFileNames)
-                ScreenshotFileNames.Add(shot);
+            if (other.Screenshots.Count > 0)
+            {
+                Screenshots.Clear();
+                foreach (var shot in other.Screenshots)
+                    Screenshots.Add(shot);
+            }
+
+            if (other.Screens.Count > 0)
+            {
+                Screens.Clear();
+                foreach (var screen in other.Screens)
+                    Screens.Add(screen);
+            }
 
 #if !LEGACY
             IsScreenshotRequired = other.IsScreenshotRequired;
@@ -533,123 +635,347 @@ namespace Home.Model
         }
     }
 
-    public class DeviceEnvironment
+    public class DeviceEnvironment : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private string product;
+        private string description;
+        private string vendor;
+        private string osName;
+        private string osVersion;
+        private string cpuName;
+        private int cpuCount;
+        
+        private double cpuUsage;
+        private double diskUsage;
+
+        private string motherboard;
+        private string graphics;
+        private double totalRAM;
+        private string freeRAM;
+        
+        private string machineName;
+        private string userName;
+        private string domainName;
+
+        private bool is64BitOS;
+        private TimeSpan runningTime;
+        private DateTime startTimestamp;
+
         [JsonProperty("product")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("product")]
 #endif
-        public string Product { get; set; }
+        public string Product
+        {
+            get => product;
+            set
+            {
+                if (value != product)
+                {
+                    product = value;
+                    OnPropertyChanged(nameof(Product));
+                }
+            }
+        }
 
         [JsonProperty("description")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("description")]
 #endif
-        public string Description { get; set; }
+        public string Description
+        {
+            get => description;
+            set
+            {
+                if (value != description)
+                {
+                    description = value;
+                    OnPropertyChanged(nameof(Description));
+                }
+            }
+        }
 
         [JsonProperty("vendor")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("vendor")]
 #endif
-        public string Vendor { get; set; }
+        public string Vendor
+        {
+            get => vendor;
+            set
+            {
+                if (value != vendor)
+                {
+                    vendor = value;
+                    OnPropertyChanged(nameof(Vendor));
+                }
+            }
+        }
 
         [JsonProperty("os_name")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("os_name")]
 #endif
-        public string OSName { get; set; }
+        public string OSName
+        {
+            get => osName;
+            set 
+            {
+                if (value != osName)
+                {
+                    osName = value;
+                    OnPropertyChanged(nameof(OSName));
+                }
+            }
+        }
 
         [JsonProperty("os_version")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("os_version")]
 #endif
-        public string OSVersion { get; set; }
+        public string OSVersion
+        {
+            get => osVersion;
+            set
+            {
+                if (value != osVersion)
+                {
+                    osVersion = value;
+                    OnPropertyChanged(nameof(OSVersion));
+                }
+            }
+        }
 
         [JsonProperty("cpu_name")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("cpu_name")]
 #endif
-        public string CPUName { get; set; }
+        public string CPUName
+        {
+            get => cpuName;
+            set
+            {
+                if (value != cpuName)
+                {
+                    cpuName = value;
+                    OnPropertyChanged(nameof(CPUName));
+                }
+            }
+        }
 
         [JsonProperty("cpu_count")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("cpu_count")]
 #endif
-        public int CPUCount { get; set; }
+        public int CPUCount
+        {
+            get => cpuCount;
+            set
+            {
+                if (value != cpuCount)
+                {
+                    cpuCount = value;
+                    OnPropertyChanged(nameof(CPUCount));
+                }
+            }
+        }
 
         [JsonProperty("cpu_usage")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("cpu_usage")]
 #endif
-        public double CPUUsage { get; set; }
+        public double CPUUsage
+        {
+            get => cpuUsage;
+            set
+            {
+                if (value != cpuUsage)
+                {
+                    cpuUsage= value;
+                    OnPropertyChanged(nameof(CPUUsage));
+                }
+            }
+        }
 
         [JsonProperty("motherboard")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("motherboard")]
 #endif
-        public string Motherboard { get; set; }
+        public string Motherboard
+        {
+            get => motherboard;
+            set
+            {
+                if (value != motherboard)
+                {
+                    motherboard = value;
+                    OnPropertyChanged(nameof(Motherboard));
+                }
+            }
+        }
 
         [Obsolete()]
         [JsonProperty("graphics")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("graphics")]
 #endif
-        public string Graphics { get; set; }
+        public string Graphics
+        {
+            get => graphics;
+            set
+            {
+                if (value != graphics)
+                {
+                    graphics = value;
+                    OnPropertyChanged(nameof(Graphics));
+                }
+            }
+        }
 
         [JsonProperty("graphic_cards")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("graphic_cards")]
 #endif
-        public List<string> GraphicCards { get; set; } = new List<string>();
+        public ObservableCollection<string> GraphicCards { get; set; } = new ObservableCollection<string>();
 
         [JsonProperty("total_ram")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("total_ram")]
 #endif
-        public double TotalRAM { get; set; }
+        public double TotalRAM
+        {
+            get => totalRAM;
+            set
+            {
+                if (value != totalRAM)
+                {
+                    totalRAM = value;
+                    OnPropertyChanged(nameof(TotalRAM));
+                }
+            }
+        }
 
         [JsonProperty("free_ram")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("free_ram")]
 #endif
-        public string FreeRAM { get; set; }
+        public string FreeRAM
+        {
+            get => freeRAM;
+            set
+            {
+                if (value != freeRAM)
+                {
+                    freeRAM = value;
+                    OnPropertyChanged(nameof(FreeRAM));
+                }
+            }
+        }
 
         [JsonProperty("disk_usage")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("disk_usage")]
 #endif
-        public double DiskUsage { get; set; }
+        public double DiskUsage
+        {
+            get => diskUsage;
+            set
+            {
+                if (value != diskUsage)
+                {
+                    diskUsage = value;
+                    OnPropertyChanged(nameof(DiskUsage));
+                }
+            }
+        }
 
         [JsonProperty("is_64bit_os")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("is_64bit_os")]
 #endif
-        public bool Is64BitOS { get; set; }
+        public bool Is64BitOS
+        {
+            get => is64BitOS;
+            set
+            {
+                if (value != is64BitOS)
+                {
+                    is64BitOS = true;
+                    OnPropertyChanged(nameof(Is64BitOS));
+                }
+            }
+        }
 
         [JsonProperty("machine_name")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("machine_name")]
 #endif
-        public string MachineName { get; set; }
+        public string MachineName
+        {
+            get => machineName;
+            set
+            {
+                if (value != machineName)
+                {
+                    machineName = value;
+                    OnPropertyChanged(nameof(MachineName));
+                }
+            }
+        }
 
         [JsonProperty("user_name")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("user_name")]
 #endif
-        public string UserName { get; set; }
+        public string UserName
+        {
+            get => userName;
+            set
+            {
+                if (value != userName)
+                {
+                    userName = value;
+                    OnPropertyChanged(nameof(UserName));
+                }
+            }
+        }
 
         [JsonProperty("domain_name")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("domain_name")]
 #endif
-        public string DomainName { get; set; }
+        public string DomainName
+        {
+            get => domainName;
+            set
+            {
+                if (value != domainName)
+                {
+                    domainName = value;
+                    OnPropertyChanged(nameof(DomainName));
+                }
+            }
+        }
 
         [XmlIgnore]
         [JsonIgnore()]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonIgnore]
 #endif
-        public TimeSpan RunningTime { get; set; }
+        public TimeSpan RunningTime
+        {
+            get => runningTime;
+            set
+            {
+                if (value != runningTime)
+                {
+                    runningTime = value;
+                    OnPropertyChanged(nameof(RunningTime));
+                }
+            }
+        }
 
         [JsonProperty("running_time")]
 #if !LEGACY
@@ -665,13 +991,29 @@ namespace Home.Model
 #if !LEGACY
         [JsonPropertyName("start_time")]
 #endif
-        public DateTime StartTimestamp { get; set; }
+        public DateTime StartTimestamp
+        {
+            get => startTimestamp;
+            set
+            {
+                if (value != startTimestamp)
+                {
+                    startTimestamp = value;
+                    OnPropertyChanged(nameof(StartTimestamp));
+                }
+            }
+        }
 
         public override string ToString()
         {
             string rn = Environment.NewLine;
             string graphics = GraphicCards.Count == 0 ? Graphics : string.Join(Environment.NewLine, GraphicCards.Count);
             return $"OS: {OSName}{rn}OS-VER: {OSVersion}{rn}CPU: {CPUName}{rn}CPU-COUNT: {CPUCount}{rn}Motherboard: {Motherboard}{rn}Graphics: {graphics}{rn}RAM: {TotalRAM} GB{rn}FREE: {FreeRAM}{rn}Running-Time: {XmlRunningTime}";
+        }
+
+        public void OnPropertyChanged(string propertyName) // Cannot use [CallerMemberName] due to compability issues
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 
@@ -719,7 +1061,7 @@ namespace Home.Model
 #if !LEGACY
         [JsonPropertyName("media_signature")]
 #endif
-        public uint MediaSignature { get; set; }
+        public ulong MediaSignature { get; set; }
 
         [JsonProperty("media_status")]
 #if !LEGACY
@@ -880,7 +1222,25 @@ namespace Home.Model
 #if !LEGACY
         [JsonPropertyName("client_id")]
 #endif
-        public string ClientID { get; set; }
+        public string DeviceID { get; set; }
+
+        [JsonProperty("filename")]
+#if !LEGACY
+        [JsonPropertyName("filename")]
+#endif
+        public string Filename { get; set; }
+
+        [JsonProperty("timestamp")]
+#if !LEGACY
+        [JsonPropertyName("timestamp")]
+#endif
+        public DateTime? Timestamp { get; set; }
+
+        [JsonProperty("screen_index")]
+#if !LEGACY
+        [JsonPropertyName("screen_index")]
+#endif
+        public int? ScreenIndex { get; set; }
     }
 
     public class DeviceUsage
@@ -974,8 +1334,84 @@ namespace Home.Model
         public int BatteryLevelInPercent { get; set; }
     }
 
+    public class Screen
+    {
+        [JsonProperty("id")]
+#if !LEGACY
+        [JsonPropertyName("id")]
+#endif
+        public string ID { get; set; }
+
+        [JsonProperty("serial")]
+#if !LEGACY
+        [JsonPropertyName("serial")]
+#endif
+        public string Serial { get; set; }
+
+        [JsonProperty("built_date")]
+#if !LEGACY
+        [JsonPropertyName("built_date")]
+#endif
+        public string BuiltDate { get; set; }
+
+        [JsonProperty("manufacturer")]
+#if !LEGACY
+        [JsonPropertyName("manufacturer")]
+#endif
+        public string Manufacturer { get; set; }
+
+        [JsonProperty("index")]
+#if !LEGACY
+        [JsonPropertyName("index")]
+#endif
+        public int Index { get; set; }
+
+        [JsonProperty("is_primary")]
+#if !LEGACY
+        [JsonPropertyName("is_primary")]
+#endif
+        public bool IsPrimary { get; set; }
+
+        [JsonProperty("device_name")]
+#if !LEGACY
+        [JsonPropertyName("device_name")]
+#endif
+        public string DeviceName { get; set; }
+
+        [JsonProperty("resolution")]
+#if !LEGACY
+        [JsonPropertyName("resolution")]
+#endif
+        public string Resolution { get; set; }
+    }
+
 
 #if !LEGACY
+
+    public class DeviceChangeEntry
+    {
+        [JsonPropertyName("timestamp")]
+        public DateTime Timestamp { get; set; }
+
+        [JsonPropertyName("description")]
+        public string Description { get; set; }
+
+        [JsonPropertyName("type")]
+        public DeviceChangeType Type { get; set; } 
+
+        public enum DeviceChangeType
+        {
+            CPU = 0,
+            RAM = 1,
+            Motherboard = 2,
+            Graphics = 3,
+            OS = 4,
+            IP = 5,
+            DiskDrive = 6,
+
+            None = 10000
+        }
+    }
 
     public abstract class Warning<T>
     {
@@ -996,18 +1432,26 @@ namespace Home.Model
         /// Checks if the storage warning is obsolete
         /// </summary>
         /// <param name="dd"></param>
-        /// <returns>ture if the warning is obsolete</returns>
-        public abstract bool CanBeRemoved(T param);
+        /// <param name="percentage">Percentage</param>
+        /// <param name="offsetPercentage">A value that is added to percentage to prevent continuously adding/removing the warning if the value is on the boundary</param>
+        /// <returns>true if the warning is obsolete</returns>
+        public abstract bool CanBeRemoved(T param, int percentage, int offsetPercentage = 10);
 
         /// <summary>
         /// Create a log entry of this warning
         /// </summary>
         /// <returns></returns>
-        public LogEntry ConvertToLogEntry()
+        public LogEntry ConvertToLogEntry(string deviceName)
         {
-            string message = $"[{Name} Warning]: \"{Text}\"";
+            string message = $"[{Name} Warning]: Created for {deviceName} - \"{Text}\"";
             return new LogEntry(WarningOccoured, message, LogEntry.LogLevel.Warning, true);
         }
+    }
+
+    public enum WarningType
+    {
+        StorageWarning = 0,
+        BatteryWarning = 1,
     }
 
     public class StorageWarning : Warning<DiskDrive>
@@ -1030,7 +1474,7 @@ namespace Home.Model
         [XmlIgnore]
         public override string Text => $"DISK: \"{DiskName}\" is low on storage. Free space left: {ByteUnit.FindUnit(Value)}";
 
-        public override bool CanBeRemoved(DiskDrive dd)
+        public override bool CanBeRemoved(DiskDrive dd, int percentage, int offsetPercentage = 10)
         {
             if (dd == null)
                 throw new ArgumentNullException("dd");
@@ -1038,7 +1482,7 @@ namespace Home.Model
             if (dd.UniqueID != StorageID)
                 throw new ArgumentException("DiskDrive with the wrong id specified!");
 
-            var result = dd.IsFull();
+            var result = dd.IsFull(percentage + offsetPercentage);
             return (result == null || result.HasValue && !result.Value);
         }
 
@@ -1070,7 +1514,7 @@ namespace Home.Model
         [XmlIgnore]
         public override string Text => $"Battery is low: {Value}% left!";
 
-        public override bool CanBeRemoved(Device param)
+        public override bool CanBeRemoved(Device param, int percentage, int offsetPercentage)
         {
             if (param.BatteryInfo == null)
                 return true;
@@ -1078,7 +1522,12 @@ namespace Home.Model
             if (param.BatteryInfo.IsCharging)
                 return true;
 
-            return param.BatteryInfo.BatteryLevelInPercent > 10;
+            return CanBeRemoved(param.BatteryInfo.BatteryLevelInPercent, percentage + offsetPercentage);
+        }
+
+        public bool CanBeRemoved(int devicePercentage, int percentage)
+        {
+            return devicePercentage > percentage;
         }
 
         /// <summary>

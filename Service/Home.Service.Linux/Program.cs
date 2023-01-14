@@ -23,7 +23,6 @@ namespace Home.Service.Linux
     {
         #region Private Members
         private static readonly Device currentDevice = new Device();
-        private static readonly Version ClientVersion = new Version(0, 0, 7);
         private static readonly DateTime startTime = DateTime.Now;
         private static Home.Communication.API api;
         private static JObject jInfo = null;
@@ -246,7 +245,7 @@ namespace Home.Service.Linux
                 try
                 {
                     byte[] data = await System.IO.File.ReadAllBytesAsync("screenshot.png");
-                    var screenshotResult = await api.SendScreenshotAsync(new Screenshot() { ClientID = currentDevice.ID, Data = Convert.ToBase64String(data) });
+                    var screenshotResult = await api.SendScreenshotAsync(new Screenshot() { DeviceID = currentDevice.ID, Data = Convert.ToBase64String(data) });
 
                     if (!screenshotResult.Success)
                         Console.WriteLine(screenshotResult.ErrorMessage);
@@ -270,7 +269,7 @@ namespace Home.Service.Linux
             currentDevice.Environment.Is64BitOS = Environment.Is64BitOperatingSystem;
             currentDevice.Environment.UserName = Environment.UserName;
             currentDevice.Environment.DomainName = Environment.UserDomainName;
-            currentDevice.ServiceClientVersion = $"vLinux{ClientVersion.ToString(3)}";
+            currentDevice.ServiceClientVersion = $"vLinux{Consts.HomeServiceLinuxClientVersion}";
             currentDevice.Environment.RunningTime = DateTime.Now.Subtract(startTime);
 
             bool result = ParseHardwareInfo(Helper.ExecuteSystemCommand("lshw", "-json"), currentDevice);
@@ -476,7 +475,7 @@ namespace Home.Service.Linux
             else if (childClass == "processor" && string.IsNullOrEmpty(device.Environment.CPUName))
                 device.Environment.CPUName = child.Value<string>("product");
             if (childClass == "display")
-                device.Environment.GraphicCards = new List<string> { child.Value<string>("product") };
+                device.Environment.GraphicCards = new System.Collections.ObjectModel.ObservableCollection<string> { child.Value<string>("product") };
             else if (childClass == "network" && string.IsNullOrEmpty(device.IP))
                 device.IP = child.Value<JObject>("configuration").Value<string>("ip");
             else if (childClass == "disk" || childClass == "volume")

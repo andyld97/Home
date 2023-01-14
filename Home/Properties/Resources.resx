@@ -46,7 +46,7 @@
     
     mimetype: application/x-microsoft.net.object.binary.base64
     value   : The object must be serialized with 
-            : System.Serialization.Formatters.Binary.BinaryFormatter
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
     
     mimetype: application/x-microsoft.net.object.soap.base64
@@ -60,6 +60,7 @@
             : and then encoded with base64 encoding.
     -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
@@ -68,9 +69,10 @@
               <xsd:sequence>
                 <xsd:element name="value" type="xsd:string" minOccurs="0" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="name" use="required" type="xsd:string" />
               <xsd:attribute name="type" type="xsd:string" />
               <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
@@ -85,9 +87,10 @@
                 <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
                 <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
               <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
               <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
@@ -109,9 +112,568 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="strFile" xml:space="preserve">
+    <value>File</value>
+    <comment>*</comment>
+  </data>
+  <data name="strGeneral" xml:space="preserve">
+    <value>General</value>
+    <comment>DeviceFileExplorer.xaml</comment>
+  </data>
+  <data name="strManagment" xml:space="preserve">
+    <value>Managment</value>
+  </data>
+  <data name="strTools" xml:space="preserve">
+    <value>Tools</value>
+  </data>
+  <data name="strNoDeviceSelected" xml:space="preserve">
+    <value>No device selected!</value>
+  </data>
+  <data name="strOverview" xml:space="preserve">
+    <value>Network Overview</value>
+  </data>
+  <data name="strIndividualOverview" xml:space="preserve">
+    <value>Individual Overview</value>
+  </data>
+  <data name="strSendMessage" xml:space="preserve">
+    <value>Send Message</value>
+  </data>
+  <data name="strShutdown" xml:space="preserve">
+    <value>Shutdown</value>
+  </data>
+  <data name="strReboot" xml:space="preserve">
+    <value>Reboot</value>
+  </data>
+  <data name="strExecuteCommand" xml:space="preserve">
+    <value>Execute Command</value>
+  </data>
+  <data name="strClearLog" xml:space="preserve">
+    <value>Clear Log</value>
+  </data>
+  <data name="strMuteSound" xml:space="preserve">
+    <value>Mute Sound</value>
+  </data>
+  <data name="strRemoteConnection" xml:space="preserve">
+    <value>Remote Connection</value>
+  </data>
+  <data name="strRemoteShell" xml:space="preserve">
+    <value>Remote Shell</value>
+  </data>
+  <data name="strDeleteDevice" xml:space="preserve">
+    <value>Remove Device</value>
+  </data>
+  <data name="strDisk" xml:space="preserve">
+    <value>DISKs</value>
+  </data>
+  <data name="strUser" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="strShutdownMenu" xml:space="preserve">
+    <value>Shutdown Menu</value>
+  </data>
+  <data name="strDevice" xml:space="preserve">
+    <value>Device</value>
+  </data>
+  <data name="strManufacturer" xml:space="preserve">
+    <value>Manufacturer: </value>
+  </data>
+  <data name="strProduct" xml:space="preserve">
+    <value>Product: </value>
+  </data>
+  <data name="strDeviceDescription" xml:space="preserve">
+    <value>Description: </value>
+  </data>
+  <data name="strDeviceStart" xml:space="preserve">
+    <value>Start: </value>
+  </data>
+  <data name="strDeviceOnlineTime" xml:space="preserve">
+    <value>Uptime: </value>
+  </data>
+  <data name="strLocation" xml:space="preserve">
+    <value>Location: </value>
+  </data>
+  <data name="strDeviceClientVersion" xml:space="preserve">
+    <value>Client-Version: </value>
+  </data>
+  <data name="strActivity" xml:space="preserve">
+    <value>Activity</value>
+  </data>
+  <data name="strHDD_FreeOf" xml:space="preserve">
+    <value>free of</value>
+  </data>
+  <data name="strDeviceLog" xml:space="preserve">
+    <value>Device Log</value>
+  </data>
+  <data name="strAllDevicesTab" xml:space="preserve">
+    <value>AllDevices: {0}</value>
+  </data>
+  <data name="strActiveDevicesTab" xml:space="preserve">
+    <value>Active Devices: {0}</value>
+  </data>
+  <data name="strOfflineDevicesTab" xml:space="preserve">
+    <value>Inactive Devices: {0}</value>
+  </data>
+  <data name="strShowScreenshots" xml:space="preserve">
+    <value>Show screenshots</value>
+  </data>
+  <data name="strFileExplorerName" xml:space="preserve">
+    <value>Name</value>
+    <comment>DeviceFileExplorer.xaml</comment>
+  </data>
+  <data name="strFileExplorerDateOfChange" xml:space="preserve">
+    <value>Date Of Change</value>
+    <comment>DeviceFileExplorer.xaml</comment>
+  </data>
+  <data name="strFileExplorerType" xml:space="preserve">
+    <value>Type</value>
+    <comment>DeviceFileExplorer.xaml</comment>
+  </data>
+  <data name="strFileExplorerSize" xml:space="preserve">
+    <value>Size</value>
+    <comment>DeviceFileExplorer.xaml</comment>
+  </data>
+  <data name="strFileExplorerMenu_DeleteFile" xml:space="preserve">
+    <value>Delete file</value>
+    <comment>DeviceFileExplorer.xaml</comment>
+  </data>
+  <data name="strFileExplorerMenu_DeleteFolder" xml:space="preserve">
+    <value>Delete folder</value>
+    <comment>DeviceFileExplorer.xaml</comment>
+  </data>
+  <data name="strFileExplorerMenu_DownloadFile" xml:space="preserve">
+    <value>Download file</value>
+    <comment>DeviceFileExplorer.xaml</comment>
+  </data>
+  <data name="strFileExplorerMenu_DownloadFolderAsZIP" xml:space="preserve">
+    <value>Download folder as ZIP-File</value>
+    <comment>DeviceFileExplorer.xaml</comment>
+  </data>
+  <data name="strFileExplorerMenu_Properties" xml:space="preserve">
+    <value>Properties</value>
+    <comment>DeviceFileExplorer.xaml</comment>
+  </data>
+  <data name="strFolder" xml:space="preserve">
+    <value>Folder</value>
+    <comment>*</comment>
+  </data>
+  <data name="strUnkown" xml:space="preserve">
+    <value>Unknown</value>
+    <comment>*</comment>
+  </data>
+  <data name="strExit" xml:space="preserve">
+    <value>Exit</value>
+    <comment>*</comment>
+  </data>
+  <data name="strToggleTheme" xml:space="preserve">
+    <value>Toggle theme</value>
+  </data>
+  <data name="strScreenshotDialog_ShowScreenshot" xml:space="preserve">
+    <value>Show screenshot</value>
+    <comment>ScreenshotViewer.xaml</comment>
+  </data>
+  <data name="strScreenshotViewer_ToggleLiveView" xml:space="preserve">
+    <value>Toggle LiveView</value>
+    <comment>ScreenshotViewer.xaml</comment>
+  </data>
+  <data name="strScreenshotViewer_SaveAs" xml:space="preserve">
+    <value>Save as ...</value>
+    <comment>ScreenshotViewer.xaml</comment>
+  </data>
+  <data name="strScreenshotViewer_AquireNewScreenshot" xml:space="preserve">
+    <value>Aquire new screenshot</value>
+    <comment>ScreenshotViewer.xaml</comment>
+  </data>
+  <data name="strScreenshotViewer_ChangeSize" xml:space="preserve">
+    <value>Change size</value>
+    <comment>ScreenshotViewer.xaml</comment>
+  </data>
+  <data name="strScreenshotViewer_ViewScreenshot" xml:space="preserve">
+    <value>Reset view</value>
+    <comment>ScreenshotViewer.xaml</comment>
+  </data>
+  <data name="strSendCommandDialog_Title" xml:space="preserve">
+    <value>Send command</value>
+    <comment>SendCommandDialog.xaml</comment>
+  </data>
+  <data name="strSendCommandDialog_App" xml:space="preserve">
+    <value>App:</value>
+    
+    <comment>SendCommandDialog.xaml</comment>
+  </data>
+  <data name="strSendCommandDialog_Parameter" xml:space="preserve">
+    <value>Paramter:</value>
+    <comment>SendCommandDialog.xaml</comment>
+  </data>
+  <data name="strOK" xml:space="preserve">
+    <value>OK</value>
+    <comment>*</comment>
+  </data>
+  <data name="strTo" xml:space="preserve">
+    <value>to</value>
+    <comment>*</comment>
+  </data>
+  <data name="strSendMessageDialog_Title" xml:space="preserve">
+    <value>Send message</value>
+    <comment>SendMessageDialog</comment>
+  </data>
+  <data name="strSendMessageDialog_MessageTitle" xml:space="preserve">
+    <value>Title:</value>
+    <comment>SendMessageDialog</comment>
+  </data>
+  <data name="strSendMessageDialog_MessageContent" xml:space="preserve">
+    <value>Content:</value>
+    <comment>SendMessageDialog</comment>
+  </data>
+  <data name="strSendMessageDialog_LogLevel" xml:space="preserve">
+    <value>Level:</value>
+    <comment>SendMessageDialog</comment>
+  </data>
+  <data name="strSendMessageDialog_LogLevel_Information" xml:space="preserve">
+    <value>Information</value>
+    <comment>SendMessageDialog</comment>
+  </data>
+  <data name="strSendMessageDialog_LogLevel_Warning" xml:space="preserve">
+    <value>Warning</value>
+    <comment>SendMessageDialog</comment>
+  </data>
+  <data name="strSendMessageDialog_LogLevel_Error" xml:space="preserve">
+    <value>Error</value>
+    <comment>SendMessageDialog</comment>
+  </data>
+  <data name="strDeviceLocationNotAssigend" xml:space="preserve">
+    <value>Not associated</value>
+  </data>
+  <data name="strYes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="strNo" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="strBit" xml:space="preserve">
+    <value>Bit</value>
+  </data>
+  <data name="strNoWarnings" xml:space="preserve">
+    <value>No warnings!</value>
+  </data>
+  <data name="strProperty" xml:space="preserve">
+    <value>Property</value>
+  </data>
+  <data name="strValue" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="strDays" xml:space="preserve">
+    <value>Days</value>
+  </data>
+  <data name="strHours" xml:space="preserve">
+    <value>Hours</value>
+  </data>
+  <data name="strMinutes" xml:space="preserve">
+    <value>Minutes</value>
+  </data>
+  <data name="strReport_OS" xml:space="preserve">
+    <value>Operating System</value>
+  </data>
+  <data name="strReport_Hardware" xml:space="preserve">
+    <value>Hardware</value>
+  </data>
+  <data name="strReport_Battery" xml:space="preserve">
+    <value>Battery</value>
+  </data>
+  <data name="strReport_Warnings" xml:space="preserve">
+    <value>Warnings</value>
+  </data>
+  <data name="strReport_DeviceLog" xml:space="preserve">
+    <value>Devices Log</value>
+  </data>
+  <data name="strReport_Disk" xml:space="preserve">
+    <value>Disk</value>
+  </data>
+  <data name="strReport_DeviceID" xml:space="preserve">
+    <value>Device-ID</value>
+  </data>
+  <data name="strReport_DeviceType" xml:space="preserve">
+    <value>Device-Type</value>
+  </data>
+  <data name="strReport_Vendor" xml:space="preserve">
+    <value>Vendor</value>
+  </data>
+  <data name="strReport_Product" xml:space="preserve">
+    <value>Product</value>
+  </data>
+  <data name="strReport_Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="strReport_StartTimestamp" xml:space="preserve">
+    <value>Start Timestamp</value>
+  </data>
+  <data name="strReport_Uptime" xml:space="preserve">
+    <value>Uptime</value>
+  </data>
+  <data name="strReport_Location" xml:space="preserve">
+    <value>Location</value>
+  </data>
+  <data name="strReport_Group" xml:space="preserve">
+    <value>Group</value>
+  </data>
+  <data name="strReport_IPAddress" xml:space="preserve">
+    <value>IP-Address</value>
+  </data>
+  <data name="strReport_HomeClientVersion" xml:space="preserve">
+    <value>Home.Client-Version</value>
+  </data>
+  <data name="strReport_OsName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="strReport_Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="strReport_User" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="strReport_Domain" xml:space="preserve">
+    <value>Domain</value>
+  </data>
+  <data name="strReport_CPU" xml:space="preserve">
+    <value>CPU</value>
+  </data>
+  <data name="strReport_Motherboard" xml:space="preserve">
+    <value>Motherboard</value>
+  </data>
+  <data name="strReport_RAM" xml:space="preserve">
+    <value>RAM</value>
+  </data>
+  <data name="strReport_Graphics" xml:space="preserve">
+    <value>Graphics</value>
+  </data>
+  <data name="strReport_BatteryExists" xml:space="preserve">
+    <value>Available</value>
+  </data>
+  <data name="strReport_BatteryRemaningPercentage" xml:space="preserve">
+    <value>Remaining percent</value>
+  </data>
+  <data name="strReport_IsCharging" xml:space="preserve">
+    <value>Is Charging</value>
+  </data>
+  <data name="strReport_DiskDeviceName" xml:space="preserve">
+    <value>Device Name</value>
+  </data>
+  <data name="strReport_DiskVolumeName" xml:space="preserve">
+    <value>Volume</value>
+  </data>
+  <data name="strReport_DiskFilesystem" xml:space="preserve">
+    <value>Filesystem</value>
+  </data>
+  <data name="strReport_DiskStorage" xml:space="preserve">
+    <value>Storage</value>
+  </data>
+  <data name="strReport_DiskFreeSpace" xml:space="preserve">
+    <value>Free Space</value>
+  </data>
+  <data name="strReport_WarningType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="strReport_WarningMessage" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="strReport_WarningOccured" xml:space="preserve">
+    <value>Warning occured</value>
+  </data>
+  <data name="strError" xml:space="preserve">
+    <value>Error!</value>
+  </data>
+  <data name="strFailedToSaveReport" xml:space="preserve">
+    <value>Failed to save the report!</value>
+  </data>
+  <data name="strSaveReport" xml:space="preserve">
+    <value>Save report</value>
+  </data>
+  <data name="strReport" xml:space="preserve">
+    <value>Report</value>
+  </data>
+  <data name="strSettings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="strSettingsActivateGlowingEffect" xml:space="preserve">
+    <value>Active window glowing effect</value>
+    <comment>SettingsDialog.xaml</comment>
+  </data>
+  <data name="strIsColorfulTheme" xml:space="preserve">
+    <value>Show accent color in titlebar</value>
+    <comment>SettingsDialog.xaml</comment>
+  </data>
+  <data name="strTheme" xml:space="preserve">
+    <value>Theme:</value>
+  </data>
+  <data name="strLight" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="strDark" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="strDarkModeSettingsTitle" xml:space="preserve">
+    <value>Color mode:</value>
+    <comment>*</comment>
+  </data>
+  <data name="strSettings_CheckConnection" xml:space="preserve">
+    <value>Test connection ...</value>
+    <comment>SettingsDialog.xaml</comment>
+  </data>
+  <data name="strSettings_AttentionText" xml:space="preserve">
+    <value>ATTENTION: The API URL must be set, valid and accessible in order to apply the settings!</value>
+    <comment>SettingsDialog.xaml</comment>
+  </data>
+  <data name="strSettings_Host" xml:space="preserve">
+    <value>API Host Url: (e.g. http://192.168.178.38:83)</value>
+    <comment>SettingsDialog.xaml</comment>
+  </data>
+  <data name="strSettings_ForceExit" xml:space="preserve">
+    <value>Exit App</value>
+    <comment>SettingsDialog.xaml</comment>
+  </data>
+  <data name="strSuccess" xml:space="preserve">
+    <value>Success!</value>
+    <comment>*</comment>
+  </data>
+  <data name="strSettings_ConnectionEstablishedSuccuessfully" xml:space="preserve">
+    <value>The connection was successfully established!</value>
+    <comment>SettingsDialog.xaml.cs</comment>
+  </data>
+  <data name="strSettings_ConnectionNotEstablished" xml:space="preserve">
+    <value>The connection could not be established</value>
+    <comment>SettingsDialog.xaml.cs</comment>
+  </data>
+  <data name="strSettings_OnlyContinueUsingAValidConnection" xml:space="preserve">
+    <value>You can only continue with a valid connection! Please test your connection to continue!</value>
+    <comment>SettingsDialog.xaml.cs</comment>
+  </data>
+  <data name="strAbout" xml:space="preserve">
+    <value>About</value>
+    <comment>*</comment>
+  </data>
+  <data name="strAboutTextIcons8_2" xml:space="preserve">
+    <value>for the free icons!</value>
+    <comment>About.xaml</comment>
+  </data>
+  <data name="strAboutTextFluentRibbon_2" xml:space="preserve">
+    <value>for the menu!</value>
+    <comment>About.xaml</comment>
+  </data>
+  <data name="strAboutTextIcons8_1" xml:space="preserve">
+    <value>... to</value>
+    <comment>About.xaml</comment>
+  </data>
+  <data name="strAboutTextFluentRibbon_1" xml:space="preserve">
+    <value>... to</value>
+    <comment>About.xaml</comment>
+  </data>
+  <data name="strDateFormat" xml:space="preserve">
+    <value>MM/dd/yyyy</value>
+    <comment>*</comment>
+  </data>
+  <data name="strDateTimeFormat" xml:space="preserve">
+    <value>MM/dd/yyyy HH:mm</value>
+    <comment>*</comment>
+  </data>
+  <data name="strLang" xml:space="preserve">
+    <value>en</value>
+    <comment>*</comment>
+  </data>
+  <data name="strAbout_Line1" xml:space="preserve">
+    <value>Concept and realisation by Andreas L.</value>
+  </data>
+  <data name="strAbout_Line2" xml:space="preserve">
+    <value>Many thanks ...</value>
+  </data>
+  <data name="strOperatingSystem" xml:space="preserve">
+    <value>Operating System:</value>
+  </data>
+  <data name="strOsVersion" xml:space="preserve">
+    <value>Version:</value>
+  </data>
+  <data name="strCPUDescription" xml:space="preserve">
+    <value>CPU:</value>
+  </data>
+  <data name="strMotherboardDescription" xml:space="preserve">
+    <value>Motherboard:</value>
+  </data>
+  <data name="strRAMDescription" xml:space="preserve">
+    <value>RAM:</value>
+  </data>
+  <data name="strGraphicsDescription" xml:space="preserve">
+    <value>Graphics:</value>
+  </data>
+  <data name="strBattery" xml:space="preserve">
+    <value>Battery:</value>
+  </data>
+  <data name="strAndroidDeviceNoShutdownSupport" xml:space="preserve">
+    <value>An Android device cannot be shutdown or restarted!</value>
+  </data>
+  <data name="strDoYouReallyWantToShutdownDevice" xml:space="preserve">
+    <value>Are you sure you want to shutdown the machine {0}?</value>
+  </data>
+  <data name="strDoYouReallyWantToRestartDevice" xml:space="preserve">
+    <value>Are you sure you want to restart the machine {0}?</value>
+  </data>
+  <data name="strSuccessfullyClearedDeviceLog" xml:space="preserve">
+    <value>Successfully cleared the device log!</value>
+  </data>
+  <data name="strFailedToClearDeviceLog" xml:space="preserve">
+    <value>Failed to clear device log: {0}</value>
+  </data>
+  <data name="strTheDeviceWasDeletedSuccessfully" xml:space="preserve">
+    <value>The device was deleted successfully!</value>
+  </data>
+  <data name="strAreYouSure" xml:space="preserve">
+    <value>Sure?</value>
+  </data>
+  <data name="strAreYouSureToDeleteDevice" xml:space="preserve">
+    <value>Are you sure you want to delete the device {0}?</value>
+  </data>
+  <data name="strDeviceOfflineCannotExecuteCommand" xml:space="preserve">
+    <value>This device is currently offline! No operations can be executed!</value>
+  </data>
+  <data name="strFeatureIsNotSupportedOnSelectedDevice" xml:space="preserve">
+    <value>This feature is currently only supported on newer Windows systems (Windows 7 SP1 or newer) or on Linux Systems!</value>
+  </data>
+  <data name="strCharging" xml:space="preserve">
+    <value>Charging</value>
+  </data>
+  <data name="strPngFilter" xml:space="preserve">
+    <value>Png Image(*.png)|*.png</value>
+  </data>
+  <data name="strFailedToSaveScreenshotAsImage" xml:space="preserve">
+    <value>Error saving the image: {0}</value>
+  </data>
+  <data name="strDeviceCannotSwitchToLiveMode" xml:space="preserve">
+    <value>The unit is offline - switching to live mode is not possible!</value>
+  </data>
+  <data name="strAll" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="strCores" xml:space="preserve">
+    <value>Cores</value>
+  </data>
+  <data name="strScreens" xml:space="preserve">
+    <value>Screens</value>
+  </data>
+  <data name="strReport_BuiltDate" xml:space="preserve">
+    <value>Built Date</value>
+    <comment>Report</comment>
+  </data>
+  <data name="strReport_Resolution" xml:space="preserve">
+    <value>Resolution</value>
+    <comment>Report</comment>
+  </data>
+  <data name="strReport_IsPrimary" xml:space="preserve">
+    <value>Is Primary</value>
+    <comment>Report</comment>
+  </data>
+  <data name="strDeviceChanges" xml:space="preserve">
+    <value>Hardware Protocol</value>
+  </data>
 </root>

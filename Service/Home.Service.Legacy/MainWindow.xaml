@@ -4,11 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Home.Service.Legacy"
-      mc:Ignorable="d" ResizeMode="CanMinimize"
+        mc:Ignorable="d" ResizeMode="CanMinimize"
+        xmlns:res="clr-namespace:Home.Service.Legacy.Properties"
         ShowInTaskbar="False"
         Title="Home Service Client (Legacy Edition)" SizeToContent="Height" Width="400" Loaded="Window_Loaded">
     <Grid>
-        <Expander x:Name="ExpanderSettings" Header="Geräte Einstellungen" IsExpanded="True" IsEnabled="True">
+        <Expander x:Name="ExpanderSettings" Header="{x:Static res:Resources.strDeviceSettings}" IsExpanded="True" IsEnabled="True">
             <StackPanel>
                 <StackPanel.Resources>
                     <Style TargetType="{x:Type TextBlock}">
@@ -24,10 +25,10 @@
                     </Style>
                 </StackPanel.Resources>
 
-                <TextBlock Text="API-Zugang:" />
+                <TextBlock Text="{x:Static res:Resources.strAPIUrl}" />
                 <TextBox x:Name="TextAPIUrl" Text="http://192.168.178.38:83" />
 
-                <TextBlock Text="Betriebssystem:" />
+                <TextBlock Text="{x:Static res:Resources.strOS}" />
                 <ComboBox x:Name="CmbOS" SelectedIndex="0">
                     <ComboBox.Items>
                         <ComboBoxItem Content="Windows XP" />
@@ -35,7 +36,7 @@
                     </ComboBox.Items>
                 </ComboBox>
 
-                <TextBlock Text="Geräte-Art:" />
+                <TextBlock Text="{x:Static res:Resources.strDeviceType}" />
                 <ComboBox x:Name="CmbDeviceType" SelectedIndex="0">
                     <ComboBox.Items>
                         <ComboBoxItem Content="SingleBoardDevice" />
@@ -45,15 +46,13 @@
                     </ComboBox.Items>
                 </ComboBox>
 
-                <TextBlock Text="Ort:" />
+                <TextBlock Text="{x:Static res:Resources.strLocation}" />
                 <TextBox x:Name="TextLocation" />
 
-                <TextBlock Text="Gruppe:" />
+                <TextBlock Text="{x:Static res:Resources.strDeviceGroup}" />
                 <TextBox x:Name="TextGroup" />
 
-                <Button x:Name="ButtonInitalize" Click="ButtonInitalize_Click"  HorizontalAlignment="Left" Content="Initalisieren" Margin="3" Padding="3" Width="200" />
-
-            </StackPanel>
+                <Button x:Name="ButtonInitalize" Click="ButtonInitalize_Click" HorizontalAlignment="Left" Content="{x:Static res:Resources.strInitalize}" Margin="3" Padding="3" Width="200" />            </StackPanel>
         </Expander>
     </Grid>
 </Window>

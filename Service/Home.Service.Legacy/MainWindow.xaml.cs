@@ -4,6 +4,7 @@ using Home.Measure.Windows;
 using Home.Model;
 using Home.Service.Windows.Model;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -60,11 +61,12 @@ namespace Home.Service.Legacy
             if (e.ExceptionObject != null)
                 MessageBox.Show((e.ExceptionObject as Exception).ToString());
 
-            MessageBox.Show("test");
+            // Debug:
+            // MessageBox.Show("Debug");
         }
 
         private void InitalizeService()
-        {
+        {            
             api = new API(ServiceData.Instance.APIUrl);
 
             var now = DateTime.Now;
@@ -74,22 +76,24 @@ namespace Home.Service.Legacy
                 IP = NET.DetermineIPAddress(),
                 DeviceGroup = ServiceData.Instance.DeviceGroup,
                 Location = ServiceData.Instance.Location,
-                Name = Environment.MachineName,
+                Name = NET.GetMachineName(),
                 OS = ServiceData.Instance.SystemType,
                 Type = ServiceData.Instance.Type,
-                DiskDrives = JsonConvert.DeserializeObject<List<DiskDrive>>(WMI.DetermineDiskDrives()),
+                DiskDrives = new System.Collections.ObjectModel.ObservableCollection<DiskDrive>(JsonConvert.DeserializeObject<List<DiskDrive>>(WMI.DetermineDiskDrives())),
                 Environment = new DeviceEnvironment()
                 {
                     CPUCount = Environment.ProcessorCount,
                     CPUName = WMI.DetermineCPUName(),
                     Motherboard = WMI.DetermineMotherboard(),
                     TotalRAM = Native.DetermineTotalRAM(),
-                    OSName = ServiceData.Instance.OSName,
+                    OSName = NET.GetOsFriendlyName(ServiceData.Instance.OSName),
                     OSVersion = Environment.OSVersion.ToString(),
                     RunningTime = now.Subtract(startTimestamp),
                     StartTimestamp = startTimestamp
                 }
             };
+
+            // currentDevice.Screens = GetScreenInformation();
 
             // Run tick manually on first_start
             if (ServiceData.Instance.HasLoggedInOnce)
@@ -142,7 +146,7 @@ namespace Home.Service.Legacy
             var now = DateTime.Now;
 
             currentDevice.IP = NET.DetermineIPAddress();
-            currentDevice.DiskDrives = JsonConvert.DeserializeObject<List<DiskDrive>>(WMI.DetermineDiskDrives());
+            currentDevice.DiskDrives = new System.Collections.ObjectModel.ObservableCollection<DiskDrive>(JsonConvert.DeserializeObject<List<DiskDrive>>(WMI.DetermineDiskDrives()));
             currentDevice.Environment.RunningTime = now.Subtract(startTimestamp); // Environment.TickCount?
             currentDevice.Environment.OSVersion = Environment.OSVersion.ToString();
             currentDevice.Environment.CPUCount = Environment.ProcessorCount;
@@ -151,15 +155,16 @@ namespace Home.Service.Legacy
             currentDevice.Environment.CPUUsage = Performance.GetCPUUsage();
             currentDevice.Environment.DiskUsage = Performance.GetDiskUsage();
             currentDevice.Environment.Is64BitOS = Environment.Is64BitOperatingSystem;
-            currentDevice.Environment.MachineName = Environment.MachineName;
+            currentDevice.Environment.MachineName = NET.GetMachineName();
             currentDevice.Environment.UserName = Environment.UserName;
             currentDevice.Environment.DomainName = Environment.UserDomainName;
-            currentDevice.Environment.GraphicCards = WMI.DetermineGraphicsCardNames();
+            currentDevice.Environment.GraphicCards = new System.Collections.ObjectModel.ObservableCollection<string>(WMI.DetermineGraphicsCardNames());
             currentDevice.ServiceClientVersion = $"vLegacy{typeof(MainWindow).Assembly.GetName().Version.ToString(3)}";
             WMI.GetVendorInfo(out string product, out string description, out string vendor);
             currentDevice.Environment.Product = product;
             currentDevice.Environment.Description = description;
             currentDevice.Environment.Vendor = vendor;
+            //currentDevice.Screens = GetScreenInformation();
 
             bool batteryResult = Home.Measure.Windows.NET.DetermineBatteryInfo(out int batteryPercentage, out bool isCharging);
             if (batteryResult)
@@ -167,6 +172,8 @@ namespace Home.Service.Legacy
 
             // Send ack
             var ackResult = api.SendAckAsync(currentDevice);
+            if (ackResult != null && !ackResult.Success)
+                System.Diagnostics.Trace.TraceError("Failed to send ack: " + ackResult.ErrorMessage);
 
             // Process ack answer
             if (ackResult != null && ackResult.Success && ackResult.Result.Result.HasFlag(Data.Com.AckResult.Ack.OK))
@@ -202,11 +209,34 @@ namespace Home.Service.Legacy
             }
         }
 
+        private List<Screen> GetScreenInformation()
+        {
+            List<Screen> screens = new List<Screen>();
+
+            foreach (var screen in WMI.GetScreenInformation())
+            {
+                screens.Add(new Screen()
+                {
+                    ID = screen["id"].Value<string>(),
+                    Manufacturer = screen["manufacturer"].Value<string>(),
+                    Serial = screen["serial"].Value<string>(),
+                    BuiltDate = screen["built_date"].Value<string>(),
+                    Index = screen["index"].Value<int>(),
+                    IsPrimary = screen["is_primary"].Value<bool>(),
+                    DeviceName = screen["device_name"].Value<string>(),
+                    Resolution = screen["resolution"].Value<string>(),
+                });
+            }
+
+            return screens;
+        }
+
+
         public void PostScreenshot()
         {
             string fileName = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"capture{DateTime.Now.ToString(Consts.SCREENSHOT_DATE_FILE_FORMAT)}.png");
             var result = NET.CreateScreenshot(fileName);
-            var apiResult = api.SendScreenshotAsync(new Screenshot() { ClientID = ServiceData.Instance.ID, Data = Convert.ToBase64String(result) });
+            var apiResult = api.SendScreenshotAsync(new Screenshot() { DeviceID = ServiceData.Instance.ID, Data = Convert.ToBase64String(result) });
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -221,7 +251,7 @@ namespace Home.Service.Legacy
         {
             // Apply settings
             string host = TextAPIUrl.Text;
-            OSType os = (CmbOS.SelectedIndex == 0 ? OSType.WindowsXP : OSType.WindowsaVista);
+            OSType os = (CmbOS.SelectedIndex == 0 ? OSType.WindowsXP : OSType.WindowsVista);
             DeviceType dt = (DeviceType)CmbDeviceType.SelectedIndex;
             string location = TextLocation.Text;
             string deviceGroup = TextGroup.Text;

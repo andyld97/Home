@@ -225,7 +225,7 @@ namespace Home.Service.Android.Helper
 
         public static void RefreshDevice(this Device currentDevice, ContentResolver cr, Context context)
         {
-            currentDevice.ServiceClientVersion = "vAndroid 0.0.6";
+            currentDevice.ServiceClientVersion = $"vAndroid {Home.Data.Consts.HomeServiceAndroidClientVersion}";
 #if NOGL
             currentDevice.ServiceClientVersion += " - NOGL";
 #endif
@@ -256,7 +256,7 @@ namespace Home.Service.Android.Helper
 
             var dd = new DiskDrive() { VolumeName = "/", DriveName = "/", DriveID = "android_default_storage", PhysicalName = "android_default_storage" };
             ReadDF(dd);
-            currentDevice.DiskDrives = new List<DiskDrive>() { dd };
+            currentDevice.DiskDrives = new System.Collections.ObjectModel.ObservableCollection<DiskDrive>() { dd };
         }
     }
 }

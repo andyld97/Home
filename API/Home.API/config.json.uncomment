@@ -1,0 +1,12 @@
+﻿{
+  "host": "http://localhost:5250",
+  "use_webhook": false,
+  "webhook_url": null,
+  "health_check_timer_interval": "00:01:00",
+  "remove_inactive_gui_clients": "00:10:00",
+  "remove_inactive_clients": "00:03:00",
+  "aquire_new_screenshot": "12:00:00",
+  "remove_old_screenshots": "1.00:00:00",
+  "storage_warning_percentage": 10,
+  "battery_warning_percentage": 10
+}

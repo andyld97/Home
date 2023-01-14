@@ -22,7 +22,7 @@ namespace Home.Service.Windows.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Home.Service.Windows.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Home.Service.Windows.Properties.Resources", typeof(Resources).Assembly);
@@ -51,12 +51,75 @@ namespace Home.Service.Windows.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to API Url:.
+        /// </summary>
+        public static string strAPIUrl {
+            get {
+                return ResourceManager.GetString("strAPIUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group:.
+        /// </summary>
+        public static string strDeviceGroup {
+            get {
+                return ResourceManager.GetString("strDeviceGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Device Settings.
+        /// </summary>
+        public static string strDeviceSettings {
+            get {
+                return ResourceManager.GetString("strDeviceSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Device Type:.
+        /// </summary>
+        public static string strDeviceType {
+            get {
+                return ResourceManager.GetString("strDeviceType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initalize.
+        /// </summary>
+        public static string strInitalize {
+            get {
+                return ResourceManager.GetString("strInitalize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Location:.
+        /// </summary>
+        public static string strLocation {
+            get {
+                return ResourceManager.GetString("strLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OS:.
+        /// </summary>
+        public static string strOS {
+            get {
+                return ResourceManager.GetString("strOS", resourceCulture);
             }
         }
     }

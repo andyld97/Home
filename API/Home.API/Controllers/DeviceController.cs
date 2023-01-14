@@ -1,15 +1,28 @@
-﻿using Home.Data;
+﻿using Home.API.Helper;
+using Home.API.home;
+using Home.API.home.Models;
+using Home.API.Services;
+using Home.Data;
 using Home.Data.Com;
 using Home.Data.Events;
 using Home.Data.Helper;
 using Home.Model;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading.Tasks;
+using static Home.Model.Device;
+using Device = Home.Model.Device;
 
 namespace Home.API.Controllers
 {
@@ -18,287 +31,104 @@ namespace Home.API.Controllers
     public class DeviceController : ControllerBase
     {
         private readonly ILogger<DeviceController> _logger;
+        private readonly HomeContext _context;
+        private readonly IDeviceAckService _deviceAckService;
 
-        public DeviceController(ILogger<DeviceController> logger)
+        public DeviceController(ILogger<DeviceController> logger, HomeContext homeContext, IDeviceAckService deviceAckService)
         {
             _logger = logger;
+            _context = homeContext;
+            _deviceAckService = deviceAckService;
         }
 
+        /// <summary>
+        /// Gets all devices
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> GetAsync()
+        {
+            var devices = await DeviceHelper.GetAllDevicesAsync(_context, true);
 
+            List<Device> devicesList = new List<Device>();
+            foreach (var device in devices)
+                devicesList.Add(ModelConverter.ConvertDevice(device));
+
+            return Ok(devicesList);
+        }
+
+        /// <summary>
+        /// Registers a new device in the database
+        /// </summary>
+        /// <param name="device">The device to register</param>
+        /// <returns>OK on success</returns>
         [HttpPost("register")]
-        public IActionResult Register([FromBody] Device device)
+        public async Task<IActionResult> Register([FromBody] Device device)
         {
             var now = DateTime.Now;
 
             if (device == null)
                 return BadRequest(AnswerExtensions.Fail("Invalid device given"));
 
-            bool result = false;
-            lock (Program.Devices)
+            // Check if device exists
+            if (!(await _context.Device.AnyAsync(p => p.Guid == device.ID)))
             {
-                if (!Program.Devices.Any(d => d.ID == device.ID))
-                {
-                    device.Status = Device.DeviceStatus.Active;
-                    device.LastSeen = now;
-                    device.LogEntries.Clear();
-                    device.LogEntries.Add(new LogEntry(now, $"Device {device.Name} was successfully added!", LogEntry.LogLevel.Information));
-                    _logger.LogInformation($"New device {device.Environment.MachineName} has just logged in!");
-                    device.IsScreenshotRequired = true;
-                    Program.Devices.Add(device);
+                device.Status = Device.DeviceStatus.Active;
+                device.LastSeen = now;
+                device.LogEntries.Clear();
+                device.LogEntries.Add(new LogEntry(now, $"Device {device.Name} was successfully added!", LogEntry.LogLevel.Information, true));
+                _logger.LogInformation($"New device {device.Environment.MachineName} has just logged in!");
+                device.IsScreenshotRequired = true;
 
-                    lock (Program.EventQueues)
-                    {
-                        foreach (var queue in Program.EventQueues)
-                        {
-                            queue.LastEvent = now;
-                            queue.Events.Enqueue(new EventQueueItem() { DeviceID = device.ID, EventData = new EventData(device), EventDescription = EventQueueItem.EventKind.NewDeviceConnected, EventOccured = now });
-                        }
-                    }
+                var dbDevice = ModelConverter.ConvertDevice(_context, _logger, device);
+                await _context.Device.AddAsync(dbDevice);
+                await _context.DeviceChange.AddAsync(new DeviceChange() { Timestamp = now, Device = dbDevice, Description = $"Device \"{dbDevice.Name}\" added to the system initally!" });
+                await _context.SaveChangesAsync();
 
-                    result = true;
-                }
-            }
-
-            if (result)
+                ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.NewDeviceConnected, device);
                 return Ok(AnswerExtensions.Success(true));
+            }
 
             return BadRequest(AnswerExtensions.Fail("Device-Register couldn't be processed!"));
         }
 
+        /// <summary>
+        /// Processes an ack sent from a device
+        /// </summary>
+        /// <param name="device">The device which has sent the ack</param>
+        /// <returns>OK on success</returns>
         [HttpPost("ack")]
-        public IActionResult Ack([FromBody] Device refreshedDevice)
-        {
-            var now = DateTime.Now;
-
-            if (refreshedDevice == null)
+        public async Task<IActionResult> ProcessDeviceAckAsync([FromBody] Home.Model.Device device)
+        {            
+            if (device == null)
                 return BadRequest(AnswerExtensions.Fail("Invalid device given"));
 
-            bool result = false;
-            bool isScreenshotRequired = false;
-            Message hasMessage = null;
-            Command hasCommand = null;
+            var result = await _deviceAckService.ProcessDeviceAckAsync(device);
 
-            lock (Program.Devices)
-            {
-                if (Program.Devices.Any(d => d.ID == refreshedDevice.ID))
-                {
-                    var currentDevice = Program.Devices.Where(p => p.ID == refreshedDevice.ID).FirstOrDefault();
-                    if (currentDevice != null)
-                    {
-                        // Check if device was previously offline
-                        if (currentDevice.Status == Device.DeviceStatus.Offline)
-                        {
-                            // Check for clearing usage stats (if the device was offline for more than one hour)
-                            if (currentDevice.LastSeen.AddHours(1) < DateTime.Now)
-                                currentDevice.Usage.Clear();
-
-                            currentDevice.LogEntries.Add(new LogEntry(DateTime.Now, $"Device \"{currentDevice.Name}\" has recovered and is now online again!", LogEntry.LogLevel.Information, (refreshedDevice.Type == Device.DeviceType.SingleBoardDevice || refreshedDevice.Type == Device.DeviceType.Server)));
-                            currentDevice.IsScreenshotRequired = true;
-                        }
-
-                        // Check if a newer client version is used
-                        if (currentDevice.ServiceClientVersion != refreshedDevice.ServiceClientVersion && !string.IsNullOrEmpty(currentDevice.ServiceClientVersion))
-                            currentDevice.LogEntries.Add(new LogEntry(DateTime.Now, $"Device \"{refreshedDevice.Name}\" detected new client version: {refreshedDevice.ServiceClientVersion}", LogEntry.LogLevel.Information, true));
-
-                        // Detect any device changes and log them (also to Telegram)
-
-                        // CPU
-                        if (currentDevice.Environment.CPUName != refreshedDevice.Environment.CPUName && !string.IsNullOrEmpty(refreshedDevice.Environment.CPUName))
-                            currentDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected CPU change. CPU {currentDevice.Environment.CPUName} got replaced with {refreshedDevice.Environment.CPUName}", LogEntry.LogLevel.Information, true));
-                        if (currentDevice.Environment.CPUCount != refreshedDevice.Environment.CPUCount && refreshedDevice.Environment.CPUCount > 0)
-                            currentDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected CPU-Count change from {currentDevice.Environment.CPUCount} to {refreshedDevice.Environment.CPUCount}", LogEntry.LogLevel.Information, true));
-
-                        // OS (Ignore Windows Updates, just document enum chnages)
-                        if (currentDevice.OS != refreshedDevice.OS)
-                            currentDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected OS change from {currentDevice.OS} to {refreshedDevice.OS}", LogEntry.LogLevel.Information, true));
-
-                        // Motherboard
-                        if (currentDevice.Environment.Motherboard != refreshedDevice.Environment.Motherboard && !string.IsNullOrEmpty(refreshedDevice.Environment.Motherboard))
-                            currentDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected Motherboard change from {currentDevice.Environment.Motherboard} to {refreshedDevice.Environment.Motherboard}", LogEntry.LogLevel.Information, true));
-
-                        // Graphics
-                        //if (oldDevice.Envoirnment.Graphics != refreshedDevice.Envoirnment.Graphics && !string.IsNullOrEmpty(refreshedDevice.Envoirnment.Graphics))
-                        //    oldDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected Graphics change from {oldDevice.Envoirnment.Graphics} to {refreshedDevice.Envoirnment.Graphics}", LogEntry.LogLevel.Information, true));
-                        if (currentDevice.Environment.GraphicCards.Count != refreshedDevice.Environment.GraphicCards.Count)
-                        {
-                            if (refreshedDevice.Environment.GraphicCards.Count == 0 && !string.IsNullOrEmpty(refreshedDevice.Environment.Graphics))
-                            {
-                                // ignore
-                            }
-                            else
-                            {
-                                foreach (var item in refreshedDevice.Environment.GraphicCards)
-                                    currentDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected Graphics change(s) ({item})", LogEntry.LogLevel.Information, true));
-                            }
-                        }
-
-                        // RAM
-                        if (currentDevice.Environment.TotalRAM != refreshedDevice.Environment.TotalRAM && refreshedDevice.Environment.TotalRAM > 0)
-                            currentDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected RAM change from {currentDevice.Environment.TotalRAM} GB to {refreshedDevice.Environment.TotalRAM} GB", LogEntry.LogLevel.Information, true));
-
-                        // IP Change
-                        if (currentDevice.IP.Replace("/24", string.Empty) != refreshedDevice.IP.Replace("/24", string.Empty) && !string.IsNullOrEmpty(refreshedDevice.IP))
-                            currentDevice.LogEntries.Add(new LogEntry($"Device \"{refreshedDevice.Name}\" detected IP change from {currentDevice.IP} to {refreshedDevice.IP}", LogEntry.LogLevel.Information, true));
-
-                        isScreenshotRequired = currentDevice.IsScreenshotRequired;
-
-                        // If this device is live, ALWAYS send a screenshot on ack!
-                        if (currentDevice.IsLive.HasValue && currentDevice.IsLive.Value)
-                            isScreenshotRequired = true;
-
-                        // USAGE
-                        // CPU & DISK
-                        currentDevice.Usage.AddCPUEntry(refreshedDevice.Environment.CPUUsage);
-                        currentDevice.Usage.AddDISKEntry(refreshedDevice.Environment.DiskUsage);
-
-                        // RAM
-                        var ram = refreshedDevice.Environment.FreeRAM.Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
-                        if (ram != null && double.TryParse(ram, out double res))
-                            currentDevice.Usage.AddRAMEntry(res);
-
-                        // Battery (if any)
-                        if (currentDevice.BatteryInfo != null)
-                        {
-                            currentDevice.Usage.AddBatteryEntry(currentDevice.BatteryInfo.BatteryLevelInPercent);
-
-                            // Check for battery warning
-                            if (currentDevice.BatteryInfo.BatteryLevelInPercent <= 10)
-                            {
-                                if (currentDevice.BatteryWarning != null)
-                                {
-                                    // Create battery warning
-                                    var batteryWarning = BatteryWarning.Create(currentDevice.BatteryInfo.BatteryLevelInPercent);
-                                    currentDevice.BatteryWarning = batteryWarning;
-                                    currentDevice.LogEntries.Add(batteryWarning.ConvertToLogEntry());
-                                }
-                                else if (currentDevice.BatteryWarning == null)
-                                {
-                                    // Update battery warning (no log due to the fact that the warning should be displayed in the gui)
-                                    currentDevice.BatteryWarning.Value = currentDevice.BatteryInfo.BatteryLevelInPercent;
-                                }
-                            }
-                        }
-
-                        // Update device
-                        currentDevice.Update(refreshedDevice, now, Device.DeviceStatus.Active);
-
-                        if (currentDevice.DiskDrives.Count > 0)
-                        {
-                            var dds = currentDevice.DiskDrives.Where(d => d.IsFull().HasValue && d.IsFull().Value).ToList();
-
-                            // Add storage warning
-                            // But ensure that the warning is only once per device and will be added again if dismissed by the user
-                            if (dds.Count > 0)
-                            {
-                                foreach (var disk in dds)
-                                {
-                                    // Check for already existing storage warnings       
-                                    if (currentDevice.StorageWarnings.Any(s => s.StorageID == disk.UniqueID))
-                                    {
-                                        // Refresh this storage warning (if freeSpace changed)                                        
-                                        var oldWarning = currentDevice.StorageWarnings.FirstOrDefault(sw => sw.StorageID == disk.UniqueID);
-                                        if (oldWarning.Value != disk.FreeSpace)
-                                            oldWarning.Value = disk.FreeSpace;
-                                        continue;
-                                    }
-
-                                    // Add storage warning
-                                    var warning = StorageWarning.Create(disk.ToString(), disk.UniqueID, disk.FreeSpace);
-                                    currentDevice.StorageWarnings.Add(warning);
-                                    currentDevice.LogEntries.Add(warning.ConvertToLogEntry());
-                                }
-                            }
-                        }
-
-                        lock (currentDevice.Messages)
-                        {
-                            if (currentDevice.Messages.Count != 0)
-                                hasMessage = currentDevice.Messages.Dequeue();
-                        }
-
-                        if (hasMessage == null)
-                        {
-                            lock (currentDevice.Commands)
-                            {
-                                // Check for commands
-                                if (currentDevice.Commands.Count != 0)
-                                    hasCommand = currentDevice.Commands.Dequeue();
-                            }
-                        }
-
-                        result = true;
-
-                        lock (Program.EventQueues)
-                        {
-                            foreach (var queue in Program.EventQueues)
-                            {
-                                queue.LastEvent = now;
-                                queue.Events.Enqueue(new EventQueueItem() { DeviceID = refreshedDevice.ID, EventData = new EventData() { EventDevice = currentDevice }, EventDescription = EventQueueItem.EventKind.ACK, EventOccured = now });
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    // Temporay fix if data is empty again :(
-                    Program.Devices.Add(refreshedDevice);
-
-                    lock (Program.EventQueues)
-                    {
-                        foreach (var queue in Program.EventQueues)
-                        {
-                            queue.LastEvent = now;
-                            queue.Events.Enqueue(new EventQueueItem() { DeviceID = refreshedDevice.ID, EventData = new EventData() { EventDevice = refreshedDevice }, EventDescription = EventQueueItem.EventKind.NewDeviceConnected, EventOccured = now });
-                        }
-                    }
-                }
-
-
-                if (result)
-                {
-                    // isScreenshotRequired
-                    AckResult ackResult = new AckResult();
-                    AckResult.Ack ack = AckResult.Ack.OK;
-
-                    if (isScreenshotRequired)
-                        ack |= AckResult.Ack.ScreenshotRequired;
-
-                    if (hasMessage != null)
-                    {
-                        ack |= AckResult.Ack.MessageRecieved;
-                        ackResult.JsonData = JsonConvert.SerializeObject(hasMessage);
-                    }
-
-                    if (hasCommand != null)
-                    {
-                        ack |= AckResult.Ack.CommandRecieved;
-                        ackResult.JsonData = JsonConvert.SerializeObject(hasCommand);
-                    }
-
-                    ackResult.Result = ack;
-                    return Ok(AnswerExtensions.Success(ackResult));
-                }
-
-                return BadRequest(new Answer<AckResult>("fail", new AckResult(AckResult.Ack.Invalid)) { ErrorMessage = "Device-ACK couldn't be processed. This device was not logged in before!" });
-            }
+            if (result.Success)
+                return Ok(AnswerExtensions.Success(result.AckResult));
+            else
+                return StatusCode(result.StatusCode, new Answer<AckResult>("fail", new AckResult(AckResult.Ack.Invalid)) { ErrorMessage = result.ErrorMessage });
         }
 
+        /// <summary>
+        /// Processes a screenshot for the given device
+        /// </summary>
+        /// <param name="shot">The screenshot object</param>
+        /// <returns>OK on success</returns>
         [HttpPost("screenshot")]
-        public async Task<IActionResult> PostScreenshot([FromBody] Screenshot shot)
+        public async Task<IActionResult> PostScreenshotAsync([FromBody] Screenshot shot)
         {
             var now = DateTime.Now;
-            string fileName = now.ToString(Consts.SCREENSHOT_DATE_FILE_FORMAT);
+            string fileName = now.ToString(Home.Data.Consts.SCREENSHOT_DATE_FILE_FORMAT);
 
             if (shot == null)
                 return BadRequest(AnswerExtensions.Fail("screenshot is null!"));
 
-            Device deviceFound = null;
-            lock (Program.Devices)
-            {
-                // Program.Devices.shot.ClientID
-                if (Program.Devices.Any(p => p.ID == shot.ClientID))
-                    deviceFound = Program.Devices.Where(p => p.ID == shot.ClientID).FirstOrDefault();
-            }
+            if (shot.ScreenIndex != null)
+                fileName += $"_{shot.ScreenIndex}";
+
+            var deviceFound = await _context.GetDeviceByIdAsync(shot.DeviceID);
 
             if (deviceFound == null)
                 return BadRequest(AnswerExtensions.Fail("Device not found!"));
@@ -310,7 +140,7 @@ namespace Home.API.Controllers
                 using (Stream stream = new System.IO.MemoryStream(data))
                 {
                     // Perform necessary actions with file stream
-                    string clientPath = System.IO.Path.Combine(Program.SCREENSHOTS_PATH, deviceFound.ID);
+                    string clientPath = System.IO.Path.Combine(Config.SCREENSHOTS_PATH, deviceFound.Guid);
 
                     // Create folder
                     if (!System.IO.Directory.Exists(clientPath))
@@ -319,7 +149,7 @@ namespace Home.API.Controllers
                     string newPath = System.IO.Path.Combine(clientPath, $"{fileName}.png");
 
                     long bytes = 0;
-                    byte[] buffer = new byte[4096];
+                    byte[] buffer = new byte[Consts.BufferSize];
 
                     using (System.IO.FileStream fs = new FileStream(newPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite))
                     {
@@ -334,30 +164,43 @@ namespace Home.API.Controllers
                     }
                 }
 
-                // Add filename to list and append to log
-                lock (Program.Devices)
-                {
-                    deviceFound.LogEntries.Add(new LogEntry(now, "Recieved screenshot from this device!", LogEntry.LogLevel.Information));
-                    _logger.LogInformation($"Recieved screenshot from {deviceFound.Environment.MachineName}");
-                    deviceFound.ScreenshotFileNames.Add(fileName);
-                    deviceFound.IsScreenshotRequired = false;
-                }
+                // Add filename to list and append to log               
+                var ds = new DeviceScreenshot() { Device = deviceFound, ScreenshotFileName = fileName, Timestamp = now };
 
-                // Also append to event queue
-                lock (Program.EventQueues)
+                // If ScreenIndex is null (either using old clients or for clients which only supports multiple screen)
+                // Only Home.Windows.Service currently supports screenshots for multiple screens/screenshots
+                // Add the screen to the screenshot to create a link
+                if (shot.ScreenIndex is not null)
                 {
-                    foreach (var queue in Program.EventQueues)
+                    var screen = deviceFound.DeviceScreen.Where(p => p.ScreenIndex == shot.ScreenIndex).FirstOrDefault();
+                    if (screen != null)
                     {
-                        queue.Events.Enqueue(new EventQueueItem() { DeviceID = deviceFound.ID, EventData = new EventData() { EventDevice = deviceFound }, EventDescription = EventQueueItem.EventKind.DeviceScreenshotRecieved, EventOccured = now });
-                        queue.LastEvent = now;
+                        ds.Screen = screen;
+
+                        var logEntry = ModelConverter.CreateLogEntry(deviceFound, $"Recieved screenshot from this device [{screen.DeviceName}]!", LogEntry.LogLevel.Information);
+                        await _context.DeviceLog.AddAsync(logEntry);
+                        _logger.LogInformation($"Recieved screenshot from {deviceFound.Environment.MachineName} [{screen.DeviceName}]");
                     }
                 }
+                else
+                {
+                    var logEntry = ModelConverter.CreateLogEntry(deviceFound, "Recieved screenshot from this device!", LogEntry.LogLevel.Information);
+                    await _context.DeviceLog.AddAsync(logEntry);
+                    _logger.LogInformation($"Recieved screenshot from {deviceFound.Environment.MachineName}");
+                }
 
+                deviceFound.DeviceScreenshot.Add(ds);
+                deviceFound.IsScreenshotRequired = false;
+
+                // Also append to event queue
+                ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.DeviceScreenshotRecieved, deviceFound);
+
+                await _context.SaveChangesAsync();
                 return Ok(AnswerExtensions.Success(true));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
+                _logger.LogError($"Failed to post screenshot: {ex}");
                 return BadRequest(AnswerExtensions.Fail(ex.Message));
             }
         }

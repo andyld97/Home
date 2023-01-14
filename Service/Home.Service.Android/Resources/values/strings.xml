@@ -1,10 +1,24 @@
 <resources>
     <string name="app_name">Home.Service.Android</string>
     <string name="action_settings">Settings</string>
-	<string-array name="device_type">
+	<string name="strShowDeviceSpecs">Show devices specifitications</string>
+	<string name="strRegisterDevice">Register device</string>
+	<string name="strHost">Host:</string>
+	<string name="strLocation">Location:</string>
+	<string name="strGroup">Group:</string>
+	<string name="strDeviceType">Device Type:</string>
+	<string name="strDeviceStatus">Device Status:</string>
+	<string name="strStartService">Start service</string>
+	<string name="strStopService">Stop service</string>
+	<string name="strServiceActiveText">Home.Service.Android is active!</string>
+	<string name="strServiceInActiveText">Home.Service.Android is not active!</string>
+	<string name="strDeviceRegisteredText">The Device {0} is registered!</string>
+	<string name="strDeviceNotRegisteredText">The Device {0} is not registered!</string>
+	<string-array name="strDeviceType">
 		<item>Smartphone</item>
 		<item>SmartTV</item>
 		<item>SetTopBox</item>
 		<item>Tablet</item>
+		<item>AndroidTVStick</item>
 	</string-array>
 </resources>

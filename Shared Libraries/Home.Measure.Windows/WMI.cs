@@ -2,16 +2,125 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Management;
+using System.Text;
+using System.Windows.Forms;
 
 namespace Home.Measure.Windows
 {
+    /// <summary>
     /// Capsels all methods available via WMI
+    /// </summary>
     public static class WMI
     {
+        private static string ConvertUint16ToString(this UInt16[] value)
+        {
+            var arr = (value.Where(p => p != 0).Select(p => (char)p)).ToArray();
+            string result = string.Empty;
+            for (int i = 0; i < arr.Length; i++)
+                result += arr[i];
+
+            return result;
+        }
+
+        private static JArray GetScreenInfoFromWMI()
+        {
+            JArray result = new JArray();
+            try
+            {
+                ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\WMI", "SELECT * FROM WmiMonitorID");
+                foreach (ManagementObject mo in searcher.Get())
+                {
+                    JObject info = new JObject();
+                    int manWeek = 0, manYear = 0;
+                    foreach (PropertyData property in mo.Properties)
+                    {
+                        if (property.Name == "InstanceName")
+                            info["id"] = property.Value.ToString();
+                        else if (property.Name == "ManufacturerName" && property.Value is UInt16[] value)
+                            info["manufacturer"] = value.ConvertUint16ToString();
+                        else if (property.Name == "SerialNumberID" && property.Value is UInt16[] val)
+                            info["serial"] = val.ConvertUint16ToString();
+                        else if (property.Name == "WeekOfManufacture")
+                        {
+                            if (property.Value != null && int.TryParse(property.Value.ToString(), out manWeek))
+                            { }
+                        }
+                        else if (property.Name == "YearOfManufacture")
+                        {
+                            if (property.Value != null && int.TryParse(property.Value.ToString(), out manYear))
+                            { }
+                        }
+                    }
+
+                    info["built_date"] = $"{manWeek}/{manYear}";
+                    result.Add(info);
+                }
+            }
+            catch
+            {
+
+            }
+
+            return result;
+        }
+
+        public static JArray GetScreenInformation()
+        {
+            var wmiInfo = GetScreenInfoFromWMI();
+            JArray screens = new JArray();
+            int index = 0;
+
+            foreach (var item in System.Windows.Forms.Screen.AllScreens.OrderBy(a => a.DeviceName))
+            {
+                JObject screen = new JObject();
+
+                if (wmiInfo.Count > index)
+                {
+                    screen["id"] = wmiInfo[index]["id"];
+                    screen["manufacturer"] = wmiInfo[index]["manufacturer"];
+                    screen["serial"] = wmiInfo[index]["serial"];
+                    screen["built_date"] = wmiInfo[index]["built_date"];
+                }
+                else
+                {
+                    screen["id"] = item.DeviceName;
+                    screen["manufacturer"] = "Unknown";
+                    screen["serial"] = "Unknown";
+                    screen["built_date"] = "Unknown";
+                }
+
+                screen["index"] = index++;
+                screen["is_primary"] = item.Primary;
+
+                string screenName = string.Empty;
+
+                try
+                {
+                    screenName = item.DeviceFriendlyName();
+                }
+                catch
+                {
+                    
+                }
+
+                if (string.IsNullOrEmpty(screenName?.Trim()))
+                    screenName = item.DeviceName;
+
+                screen["device_name"] = screenName;
+                screen["resolution"] = $"{item.Bounds.Width}x{item.Bounds.Height}";
+                
+                screens.Add(screen);
+            }
+
+            return screens;
+        }
+
         public static List<string> DetermineGraphicsCardNames()
         {
+            // Alternative: SELECT VideoProcessor FROM Win32_VideoController
             List<string> devices = new List<string>();
             try
             {
@@ -131,7 +240,7 @@ namespace Home.Measure.Windows
             }
             catch
             {
-             
+
             }
         }
 
@@ -170,11 +279,12 @@ namespace Home.Measure.Windows
                                     var capabilities = (ushort[])d.Properties["Capabilities"].Value; // 3,4,7 - random access, supports writing, 7=removable device
                                     var mediaLoaded = Convert.ToBoolean(d.Properties["MediaLoaded"].Value); // bool
                                     var mediaType = Convert.ToString(d.Properties["MediaType"].Value); // Fixed hard disk media
-                                    var mediaSignature = Convert.ToUInt32(d.Properties["Signature"].Value); // int32
+                                    var mediaSignature = Convert.ToInt64(d.Properties["Signature"].Value); // int32
                                     var mediaStatus = Convert.ToString(d.Properties["Status"].Value); // OK
 
                                     var driveName = Convert.ToString(ld.Properties["Name"].Value); // C:
                                     var driveId = Convert.ToString(ld.Properties["DeviceId"].Value); // C:
+                                    var pnpDriveId = Convert.ToString(d.Properties["PNPDeviceID"].Value);
                                     var driveCompressed = Convert.ToBoolean(ld.Properties["Compressed"].Value);
                                     var driveType = Convert.ToUInt32(ld.Properties["DriveType"].Value); // C: - 3
                                     var fileSystem = Convert.ToString(ld.Properties["FileSystem"].Value); // NTFS
@@ -196,6 +306,7 @@ namespace Home.Measure.Windows
                                         ["media_status"] = mediaStatus,
                                         ["drive_name"] = driveName,
                                         ["drive_id"] = driveId,
+                                        ["pnp_drive_id"] = pnpDriveId,
                                         ["drive_compressed"] = driveCompressed,
                                         ["drive_type"] = driveType,
                                         ["file_system"] = fileSystem,

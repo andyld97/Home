@@ -89,7 +89,7 @@ namespace Home.Controls
             if (value is Device d)
             {
                 string path = $"pack://application:,,,/Home;Component/resources/icons/devices/{d.DetermineDeviceImage()}";
-                return ImageHelper.LoadImage(path, false);
+                return ImageHelper.LoadImage(path, false, d.Type == Device.DeviceType.Smartphone);
             }
 
             return null;

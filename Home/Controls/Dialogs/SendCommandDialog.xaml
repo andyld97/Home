@@ -4,8 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Home.Controls.Dialogs"
-        mc:Ignorable="d"  WindowStyle="ThreeDBorderWindow"
-        Title="Befehl senden" WindowStartupLocation="CenterScreen"  ResizeMode="NoResize" Width="300" SizeToContent="Height">
+        mc:Ignorable="d" WindowStyle="ThreeDBorderWindow"
+        xmlns:res="clr-namespace:Home.Properties"
+        Title="{x:Static res:Resources.strSendCommandDialog_Title}" WindowStartupLocation="CenterScreen"  ResizeMode="NoResize" Width="300" SizeToContent="Height">
     <StackPanel>
         <StackPanel.Resources>
             <Style TargetType="{x:Type TextBlock}">
@@ -18,12 +19,12 @@
             </Style>
         </StackPanel.Resources>
         
-        <TextBlock Text="Anwendung:" />
+        <TextBlock Text="{x:Static res:Resources.strSendCommandDialog_App}" />
         <TextBox x:Name="TextExecutable" />
 
-        <TextBlock Text="Paramter:" />
+        <TextBlock Text="{x:Static res:Resources.strSendCommandDialog_Parameter}" />
         <TextBox x:Name="TextParameter" TextWrapping="Wrap" />
 
-        <Button x:Name="ButtonSend" Click="ButtonSend_Click"  Margin="2,10,2,2" Height="30" Width="120" Content="OK"  HorizontalAlignment="Right"/>
+        <Button x:Name="ButtonSend" Click="ButtonSend_Click" Margin="2,10,2,2" Height="30" Width="120" Content="{x:Static res:Resources.strOK}" HorizontalAlignment="Right" FontWeight="Bold" />
     </StackPanel>
 </Window>
