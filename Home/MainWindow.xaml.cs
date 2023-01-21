@@ -348,14 +348,7 @@ namespace Home
                                     updateScreenshot = true;
                                 }
 
-                                // deviceList[deviceList.IndexOf(oldDevice)] = device.EventData.EventDevice;
                                 oldDevice.Update(@event.EventData.EventDevice, @event.EventData.EventDevice.LastSeen, @event.EventData.EventDevice.Status, true);
-
-                                if (currentDevice == oldDevice)
-                                {
-                                    // lastSelectedDevice = device.EventData.EventDevice;
-                                    // RefreshSelectedItem();
-                                }
 
                                 await RefreshSelectedItem();
                                 RefreshDeviceHolder();
@@ -387,7 +380,7 @@ namespace Home
                             }
                             else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceScreenshotRecieved)
                             {
-                                // ToDo: *** Only recieve screenshot (probably await GetScreenshot(oldDevice)
+                                // ToDo: *** Only recieve screenshot (probably await GetScreenshot(oldDevice))
 
                             }
                             else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceChangedState)
@@ -400,10 +393,9 @@ namespace Home
                             }
                         }
                     }
-                    else
+                    else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.NewDeviceConnected)
                     {
                         deviceList.Add(@event.EventData.EventDevice);
-                        MessageBox.Show("New device added!", "New device!", MessageBoxButton.OK, MessageBoxImage.Information);
                         RefreshDeviceHolder();
                     }
                 }
@@ -671,30 +663,6 @@ namespace Home
             SwitchFileManager(false);
         }
 
-        private async void MenuButtonGenerateReport_Click(object sender, RoutedEventArgs e)
-        {
-            if (currentDevice == null)
-                return;
-
-            var report = Report.GenerateHtmlDeviceReport(currentDevice, Properties.Resources.strDateTimeFormat);
-
-            SaveFileDialog sfd = new SaveFileDialog() { Filter = "HTML Report File (*.html)|*.html" };
-            sfd.FileName = $"{currentDevice.Name}.html";
-            var result = sfd.ShowDialog();
-
-            if (result.HasValue && result.Value)
-            {
-                try
-                {
-                    await System.IO.File.WriteAllTextAsync(sfd.FileName, report);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(this, $"{Home.Properties.Resources.strFailedToSaveReport}{Environment.NewLine}{ex.Message}", Home.Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-        }
-
         private void MenuButtonExit_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
@@ -719,6 +687,75 @@ namespace Home
         {
             new AboutDialog().Show();
         }
+
+        #region Report
+
+        private async void MenuButtonGenerateReport_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentDevice == null)
+                return;
+
+            var report = Report.GenerateHtmlDeviceReport(currentDevice, Properties.Resources.strDateTimeFormat);
+
+            SaveFileDialog sfd = new SaveFileDialog() { Filter = Home.Properties.Resources.strHtmlReportFilter };
+            sfd.FileName = $"{currentDevice.Name}.html";
+            var result = sfd.ShowDialog();
+
+            if (result.HasValue && result.Value)
+            {
+                try
+                {
+                    await System.IO.File.WriteAllTextAsync(sfd.FileName, report);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(this, $"{Home.Properties.Resources.strFailedToSaveReport}{Environment.NewLine}{ex.Message}", Home.Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private async void MenuPrintReport_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentDevice == null)
+                return;
+
+            int oldTabIndex = TabDevice.SelectedIndex;
+            TabDevice.SelectedIndex = TabDevice.Items.Count - 2;
+            await Task.Delay(500);
+
+            SaveFileDialog sfd = new SaveFileDialog() { Filter = Home.Properties.Resources.strHtmlReportFilterPDF };
+            sfd.FileName = $"{currentDevice.Name}.pdf";
+            var result = sfd.ShowDialog();
+
+            // Note we can only print if the view is already rendered!
+            if (result.HasValue && result.Value)
+                await webViewReport.CoreWebView2.PrintToPdfAsync(sfd.FileName);
+
+            // Restore old tab index
+            TabDevice.SelectedIndex = oldTabIndex;
+
+            // webViewReport.NavigationStarting += WebViewReport_NavigationStarting;
+            // webViewReport.CoreWebView2.ExecuteScriptAsync("window.print();");            
+        }
+
+        /*private void WebViewReport_NavigationStarting(object sender, CoreWebView2NavigationStartingEventArgs e)
+        {
+            webViewReport.CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
+        }
+
+        private void WebViewReport_Initialized(object sender, EventArgs e)
+        {
+       
+        }
+
+        private void CoreWebView2_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
+        {
+            webViewReport.CoreWebView2.PrintToPdfAsync(@"F:\Eigene Dateien\Desktop\test.pdf");
+            webViewReport.CoreWebView2.NavigationCompleted -= CoreWebView2_NavigationCompleted;
+            webViewReport.NavigationStarting -= WebViewReport_NavigationStarting;
+        }*/
+
+        #endregion
     }
 
     #region Converter

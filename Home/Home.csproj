@@ -38,6 +38,8 @@
     <None Remove="resources\icons\graphics.png" />
     <None Remove="resources\icons\menu\about.png" />
     <None Remove="resources\icons\menu\exit.png" />
+    <None Remove="resources\icons\menu\pdf.png" />
+    <None Remove="resources\icons\menu\print.png" />
     <None Remove="resources\icons\menu\report.png" />
     <None Remove="resources\icons\menu\settings.png" />
     <None Remove="resources\icons\motherboard.png" />
@@ -87,6 +89,8 @@
     <Resource Include="resources\icons\explorer\redo.png" />
     <Resource Include="resources\icons\explorer\undo.png" />
     <Resource Include="resources\icons\menu\exit.png" />
+    <Resource Include="resources\icons\menu\pdf.png" />
+    <Resource Include="resources\icons\menu\print.png" />
     <Resource Include="resources\icons\menu\report.png" />
     <Resource Include="resources\icons\motherboard.png" />
     <Resource Include="resources\icons\ram.png" />

@@ -76,14 +76,18 @@ namespace Home.API.Controllers
                 device.Status = Device.DeviceStatus.Active;
                 device.LastSeen = now;
                 device.LogEntries.Clear();
-                device.LogEntries.Add(new LogEntry(now, $"Device {device.Name} was successfully added!", LogEntry.LogLevel.Information, true));
-                _logger.LogInformation($"New device {device.Environment.MachineName} has just logged in!");
+                var logEntry = new LogEntry(now, $"Device {device.Name} was successfully added!", LogEntry.LogLevel.Information, true);
+                device.LogEntries.Add(logEntry);
+                _logger.LogInformation($"New device {device.Environment.MachineName} has just registered!");
                 device.IsScreenshotRequired = true;
 
                 var dbDevice = ModelConverter.ConvertDevice(_context, _logger, device);
                 await _context.Device.AddAsync(dbDevice);
                 await _context.DeviceChange.AddAsync(new DeviceChange() { Timestamp = now, Device = dbDevice, Description = $"Device \"{dbDevice.Name}\" added to the system initally!" });
                 await _context.SaveChangesAsync();
+
+                // To notify webhook:
+                ModelConverter.ConvertLogEntry(dbDevice, logEntry);
 
                 ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.NewDeviceConnected, device);
                 return Ok(AnswerExtensions.Success(true));

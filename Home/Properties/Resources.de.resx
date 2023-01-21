@@ -628,4 +628,19 @@
   <data name="strDeviceChanges" xml:space="preserve">
     <value>Hardware Protokoll</value>
   </data>
+  <data name="strOperations" xml:space="preserve">
+    <value>Operationen</value>
+  </data>
+  <data name="strPrintReport" xml:space="preserve">
+    <value>Bericht drucken</value>
+  </data>
+  <data name="strHtmlReportFilter" xml:space="preserve">
+    <value>HTML Bericht (*.html)|*.html</value>
+  </data>
+  <data name="strHtmlReportFilterPDF" xml:space="preserve">
+    <value>PDF Bericht (*.pdf)|*.pdf</value>
+  </data>
+  <data name="strCommands" xml:space="preserve">
+    <value>Befehle</value>
+  </data>
 </root>

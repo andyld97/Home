@@ -223,6 +223,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Commands ähnelt.
+        /// </summary>
+        public static string strCommands {
+            get {
+                return ResourceManager.GetString("strCommands", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Cores ähnelt.
         /// </summary>
         public static string strCores {
@@ -610,6 +619,24 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die HTML Report File (*.html)|*.html ähnelt.
+        /// </summary>
+        public static string strHtmlReportFilter {
+            get {
+                return ResourceManager.GetString("strHtmlReportFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die PDF Report File (*.pdf)|*.pdf ähnelt.
+        /// </summary>
+        public static string strHtmlReportFilterPDF {
+            get {
+                return ResourceManager.GetString("strHtmlReportFilterPDF", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Individual Overview ähnelt.
         /// </summary>
         public static string strIndividualOverview {
@@ -754,6 +781,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Operations ähnelt.
+        /// </summary>
+        public static string strOperations {
+            get {
+                return ResourceManager.GetString("strOperations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Version: ähnelt.
         /// </summary>
         public static string strOsVersion {
@@ -777,6 +813,15 @@ namespace Home.Properties {
         public static string strPngFilter {
             get {
                 return ResourceManager.GetString("strPngFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Print Report ähnelt.
+        /// </summary>
+        public static string strPrintReport {
+            get {
+                return ResourceManager.GetString("strPrintReport", resourceCulture);
             }
         }
         
