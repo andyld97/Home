@@ -87,5 +87,10 @@ namespace Home.API
         /// Timeformat for messages sent to the webhook endpoint
         /// </summary>
         public string WebHookDateTimeFormat { get; set; } = "dd.MM.yyyy HH:mm";
+
+        /// <summary>
+        /// Set this to true if you want to get notified about screen changes in general (default is false)
+        /// </summary>
+        public bool DetectScreenChangesAsDeviceChange { get; set; } = false; 
     }
 }

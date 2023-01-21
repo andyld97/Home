@@ -393,12 +393,15 @@ namespace Home.API.Services
                 // Require also a new screenshot
                 currentDevice.IsScreenshotRequired = true;
 
-                string oldScreens = string.Join(Environment.NewLine, currentDevice.DeviceScreen.Select(p => p.DeviceName));
-                string newScreens = string.Join(Environment.NewLine, requestedDevice.Screens.Select(p => p.DeviceName));
+                if (Program.GlobalConfig.DetectScreenChangesAsDeviceChange)
+                {
+                    string oldScreens = string.Join(Environment.NewLine, currentDevice.DeviceScreen.Select(p => p.DeviceName));
+                    string newScreens = string.Join(Environment.NewLine, requestedDevice.Screens.Select(p => p.DeviceName));
 
-                // Do not count this as a device change (only log)!
-                if (oldScreens.Trim() != newScreens.Trim())
-                    await RegisterDeviceChangeAsync(prefix, $"screen changes.\n\nOld screen(s):\n{oldScreens}\n\nNew screen(s):\n{newScreens}", DeviceChangeEntry.DeviceChangeType.None, currentDevice, now);    
+                    // Do not count this as a device change (only log)!
+                    if (oldScreens.Trim() != newScreens.Trim())
+                        await RegisterDeviceChangeAsync(prefix, $"screen changes.\n\nOld screen(s):\n{oldScreens}\n\nNew screen(s):\n{newScreens}", DeviceChangeEntry.DeviceChangeType.None, currentDevice, now);
+                }
             }
         }
 
