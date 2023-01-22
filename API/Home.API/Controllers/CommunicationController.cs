@@ -173,8 +173,15 @@ namespace Home.API.Controllers
                 {
                     queue.LastClientRequest = DateTime.Now;
 
+                    List<EventQueueItem> items = new List<EventQueueItem>();
+                    items.AddRange(queue.LastAck);
+                    queue.LastAck.Clear();
+
                     if (queue.Events.Count > 0)
-                        return Ok(AnswerExtensions.Success(queue.Events.Dequeue()));
+                        items.Add(queue.Events.Dequeue());
+
+                    if (items.Count > 0)
+                        return Ok(AnswerExtensions.Success(items));
                     else
                         return BadRequest(new Answer<EventQueueItem>("ok", null) { ErrorMessage = "Queue is currently empty ..." });
                 }

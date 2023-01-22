@@ -1,5 +1,6 @@
 ﻿using Home.Data.Events;
 using System;
+using System.Linq;
 
 namespace Home.API.Helper
 {
@@ -19,7 +20,20 @@ namespace Home.API.Helper
                 foreach (var queue in Program.EventQueues)
                 {
                     queue.LastEvent = now;
-                    queue.Events.Enqueue(new EventQueueItem() { DeviceID = device.ID, EventDescription = eventKind, EventOccured = now, EventData = new EventData(device) });
+                    var item = new EventQueueItem() { DeviceID = device.ID, EventDescription = eventKind, EventOccured = now, EventData = new EventData(device) };
+                    if (eventKind != EventQueueItem.EventKind.ACK)
+                        queue.Events.Enqueue(item);
+                    else
+                    {
+                        var ack = queue.LastAck.FirstOrDefault(p => p.DeviceID == device.ID);
+                        if (ack == null)
+                            queue.LastAck.Add(item);
+                        else
+                        {
+                            queue.LastAck.Remove(ack);
+                            queue.LastAck.Add(item);
+                        }
+                    }
                 }
             }
         }

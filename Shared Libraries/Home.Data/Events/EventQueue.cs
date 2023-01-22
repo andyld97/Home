@@ -13,6 +13,8 @@ namespace Home.Data.Events
 
         public Queue<EventQueueItem> Events { get; set; } = new Queue<EventQueueItem>();
 
+        public List<EventQueueItem> LastAck { get; set; } = new List<EventQueueItem>();
+
         public override string ToString()
         {
             return $"e{ClientID}";

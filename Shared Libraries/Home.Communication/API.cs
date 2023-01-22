@@ -159,7 +159,7 @@ namespace Home.Communication
             }
         }
 
-        public async Task<Answer<EventQueueItem>> UpdateAsync(Client client)
+        public async Task<Answer<List<EventQueueItem>>> UpdateAsync(Client client)
         {
             try
             {
@@ -169,16 +169,15 @@ namespace Home.Communication
                 var content = await result.Content.ReadAsStringAsync();
                 if (!string.IsNullOrEmpty(content))
                 {
-                    var item = System.Text.Json.JsonSerializer.Deserialize<Answer<EventQueueItem>>(content);
-                    return item;
+                    return System.Text.Json.JsonSerializer.Deserialize<Answer<List<EventQueueItem>>>(content);
                 }
                 else
-                    return AnswerExtensions.Fail<EventQueueItem>("Empty content!");
+                    return AnswerExtensions.Fail<List<EventQueueItem>>("Empty content!");
             }
             catch (Exception ex)
             {
                 // LOG
-                return AnswerExtensions.Fail<EventQueueItem>(ex.Message);
+                return AnswerExtensions.Fail<List<EventQueueItem>>(ex.Message);
             }
         }
 

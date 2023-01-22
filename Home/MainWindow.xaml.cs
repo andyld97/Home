@@ -31,6 +31,8 @@ using Controls.Dialogs;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static Home.Model.DeviceChangeEntry;
+using Home.Data.Events;
+using static SkiaSharp.HarfBuzz.SKShaper;
 
 namespace Home
 {
@@ -293,6 +295,8 @@ namespace Home
             }
         }
 
+        #region Update / Process Events
+
         private async void UpdateTimer_Tick(object sender, EventArgs e)
         {
             lock (_lock)
@@ -307,105 +311,112 @@ namespace Home
             var result = await API.UpdateAsync(CLIENT);
             if (result.Success && result.Result != null)
             {
-                var @event = result.Result;
-
-                if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceScreenshotRecieved)
-                {
-                    // Update screenshot viewer
-                    if (currentDevice != null && currentDevice.ID == @event.DeviceID)
-                    {
-                        currentDevice.Update(@event.EventData.EventDevice, @event.EventData.EventDevice.LastSeen, @event.EventData.EventDevice.Status, true);
-                        await ScreenshotViewer.UpdateScreenshotAsync(currentDevice);
-                        await RefreshSelectedItem();
-                        RefreshDeviceHolder();
-                    }
-                    else
-                    {
-                        // Refresh other device an try to download the screenshot in advance
-                        var otherDevice = deviceList.FirstOrDefault(d => d.ID == @event.DeviceID);
-                        if (otherDevice != null)
-                        {
-                            otherDevice.Update(@event.EventData.EventDevice, @event.EventData.EventDevice.LastSeen, @event.EventData.EventDevice.Status, true);
-                            foreach (var shot in otherDevice.Screenshots)
-                                ScreenshotViewer.QueueScreenshotDownload(otherDevice, shot);
-                        }
-                    }
-                }
-                else
-                {
-                    if (deviceList.Any(d => d.ID == @event.DeviceID))
-                    {
-                        // Update 
-                        var oldDevice = deviceList.Where(d => d.ID == @event.DeviceID).FirstOrDefault();
-                        if (oldDevice != null)
-                        {
-                            if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.ACK)
-                            {
-                                bool updateScreenshot = false;
-                                if (oldDevice.Status == DeviceStatus.Active && @event.EventData.EventDevice.Status == DeviceStatus.Offline)
-                                {
-                                    // Update grayscale shot
-                                    updateScreenshot = true;
-                                }
-
-                                oldDevice.Update(@event.EventData.EventDevice, @event.EventData.EventDevice.LastSeen, @event.EventData.EventDevice.Status, true);
-
-                                await RefreshSelectedItem();
-                                RefreshDeviceHolder();
-
-                                if (updateScreenshot)
-                                    await ScreenshotViewer.UpdateScreenshotAsync(oldDevice);
-                            }
-                            else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.LogCleared)
-                            {
-                                oldDevice.LogEntries.Clear();
-                                await RefreshSelectedItem();
-                            }
-                            else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.LogEntriesRecieved)
-                            {
-                                oldDevice.LogEntries.Clear();
-                                foreach (var item in @event.EventData.EventDevice.LogEntries)
-                                    oldDevice.LogEntries.Add(item);
-
-                                await RefreshSelectedItem();
-                            }
-                            else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.LiveModeChanged)
-                            {
-                                oldDevice.LogEntries.Clear();
-                                foreach (var item in @event.EventData.EventDevice.LogEntries)
-                                    oldDevice.LogEntries.Add(item);
-
-                                oldDevice.IsLive = @event.EventData.EventDevice.IsLive;
-                                await RefreshSelectedItem();
-                            }
-                            else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceScreenshotRecieved)
-                            {
-                                // ToDo: *** Only recieve screenshot (probably await GetScreenshot(oldDevice))
-
-                            }
-                            else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceChangedState)
-                            {
-                                oldDevice.Status = @event.EventData.EventDevice.Status;
-
-                                // Refresh gui
-                                await RefreshSelectedItem();
-                                RefreshDeviceHolder();
-                            }
-                        }
-                    }
-                    else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.NewDeviceConnected)
-                    {
-                        deviceList.Add(@event.EventData.EventDevice);
-                        RefreshDeviceHolder();
-                    }
-                }
+                foreach (var item in result.Result)
+                    await ProcessEventAsync(item);
             }
 
             lock (_lock)
             {
                 isUpdating = false;
             }
-        }       
+        }
+
+        private async Task ProcessEventAsync(EventQueueItem @event)
+        {
+            if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceScreenshotRecieved)
+            {
+                // Update screenshot viewer
+                if (currentDevice != null && currentDevice.ID == @event.DeviceID)
+                {
+                    currentDevice.Update(@event.EventData.EventDevice, @event.EventData.EventDevice.LastSeen, @event.EventData.EventDevice.Status, true);
+                    await ScreenshotViewer.UpdateScreenshotAsync(currentDevice);
+                    await RefreshSelectedItem();
+                    RefreshDeviceHolder();
+                }
+                else
+                {
+                    // Refresh other device an try to download the screenshot in advance
+                    var otherDevice = deviceList.FirstOrDefault(d => d.ID == @event.DeviceID);
+                    if (otherDevice != null)
+                    {
+                        otherDevice.Update(@event.EventData.EventDevice, @event.EventData.EventDevice.LastSeen, @event.EventData.EventDevice.Status, true);
+                        foreach (var shot in otherDevice.Screenshots)
+                            ScreenshotViewer.QueueScreenshotDownload(otherDevice, shot);
+                    }
+                }
+            }
+            else
+            {
+                if (deviceList.Any(d => d.ID == @event.DeviceID))
+                {
+                    // Update 
+                    var oldDevice = deviceList.Where(d => d.ID == @event.DeviceID).FirstOrDefault();
+                    if (oldDevice != null)
+                    {
+                        if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.ACK)
+                        {
+                            bool updateScreenshot = false;
+                            if (oldDevice.Status == DeviceStatus.Active && @event.EventData.EventDevice.Status == DeviceStatus.Offline)
+                            {
+                                // Update grayscale shot
+                                updateScreenshot = true;
+                            }
+
+                            oldDevice.Update(@event.EventData.EventDevice, @event.EventData.EventDevice.LastSeen, @event.EventData.EventDevice.Status, true);
+
+                            await RefreshSelectedItem();
+                            RefreshDeviceHolder();
+
+                            if (updateScreenshot)
+                                await ScreenshotViewer.UpdateScreenshotAsync(oldDevice);
+                        }
+                        else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.LogCleared)
+                        {
+                            oldDevice.LogEntries.Clear();
+                            await RefreshSelectedItem();
+                        }
+                        else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.LogEntriesRecieved)
+                        {
+                            oldDevice.LogEntries.Clear();
+                            foreach (var item in @event.EventData.EventDevice.LogEntries)
+                                oldDevice.LogEntries.Add(item);
+
+                            await RefreshSelectedItem();
+                        }
+                        else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.LiveModeChanged)
+                        {
+                            oldDevice.LogEntries.Clear();
+                            foreach (var item in @event.EventData.EventDevice.LogEntries)
+                                oldDevice.LogEntries.Add(item);
+
+                            oldDevice.IsLive = @event.EventData.EventDevice.IsLive;
+                            await RefreshSelectedItem();
+                        }
+                        else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceScreenshotRecieved)
+                        {
+                            // ToDo: *** Only recieve screenshot (probably await GetScreenshot(oldDevice))
+
+                        }
+                        else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceChangedState)
+                        {
+                            oldDevice.Status = @event.EventData.EventDevice.Status;
+
+                            // Refresh gui
+                            await RefreshSelectedItem();
+                            RefreshDeviceHolder();
+                        }
+                    }
+                }
+                else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.NewDeviceConnected)
+                {
+                    deviceList.Add(@event.EventData.EventDevice);
+                    RefreshDeviceHolder();
+                }
+            }
+        }
+
+
+        #endregion
 
         private async void DeviceHolder_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
