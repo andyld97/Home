@@ -47,11 +47,26 @@ namespace Home.Controls
                     FontWeight = FontWeights.Bold,
                 });
                 ListBox listBox = new ListBox();
+                listBox.PreviewMouseWheel += ListBox_PreviewMouseWheel;
                 listBox.ItemTemplate = FindResource("DeviceChangeTemplate") as DataTemplate;
 
                 listBox.ItemsSource = change;
                 ViewHolder.Children.Add(listBox);
             }    
+        }
+
+        private void ListBox_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            // https://stackoverflow.com/a/4342746/6237448
+            if (!e.Handled)
+            {
+                e.Handled = true;
+                var eventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta);
+                eventArg.RoutedEvent = UIElement.MouseWheelEvent;
+                eventArg.Source = sender;
+                var parent = ((Control)sender).Parent as UIElement;
+                parent.RaiseEvent(eventArg);
+            }
         }
     }
 
