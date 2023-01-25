@@ -35,7 +35,7 @@ namespace Home.Controls
             if (device.DevicesChanges.Count == 0)
                 return;
 
-            var changes = device.DevicesChanges.GroupBy(p => p.Timestamp);
+            var changes = device.DevicesChanges.OrderByDescending(p => p.Timestamp).GroupBy(p => p.Timestamp);
 
             foreach (var change in changes)
             {
