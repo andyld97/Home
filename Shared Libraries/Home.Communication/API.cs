@@ -35,6 +35,8 @@ namespace Home.Communication
         public static readonly string STATUS = "status";
         public static readonly string DELETE = "delete";
         public static readonly string TEST = "test";
+        public static readonly string SchedulingRules = "SchedulingRules";
+        public static readonly string UpdateSchedulingRulesEP = "UpdateSchedulingRules";
 
         public API(string host)
         {
@@ -441,6 +443,52 @@ namespace Home.Communication
                 return AnswerExtensions.Fail<string>(ex.Message);
             }
         }
+
+        #region Device Scheduling Rules
+
+        public async Task<Answer<IEnumerable<DeviceSchedulingRule>>> GetSchedulingRulesAsync()
+        {
+            try
+            {
+                string url = $"{GenerateEpUrl(true, SchedulingRules)}";
+                var result = await httpClient.GetAsync(url);
+
+                if (result.StatusCode == System.Net.HttpStatusCode.NoContent)
+                    return AnswerExtensions.Success((IEnumerable<DeviceSchedulingRule>)new DeviceSchedulingRule[0]);
+
+                var content = await result.Content.ReadAsStringAsync();
+                if (!string.IsNullOrEmpty(content))
+                    return AnswerExtensions.Success(System.Text.Json.JsonSerializer.Deserialize<IEnumerable<DeviceSchedulingRule>>(content));
+                else
+                    return AnswerExtensions.Fail<IEnumerable<DeviceSchedulingRule>>("Empty content!");
+            }
+            catch (Exception ex)
+            {
+                // LOG
+                return AnswerExtensions.Fail<IEnumerable<DeviceSchedulingRule>>(ex.Message);
+            }
+        }
+
+        public async Task<Answer<bool>> UpdateSchedulingRules(IEnumerable<DeviceSchedulingRule> rules)
+        {
+            try
+            {
+                string url = $"{GenerateEpUrl(true, UpdateSchedulingRulesEP)}";
+                var content = new StringContent(System.Text.Json.JsonSerializer.Serialize(rules), System.Text.Encoding.UTF8, "application/json");
+                var result = await httpClient.PostAsync(url, content);
+
+                result.EnsureSuccessStatusCode();
+
+                return AnswerExtensions.Success(true);
+            }
+            catch (Exception ex)
+            {
+                // LOG
+                return AnswerExtensions.Fail<bool>(ex.Message);
+            }
+        }
+
+        #endregion
 
         public string GenerateEpUrl(bool communication, string ep)
         {

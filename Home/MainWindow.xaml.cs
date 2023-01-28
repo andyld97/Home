@@ -79,6 +79,12 @@ namespace Home
             { }
         }
 
+        public IEnumerable<Device> GetDevices()
+        {
+            foreach (var device in deviceList)
+                yield return device;
+        }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -767,6 +773,15 @@ namespace Home
         }*/
 
         #endregion
+
+        private async void MenuButtonWakeOnLan_Click(object sender, RoutedEventArgs e)
+        {
+            var result = await API.GetSchedulingRulesAsync();
+            if (result.Success)
+                new ManageDeviceSchedule(result.Result).ShowDialog();
+            else
+                MessageBox.Show(string.Format("Fehler beim Abrufen der Daten: {0}", result.ErrorMessage), "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);   
+        }
     }
 
     #region Converter

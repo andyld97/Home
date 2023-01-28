@@ -43,11 +43,12 @@
                 </Fluent:RibbonGroupBox>
                 
                 <Fluent:RibbonGroupBox Header="{x:Static res:Resources.strOperations}">
+                    <Fluent:Button x:Name="MenuButtonWakeOnLan" Click="MenuButtonWakeOnLan_Click" Header="Regel Verwaltung" LargeIcon="/resources/icons/menu/settings.png" />
                     <Fluent:Button x:Name="MenuButtonClearLog" Click="MenuButtonClearLog_Click" Header="{x:Static res:Resources.strClearLog}" LargeIcon="/resources/icons/menu/clear_log.png" />
                     <Fluent:Button x:Name="MenuButtonDeleteDevice" Click="MenuButtonDeleteDevice_Click" Header="{x:Static res:Resources.strDeleteDevice}" LargeIcon="/resources/icons/menu/add.png" />
-                    <Fluent:Button Header="{x:Static res:Resources.strRemoteShell}" LargeIcon="/resources/icons/menu/shell.png" IsEnabled="False" />
-                    <Fluent:Button Header="{x:Static res:Resources.strRemoteConnection}" LargeIcon="/resources/icons/menu/rdp.png" IsEnabled="False" />
-                    <Fluent:Button Header="{x:Static res:Resources.strMuteSound}" LargeIcon="/resources/icons/menu/mute.png" IsEnabled="False" />                    
+                    <Fluent:Button Visibility="Collapsed" Header="{x:Static res:Resources.strRemoteShell}" LargeIcon="/resources/icons/menu/shell.png" IsEnabled="False" />
+                    <Fluent:Button Visibility="Collapsed" Header="{x:Static res:Resources.strRemoteConnection}" LargeIcon="/resources/icons/menu/rdp.png" IsEnabled="False" />
+                    <Fluent:Button Visibility="Collapsed" Header="{x:Static res:Resources.strMuteSound}" LargeIcon="/resources/icons/menu/mute.png" IsEnabled="False" />                    
                 </Fluent:RibbonGroupBox>
 
                 <Fluent:RibbonGroupBox Header="{x:Static res:Resources.strReport}">
