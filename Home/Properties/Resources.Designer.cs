@@ -1105,6 +1105,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Mac Address ähnelt.
+        /// </summary>
+        public static string strReport_MacAddress {
+            get {
+                return ResourceManager.GetString("strReport_MacAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Motherboard ähnelt.
         /// </summary>
         public static string strReport_Motherboard {

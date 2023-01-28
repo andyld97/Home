@@ -693,4 +693,7 @@
   <data name="strCommands" xml:space="preserve">
     <value>Commands</value>
   </data>
+  <data name="strReport_MacAddress" xml:space="preserve">
+    <value>Mac Address</value>
+  </data>
 </root>
