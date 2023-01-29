@@ -1,6 +1,7 @@
 ﻿using Home.Data;
 using Home.Data.Com;
 using Home.Data.Events;
+using Home.Data.Helper;
 using Home.Model;
 using Newtonsoft.Json;
 using System;
@@ -237,7 +238,7 @@ namespace Home.Communication
 
             string parameter = string.Empty;
             string executable;
-            if (device.OS == OSType.Linux || device.OS == OSType.LinuxMint || device.OS == OSType.LinuxUbuntu || device.OS == OSType.Unix || device.OS == OSType.Other)
+            if (device.OS.IsLinux() || device.OS == OSType.Unix || device.OS == OSType.Other)
             {
                 if (shutdown)
                 {

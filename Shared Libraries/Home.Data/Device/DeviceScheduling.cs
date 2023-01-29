@@ -162,6 +162,7 @@ namespace Home.Model
         {
             None,
             Shutdown,
+            Reboot,
             ExecuteCommand,
             ExternalAPICall
         }

@@ -121,7 +121,15 @@ namespace Home.Controls.Dialogs
 
         private async void ButtonApply_Click(object sender, RoutedEventArgs e)
         {
-            await MainWindow.API.UpdateSchedulingRules(rules);
+            var result = await MainWindow.API.UpdateSchedulingRules(rules);
+
+            if (!result.Success)
+            {
+                MessageBox.Show($"Fehler beim Speichern der Regeln: {result.ErrorMessage}!", "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            closing = true;
             DialogResult = true;
         }
 
@@ -155,6 +163,24 @@ namespace Home.Controls.Dialogs
     }
 
     #region Converter
+
+    public class TypeToReadOnlyConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is BootRule.BootRuleType brType && brType == BootRule.BootRuleType.None)
+                return !true;
+            else if (value is ShutdownRule.ShutdownRuleType srType && srType == ShutdownRule.ShutdownRuleType.None)
+                return !true;
+
+            return !false;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
     public class EnumToIndexConverter : IValueConverter
     {

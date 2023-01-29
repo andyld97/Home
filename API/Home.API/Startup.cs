@@ -54,6 +54,7 @@ namespace Home.API
             });
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddHostedService<HealthCheckService>();
+            services.AddHostedService<DeviceScheduleService>();
             services.AddTransient<IDeviceAckService, DeviceAckService>();
             services.AddSingleton<IWOLService, WOLService>();
             services.AddControllers();

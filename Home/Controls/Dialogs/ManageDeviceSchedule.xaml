@@ -24,6 +24,7 @@
             <local:DisabledRuleOpacityConverter x:Key="disabledRuleOpacityConverter" />
             <local:RuleToApiVisibilityConverter x:Key="ruleToApiVisibilityConverter" />
             <local:EnumToIndexConverter x:Key="enumToIndexConverter" />
+            <local:TypeToReadOnlyConverter x:Key="typeToReadOnlyConverter" />
         </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -135,7 +136,7 @@
 
                         <StackPanel Margin="5">
                             <TextBlock Text="Uhrzeit (HH:mm):" FontWeight="Bold" />
-                            <TextBox Text="{Binding Time}" MaxLength="5" MaxLines="1" />
+                            <TextBox IsEnabled="{Binding Type, Converter={StaticResource typeToReadOnlyConverter}}" Text="{Binding Time}" MaxLength="5" MaxLines="1" />
 
                             <TextBlock Text="Aktion:" />
                             <ComboBox x:Name="CmbBootAction" SelectedIndex="{Binding Type, Converter={StaticResource enumToIndexConverter}}" >
@@ -168,12 +169,13 @@
 
                         <StackPanel Margin="5">
                             <TextBlock Text="Uhrzeit (HH:mm):" FontWeight="Bold" />
-                            <TextBox Text="{Binding Time}" MaxLength="5" MaxLines="1" />
+                            <TextBox IsEnabled="{Binding Type, Converter={StaticResource typeToReadOnlyConverter}}" Text="{Binding Time}" MaxLength="5" MaxLines="1" />
 
                             <TextBlock Text="Aktion:" />
                             <ComboBox x:Name="CmbShutdownAction" SelectedIndex="{Binding Type, Converter={StaticResource enumToIndexConverter}}">
                                 <ComboBoxItem Content="Keine" />
                                 <ComboBoxItem Content="Herunterfahren" />
+                                <ComboBoxItem Content="Neustarten" />
                                 <ComboBoxItem Content="Befehl ausführen" />
                                 <ComboBoxItem Content="Externer API Aufruf" />
                             </ComboBox>

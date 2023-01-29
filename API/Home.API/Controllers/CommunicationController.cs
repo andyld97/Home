@@ -1,6 +1,7 @@
 ﻿using Home.API.Helper;
 using Home.API.home;
 using Home.API.home.Models;
+using Home.API.Services;
 using Home.Data;
 using Home.Data.Com;
 using Home.Data.Events;
@@ -493,6 +494,7 @@ namespace Home.API.Controllers
             try
             {
                 DeviceSchedulingRule.Save(rules, Program.DeviceSchedulingRulesPath);
+                DeviceScheduleService.UpdateSchedulingRules = true;
                 return Ok();
             }
             catch (Exception ex)
