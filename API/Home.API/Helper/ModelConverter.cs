@@ -39,6 +39,7 @@ namespace Home.API.Helper
             updateDevice.Location = device.Location;
             updateDevice.IsScreenshotRequired = device.IsScreenshotRequired;
             updateDevice.Ip = device.IP;
+            updateDevice.MacAddress = device.MacAddress;
             updateDevice.Status = (status == DeviceStatus.Active);  // nullable, when Inactive?
             updateDevice.LastSeen = device.LastSeen;
             updateDevice.IsScreenshotRequired = device.IsScreenshotRequired;
@@ -179,6 +180,7 @@ namespace Home.API.Helper
             result.ServiceClientVersion = device.ServiceClientVersion;
             result.DeviceGroup = device.DeviceGroup;
             result.IP = device.Ip;
+            result.MacAddress = device.MacAddress;
             result.IsLive = device.IsLive;
             result.IsScreenshotRequired = device.IsScreenshotRequired;
             result.LastSeen = device.LastSeen;

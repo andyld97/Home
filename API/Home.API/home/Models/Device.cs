@@ -15,6 +15,8 @@ public partial class Device
 
     public string Ip { get; set; }
 
+    public string MacAddress { get; set; }
+
     public DateTime LastSeen { get; set; }
 
     public bool Status { get; set; }

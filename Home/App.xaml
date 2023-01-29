@@ -15,6 +15,11 @@
                     </Storyboard>
 
                     <ContextMenu x:Key="DeviceMenu">
+                        <MenuItem x:Name="MenuItemBoot" Click="MenuItemBoot_Click" Header="{x:Static res:Resources.strWakeUp}">
+                            <MenuItem.Icon>
+                                <Image Source="../resources/icons/menu/wol.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
                         <MenuItem x:Name="MenuItemShutdown" Click="MenuItemShutdown_Click" Header="{x:Static res:Resources.strShutdown}">
                             <MenuItem.Icon>
                                 <Image Source="../resources/icons/menu/shutdown.png" />

@@ -72,10 +72,12 @@ namespace Home.Service.Windows
             legacyAPI = new LegacyAPI(ServiceData.Instance.APIUrl);
 
             var now = DateTime.Now;
+            var address = NET.DetermineIPAddress();
             currentDevice = new Device()
             {
                 ID = ServiceData.Instance.ID,
-                IP = NET.DetermineIPAddress(),
+                IP = address.IpAddress,
+                MacAddress = address.MacAddress,
                 DeviceGroup = ServiceData.Instance.DeviceGroup,
                 Location = ServiceData.Instance.Location,
                 Name = NET.GetMachineName(),
@@ -176,8 +178,10 @@ namespace Home.Service.Windows
         private async Task SendAck()
         {
             var now = DateTime.Now;
+            var address = NET.DetermineIPAddress();
 
-            currentDevice.IP = NET.DetermineIPAddress();
+            currentDevice.IP = address.IpAddress;
+            currentDevice.MacAddress = address.MacAddress;
             currentDevice.DiskDrives = new System.Collections.ObjectModel.ObservableCollection<DiskDrive>(JsonConvert.DeserializeObject<List<DiskDrive>>(WMI.DetermineDiskDrives()));
             currentDevice.Environment.RunningTime = now.Subtract(startTimestamp); // Environment.TickCount?
             currentDevice.Environment.OSVersion = Environment.OSVersion.ToString();

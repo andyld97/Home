@@ -57,7 +57,8 @@ namespace Model
             htmlTemplate = htmlTemplate.Replace("{oem7}", f(device.Location));
             htmlTemplate = htmlTemplate.Replace("{oem8}", f(device.DeviceGroup));
             htmlTemplate = htmlTemplate.Replace("{oem9}", f(device.IP));
-            htmlTemplate = htmlTemplate.Replace("{oem10}", f(device.ServiceClientVersion));
+            htmlTemplate = htmlTemplate.Replace("{oem10}", f(device.MacAddress));
+            htmlTemplate = htmlTemplate.Replace("{oem11}", f(device.ServiceClientVersion));
 
             // OS
             if (device.OS.IsWindows(true))
@@ -149,6 +150,7 @@ namespace Model
             htmlTemplate = htmlTemplate.Replace("{strLocation}", Home.Properties.Resources.strReport_Location);
             htmlTemplate = htmlTemplate.Replace("{strGroup}", Home.Properties.Resources.strReport_Group);
             htmlTemplate = htmlTemplate.Replace("{strIPAdress}", Home.Properties.Resources.strReport_IPAddress);
+            htmlTemplate = htmlTemplate.Replace("{strMacAddress}", Home.Properties.Resources.strReport_MacAddress);
             htmlTemplate = htmlTemplate.Replace("{strHomeClientVersion}", Home.Properties.Resources.strReport_HomeClientVersion);
 
             // OS

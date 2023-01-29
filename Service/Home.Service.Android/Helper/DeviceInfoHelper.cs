@@ -11,6 +11,8 @@ using System.Linq;
 using static Android.Provider.Settings;
 using Exception = Java.Lang.Exception;
 using A = Android;
+using Android.Net.Wifi;
+using System.Net.Mail;
 
 namespace Home.Service.Android.Helper
 {
@@ -204,6 +206,45 @@ namespace Home.Service.Android.Helper
             return System.Environment.ProcessorCount;
         }
 
+        public static string GetMacAddress()
+        {
+            if (A.OS.Build.VERSION.SdkInt < BuildVersionCodes.R)
+            {
+                try
+                {
+
+                    System.Collections.IList all = Java.Util.Collections.List(Java.Net.NetworkInterface.NetworkInterfaces);
+                    foreach (Java.Net.NetworkInterface nif in all)
+                    {
+                        if (nif.Name != "wlan0") continue;
+
+                        byte[] macBytes = nif.GetHardwareAddress();
+                        if (macBytes == null)
+                            return string.Empty;
+
+                        var res1 = new StringBuilder();
+                        foreach (byte b in macBytes)
+                            res1.Append(Integer.ToHexString(b & 0xFF) + ":");
+
+                        if (res1.Length() > 0)
+                            res1.DeleteCharAt(res1.Length() - 1);
+                        string result = res1.ToString();
+                        if (!string.IsNullOrEmpty(result))
+                            return result.ToUpper();
+                    }
+                }
+                catch (Java.Lang.Exception)
+                {
+                }
+            }
+
+            // Seems not work >= Android 11
+            // https://developer.android.com/training/articles/user-data-ids#mac-11-plus
+            // But it's not that important to get the mac address on Android, because WOL is not really necessary for those devices
+
+            return "02:00:00:00:00:00";
+        }
+
         public static string GetIpAddress(Context context)
         {
             ConnectivityManager cm = (ConnectivityManager)context.GetSystemService(Context.ConnectivityService);
@@ -252,6 +293,7 @@ namespace Home.Service.Android.Helper
             currentDevice.Environment.MachineName =
             currentDevice.Name = DeviceInfoHelper.GetDeviceName(cr);
             currentDevice.IP = DeviceInfoHelper.GetIpAddress(context);
+            currentDevice.MacAddress = DeviceInfoHelper.GetMacAddress();
             currentDevice.Environment.RunningTime = DateTime.Now.Subtract(dateTimeStarted);
 
             var dd = new DiskDrive() { VolumeName = "/", DriveName = "/", DriveID = "android_default_storage", PhysicalName = "android_default_storage" };

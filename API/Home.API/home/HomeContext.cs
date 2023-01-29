@@ -68,6 +68,9 @@ public partial class HomeContext : DbContext
             entity.Property(e => e.Location)
                 .HasMaxLength(50)
                 .UseCollation("Latin1_General_100_CI_AS_SC_UTF8");
+            entity.Property(e => e.MacAddress)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.Name)
                 .IsRequired()
                 .HasMaxLength(255)

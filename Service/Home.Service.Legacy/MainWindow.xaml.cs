@@ -68,12 +68,14 @@ namespace Home.Service.Legacy
         private void InitalizeService()
         {            
             api = new API(ServiceData.Instance.APIUrl);
+            var address = NET.DetermineIPAddress();
 
             var now = DateTime.Now;
             currentDevice = new Device()
             {
                 ID = ServiceData.Instance.ID,
-                IP = NET.DetermineIPAddress(),
+                IP = address.IpAddress,
+                MacAddress = address.MacAddress,
                 DeviceGroup = ServiceData.Instance.DeviceGroup,
                 Location = ServiceData.Instance.Location,
                 Name = NET.GetMachineName(),
@@ -144,8 +146,9 @@ namespace Home.Service.Legacy
         private void SendAck()
         {
             var now = DateTime.Now;
-
-            currentDevice.IP = NET.DetermineIPAddress();
+            var address = NET.DetermineIPAddress();
+            currentDevice.IP = address.IpAddress;
+            currentDevice.MacAddress = address.MacAddress;
             currentDevice.DiskDrives = new System.Collections.ObjectModel.ObservableCollection<DiskDrive>(JsonConvert.DeserializeObject<List<DiskDrive>>(WMI.DetermineDiskDrives()));
             currentDevice.Environment.RunningTime = now.Subtract(startTimestamp); // Environment.TickCount?
             currentDevice.Environment.OSVersion = Environment.OSVersion.ToString();

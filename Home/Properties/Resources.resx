@@ -693,4 +693,117 @@
   <data name="strCommands" xml:space="preserve">
     <value>Commands</value>
   </data>
+  <data name="strReport_MacAddress" xml:space="preserve">
+    <value>Mac Address</value>
+  </data>
+  <data name="strWakeUp" xml:space="preserve">
+    <value>Wake Up (WOL)</value>
+  </data>
+  <data name="strReally" xml:space="preserve">
+    <value>Really?</value>
+  </data>
+  <data name="strDeviceScheduling_Settings_FailedToRecieveData" xml:space="preserve">
+    <value>Error retrieving the data: {0}</value>
+  </data>
+  <data name="strDoYouReallyWantToWakeUpDevice" xml:space="preserve">
+    <value>Do you really want to wake up the device "{0}"?</value>
+  </data>
+  <data name="strWOL_SuccessfullySentPackage" xml:space="preserve">
+    <value>The Magic Packet has been successfully sent!</value>
+  </data>
+  <data name="strWOL_MagickPackageSendError" xml:space="preserve">
+    <value>The Magic packet could not be sent: {0}!</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Title" xml:space="preserve">
+    <value>Manage device rules</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Rules" xml:space="preserve">
+    <value>Rules:</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_AddRule" xml:space="preserve">
+    <value>Add new rule</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_RemoveRule" xml:space="preserve">
+    <value>Delete selected rule</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_RuleName" xml:space="preserve">
+    <value>Name:</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_RuleIsActive" xml:space="preserve">
+    <value>Rule is enabled</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_General" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_CustomMacAddress" xml:space="preserve">
+    <value>Custom MAC address (e.g.</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_RuleDescription" xml:space="preserve">
+    <value>Description:</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Boot" xml:space="preserve">
+    <value>Boot</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Time" xml:space="preserve">
+    <value>Time (HH:mm):</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Action" xml:space="preserve">
+    <value>Action:</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Action_None" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Action_WOL" xml:space="preserve">
+    <value>Wake up the machine via WOL</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Action_APICall_Method" xml:space="preserve">
+    <value>HTTP Method:</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Shutdown" xml:space="preserve">
+    <value>Shutdown</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Action_APICall" xml:space="preserve">
+    <value>External API Call</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Action_ExecuteCommand" xml:space="preserve">
+    <value>Execute Command</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Action_Reboot" xml:space="preserve">
+    <value>Reboot</value>
+  </data>
+  <data name="HttpMethode" xml:space="preserve">
+    <value>HTTP Method:</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Action_Command_Executable" xml:space="preserve">
+    <value>Command:</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Action_Command_Parameter" xml:space="preserve">
+    <value>Parameters:</value>
+  </data>
+  <data name="strApply" xml:space="preserve">
+    <value>Apply</value>
+    <comment>*</comment>
+  </data>
+  <data name="strCancel" xml:space="preserve">
+    <value>Cancel</value>
+    <comment>*</comment>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Action_APICall_ApiUrl" xml:space="preserve">
+    <value>API Url:</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_EmptyRule" xml:space="preserve">
+    <value>&lt;Empty Rule&gt;</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_SureToDeleteRule" xml:space="preserve">
+    <value>Are you really sure you want to delete the rule "{0}"?</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_SecurityQuestion" xml:space="preserve">
+    <value>Do you really want to cancel? All changes will be lost!</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_FailedToSaveRules" xml:space="preserve">
+    <value>Error while saving the rules: {0}!</value>
+  </data>
+  <data name="strManageDeviceSchedulingRules" xml:space="preserve">
+    <value>Manage rules</value>
+  </data>
 </root>
