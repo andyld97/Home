@@ -36,6 +36,7 @@
                 <Fluent:RibbonGroupBox Header="{x:Static res:Resources.strCommands}">
                     <Fluent:Button x:Name="MenuButtonSendMessage" Click="MenuButtonSendMessage_Click" Header="{x:Static res:Resources.strSendMessage}" LargeIcon="/resources/icons/menu/send_message.png"/>
                     <Fluent:DropDownButton Header="{x:Static res:Resources.strShutdownMenu}" LargeIcon="/resources/icons/menu/shutdown.png">
+                        <Fluent:MenuItem x:Name="MenuButtonWOL" Click="MenuButtonWOL_Click" Header="{x:Static res:Resources.strWakeUp}" Icon="/resources/icons/menu/shutdown.png" />
                         <Fluent:MenuItem x:Name="MenuButtonShutdown" Click="MenuButtonShutdown_Click" Header="{x:Static res:Resources.strShutdown}" Icon="/resources/icons/menu/shutdown.png" />
                         <Fluent:MenuItem x:Name="MenuButtonReboot" Click="MenuButtonReboot_Click" Header="{x:Static res:Resources.strReboot}" Icon="/resources/icons/menu/reboot.png" />
                     </Fluent:DropDownButton>

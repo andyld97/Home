@@ -21,6 +21,7 @@ namespace Home.Communication
         public static readonly string BASE_URL = "{0}/api/v1/";
         public static readonly string COMMUNICATION_C = "communication";
         public static readonly string DEVICE_C = "device";
+        public static readonly string WOL_C = "wol";
 
         public static readonly string LOGIN = "login";
         public static readonly string LOGOFF = "logoff";
@@ -38,6 +39,7 @@ namespace Home.Communication
         public static readonly string TEST = "test";
         public static readonly string SchedulingRules = "SchedulingRules";
         public static readonly string UpdateSchedulingRulesEP = "UpdateSchedulingRules";
+        public static readonly string SendWakeUpRequest = "SendWakeUpRequest";
 
         public API(string host)
         {
@@ -48,7 +50,7 @@ namespace Home.Communication
         {
             try
             { 
-                string url = GenerateEpUrl(true, LOGIN);
+                string url = GenerateEpUrl(Endpoint.Communication, LOGIN);
                 var result = await httpClient.PostAsync(url, new StringContent(JsonConvert.SerializeObject(client), System.Text.Encoding.UTF8, "application/json"));
 
                 var content = await result.Content.ReadAsStringAsync();
@@ -73,7 +75,7 @@ namespace Home.Communication
         {
             try
             {
-                string url = GenerateEpUrl(true, TEST);
+                string url = GenerateEpUrl(Endpoint.Communication, TEST);
                 var result = await httpClient.GetAsync(url);
 
                 if (result.IsSuccessStatusCode)
@@ -92,7 +94,7 @@ namespace Home.Communication
         {
             try
             {
-                string url = GenerateEpUrl(true, LOGOFF);
+                string url = GenerateEpUrl(Endpoint.Communication, LOGOFF);
                 var result = await httpClient.PostAsync(url, new StringContent(JsonConvert.SerializeObject(client), System.Text.Encoding.UTF8, "application/json"));
 
                 var content = await result.Content.ReadAsStringAsync();
@@ -118,7 +120,7 @@ namespace Home.Communication
         {
             try
             {
-                string url = GenerateEpUrl(false, REGISTER);
+                string url = GenerateEpUrl(Endpoint.Device, REGISTER);
                 var result = await httpClient.PostAsync(url, new StringContent(JsonConvert.SerializeObject(device), System.Text.Encoding.UTF8, "application/json"));
 
                 var content = await result.Content.ReadAsStringAsync();
@@ -145,7 +147,7 @@ namespace Home.Communication
         {
             try
             {
-                string url = GenerateEpUrl(false, ACK);
+                string url = GenerateEpUrl(Endpoint.Device, ACK);
                 var result = await httpClient.PostAsync(url, new StringContent(JsonConvert.SerializeObject(device), System.Text.Encoding.UTF8, "application/json"));
 
                 var content = await result.Content.ReadAsStringAsync();
@@ -166,7 +168,7 @@ namespace Home.Communication
         {
             try
             {
-                string url = GenerateEpUrl(true, UPDATE);
+                string url = GenerateEpUrl(Endpoint.Communication, UPDATE);
                 var result = await httpClient.PostAsync(url, new StringContent(JsonConvert.SerializeObject(client), System.Text.Encoding.UTF8, "application/json"));
 
                 var content = await result.Content.ReadAsStringAsync();
@@ -189,7 +191,7 @@ namespace Home.Communication
         {
             try
             {
-                string url = GenerateEpUrl(false, SCREENSHOT);
+                string url = GenerateEpUrl(Endpoint.Device, SCREENSHOT);
                 var result = await httpClient.PostAsync(url, new StringContent(JsonConvert.SerializeObject(screenshot), System.Text.Encoding.UTF8, "application/json"));
 
                 var content = await result.Content.ReadAsStringAsync();
@@ -212,7 +214,7 @@ namespace Home.Communication
         {
             try
             {
-                string url = GenerateEpUrl(true, SEND_MESSAGE);
+                string url = GenerateEpUrl(Endpoint.Communication, SEND_MESSAGE);
                 var result = await httpClient.PostAsync(url, new StringContent(JsonConvert.SerializeObject(message), System.Text.Encoding.UTF8, "application/json"));
 
                 var content = await result.Content.ReadAsStringAsync();
@@ -257,11 +259,29 @@ namespace Home.Communication
             return await SendCommandAsync(new Data.Com.Command() { DeviceID = device.ID, Executable = executable, Parameter = parameter });
         }
 
+        public async Task<Answer<bool>> WakeOnLanAsync(Device d)
+        {
+            try
+            {
+                string url = GenerateEpUrl(Endpoint.WOL, SendWakeUpRequest);
+                var result = await httpClient.GetAsync($"{url}/{d.MacAddress}/9");
+
+                result.EnsureSuccessStatusCode();
+
+                return AnswerExtensions.Success<bool>(true);
+            }
+            catch (Exception ex)
+            {
+                // LOG
+                return AnswerExtensions.Fail<bool>(ex.Message);
+            }
+        }
+
         public async Task<Answer<string>> SendCommandAsync(Command command)
         {
             try
             {
-                string url = GenerateEpUrl(true, SEND_COMMAND);
+                string url = GenerateEpUrl(Endpoint.Communication, SEND_COMMAND);
                 var result = await httpClient.PostAsync(url, new StringContent(JsonConvert.SerializeObject(command), System.Text.Encoding.UTF8, "application/json"));
 
                 var content = await result.Content.ReadAsStringAsync();
@@ -284,7 +304,7 @@ namespace Home.Communication
         {
             try
             {
-                string url = $"{GenerateEpUrl(true, RECIEVE_SCREENSHOT)}/{device.ID}/{fileName}";
+                string url = $"{GenerateEpUrl(Endpoint.Communication, RECIEVE_SCREENSHOT)}/{device.ID}/{fileName}";
                 var result = await httpClient.GetAsync(url); 
 
                 var content = await result.Content.ReadAsByteArrayAsync();
@@ -357,7 +377,7 @@ namespace Home.Communication
         {
             try
             {
-                string url = $"{GenerateEpUrl(true, GET_SCREENSHOT)}/{client.ID}/{device.ID}";
+                string url = $"{GenerateEpUrl(Endpoint.Communication, GET_SCREENSHOT)}/{client.ID}/{device.ID}";
                 var result = await httpClient.GetAsync(url);
 
                 var content = await result.Content.ReadAsStringAsync();
@@ -380,7 +400,7 @@ namespace Home.Communication
         {
             try
             {
-                string url = $"{GenerateEpUrl(true, STATUS)}/{client.ID}/{device.ID}/{status}";
+                string url = $"{GenerateEpUrl(Endpoint.Communication, STATUS)}/{client.ID}/{device.ID}/{status}";
                 var result = await httpClient.GetAsync(url);
 
                 var content = await result.Content.ReadAsStringAsync();
@@ -403,7 +423,7 @@ namespace Home.Communication
         {
             try
             {
-                string url = $"{GenerateEpUrl(true, DELETE)}/{device.ID}";
+                string url = $"{GenerateEpUrl(Endpoint.Communication, DELETE)}/{device.ID}";
                 var result = await httpClient.DeleteAsync(url);
 
                 var content = await result.Content.ReadAsStringAsync();
@@ -426,7 +446,7 @@ namespace Home.Communication
         {
             try
             {
-                string url = $"{GenerateEpUrl(true, CLEAR_LOG)}/{device.ID}";
+                string url = $"{GenerateEpUrl(Endpoint.Communication, CLEAR_LOG)}/{device.ID}";
                 var result = await httpClient.GetAsync(url);
 
                 var content = await result.Content.ReadAsStringAsync();
@@ -451,7 +471,7 @@ namespace Home.Communication
         {
             try
             {
-                string url = $"{GenerateEpUrl(true, SchedulingRules)}";
+                string url = $"{GenerateEpUrl(Endpoint.Communication, SchedulingRules)}";
                 var result = await httpClient.GetAsync(url);
 
                 if (result.StatusCode == System.Net.HttpStatusCode.NoContent)
@@ -474,7 +494,7 @@ namespace Home.Communication
         {
             try
             {
-                string url = $"{GenerateEpUrl(true, UpdateSchedulingRulesEP)}";
+                string url = $"{GenerateEpUrl(Endpoint.Communication, UpdateSchedulingRulesEP)}";
                 var content = new StringContent(System.Text.Json.JsonSerializer.Serialize(rules), System.Text.Encoding.UTF8, "application/json");
                 var result = await httpClient.PostAsync(url, content);
 
@@ -491,10 +511,25 @@ namespace Home.Communication
 
         #endregion
 
-        public string GenerateEpUrl(bool communication, string ep)
+        public string GenerateEpUrl(Endpoint mode, string ep)
         {
-            string controller = (communication ? COMMUNICATION_C : DEVICE_C);
+            string controller = string.Empty;
+
+            if (mode == Endpoint.Communication)
+                controller = COMMUNICATION_C;
+            else if (mode == Endpoint.Device)
+                controller = DEVICE_C;
+            else if (mode == Endpoint.WOL)
+                controller = WOL_C;
+
             return $"{string.Format(BASE_URL, host)}{controller}/{ep}";
+        }
+
+        public enum Endpoint
+        {
+            Communication,
+            Device,
+            WOL
         }
     }
 }

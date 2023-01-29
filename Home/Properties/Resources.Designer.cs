@@ -853,6 +853,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Really? ähnelt.
+        /// </summary>
+        public static string strReally {
+            get {
+                return ResourceManager.GetString("strReally", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Reboot ähnelt.
         /// </summary>
         public static string strReboot {
@@ -1614,6 +1623,15 @@ namespace Home.Properties {
         public static string strValue {
             get {
                 return ResourceManager.GetString("strValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Wake Up (WOL) ähnelt.
+        /// </summary>
+        public static string strWakeUp {
+            get {
+                return ResourceManager.GetString("strWakeUp", resourceCulture);
             }
         }
         

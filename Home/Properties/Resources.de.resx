@@ -646,4 +646,10 @@
   <data name="strReport_MacAddress" xml:space="preserve">
     <value>Mac Adresse</value>
   </data>
+  <data name="strWakeUp" xml:space="preserve">
+    <value>Aufwecken (WOL)</value>
+  </data>
+  <data name="strReally" xml:space="preserve">
+    <value>Wirklich?</value>
+  </data>
 </root>

@@ -106,9 +106,9 @@ namespace Home
             App.OnShutdownOrRestart += App_OnShutdownOrRestart;
         }
 
-        private async void App_OnShutdownOrRestart(Device device, bool shutdown)
+        private async void App_OnShutdownOrRestart(Device device, bool shutdown, bool wol)
         {
-            await ShutdownOrRestartAsync(device, shutdown);
+            await ShutdownOrRestartAsync(device, shutdown, wol);
         }
 
         private async void ScreenshotViewer_OnScreenShotAquired(object sender, EventArgs e)
@@ -225,7 +225,7 @@ namespace Home
             RefreshOverview();
         }
 
-        private async Task ShutdownOrRestartAsync(Device d, bool shutdown)
+        private async Task ShutdownOrRestartAsync(Device d, bool shutdown, bool wol)
         {
             if (d == null)
                 return;
@@ -236,18 +236,33 @@ namespace Home
                 return;
             }
 
-            if (shutdown)
+            if (!wol)
             {
-                if (MessageBox.Show(string.Format(Home.Properties.Resources.strDoYouReallyWantToShutdownDevice, d.Name), "Wirklich?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
-                    return;
+                if (shutdown)
+                {
+                    if (MessageBox.Show(string.Format(Home.Properties.Resources.strDoYouReallyWantToShutdownDevice, d.Name), Home.Properties.Resources.strReally, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+                        return;
+                }
+                else
+                {
+                    if (MessageBox.Show(string.Format(Home.Properties.Resources.strDoYouReallyWantToRestartDevice, d.Name), Home.Properties.Resources.strReally, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+                        return;
+                }
+
+                await API.ShutdownOrRestartDeviceAsync(shutdown, d);
             }
             else
             {
-                if (MessageBox.Show(string.Format(Home.Properties.Resources.strDoYouReallyWantToRestartDevice, d.Name), "Wirklich?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+                // ToDo: *** Localize
+                if (MessageBox.Show(string.Format("Möchten Sie das Gerät \"{0}\" wirklich aufwecken?", d.Name), Home.Properties.Resources.strReally, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
                     return;
-            }
 
-            await API.ShutdownOrRestartDeviceAsync(shutdown, d);
+                var result = await API.WakeOnLanAsync(d);
+                if (result.Success)
+                    MessageBox.Show("Das Magic Paket wurde erfolgreich gesendet!", "Erfolg!", MessageBoxButton.OK, MessageBoxImage.Information);
+                else
+                    MessageBox.Show(string.Format("Das Magic Paket konnte nicht gesendet werden: {0}!", result.ErrorMessage), "Erfolg!", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
 
         private void RefreshOverview()
@@ -576,12 +591,17 @@ namespace Home
 
         private async void MenuButtonShutdown_Click(object sender, RoutedEventArgs e)
         {
-            await ShutdownOrRestartAsync(currentDevice, true);
+            await ShutdownOrRestartAsync(currentDevice, true, false);
         }
 
         private async void MenuButtonReboot_Click(object sender, RoutedEventArgs e)
         {
-            await ShutdownOrRestartAsync(currentDevice, false);
+            await ShutdownOrRestartAsync(currentDevice, false, false);
+        }
+
+        private async void MenuButtonWOL_Click(object sender, RoutedEventArgs e)
+        {
+            await ShutdownOrRestartAsync(currentDevice, false, true);
         }
 
         #endregion
@@ -779,8 +799,8 @@ namespace Home
             var result = await API.GetSchedulingRulesAsync();
             if (result.Success)
                 new ManageDeviceSchedule(result.Result).ShowDialog();
-            else
-                MessageBox.Show(string.Format("Fehler beim Abrufen der Daten: {0}", result.ErrorMessage), "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);   
+            else // ToDo: *** Localize
+                MessageBox.Show(string.Format("Fehler beim Abrufen der Daten: {0}", result.ErrorMessage), "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
