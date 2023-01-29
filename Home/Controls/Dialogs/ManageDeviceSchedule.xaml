@@ -4,11 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Home.Controls.Dialogs" xmlns:controls="clr-namespace:Home.Controls"
+        xmlns:res="clr-namespace:Home.Properties"
         mc:Ignorable="d"
         xmlns:converters="clr-namespace:Home.Converter"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
-        Title="Geräteregeln verwalten" Height="450" Width="800">    
+        Title="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Title}" Height="450" Width="800">    
     <Grid Margin="2">
         <Grid.Resources>
             <Style TargetType="TextBlock">
@@ -44,7 +45,7 @@
             </Grid.RowDefinitions>
 
             <StackPanel>
-                <TextBlock Text="Regeln:" />
+                <TextBlock Text="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Rules}" />
             </StackPanel>
 
             <ListBox x:Name="ListRules" SelectionChanged="ListRules_SelectionChanged" Grid.Row="1" Margin="0,2,0,0">
@@ -69,10 +70,10 @@
 
             <Grid Grid.Row="2">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button x:Name="ButtonAddRule" Click="ButtonAddRule_Click" Margin="5">
+                    <Button x:Name="ButtonAddRule" ToolTip="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_AddRule}" Click="ButtonAddRule_Click" Margin="5">
                         <Image Width="32" Source="../../resources/icons/managment/add.png" />
                     </Button>
-                    <Button x:Name="ButtonRemoveRule" Click="ButtonRemoveRule_Click" Margin="5">
+                    <Button x:Name="ButtonRemoveRule" ToolTip="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_RemoveRule}" Click="ButtonRemoveRule_Click" Margin="5">
                         <Image Width="32" Source="../../resources/icons/managment/remove.png" />
                     </Button>
                 </StackPanel>
@@ -86,13 +87,13 @@
             </Grid.RowDefinitions>
 
             <StackPanel>
-                <TextBlock Text="Name:" />
+                <TextBlock Text="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_RuleName}" />
                 <TextBox Text="{Binding Name}" FontWeight="Bold" />
-                <CheckBox IsChecked="{Binding IsActive}" Content="Regel ist aktiviert" />
+                <CheckBox IsChecked="{Binding IsActive}" Content="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_RuleIsActive}" />
             </StackPanel>
 
             <TabControl x:Name="MainTabControl" Margin="0,5,0,0" Grid.Row="1">
-                <TabItem Header="Allgemein">
+                <TabItem Header="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_General}">
                     <StackPanel Margin="5">
                         <TextBlock Text="Gerät:" />
                         <ComboBox x:Name="CmbDevices" Height="64" SelectionChanged="CmbDevices_SelectionChanged">
@@ -117,17 +118,17 @@
                         </ComboBox>
 
                         <TextBlock>
-                            <Run Text="Custom MAC Adresse (z.B." />
+                            <Run Text="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_CustomMacAddress}" />
                             <Run Text="A1:B2:C3:D4:E5:F6" FontFamily="Consolas" /><Run Text="):" />
                         </TextBlock>
 
                         <TextBox Text="{Binding CustomMacAddress}" FontFamily="Consolas" MaxLength="17" />
 
-                        <TextBlock Text="Beschreibung:" />
+                        <TextBlock Text="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_RuleDescription}" />
                         <TextBox Text="{Binding Description}" TextWrapping="Wrap" Height="80" AcceptsReturn="True" />
                     </StackPanel>                    
                 </TabItem>
-                <TabItem x:Name="TabBoot" Header="Hochfahren">
+                <TabItem x:Name="TabBoot" Header="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Boot}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -135,23 +136,23 @@
                         </Grid.RowDefinitions>
 
                         <StackPanel Margin="5">
-                            <TextBlock Text="Uhrzeit (HH:mm):" FontWeight="Bold" />
+                            <TextBlock Text="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Time}" FontWeight="Bold" />
                             <TextBox IsEnabled="{Binding Type, Converter={StaticResource typeToReadOnlyConverter}}" Text="{Binding Time}" MaxLength="5" MaxLines="1" />
 
-                            <TextBlock Text="Aktion:" />
+                            <TextBlock Text="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Action}" />
                             <ComboBox x:Name="CmbBootAction" SelectedIndex="{Binding Type, Converter={StaticResource enumToIndexConverter}}" >
-                                <ComboBoxItem Content="Keine" />
-                                <ComboBoxItem Content="Gerät per WOL wecken" />
-                                <ComboBoxItem Content="Externer API Aufruf" />
+                                <ComboBoxItem Content="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Action_None}" />
+                                <ComboBoxItem Content="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Action_WOL}"/>
+                                <ComboBoxItem Content="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Action_APICall}" />
                             </ComboBox>
                         </StackPanel>
 
                         <Border Margin="5" BorderBrush="LightGray" BorderThickness="1" CornerRadius="3" Grid.Row="1" Visibility="{Binding Type, Converter={StaticResource ruleToApiVisibilityConverter}, ConverterParameter=visibility}">
                             <StackPanel x:Name="PanelBootAPICall" Margin="5">
-                                <TextBlock Text="API Url:" />
+                                <TextBlock Text="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Action_APICall_ApiUrl}" />
                                 <TextBox Text="{Binding Url}" />
 
-                                <TextBlock Text="Http Methode:" />
+                                <TextBlock Text="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Action_APICall_Method}"/>
                                 <ComboBox SelectedIndex="{Binding HttpMethod, Converter={StaticResource enumToIndexConverter}}">
                                     <ComboBoxItem Content="GET" />
                                     <ComboBoxItem Content="POST" />
@@ -160,7 +161,7 @@
                         </Border>
                     </Grid>
                 </TabItem>
-                <TabItem x:Name="TabShutdown" Header="Herunterfahren">
+                <TabItem x:Name="TabShutdown" Header="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Shutdown}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -168,25 +169,25 @@
                         </Grid.RowDefinitions>
 
                         <StackPanel Margin="5">
-                            <TextBlock Text="Uhrzeit (HH:mm):" FontWeight="Bold" />
+                            <TextBlock Text="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Time}" FontWeight="Bold" />
                             <TextBox IsEnabled="{Binding Type, Converter={StaticResource typeToReadOnlyConverter}}" Text="{Binding Time}" MaxLength="5" MaxLines="1" />
 
-                            <TextBlock Text="Aktion:" />
+                            <TextBlock Text="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Action}" />
                             <ComboBox x:Name="CmbShutdownAction" SelectedIndex="{Binding Type, Converter={StaticResource enumToIndexConverter}}">
-                                <ComboBoxItem Content="Keine" />
-                                <ComboBoxItem Content="Herunterfahren" />
-                                <ComboBoxItem Content="Neustarten" />
-                                <ComboBoxItem Content="Befehl ausführen" />
-                                <ComboBoxItem Content="Externer API Aufruf" />
+                                <ComboBoxItem Content="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Action_None}" />
+                                <ComboBoxItem Content="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Shutdown}" />
+                                <ComboBoxItem Content="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Action_Reboot}" />
+                                <ComboBoxItem Content="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Action_ExecuteCommand}" />
+                                <ComboBoxItem Content="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Action_APICall}"/>
                             </ComboBox>
                         </StackPanel>
 
                         <Border Margin="5" BorderBrush="LightGray" BorderThickness="1" CornerRadius="3" Grid.Row="1" Visibility="{Binding Type, Converter={StaticResource ruleToApiVisibilityConverter}, ConverterParameter=visibility}">
                             <StackPanel x:Name="PanelShutdownAPICall" Margin="5">
-                                <TextBlock Text="API Url:" />
+                                <TextBlock Text="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Action_APICall_ApiUrl}" />
                                 <TextBox Text="{Binding Url}" />
 
-                                <TextBlock Text="Http Methode:" />
+                                <TextBlock Text="{x:Static res:Resources.HttpMethode}" />
                                 <ComboBox SelectedIndex="{Binding HttpMethod, Converter={StaticResource enumToIndexConverter}}">
                                     <ComboBoxItem Content="GET" />
                                     <ComboBoxItem Content="POST" />
@@ -196,14 +197,13 @@
 
                         <Border Margin="5" BorderBrush="LightGray" BorderThickness="1" CornerRadius="3" Grid.Row="1" Visibility="{Binding Type, Converter={StaticResource ruleToApiVisibilityConverter}, ConverterParameter=command}">
                             <StackPanel x:Name="PanelShutdownExecuteCommand" Margin="5">
-                                <TextBlock Text="Befehl:" />
+                                <TextBlock Text="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Action_Command_Executable}" />
                                 <TextBox Text="{Binding Executable}" />
 
-                                <TextBlock Text="Parameter:" />
+                                <TextBlock Text="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Action_Command_Parameter}" />
                                 <TextBox Text="{Binding Parameter}" />
                             </StackPanel>
                         </Border>
-
                     </Grid>
                 </TabItem>
             </TabControl>
@@ -211,8 +211,8 @@
 
         <Grid Background="WhiteSmoke" Grid.Row="1" Grid.ColumnSpan="2">
             <StackPanel Margin="5" Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button x:Name="ButtonApply" Click="ButtonApply_Click" Margin="0,0,5,0" Padding="5" Content="Übernehmen" Width="200" FontWeight="Bold" />
-                <Button x:Name="ButtoCancel" Click="ButtoCancel_Click" Margin="0,0,0,0" Content="Abbrechen" Width="150" />
+                <Button x:Name="ButtonApply" Click="ButtonApply_Click" Margin="0,0,5,0" Padding="5" Content="{x:Static res:Resources.strApply}" Width="200" FontWeight="Bold" />
+                <Button x:Name="ButtoCancel" Click="ButtoCancel_Click" Margin="0,0,0,0" Content="{x:Static res:Resources.strCancel}" Width="150" />
             </StackPanel>
         </Grid>
     </Grid>

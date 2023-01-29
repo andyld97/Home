@@ -61,6 +61,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die HTTP Method: ähnelt.
+        /// </summary>
+        public static string HttpMethode {
+            get {
+                return ResourceManager.GetString("HttpMethode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die About ähnelt.
         /// </summary>
         public static string strAbout {
@@ -169,6 +178,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Apply ähnelt.
+        /// </summary>
+        public static string strApply {
+            get {
+                return ResourceManager.GetString("strApply", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Sure? ähnelt.
         /// </summary>
         public static string strAreYouSure {
@@ -201,6 +219,15 @@ namespace Home.Properties {
         public static string strBit {
             get {
                 return ResourceManager.GetString("strBit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Cancel ähnelt.
+        /// </summary>
+        public static string strCancel {
+            get {
+                return ResourceManager.GetString("strCancel", resourceCulture);
             }
         }
         
@@ -385,6 +412,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Error retrieving the data: {0} ähnelt.
+        /// </summary>
+        public static string strDeviceScheduling_Settings_FailedToRecieveData {
+            get {
+                return ResourceManager.GetString("strDeviceScheduling_Settings_FailedToRecieveData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Start:  ähnelt.
         /// </summary>
         public static string strDeviceStart {
@@ -417,6 +453,15 @@ namespace Home.Properties {
         public static string strDoYouReallyWantToShutdownDevice {
             get {
                 return ResourceManager.GetString("strDoYouReallyWantToShutdownDevice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Do you really want to wake up the device &quot;{0}&quot;? ähnelt.
+        /// </summary>
+        public static string strDoYouReallyWantToWakeUpDevice {
+            get {
+                return ResourceManager.GetString("strDoYouReallyWantToWakeUpDevice", resourceCulture);
             }
         }
         
@@ -678,6 +723,249 @@ namespace Home.Properties {
         public static string strLocation {
             get {
                 return ResourceManager.GetString("strLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Manage rules ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedulingRules {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedulingRules", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Action: ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedulingRulesDialog_Action {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedulingRulesDialog_Action", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die External API Call ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedulingRulesDialog_Action_APICall {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedulingRulesDialog_Action_APICall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die API Url: ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedulingRulesDialog_Action_APICall_ApiUrl {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedulingRulesDialog_Action_APICall_ApiUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die HTTP Method: ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedulingRulesDialog_Action_APICall_Method {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedulingRulesDialog_Action_APICall_Method", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Command: ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedulingRulesDialog_Action_Command_Executable {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedulingRulesDialog_Action_Command_Executable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Parameters: ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedulingRulesDialog_Action_Command_Parameter {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedulingRulesDialog_Action_Command_Parameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Execute Command ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedulingRulesDialog_Action_ExecuteCommand {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedulingRulesDialog_Action_ExecuteCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die None ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedulingRulesDialog_Action_None {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedulingRulesDialog_Action_None", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Reboot ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedulingRulesDialog_Action_Reboot {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedulingRulesDialog_Action_Reboot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Wake up the machine via WOL ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedulingRulesDialog_Action_WOL {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedulingRulesDialog_Action_WOL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Add new rule ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedulingRulesDialog_AddRule {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedulingRulesDialog_AddRule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Boot ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedulingRulesDialog_Boot {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedulingRulesDialog_Boot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Custom MAC address (e.g. ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedulingRulesDialog_CustomMacAddress {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedulingRulesDialog_CustomMacAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die &lt;Empty Rule&gt; ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedulingRulesDialog_EmptyRule {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedulingRulesDialog_EmptyRule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Error while saving the rules: {0}! ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedulingRulesDialog_FailedToSaveRules {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedulingRulesDialog_FailedToSaveRules", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die General ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedulingRulesDialog_General {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedulingRulesDialog_General", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Delete selected rule ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedulingRulesDialog_RemoveRule {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedulingRulesDialog_RemoveRule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Description: ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedulingRulesDialog_RuleDescription {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedulingRulesDialog_RuleDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Rule is enabled ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedulingRulesDialog_RuleIsActive {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedulingRulesDialog_RuleIsActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Name: ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedulingRulesDialog_RuleName {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedulingRulesDialog_RuleName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Rules: ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedulingRulesDialog_Rules {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedulingRulesDialog_Rules", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Do you really want to cancel? All changes will be lost! ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedulingRulesDialog_SecurityQuestion {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedulingRulesDialog_SecurityQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Shutdown ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedulingRulesDialog_Shutdown {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedulingRulesDialog_Shutdown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Are you really sure you want to delete the rule &quot;{0}&quot;? ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedulingRulesDialog_SureToDeleteRule {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedulingRulesDialog_SureToDeleteRule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Time (HH:mm): ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedulingRulesDialog_Time {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedulingRulesDialog_Time", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Manage device rules ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedulingRulesDialog_Title {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedulingRulesDialog_Title", resourceCulture);
             }
         }
         
@@ -1632,6 +1920,24 @@ namespace Home.Properties {
         public static string strWakeUp {
             get {
                 return ResourceManager.GetString("strWakeUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die The Magic packet could not be sent: {0}! ähnelt.
+        /// </summary>
+        public static string strWOL_MagickPackageSendError {
+            get {
+                return ResourceManager.GetString("strWOL_MagickPackageSendError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die The Magic Packet has been successfully sent! ähnelt.
+        /// </summary>
+        public static string strWOL_SuccessfullySentPackage {
+            get {
+                return ResourceManager.GetString("strWOL_SuccessfullySentPackage", resourceCulture);
             }
         }
         

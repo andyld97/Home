@@ -24,6 +24,17 @@ namespace Home
             System.Threading.Thread.CurrentThread.CurrentUICulture = ci;
 #endif
 
+            // This is necessary if the languge will be changed before, than the menu won't get updated:
+            var deviceMenu = FindResource("DeviceMenu") as ContextMenu;
+            var first = deviceMenu.Items[0] as System.Windows.Controls.MenuItem;
+            first.Header = Home.Properties.Resources.strWakeUp;
+
+            var second = deviceMenu.Items[1] as System.Windows.Controls.MenuItem;
+            second.Header = Home.Properties.Resources.strShutdown;
+
+            var third = deviceMenu.Items[2] as System.Windows.Controls.MenuItem;
+            third.Header = Home.Properties.Resources.strReboot;
+
             ThemeHelper.ApplyTheme();
             base.OnStartup(e);
         }

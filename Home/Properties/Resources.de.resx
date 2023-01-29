@@ -652,4 +652,106 @@
   <data name="strReally" xml:space="preserve">
     <value>Wirklich?</value>
   </data>
+  <data name="strManageDeviceSchedulingRules" xml:space="preserve">
+    <value>Regeln verwalten</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_FailedToSaveRules" xml:space="preserve">
+    <value>Fehler beim Speichern der Regeln: {0}!</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_SecurityQuestion" xml:space="preserve">
+    <value>Möchten Sie wirklich abbrechen? Alle Änderungen gehen verloren!</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_SureToDeleteRule" xml:space="preserve">
+    <value>Sind Sie sich wirklich sicher, dass Sie die Regel "{0}" löschen möchten?</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_EmptyRule" xml:space="preserve">
+    <value>&lt;Leere Regel&gt;</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Action_APICall_ApiUrl" xml:space="preserve">
+    <value>API Url:</value>
+  </data>
+  <data name="strCancel" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="strApply" xml:space="preserve">
+    <value>Übernehmen</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Action_None" xml:space="preserve">
+    <value>Keine</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Action" xml:space="preserve">
+    <value>Aktion:</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Time" xml:space="preserve">
+    <value>Uhrzeit (HH:mm):</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Shutdown" xml:space="preserve">
+    <value>Herunterfahren</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Action_ExecuteCommand" xml:space="preserve">
+    <value>Befehl ausführen</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Action_Reboot" xml:space="preserve">
+    <value>Neustarten</value>
+  </data>
+  <data name="HttpMethode" xml:space="preserve">
+    <value>HTTP Methode:</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Action_Command_Executable" xml:space="preserve">
+    <value>Befehl:</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Boot" xml:space="preserve">
+    <value>Hochfahren</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_RuleDescription" xml:space="preserve">
+    <value>Beschreibung:</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_CustomMacAddress" xml:space="preserve">
+    <value>Custom MAC Adresse (z.B.</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_General" xml:space="preserve">
+    <value>Allgemein</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_RuleIsActive" xml:space="preserve">
+    <value>Regel ist aktiviert</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_RuleName" xml:space="preserve">
+    <value>Name:</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Rules" xml:space="preserve">
+    <value>Regeln:</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_AddRule" xml:space="preserve">
+    <value>Neue Regel hinzufügen</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_RemoveRule" xml:space="preserve">
+    <value>Ausgewählte Regel löschen</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Action_APICall" xml:space="preserve">
+    <value>Externer API Aufruf</value>
+  </data>
+  <data name="strDeviceScheduling_Settings_FailedToRecieveData" xml:space="preserve">
+    <value>Fehler beim Abrufen der Daten: {0}</value>
+  </data>
+  <data name="strDoYouReallyWantToWakeUpDevice" xml:space="preserve">
+    <value>Möchten Sie das Gerät "{0}" wirklich aufwecken?</value>
+  </data>
+  <data name="strWOL_SuccessfullySentPackage" xml:space="preserve">
+    <value>Das Magic Paket wurde erfolgreich versendet!</value>
+  </data>
+  <data name="strWOL_MagickPackageSendError" xml:space="preserve">
+    <value>Das Magic Paket konnte nicht gesendet werden: {0}!</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Title" xml:space="preserve">
+    <value>Geräteregeln verwalten</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Action_WOL" xml:space="preserve">
+    <value>Gerät per WOL wecken</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Action_APICall_Method" xml:space="preserve">
+    <value>HTTP Methode:</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_Action_Command_Parameter" xml:space="preserve">
+    <value>Parameter:</value>
+  </data>
 </root>

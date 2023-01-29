@@ -253,15 +253,14 @@ namespace Home
             }
             else
             {
-                // ToDo: *** Localize
-                if (MessageBox.Show(string.Format("Möchten Sie das Gerät \"{0}\" wirklich aufwecken?", d.Name), Home.Properties.Resources.strReally, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+                if (MessageBox.Show(string.Format(Home.Properties.Resources.strDoYouReallyWantToWakeUpDevice, d.Name), Home.Properties.Resources.strReally, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
                     return;
 
                 var result = await API.WakeOnLanAsync(d);
                 if (result.Success)
-                    MessageBox.Show("Das Magic Paket wurde erfolgreich gesendet!", "Erfolg!", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(Home.Properties.Resources.strWOL_SuccessfullySentPackage, Properties.Resources.strSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
                 else
-                    MessageBox.Show(string.Format("Das Magic Paket konnte nicht gesendet werden: {0}!", result.ErrorMessage), "Erfolg!", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(string.Format(Home.Properties.Resources.strWOL_MagickPackageSendError, result.ErrorMessage), Properties.Resources.strSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
@@ -799,8 +798,8 @@ namespace Home
             var result = await API.GetSchedulingRulesAsync();
             if (result.Success)
                 new ManageDeviceSchedule(result.Result).ShowDialog();
-            else // ToDo: *** Localize
-                MessageBox.Show(string.Format("Fehler beim Abrufen der Daten: {0}", result.ErrorMessage), "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);
+            else
+                MessageBox.Show(string.Format(Home.Properties.Resources.strDeviceScheduling_Settings_FailedToRecieveData, result.ErrorMessage), Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 

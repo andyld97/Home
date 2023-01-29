@@ -35,16 +35,6 @@ namespace Home.Controls.Dialogs
 
             CmbDevices.ItemsSource = MainWindow.W_INSTANCE.GetDevices();
 
-            /*DeviceSchedulingRule dsr = new DeviceSchedulingRule()
-            {
-                Description = "Dies ist eine Test Regel",
-                Name = "Server nachts ausschalten",
-                AssociatedDeviceId = "ee065cf7-4973-4bb3-bda4-2699b97cb2ce",
-                IsActive = true,
-            };
-
-            rules.Add(dsr);*/
-
             if (fetchedRules != null)
                 rules = new ObservableCollection<DeviceSchedulingRule>(fetchedRules);
 
@@ -95,7 +85,7 @@ namespace Home.Controls.Dialogs
 
         private void ButtonAddRule_Click(object sender, RoutedEventArgs e)
         {
-            rules.Add(new DeviceSchedulingRule() { Name = "<Empty Rule>" });
+            rules.Add(new DeviceSchedulingRule() { Name = Home.Properties.Resources.strManageDeviceSchedulingRulesDialog_EmptyRule });
         }
 
         private void CmbDevices_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -111,7 +101,7 @@ namespace Home.Controls.Dialogs
             if (ListRules.SelectedIndex == -1)
                 return;
 
-            if (MessageBox.Show(string.Format("Sind Sie sich wirklich sicher, dass Sie die Regel \"{0}\" löschen möchten?", currentRule.Name), "Wirklich löschen?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            if (MessageBox.Show(string.Format(Home.Properties.Resources.strManageDeviceSchedulingRulesDialog_SureToDeleteRule, currentRule.Name), Properties.Resources.strReally, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 rules.Remove(currentRule);
                 if (rules.Count == 0)
@@ -125,7 +115,7 @@ namespace Home.Controls.Dialogs
 
             if (!result.Success)
             {
-                MessageBox.Show($"Fehler beim Speichern der Regeln: {result.ErrorMessage}!", "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format(Home.Properties.Resources.strManageDeviceSchedulingRulesDialog_FailedToSaveRules, result.ErrorMessage), Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -139,7 +129,7 @@ namespace Home.Controls.Dialogs
 
         private bool AskSecurityQuestion()
         {
-            return MessageBox.Show("Möchten Sie wirklich abbrechen? Alle Änderungen gehen verloren!", "Wirklich?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes;
+            return MessageBox.Show(Home.Properties.Resources.strManageDeviceSchedulingRulesDialog_SecurityQuestion, Properties.Resources.strReally, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes;
         }
 
         private void ButtoCancel_Click(object sender, RoutedEventArgs e)

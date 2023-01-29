@@ -36,15 +36,15 @@
                 <Fluent:RibbonGroupBox Header="{x:Static res:Resources.strCommands}">
                     <Fluent:Button x:Name="MenuButtonSendMessage" Click="MenuButtonSendMessage_Click" Header="{x:Static res:Resources.strSendMessage}" LargeIcon="/resources/icons/menu/send_message.png"/>
                     <Fluent:DropDownButton Header="{x:Static res:Resources.strShutdownMenu}" LargeIcon="/resources/icons/menu/shutdown.png">
-                        <Fluent:MenuItem x:Name="MenuButtonWOL" Click="MenuButtonWOL_Click" Header="{x:Static res:Resources.strWakeUp}" Icon="/resources/icons/menu/shutdown.png" />
+                        <Fluent:MenuItem x:Name="MenuButtonWOL" Click="MenuButtonWOL_Click" Header="{x:Static res:Resources.strWakeUp}" Icon="/resources/icons/menu/wol.png" />
                         <Fluent:MenuItem x:Name="MenuButtonShutdown" Click="MenuButtonShutdown_Click" Header="{x:Static res:Resources.strShutdown}" Icon="/resources/icons/menu/shutdown.png" />
                         <Fluent:MenuItem x:Name="MenuButtonReboot" Click="MenuButtonReboot_Click" Header="{x:Static res:Resources.strReboot}" Icon="/resources/icons/menu/reboot.png" />
                     </Fluent:DropDownButton>
-                    <Fluent:Button x:Name="MenuButtonSendCommand" Click="MenuButtonSendCommand_Click" Header="{x:Static res:Resources.strExecuteCommand}" LargeIcon="/resources/icons/menu/run.png" />
+                    <Fluent:Button x:Name="MenuButtonSendCommand" Click="MenuButtonSendCommand_Click" Header="{x:Static res:Resources.strExecuteCommand}" LargeIcon="/resources/icons/menu/command.png" />
                 </Fluent:RibbonGroupBox>
                 
                 <Fluent:RibbonGroupBox Header="{x:Static res:Resources.strOperations}">
-                    <Fluent:Button x:Name="MenuButtonWakeOnLan" Click="MenuButtonWakeOnLan_Click" Header="Regel Verwaltung" LargeIcon="/resources/icons/menu/settings.png" />
+                    <Fluent:Button x:Name="MenuButtonWakeOnLan" Click="MenuButtonWakeOnLan_Click" Header="{x:Static res:Resources.strManageDeviceSchedulingRules}" LargeIcon="/resources/icons/menu/settings.png" />
                     <Fluent:Button x:Name="MenuButtonClearLog" Click="MenuButtonClearLog_Click" Header="{x:Static res:Resources.strClearLog}" LargeIcon="/resources/icons/menu/clear_log.png" />
                     <Fluent:Button x:Name="MenuButtonDeleteDevice" Click="MenuButtonDeleteDevice_Click" Header="{x:Static res:Resources.strDeleteDevice}" LargeIcon="/resources/icons/menu/add.png" />
                     <Fluent:Button Visibility="Collapsed" Header="{x:Static res:Resources.strRemoteShell}" LargeIcon="/resources/icons/menu/shell.png" IsEnabled="False" />
