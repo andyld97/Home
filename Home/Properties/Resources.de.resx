@@ -754,4 +754,7 @@
   <data name="strManageDeviceSchedulingRulesDialog_Action_Command_Parameter" xml:space="preserve">
     <value>Parameter:</value>
   </data>
+  <data name="strWOLNotPossible" xml:space="preserve">
+    <value>Dieses Gerät hat keine Mac Adresse gemeldet, daher ist Wake On LAN aktuell nicht möglich!</value>
+  </data>
 </root>

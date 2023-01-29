@@ -806,4 +806,7 @@
   <data name="strManageDeviceSchedulingRules" xml:space="preserve">
     <value>Manage rules</value>
   </data>
+  <data name="strWOLNotPossible" xml:space="preserve">
+    <value>This device has not reported a mac address, therefore Wake On LAN is currently not possible!</value>
+  </data>
 </root>

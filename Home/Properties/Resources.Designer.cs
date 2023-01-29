@@ -1942,6 +1942,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die This device has not reported a mac address, therefore Wake On LAN is currently not possible! ähnelt.
+        /// </summary>
+        public static string strWOLNotPossible {
+            get {
+                return ResourceManager.GetString("strWOLNotPossible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Yes ähnelt.
         /// </summary>
         public static string strYes {

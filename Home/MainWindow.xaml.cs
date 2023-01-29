@@ -253,8 +253,14 @@ namespace Home
             }
             else
             {
-                if (MessageBox.Show(string.Format(Home.Properties.Resources.strDoYouReallyWantToWakeUpDevice, d.Name), Home.Properties.Resources.strReally, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+                if (string.IsNullOrEmpty(d.MacAddress))
+                {
+                    MessageBox.Show(Home.Properties.Resources.strWOLNotPossible, Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
+                }
+
+                if (MessageBox.Show(string.Format(Home.Properties.Resources.strDoYouReallyWantToWakeUpDevice, d.Name), Home.Properties.Resources.strReally, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+                    return;           
 
                 var result = await API.WakeOnLanAsync(d);
                 if (result.Success)
