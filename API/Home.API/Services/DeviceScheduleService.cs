@@ -45,6 +45,8 @@ namespace Home.API.Services
                     await Task.Delay((int)TimeSpan.FromSeconds(0.25).TotalMilliseconds);
 
                     var now = DateTime.Now;
+                    // Test 
+                    // now = new DateTime(2023, 1, 30, 7, 55, 0);
 
                     // Make sure the service only runs once in a minute to prevent executing events multiple times!
                     if (lastServiceExecutionTime != DateTime.MinValue && lastServiceExecutionTime.Minute == now.Minute)
@@ -86,7 +88,7 @@ namespace Home.API.Services
 
                         if (rule.ShutdownRule.Type != ShutdownRule.ShutdownRuleType.None)
                         {
-                            var time = ParseTime(rule.BootRule.Time);
+                            var time = ParseTime(rule.ShutdownRule.Time);
                             if (time == (-1, -1))
                             {
                                 _logger.LogWarning("Ignoring scheduling rule due to invalid time ...");
@@ -133,7 +135,7 @@ namespace Home.API.Services
                 _logger.LogInformation($"Executing scheduled command {executable} {parameter} for device {deviceId} ...");
 
                 var device = await _context.Device.Include(d => d.DeviceCommand).FirstOrDefaultAsync(d => d.Guid == deviceId);
-                device.DeviceCommand.Add(new home.Models.DeviceCommand() { Device = device, Executable = executable, Parameter = parameter });
+                device.DeviceCommand.Add(new home.Models.DeviceCommand() { Device = device, Executable = executable, Parameter = parameter, Timestamp = DateTime.Now });
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
