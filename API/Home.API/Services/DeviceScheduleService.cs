@@ -64,6 +64,7 @@ namespace Home.API.Services
 
                     foreach (var rule in cache)
                     {
+                        if (!rule.IsActive) continue;
                         if (rule.BootRule == null && rule.ShutdownRule == null) continue;
 
                         if (rule.BootRule.Type != BootRule.BootRuleType.None)
@@ -122,12 +123,12 @@ namespace Home.API.Services
         #region Actions
 
         /// <summary>
-        /// 
+        /// Exceutes a command for a device given the deviceId, executable and parameter
         /// </summary>
-        /// <param name="deviceId"></param>
-        /// <param name="executable"></param>
-        /// <param name="parameter"></param>
-        /// <returns></returns>
+        /// <param name="_context">The db context</param>
+        /// <param name="deviceId">The device which will recieve the command</param>
+        /// <param name="executable">The executable to run on the device</param>
+        /// <param name="parameter">The parameters to run the process</param>
         private async Task ExecuteCommandAsync(HomeContext _context, string deviceId, string executable, string parameter)
         {
             try
@@ -145,11 +146,11 @@ namespace Home.API.Services
         }
 
         /// <summary>
-        /// 
+        /// Wakes up the given host
         /// </summary>
-        /// <param name="deviceId"></param>
-        /// <param name="customMacAddress"></param>
-        /// <returns></returns>
+        /// <param name="_context">The db context</param>
+        /// <param name="deviceId">The device id which will recieve the magic package</param>
+        /// <param name="customMacAddress">Optional overriden mac address (e.g. if device mac is not set)</param>
         private async Task ExecuteWakeOnLanAsync(HomeContext _context, string deviceId, string customMacAddress)
         {           
             string macAddress;
@@ -163,13 +164,13 @@ namespace Home.API.Services
         }
 
         /// <summary>
-        /// 
+        /// Executes an external api call.
         /// </summary>
-        /// <param name="deviceId"></param>
-        /// <param name="action"></param>
-        /// <param name="url"></param>
-        /// <param name="httpMethod"></param>
-        /// <returns></returns>
+        /// <param name="_context">The db context</param>
+        /// <param name="deviceId">The device id</param>
+        /// <param name="action">The action (e.g. boot or shutdown)</param>
+        /// <param name="url">The API Url</param>
+        /// <param name="httpMethod">GET or POST</param>
         private async Task ExecuteExternalAPICallAsync(HomeContext _context, string deviceId, string action, string url, RuleAPICallInfo.Method httpMethod)
         {
             using (HttpClient client = new HttpClient()) 
@@ -207,9 +208,11 @@ namespace Home.API.Services
         }
 
         /// <summary>
-        /// 
+        /// Executes a shutdown or restart for a given device
         /// </summary>
-        /// <returns></returns>
+        /// <param name="_context">The db context</param>
+        /// <param name="deviceId">The device id for which the command should be executed</param>
+        /// <param name="restart">true if restart; false for shutdown</param>
         private async Task ExecuteShutdownDeviceAsync(HomeContext _context, string deviceId, bool restart)
         {
             try
