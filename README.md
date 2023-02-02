@@ -61,6 +61,11 @@ To get this working you need to setup `Home.API` as a self-hosted API on your lo
 - Low battery warning (<= 10% left)
 - Device Log for each device
 - Device can have a location and a group (the location is used to group them in the overview by location)
+- WOL (Wake On Lan Support), you can boot device in the app
+- Device Scheduling Rules: You can schedule device rules
+   - Specify a time for a boot/shutdown rule
+   - Using a custom mac address (e.g. if system doesn't detects it correctly, or if its from the wrong device)
+   - Specify an action (WOL, external API call, exceuting a command etc.)
 - Can be used to monitor linux servers (``Home.Service.Linux`` is implemented as ``CLI``)
 - A screenshot will be aquired (if supported) if no screenshot is available or if the last screenshot is older than 12h (old screenshots will be removed by the ``HealthCheck-Timer``)
 - Home has a ``WPF-Client`` for displaying all devices
