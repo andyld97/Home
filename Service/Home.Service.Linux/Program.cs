@@ -477,7 +477,10 @@ namespace Home.Service.Linux
             if (childClass == "display")
                 device.Environment.GraphicCards = new System.Collections.ObjectModel.ObservableCollection<string> { child.Value<string>("product") };
             else if (childClass == "network" && string.IsNullOrEmpty(device.IP))
+            { 
                 device.IP = child.Value<JObject>("configuration").Value<string>("ip");
+                device.MacAddress = child.Value<string>("serial").ToUpper();
+            }
             else if (childClass == "disk" || childClass == "volume")
             {
                 string product = child.Value<string>("product");

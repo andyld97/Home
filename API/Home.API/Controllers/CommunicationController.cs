@@ -1,10 +1,12 @@
 ﻿using Home.API.Helper;
 using Home.API.home;
 using Home.API.home.Models;
+using Home.API.Services;
 using Home.Data;
 using Home.Data.Com;
 using Home.Data.Events;
 using Home.Model;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
@@ -173,8 +175,15 @@ namespace Home.API.Controllers
                 {
                     queue.LastClientRequest = DateTime.Now;
 
+                    List<EventQueueItem> items = new List<EventQueueItem>();
+                    items.AddRange(queue.LastAck);
+                    queue.LastAck.Clear();
+
                     if (queue.Events.Count > 0)
-                        return Ok(AnswerExtensions.Success(queue.Events.Dequeue()));
+                        items.Add(queue.Events.Dequeue());
+
+                    if (items.Count > 0)
+                        return Ok(AnswerExtensions.Success(items));
                     else
                         return BadRequest(new Answer<EventQueueItem>("ok", null) { ErrorMessage = "Queue is currently empty ..." });
                 }
@@ -445,6 +454,56 @@ namespace Home.API.Controllers
             
             return Ok(AnswerExtensions.Success("ok"));
         }
+
+        #region Update Device Scheduling Rules
+
+        /// <summary>
+        /// Returns all exisiting scheduling rules
+        /// </summary>
+        /// <returns>All previously scheduling rules (if any)</returns>
+        [HttpGet("SchedulingRules")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetSchedulingRules()
+        {
+            try
+            {
+                if (!System.IO.File.Exists(Program.DeviceSchedulingRulesPath))
+                    return NoContent();
+
+                return Ok(DeviceSchedulingRule.Load(Program.DeviceSchedulingRulesPath));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Replaces all scheduling rules with the parameter given
+        /// </summary>
+        /// <param name="rules">All scheduling rules to save</param>
+        /// <returns>Ok on success</returns>
+        [HttpPost("UpdateSchedulingRules")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult UpdateSchedulingRules(IEnumerable<DeviceSchedulingRule> rules)
+        {
+            try
+            {
+                DeviceSchedulingRule.Save(rules, Program.DeviceSchedulingRulesPath);
+                DeviceScheduleService.UpdateSchedulingRules = true;
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// Can be called to test the connection (also makes a dummy db call)

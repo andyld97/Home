@@ -14,6 +14,7 @@ using System;
 using System.Diagnostics.Tracing;
 using System.IO;
 using System.Reflection;
+using System.Xml.Serialization;
 
 namespace Home.API
 {
@@ -53,7 +54,9 @@ namespace Home.API
             });
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddHostedService<HealthCheckService>();
+            services.AddHostedService<DeviceScheduleService>();
             services.AddTransient<IDeviceAckService, DeviceAckService>();
+            services.AddSingleton<IWOLService, WOLService>();
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(options => 

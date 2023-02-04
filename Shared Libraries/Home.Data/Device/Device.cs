@@ -27,6 +27,7 @@ namespace Home.Model
 
         private string name;
         private string ip;
+        private string macAddress;
         private string guid = Guid.NewGuid().ToString();
         private DateTime lastSeen;
         private DeviceType type;
@@ -85,6 +86,23 @@ namespace Home.Model
                 {
                     ip = value;
                     OnPropertyChanged(nameof(IP));
+                }
+            }
+        }
+
+        [JsonProperty("mac_address")]
+#if !LEGACY
+        [System.Text.Json.Serialization.JsonPropertyName("mac_address")]
+#endif
+        public string MacAddress
+        {
+            get => macAddress;
+            set
+            {
+                if (value != macAddress)
+                {
+                    macAddress = value;
+                    OnPropertyChanged(nameof(MacAddress));
                 }
             }
         }
@@ -526,9 +544,15 @@ namespace Home.Model
         public void Update(Device other, DateTime lastSeen, DeviceStatus state, bool isLocal = false)
         {
             Name = other.Name;
+            
             // Only update if IP isn't empty
             if (!string.IsNullOrEmpty(other.IP))
                 IP = other.IP;
+
+            // Only update if MacAddress isn't empty
+            if (!string.IsNullOrEmpty(other.MacAddress))
+                MacAddress = other.MacAddress;
+
             LastSeen = lastSeen;
             Type = other.Type;
             Status = state;

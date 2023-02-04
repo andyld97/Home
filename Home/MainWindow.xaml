@@ -33,26 +33,36 @@
             </Fluent:Ribbon.Menu>
 
             <Fluent:RibbonTabItem Header="{x:Static res:Resources.strGeneral}">
-                <Fluent:RibbonGroupBox Header="Operationen">
+                <Fluent:RibbonGroupBox Header="{x:Static res:Resources.strCommands}">
                     <Fluent:Button x:Name="MenuButtonSendMessage" Click="MenuButtonSendMessage_Click" Header="{x:Static res:Resources.strSendMessage}" LargeIcon="/resources/icons/menu/send_message.png"/>
                     <Fluent:DropDownButton Header="{x:Static res:Resources.strShutdownMenu}" LargeIcon="/resources/icons/menu/shutdown.png">
+                        <Fluent:MenuItem x:Name="MenuButtonWOL" Click="MenuButtonWOL_Click" Header="{x:Static res:Resources.strWakeUp}" Icon="/resources/icons/menu/wol.png" />
                         <Fluent:MenuItem x:Name="MenuButtonShutdown" Click="MenuButtonShutdown_Click" Header="{x:Static res:Resources.strShutdown}" Icon="/resources/icons/menu/shutdown.png" />
                         <Fluent:MenuItem x:Name="MenuButtonReboot" Click="MenuButtonReboot_Click" Header="{x:Static res:Resources.strReboot}" Icon="/resources/icons/menu/reboot.png" />
                     </Fluent:DropDownButton>
-                    <Fluent:Button x:Name="MenuButtonSendCommand" Click="MenuButtonSendCommand_Click" Header="{x:Static res:Resources.strExecuteCommand}" LargeIcon="/resources/icons/menu/run.png" />
-                    <Fluent:Button Header="{x:Static res:Resources.strRemoteShell}" LargeIcon="/resources/icons/menu/shell.png" IsEnabled="False" />
-                    <Fluent:Button Header="{x:Static res:Resources.strRemoteConnection}" LargeIcon="/resources/icons/menu/rdp.png" IsEnabled="False" />
-                    <Fluent:Button Header="{x:Static res:Resources.strMuteSound}" LargeIcon="/resources/icons/menu/mute.png" IsEnabled="False" />
+                    <Fluent:Button x:Name="MenuButtonSendCommand" Click="MenuButtonSendCommand_Click" Header="{x:Static res:Resources.strExecuteCommand}" LargeIcon="/resources/icons/menu/command.png" />
+                </Fluent:RibbonGroupBox>
+                
+                <Fluent:RibbonGroupBox Header="{x:Static res:Resources.strOperations}">
+                    <Fluent:Button x:Name="MenuButtonWakeOnLan" Click="MenuButtonWakeOnLan_Click" Header="{x:Static res:Resources.strManageDeviceSchedulingRules}" LargeIcon="/resources/icons/menu/settings.png" />
                     <Fluent:Button x:Name="MenuButtonClearLog" Click="MenuButtonClearLog_Click" Header="{x:Static res:Resources.strClearLog}" LargeIcon="/resources/icons/menu/clear_log.png" />
+                    <Fluent:Button x:Name="MenuButtonDeleteDevice" Click="MenuButtonDeleteDevice_Click" Header="{x:Static res:Resources.strDeleteDevice}" LargeIcon="/resources/icons/menu/add.png" />
+                    <Fluent:Button Visibility="Collapsed" Header="{x:Static res:Resources.strRemoteShell}" LargeIcon="/resources/icons/menu/shell.png" IsEnabled="False" />
+                    <Fluent:Button Visibility="Collapsed" Header="{x:Static res:Resources.strRemoteConnection}" LargeIcon="/resources/icons/menu/rdp.png" IsEnabled="False" />
+                    <Fluent:Button Visibility="Collapsed" Header="{x:Static res:Resources.strMuteSound}" LargeIcon="/resources/icons/menu/mute.png" IsEnabled="False" />                    
+                </Fluent:RibbonGroupBox>
+
+                <Fluent:RibbonGroupBox Header="{x:Static res:Resources.strReport}">
                     <Fluent:Button x:Name="MenuButtonGenerateReport" Header="{x:Static res:Resources.strSaveReport}" LargeIcon="/resources/icons/menu/report.png" Click="MenuButtonGenerateReport_Click" />
+                    <Fluent:Button x:Name="MenuPrintReport" Header="{x:Static res:Resources.strSaveReport}" LargeIcon="/resources/icons/menu/pdf.png" Click="MenuPrintReport_Click" />
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
 
-            <Fluent:RibbonTabItem Header="{x:Static res:Resources.strManagment}">
+            <!--<Fluent:RibbonTabItem Header="{x:Static res:Resources.strManagment}">
                 <Fluent:RibbonGroupBox Header="{x:Static res:Resources.strTools}">
-                    <Fluent:Button x:Name="MenuButtonDeleteDevice" Click="MenuButtonDeleteDevice_Click" Header="{x:Static res:Resources.strDeleteDevice}" LargeIcon="/resources/icons/menu/add.png" />
+
                 </Fluent:RibbonGroupBox>
-            </Fluent:RibbonTabItem>
+            </Fluent:RibbonTabItem>-->
         </Fluent:Ribbon>
 
         <Border Grid.Row="1" BorderThickness="2" CornerRadius="5" BorderBrush="Gray" Margin="5,5,-1,5">

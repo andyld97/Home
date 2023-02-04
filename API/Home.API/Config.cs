@@ -86,6 +86,19 @@ namespace Home.API
         /// <summary>
         /// Timeformat for messages sent to the webhook endpoint
         /// </summary>
+        [JsonPropertyName("web_hook_date_time_format")]
         public string WebHookDateTimeFormat { get; set; } = "dd.MM.yyyy HH:mm";
+
+        /// <summary>
+        /// Set this to true if you want to get notified about screen changes in general (default is false)
+        /// </summary>
+        [JsonPropertyName("detect_screen_changes_as_a_device_change")]
+        public bool DetectScreenChangesAsDeviceChange { get; set; } = false;
+
+        /// <summary>
+        /// Change this port only if are troubleshooting wake on lan. Default is 9, but can be also 7 (ECHO-Channel)
+        /// </summary>
+        [JsonPropertyName("wake_on_lan_port")]
+        public int WakeOnLanPort { get; set; } = 9;
     }
 }

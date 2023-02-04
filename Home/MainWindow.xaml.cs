@@ -31,6 +31,8 @@ using Controls.Dialogs;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static Home.Model.DeviceChangeEntry;
+using Home.Data.Events;
+using static SkiaSharp.HarfBuzz.SKShaper;
 
 namespace Home
 {
@@ -77,6 +79,12 @@ namespace Home
             { }
         }
 
+        public IEnumerable<Device> GetDevices()
+        {
+            foreach (var device in deviceList)
+                yield return device;
+        }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -98,9 +106,9 @@ namespace Home
             App.OnShutdownOrRestart += App_OnShutdownOrRestart;
         }
 
-        private async void App_OnShutdownOrRestart(Device device, bool shutdown)
+        private async void App_OnShutdownOrRestart(Device device, bool shutdown, bool wol)
         {
-            await ShutdownOrRestartAsync(device, shutdown);
+            await ShutdownOrRestartAsync(device, shutdown, wol);
         }
 
         private async void ScreenshotViewer_OnScreenShotAquired(object sender, EventArgs e)
@@ -217,7 +225,7 @@ namespace Home
             RefreshOverview();
         }
 
-        private async Task ShutdownOrRestartAsync(Device d, bool shutdown)
+        private async Task ShutdownOrRestartAsync(Device d, bool shutdown, bool wol)
         {
             if (d == null)
                 return;
@@ -228,18 +236,38 @@ namespace Home
                 return;
             }
 
-            if (shutdown)
+            if (!wol)
             {
-                if (MessageBox.Show(string.Format(Home.Properties.Resources.strDoYouReallyWantToShutdownDevice, d.Name), "Wirklich?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
-                    return;
+                if (shutdown)
+                {
+                    if (MessageBox.Show(string.Format(Home.Properties.Resources.strDoYouReallyWantToShutdownDevice, d.Name), Home.Properties.Resources.strReally, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+                        return;
+                }
+                else
+                {
+                    if (MessageBox.Show(string.Format(Home.Properties.Resources.strDoYouReallyWantToRestartDevice, d.Name), Home.Properties.Resources.strReally, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+                        return;
+                }
+
+                await API.ShutdownOrRestartDeviceAsync(shutdown, d);
             }
             else
             {
-                if (MessageBox.Show(string.Format(Home.Properties.Resources.strDoYouReallyWantToRestartDevice, d.Name), "Wirklich?", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+                if (string.IsNullOrEmpty(d.MacAddress))
+                {
+                    MessageBox.Show(Home.Properties.Resources.strWOLNotPossible, Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
-            }
+                }
 
-            await API.ShutdownOrRestartDeviceAsync(shutdown, d);
+                if (MessageBox.Show(string.Format(Home.Properties.Resources.strDoYouReallyWantToWakeUpDevice, d.Name), Home.Properties.Resources.strReally, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+                    return;           
+
+                var result = await API.WakeOnLanAsync(d);
+                if (result.Success)
+                    MessageBox.Show(Home.Properties.Resources.strWOL_SuccessfullySentPackage, Properties.Resources.strSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
+                else
+                    MessageBox.Show(string.Format(Home.Properties.Resources.strWOL_MagickPackageSendError, result.ErrorMessage), Properties.Resources.strSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
 
         private void RefreshOverview()
@@ -293,6 +321,8 @@ namespace Home
             }
         }
 
+        #region Update / Process Events
+
         private async void UpdateTimer_Tick(object sender, EventArgs e)
         {
             lock (_lock)
@@ -307,113 +337,112 @@ namespace Home
             var result = await API.UpdateAsync(CLIENT);
             if (result.Success && result.Result != null)
             {
-                var @event = result.Result;
-
-                if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceScreenshotRecieved)
-                {
-                    // Update screenshot viewer
-                    if (currentDevice != null && currentDevice.ID == @event.DeviceID)
-                    {
-                        currentDevice.Update(@event.EventData.EventDevice, @event.EventData.EventDevice.LastSeen, @event.EventData.EventDevice.Status, true);
-                        await ScreenshotViewer.UpdateScreenshotAsync(currentDevice);
-                        await RefreshSelectedItem();
-                        RefreshDeviceHolder();
-                    }
-                    else
-                    {
-                        // Refresh other device an try to download the screenshot in advance
-                        var otherDevice = deviceList.FirstOrDefault(d => d.ID == @event.DeviceID);
-                        if (otherDevice != null)
-                        {
-                            otherDevice.Update(@event.EventData.EventDevice, @event.EventData.EventDevice.LastSeen, @event.EventData.EventDevice.Status, true);
-                            foreach (var shot in otherDevice.Screenshots)
-                                ScreenshotViewer.QueueScreenshotDownload(otherDevice, shot);
-                        }
-                    }
-                }
-                else
-                {
-                    if (deviceList.Any(d => d.ID == @event.DeviceID))
-                    {
-                        // Update 
-                        var oldDevice = deviceList.Where(d => d.ID == @event.DeviceID).FirstOrDefault();
-                        if (oldDevice != null)
-                        {
-                            if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.ACK)
-                            {
-                                bool updateScreenshot = false;
-                                if (oldDevice.Status == DeviceStatus.Active && @event.EventData.EventDevice.Status == DeviceStatus.Offline)
-                                {
-                                    // Update grayscale shot
-                                    updateScreenshot = true;
-                                }
-
-                                // deviceList[deviceList.IndexOf(oldDevice)] = device.EventData.EventDevice;
-                                oldDevice.Update(@event.EventData.EventDevice, @event.EventData.EventDevice.LastSeen, @event.EventData.EventDevice.Status, true);
-
-                                if (currentDevice == oldDevice)
-                                {
-                                    // lastSelectedDevice = device.EventData.EventDevice;
-                                    // RefreshSelectedItem();
-                                }
-
-                                await RefreshSelectedItem();
-                                RefreshDeviceHolder();
-
-                                if (updateScreenshot)
-                                    await ScreenshotViewer.UpdateScreenshotAsync(oldDevice);
-                            }
-                            else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.LogCleared)
-                            {
-                                oldDevice.LogEntries.Clear();
-                                await RefreshSelectedItem();
-                            }
-                            else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.LogEntriesRecieved)
-                            {
-                                oldDevice.LogEntries.Clear();
-                                foreach (var item in @event.EventData.EventDevice.LogEntries)
-                                    oldDevice.LogEntries.Add(item);
-
-                                await RefreshSelectedItem();
-                            }
-                            else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.LiveModeChanged)
-                            {
-                                oldDevice.LogEntries.Clear();
-                                foreach (var item in @event.EventData.EventDevice.LogEntries)
-                                    oldDevice.LogEntries.Add(item);
-
-                                oldDevice.IsLive = @event.EventData.EventDevice.IsLive;
-                                await RefreshSelectedItem();
-                            }
-                            else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceScreenshotRecieved)
-                            {
-                                // ToDo: *** Only recieve screenshot (probably await GetScreenshot(oldDevice)
-
-                            }
-                            else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceChangedState)
-                            {
-                                oldDevice.Status = @event.EventData.EventDevice.Status;
-
-                                // Refresh gui
-                                await RefreshSelectedItem();
-                                RefreshDeviceHolder();
-                            }
-                        }
-                    }
-                    else
-                    {
-                        deviceList.Add(@event.EventData.EventDevice);
-                        MessageBox.Show("New device added!", "New device!", MessageBoxButton.OK, MessageBoxImage.Information);
-                        RefreshDeviceHolder();
-                    }
-                }
+                foreach (var item in result.Result)
+                    await ProcessEventAsync(item);
             }
 
             lock (_lock)
             {
                 isUpdating = false;
             }
-        }       
+        }
+
+        private async Task ProcessEventAsync(EventQueueItem @event)
+        {
+            if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceScreenshotRecieved)
+            {
+                // Update screenshot viewer
+                if (currentDevice != null && currentDevice.ID == @event.DeviceID)
+                {
+                    currentDevice.Update(@event.EventData.EventDevice, @event.EventData.EventDevice.LastSeen, @event.EventData.EventDevice.Status, true);
+                    await ScreenshotViewer.UpdateScreenshotAsync(currentDevice);
+                    await RefreshSelectedItem();
+                    RefreshDeviceHolder();
+                }
+                else
+                {
+                    // Refresh other device an try to download the screenshot in advance
+                    var otherDevice = deviceList.FirstOrDefault(d => d.ID == @event.DeviceID);
+                    if (otherDevice != null)
+                    {
+                        otherDevice.Update(@event.EventData.EventDevice, @event.EventData.EventDevice.LastSeen, @event.EventData.EventDevice.Status, true);
+                        foreach (var shot in otherDevice.Screenshots)
+                            ScreenshotViewer.QueueScreenshotDownload(otherDevice, shot);
+                    }
+                }
+            }
+            else
+            {
+                if (deviceList.Any(d => d.ID == @event.DeviceID))
+                {
+                    // Update 
+                    var oldDevice = deviceList.Where(d => d.ID == @event.DeviceID).FirstOrDefault();
+                    if (oldDevice != null)
+                    {
+                        if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.ACK)
+                        {
+                            bool updateScreenshot = false;
+                            if (oldDevice.Status == DeviceStatus.Active && @event.EventData.EventDevice.Status == DeviceStatus.Offline)
+                            {
+                                // Update grayscale shot
+                                updateScreenshot = true;
+                            }
+
+                            oldDevice.Update(@event.EventData.EventDevice, @event.EventData.EventDevice.LastSeen, @event.EventData.EventDevice.Status, true);
+
+                            await RefreshSelectedItem();
+                            RefreshDeviceHolder();
+
+                            if (updateScreenshot)
+                                await ScreenshotViewer.UpdateScreenshotAsync(oldDevice);
+                        }
+                        else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.LogCleared)
+                        {
+                            oldDevice.LogEntries.Clear();
+                            await RefreshSelectedItem();
+                        }
+                        else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.LogEntriesRecieved)
+                        {
+                            oldDevice.LogEntries.Clear();
+                            foreach (var item in @event.EventData.EventDevice.LogEntries)
+                                oldDevice.LogEntries.Add(item);
+
+                            await RefreshSelectedItem();
+                        }
+                        else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.LiveModeChanged)
+                        {
+                            oldDevice.LogEntries.Clear();
+                            foreach (var item in @event.EventData.EventDevice.LogEntries)
+                                oldDevice.LogEntries.Add(item);
+
+                            oldDevice.IsLive = @event.EventData.EventDevice.IsLive;
+                            await RefreshSelectedItem();
+                        }
+                        else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceScreenshotRecieved)
+                        {
+                            // ToDo: *** Only recieve screenshot (probably await GetScreenshot(oldDevice))
+
+                        }
+                        else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceChangedState)
+                        {
+                            oldDevice.Status = @event.EventData.EventDevice.Status;
+
+                            // Refresh gui
+                            await RefreshSelectedItem();
+                            RefreshDeviceHolder();
+                        }
+                    }
+                }
+                else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.NewDeviceConnected)
+                {
+                    deviceList.Add(@event.EventData.EventDevice);
+                    RefreshDeviceHolder();
+                }
+            }
+        }
+
+
+        #endregion
 
         private async void DeviceHolder_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
@@ -567,12 +596,17 @@ namespace Home
 
         private async void MenuButtonShutdown_Click(object sender, RoutedEventArgs e)
         {
-            await ShutdownOrRestartAsync(currentDevice, true);
+            await ShutdownOrRestartAsync(currentDevice, true, false);
         }
 
         private async void MenuButtonReboot_Click(object sender, RoutedEventArgs e)
         {
-            await ShutdownOrRestartAsync(currentDevice, false);
+            await ShutdownOrRestartAsync(currentDevice, false, false);
+        }
+
+        private async void MenuButtonWOL_Click(object sender, RoutedEventArgs e)
+        {
+            await ShutdownOrRestartAsync(currentDevice, false, true);
         }
 
         #endregion
@@ -671,30 +705,6 @@ namespace Home
             SwitchFileManager(false);
         }
 
-        private async void MenuButtonGenerateReport_Click(object sender, RoutedEventArgs e)
-        {
-            if (currentDevice == null)
-                return;
-
-            var report = Report.GenerateHtmlDeviceReport(currentDevice, Properties.Resources.strDateTimeFormat);
-
-            SaveFileDialog sfd = new SaveFileDialog() { Filter = "HTML Report File (*.html)|*.html" };
-            sfd.FileName = $"{currentDevice.Name}.html";
-            var result = sfd.ShowDialog();
-
-            if (result.HasValue && result.Value)
-            {
-                try
-                {
-                    await System.IO.File.WriteAllTextAsync(sfd.FileName, report);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(this, $"{Home.Properties.Resources.strFailedToSaveReport}{Environment.NewLine}{ex.Message}", Home.Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-        }
-
         private void MenuButtonExit_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
@@ -718,6 +728,84 @@ namespace Home
         private void MenuButtonOpenAbout_Click(object sender, RoutedEventArgs e)
         {
             new AboutDialog().Show();
+        }
+
+        #region Report
+
+        private async void MenuButtonGenerateReport_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentDevice == null)
+                return;
+
+            var report = Report.GenerateHtmlDeviceReport(currentDevice, Properties.Resources.strDateTimeFormat);
+
+            SaveFileDialog sfd = new SaveFileDialog() { Filter = Home.Properties.Resources.strHtmlReportFilter };
+            sfd.FileName = $"{currentDevice.Name}.html";
+            var result = sfd.ShowDialog();
+
+            if (result.HasValue && result.Value)
+            {
+                try
+                {
+                    await System.IO.File.WriteAllTextAsync(sfd.FileName, report);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(this, $"{Home.Properties.Resources.strFailedToSaveReport}{Environment.NewLine}{ex.Message}", Home.Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private async void MenuPrintReport_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentDevice == null)
+                return;
+
+            int oldTabIndex = TabDevice.SelectedIndex;
+            TabDevice.SelectedIndex = TabDevice.Items.Count - 2;
+            await Task.Delay(500);
+
+            SaveFileDialog sfd = new SaveFileDialog() { Filter = Home.Properties.Resources.strHtmlReportFilterPDF };
+            sfd.FileName = $"{currentDevice.Name}.pdf";
+            var result = sfd.ShowDialog();
+
+            // Note we can only print if the view is already rendered!
+            if (result.HasValue && result.Value)
+                await webViewReport.CoreWebView2.PrintToPdfAsync(sfd.FileName);
+
+            // Restore old tab index
+            TabDevice.SelectedIndex = oldTabIndex;
+
+            // webViewReport.NavigationStarting += WebViewReport_NavigationStarting;
+            // webViewReport.CoreWebView2.ExecuteScriptAsync("window.print();");            
+        }
+
+        /*private void WebViewReport_NavigationStarting(object sender, CoreWebView2NavigationStartingEventArgs e)
+        {
+            webViewReport.CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
+        }
+
+        private void WebViewReport_Initialized(object sender, EventArgs e)
+        {
+       
+        }
+
+        private void CoreWebView2_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
+        {
+            webViewReport.CoreWebView2.PrintToPdfAsync(@"F:\Eigene Dateien\Desktop\test.pdf");
+            webViewReport.CoreWebView2.NavigationCompleted -= CoreWebView2_NavigationCompleted;
+            webViewReport.NavigationStarting -= WebViewReport_NavigationStarting;
+        }*/
+
+        #endregion
+
+        private async void MenuButtonWakeOnLan_Click(object sender, RoutedEventArgs e)
+        {
+            var result = await API.GetSchedulingRulesAsync();
+            if (result.Success)
+                new ManageDeviceSchedule(result.Result).ShowDialog();
+            else
+                MessageBox.Show(string.Format(Home.Properties.Resources.strDeviceScheduling_Settings_FailedToRecieveData, result.ErrorMessage), Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 

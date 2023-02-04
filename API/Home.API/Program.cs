@@ -34,6 +34,7 @@ namespace Home.API
         public static Webhook WebHook;
 
         public static Config GlobalConfig;
+        public static string DeviceSchedulingRulesPath;
 
         public static IHost App { get; private set; }
 
@@ -46,6 +47,8 @@ namespace Home.API
             // Initalize config.json to GlobalConfig
             // Read config json (if any) [https://stackoverflow.com/a/28700387/6237448]
             string configPath = System.IO.Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "config.json");
+            DeviceSchedulingRulesPath = System.IO.Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "scheduling.json");
+
             if (System.IO.File.Exists(configPath))
             {
                 try

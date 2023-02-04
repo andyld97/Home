@@ -25,6 +25,8 @@
             </Grid>
         </DataTemplate>
     </UserControl.Resources>
-    
-    <StackPanel x:Name="ViewHolder" />
+
+    <ScrollViewer>
+        <StackPanel x:Name="ViewHolder" />
+    </ScrollViewer>
 </UserControl>

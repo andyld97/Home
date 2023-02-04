@@ -13,9 +13,10 @@ namespace Home.Measure.Windows
     /// </summary>
     public static class NET
     {
-        public static string DetermineIPAddress()
+        public static AddressResult DetermineIPAddress()
         {
             string returnAddress = string.Empty;
+            string macAddress = string.Empty;
 
             try
             {
@@ -46,6 +47,7 @@ namespace Home.Measure.Windows
                                 continue;
 
                             returnAddress = address.Address.ToString();
+                            macAddress = BitConverter.ToString(network.GetPhysicalAddress().GetAddressBytes()).Replace("-", ":");
                         }
                     }
                 }
@@ -55,7 +57,10 @@ namespace Home.Measure.Windows
 
             }
 
-            return returnAddress;
+            AddressResult result = new AddressResult();
+            result.IpAddress = returnAddress;
+            result.MacAddress = macAddress;
+            return result;
         }
 
 
@@ -227,5 +232,12 @@ namespace Home.Measure.Windows
 
             return null;
         }
+    }
+
+    public struct AddressResult
+    {
+        public string IpAddress { get; set; }
+
+        public string MacAddress { get; set; }
     }
 }
