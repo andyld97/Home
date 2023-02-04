@@ -66,6 +66,7 @@ To get this working you need to setup `Home.API` as a self-hosted API on your lo
    - Specify a time for a boot/shutdown rule
    - Using a custom mac address (e.g. if system doesn't detects it correctly, or if its from the wrong device)
    - Specify an action (WOL, external API call, exceuting a command etc.)
+   - Check out the wiki (https://github.com/andyld97/Home/wiki/Wake-On-LAN---Device-Scheduling) for more information
 - Can be used to monitor linux servers (``Home.Service.Linux`` is implemented as ``CLI``)
 - A screenshot will be aquired (if supported) if no screenshot is available or if the last screenshot is older than 12h (old screenshots will be removed by the ``HealthCheck-Timer``)
 - Home has a ``WPF-Client`` for displaying all devices
