@@ -95,7 +95,9 @@
             <TabControl x:Name="MainTabControl" Margin="0,5,0,0" Grid.Row="1">
                 <TabItem Header="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_General}">
                     <StackPanel Margin="5">
-                        <TextBlock Text="Gerät:" />
+                        <TextBlock>
+                            <Run Text="{x:Static res:Resources.strDevice}" /><Run Text=":" />
+                        </TextBlock>
                         <ComboBox x:Name="CmbDevices" Height="64" SelectionChanged="CmbDevices_SelectionChanged">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
