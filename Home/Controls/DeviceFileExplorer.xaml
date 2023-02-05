@@ -72,6 +72,7 @@
                 <ColumnDefinition Width="2*" />
                 <ColumnDefinition x:Name="ColumnPreview" Width="0" />
             </Grid.ColumnDefinitions>
+            
             <DataGrid MouseDoubleClick="Data_MouseDoubleClick" SelectionChanged="Data_SelectionChanged" x:Name="Data" IsReadOnly="True" BorderThickness="0" GridLinesVisibility="None" Background="{DynamicResource WhiteBrush}">
                 <DataGrid.CellStyle>
                     <Style TargetType="DataGridCell">
@@ -152,7 +153,7 @@
                     </Grid.RowDefinitions>
 
                     <Grid>
-                        <TextBlock Margin="5,2" Text="Vorschau:" FontWeight="Bold" />
+                        <TextBlock Margin="5,2" Text="{x:Static res:Resources.strPreview}" FontWeight="Bold" />
                     </Grid>
 
                     <Grid Grid.Row="1">

@@ -59,12 +59,12 @@ namespace Home.Controls
             }
             else if (result != null)
             {
-                MessageBox.Show($"Fehler beim Abrufen des Ordners: {path}!{Environment.NewLine}{Environment.NewLine}{result.ErrorMessage}", "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"{Home.Properties.Resources.strFailedToDownloadFolder} {path}!{Environment.NewLine}{Environment.NewLine}{result.ErrorMessage}", Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
                 OnHomeButtonPressed?.Invoke();
             }
             else
             {
-                MessageBox.Show($"Fehler beim Abrufen des Ordners: {path}!", "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"{Home.Properties.Resources.strFailedToDownloadFolder} {path}!", Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
                 OnHomeButtonPressed?.Invoke();
             }
         }
@@ -180,7 +180,7 @@ namespace Home.Controls
                 string ext = System.IO.Path.GetExtension(rf.Path).ToLower();
                 SaveFileDialog sfd = new SaveFileDialog
                 {
-                    Filter = $"{ext}-Datei|{ext}",
+                    Filter = $"{ext}-{Properties.Resources.strFile}|{ext}",
                     FileName = System.IO.Path.GetFileName(rf.Path)
                 };
 
@@ -190,9 +190,9 @@ namespace Home.Controls
                     var apiResult = await remoteAPI.DownloadFileAsync(rf.Path, sfd.FileName);
 
                     if (apiResult != null && apiResult.Success)
-                        MessageBox.Show("Fertig!", "Erfolg!", MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show(Home.Properties.Resources.strReady, Properties.Resources.strSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
                     else  
-                        MessageBox.Show($"Fehler beim Herunterladen der Datei: {rf.Path}!{Environment.NewLine}{Environment.NewLine}{apiResult.ErrorMessage}", "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show($"{Home.Properties.Resources.strFailedToDownloadFile} {rf.Path}!{Environment.NewLine}{Environment.NewLine}{apiResult.ErrorMessage}", Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
@@ -203,8 +203,8 @@ namespace Home.Controls
             {
                 SaveFileDialog sfd = new SaveFileDialog
                 {
-                    Filter = $"ZIP-Datei|.zip",
-                    FileName = System.IO.Path.GetFileName(rd.Path) + ".zip"
+                    Filter = $"ZIP-{Properties.Resources.strFile}|.zip",
+                    FileName = $"{System.IO.Path.GetFileName(rd.Path)}.zip"
                 };
 
                 var result = sfd.ShowDialog();
@@ -214,28 +214,31 @@ namespace Home.Controls
                     var apiResult = await remoteAPI.DownloadFolderAsync(rd.Path, sfd.FileName);
 
                     if (apiResult != null && apiResult.Success)
-                        MessageBox.Show("Fertig!", "Erfolg!", MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show(Home.Properties.Resources.strReady, Properties.Resources.strSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
                     else
-                        MessageBox.Show($"Fehler beim Herunterladen der Datei: {rd.Path}!{Environment.NewLine}{Environment.NewLine}{apiResult.ErrorMessage}", "Fehler!", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show($"{Home.Properties.Resources.strFailedToDownloadFile} {rd.Path}!{Environment.NewLine}{Environment.NewLine}{apiResult.ErrorMessage}", Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
         #endregion
 
+        #region Menu Buttons
         private void MenuDelete_Click(object sender, RoutedEventArgs e)
         {
-
+            // ToDo: *** Impl
         }
 
         private void MenuDeleteDirectory_Click(object sender, RoutedEventArgs e)
         {
-
+            // ToDo: *** Impl
         }
 
         private void MenuProperties_Click(object sender, RoutedEventArgs e)
         {
-
+            // ToDo: *** Impl
         }
+
+        #endregion
 
         private async void Data_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

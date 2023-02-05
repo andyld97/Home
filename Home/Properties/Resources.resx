@@ -809,4 +809,16 @@
   <data name="strWOLNotPossible" xml:space="preserve">
     <value>This device has not reported a mac address, therefore Wake On LAN is currently not possible!</value>
   </data>
+  <data name="strPreview" xml:space="preserve">
+    <value>Preview:</value>
+  </data>
+  <data name="strReady" xml:space="preserve">
+    <value>Ready!</value>
+  </data>
+  <data name="strFailedToDownloadFile" xml:space="preserve">
+    <value>Error downloading the file:</value>
+  </data>
+  <data name="strFailedToDownloadFolder" xml:space="preserve">
+    <value>Error while retrieving the folder:</value>
+  </data>
 </root>

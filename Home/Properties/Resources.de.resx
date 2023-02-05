@@ -757,4 +757,16 @@
   <data name="strWOLNotPossible" xml:space="preserve">
     <value>Dieses Gerät hat keine Mac Adresse gemeldet, daher ist Wake On LAN aktuell nicht möglich!</value>
   </data>
+  <data name="strFailedToDownloadFile" xml:space="preserve">
+    <value>Fehler beim Herunterladen der Datei:</value>
+  </data>
+  <data name="strFailedToDownloadFolder" xml:space="preserve">
+    <value>Fehler beim Abrufen des Ordners:</value>
+  </data>
+  <data name="strPreview" xml:space="preserve">
+    <value>Vorschau:</value>
+  </data>
+  <data name="strReady" xml:space="preserve">
+    <value>Fertig!</value>
+  </data>
 </root>

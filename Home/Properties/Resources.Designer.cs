@@ -502,6 +502,24 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Error downloading the file: ähnelt.
+        /// </summary>
+        public static string strFailedToDownloadFile {
+            get {
+                return ResourceManager.GetString("strFailedToDownloadFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Error while retrieving the folder: ähnelt.
+        /// </summary>
+        public static string strFailedToDownloadFolder {
+            get {
+                return ResourceManager.GetString("strFailedToDownloadFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Failed to save the report! ähnelt.
         /// </summary>
         public static string strFailedToSaveReport {
@@ -1105,6 +1123,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Preview: ähnelt.
+        /// </summary>
+        public static string strPreview {
+            get {
+                return ResourceManager.GetString("strPreview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Print Report ähnelt.
         /// </summary>
         public static string strPrintReport {
@@ -1137,6 +1164,15 @@ namespace Home.Properties {
         public static string strRAMDescription {
             get {
                 return ResourceManager.GetString("strRAMDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Ready! ähnelt.
+        /// </summary>
+        public static string strReady {
+            get {
+                return ResourceManager.GetString("strReady", resourceCulture);
             }
         }
         
