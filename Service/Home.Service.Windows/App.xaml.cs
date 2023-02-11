@@ -18,8 +18,14 @@ namespace Home.Service.Windows
             webBuilder.UseUrls($"http://0.0.0.0:{Consts.API_PORT}");
         });
 
-        private void Application_Startup(object sender, StartupEventArgs e)
+        private async void Application_Startup(object sender, StartupEventArgs e)
         {
+            if (await UpdateService.CheckForUpdatesAsync() == true)
+            {
+                await UpdateService.UpdateServiceClient();
+                return;
+            }
+
             Thread thread = new Thread(new ParameterizedThreadStart((_) =>
             {
                 var args = Environment.GetCommandLineArgs();
