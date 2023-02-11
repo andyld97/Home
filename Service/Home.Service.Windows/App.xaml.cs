@@ -22,8 +22,8 @@ namespace Home.Service.Windows
         {
             if (await UpdateService.CheckForUpdatesAsync() == true)
             {
-                await UpdateService.UpdateServiceClient();
-                return;
+                if (await UpdateService.UpdateServiceClient())
+                    return;
             }
 
             Thread thread = new Thread(new ParameterizedThreadStart((_) =>

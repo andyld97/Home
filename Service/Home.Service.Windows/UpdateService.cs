@@ -164,6 +164,7 @@ namespace Home.Service.Windows
                 // Create a new task definition and assign properties
                 TaskDefinition td = ts.NewTask();
                 td.RegistrationInfo.Description = description;
+                td.Principal.RunLevel = TaskRunLevel.Highest;
 
                 // Create a trigger that will fire only once (EndBoundary)
                 td.Triggers.Add(new RegistrationTrigger() { Delay = delay, EndBoundary = endBoundary });
