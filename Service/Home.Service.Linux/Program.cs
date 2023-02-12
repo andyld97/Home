@@ -53,6 +53,11 @@ namespace Home.Service.Linux
                 int debug = 0;
 #endif
 
+
+                // ToDo: *** CheckForUpdates (ClientUpdate.dll is already compatible with Linux)
+                // It would be useful to specify the path of dotnet (/usr/bin/dotnet) in the config, so we can
+                // start the updating process from here with the correct dotnet installation.
+
                 Thread apiThread = new Thread(new ParameterizedThreadStart((_) =>
                 {
                     var args = Environment.GetCommandLineArgs();
@@ -200,7 +205,7 @@ namespace Home.Service.Linux
 
                         }
 
-                        Console.WriteLine("Showing message " + shellScript);
+                        Console.WriteLine($"Showing message: {shellScript}");
                         Helper.ExecuteSystemCommand("sudo", $"-H -u {NormalUser} bash -c \"sh zenity.sh\"", async: true);
                         Console.WriteLine("Test");
                     }

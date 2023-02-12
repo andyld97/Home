@@ -37,6 +37,7 @@ namespace Home.Service.Windows.Model
         private OSType osType;
         private DeviceType deviceType;
         private string apiURL = "http://192.168.178.38:83";
+        private DateTime lastUpdateCheck = DateTime.MinValue;
         public event PropertyChangedEventHandler PropertyChanged;
 
         public string ID 
@@ -139,6 +140,19 @@ namespace Home.Service.Windows.Model
                 {
                     location = value;
                     NotifyPropertyChanged(nameof(Location));
+                }
+            }
+        }
+
+        public DateTime LastUpdateCheck
+        {
+            get => lastUpdateCheck;
+            set
+            {
+                if (lastUpdateCheck != value)
+                {
+                    lastUpdateCheck = value;
+                    NotifyPropertyChanged(nameof(LastUpdateCheck));
                 }
             }
         }

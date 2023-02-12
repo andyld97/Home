@@ -8,23 +8,23 @@
         xmlns:res="clr-namespace:Home.Service.Windows.Properties"
         ShowInTaskbar="False"
         Title="Home Service Client" SizeToContent="Height" Width="400" Loaded="Window_Loaded">
-    <Grid>
+    <Grid Margin="5">
         <Expander x:Name="ExpanderSettings" Header="{x:Static res:Resources.strDeviceSettings}" IsExpanded="True" IsEnabled="True">
             <StackPanel>
                 <StackPanel.Resources>
                     <Style TargetType="{x:Type TextBlock}">
                         <Setter Property="Margin" Value="2" />
-                        <Setter Property="Padding" Value="0" />
+                        <Setter Property="Padding" Value="2" />
                     </Style>
                     <Style TargetType="{x:Type ComboBox}">
                         <Setter Property="Margin" Value="1" />
                         <Setter Property="Padding" Value="4" />
                     </Style>
                     <Style TargetType="{x:Type TextBox}">
-                        <Setter Property="Padding" Value="2" />
+                        <Setter Property="Padding" Value="3" />
                     </Style>
                 </StackPanel.Resources>
-                
+
                 <TextBlock Text="{x:Static res:Resources.strAPIUrl}" />
                 <TextBox x:Name="TextAPIUrl" Text="http://192.168.178.38:83" />
 
@@ -39,7 +39,7 @@
                         <ComboBoxItem Content="Linux" />
                         <ComboBoxItem Content="Ubuntu" />
                         <ComboBoxItem Content="Mint" />
-                    </ComboBox.Items>                   
+                    </ComboBox.Items>
                 </ComboBox>
 
                 <TextBlock Text="{x:Static res:Resources.strDeviceType}" />
@@ -59,7 +59,6 @@
                 <TextBox x:Name="TextGroup" />
 
                 <Button x:Name="ButtonInitalize" Click="ButtonInitalize_Click" HorizontalAlignment="Left" Content="{x:Static res:Resources.strInitalize}" Margin="3" Padding="3" Width="200" />
-
             </StackPanel>
         </Expander>
     </Grid>

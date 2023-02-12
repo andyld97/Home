@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32.TaskScheduler;
+﻿using Home.Service.Windows.Model;
+using Microsoft.Win32.TaskScheduler;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Home.Service.Windows
 {
@@ -22,42 +24,60 @@ namespace Home.Service.Windows
 
         public static async Task<bool?> CheckForUpdatesAsync()
         {
+            bool? result = null;
             try
             {
-                using (HttpClient client = new HttpClient())
+                if (ServiceData.Instance.LastUpdateCheck != DateTime.MinValue && ServiceData.Instance.LastUpdateCheck.AddDays(1) >= DateTime.Now)
                 {
-                    var versions = await client.GetAsync(VersionUrl);                    
-                    versions.EnsureSuccessStatusCode();
-                    string versionsJson = await versions.Content.ReadAsStringAsync();
-
-                    var vObj = JObject.Parse(versionsJson);
-
-                    string version = vObj["Home.Service.Windows"].Value<string>();
-                    if (Version.Parse(version) > typeof(UpdateService).Assembly.GetName().Version)
-                        return true;
-                    else
-                    {
-                        // Check if setup still exists, then clean up
-                        if (System.IO.File.Exists(LocalSetupFileName))
-                        {
-                            try
-                            {
-                                System.IO.File.Delete(LocalSetupFileName);
-                            }
-                            catch
-                            {
-                                // ignore
-                            }
-                        }
-                        return false;
-                    }
+                    // This is to prevent, that if an update fails, then it would be executed still on each start
+                    // With this lock the update can be exectued in now+1day
+                    result = null;
                 }
+                else
+                { 
+                    using (HttpClient client = new HttpClient())
+                    {
+                        var versions = await client.GetAsync(VersionUrl);
+                        versions.EnsureSuccessStatusCode();
+                        string versionsJson = await versions.Content.ReadAsStringAsync();
+
+                        var vObj = JObject.Parse(versionsJson);
+
+                        string version = vObj["Home.Service.Windows"].Value<string>();
+                        if (Version.Parse(version) > typeof(UpdateService).Assembly.GetName().Version)
+                        {
+                            ServiceData.Instance.LastUpdateCheck = DateTime.Now;
+                            result = true;
+                        }
+                        else
+                        {
+                            // Check if setup still exists, then clean up
+                            if (System.IO.File.Exists(LocalSetupFileName))
+                            {
+                                try
+                                {
+                                    System.IO.File.Delete(LocalSetupFileName);
+                                }
+                                catch
+                                {
+                                    // ignore
+                                }
+                            }
+
+                            ServiceData.Instance.LastUpdateCheck = DateTime.Now;
+                            result = false;
+                        }
+                    }
+            }
             }
             catch (Exception ex)
             {
                 Trace.TraceWarning($"Failed to search for updates: {ex.Message}");
-                return null;
+                result = null;
             }
+
+            ServiceData.Instance.Save();
+            return result;
         }
 
         public static async Task<bool> UpdateServiceClient()
@@ -73,10 +93,10 @@ namespace Home.Service.Windows
                 try
                 {
                     // Scheduling setup execution (language is always set to english, because it's just the language of the setup itself)
-                    ScheduleTask("Home Update",
+                    /*ScheduleTask("Home Update",
                                  "Updates Home.Service.Windows",
                                  LocalSetupFileName,
-                                 " /sp /verysilent /supressmsgboxes /lang=\"english\" /forcecloseapplications",
+                                 " /sp /verysilent /supressmsgboxes /lang=\"english\" /forcecloseapplications /log=\"D:\\log.txt\"",
                                  TimeSpan.FromSeconds(5),
                                  now.AddSeconds(50));
 
@@ -86,7 +106,15 @@ namespace Home.Service.Windows
                                  currentServiceExecutable,
                                  string.Empty,
                                  TimeSpan.FromMinutes(1),
-                                 now.AddMinutes(2));
+                                 now.AddMinutes(2));*/
+                    string updaterLocation = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(currentServiceExecutable), "ClientUpdate.exe");
+                    string arguments = $"\"{LocalSetupFileName}\" \"{currentServiceExecutable}\"";
+
+                    Process.Start(new ProcessStartInfo()
+                    {
+                        FileName = updaterLocation,
+                        Arguments = arguments
+                    });
 
                     // Exit to ensure that the setup can run without any problems
                     Environment.Exit(0);
@@ -164,7 +192,7 @@ namespace Home.Service.Windows
                 // Create a new task definition and assign properties
                 TaskDefinition td = ts.NewTask();
                 td.RegistrationInfo.Description = description;
-                td.Principal.RunLevel = TaskRunLevel.Highest;
+                //td.Principal.RunLevel = TaskRunLevel.Highest;
 
                 // Create a trigger that will fire only once (EndBoundary)
                 td.Triggers.Add(new RegistrationTrigger() { Delay = delay, EndBoundary = endBoundary });
