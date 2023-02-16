@@ -9,7 +9,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,7 +27,7 @@ namespace Home.Service.Linux
         private static readonly Device currentDevice = new Device();
         private static readonly DateTime startTime = DateTime.Now;
         private static Home.Communication.API api;
-        private static JObject jInfo = null;
+        private static JObject config = null;
 
         private static readonly string CONFIG_FILENAME = "config.json";
         private static readonly Timer ackTimer = new Timer();
@@ -53,10 +55,29 @@ namespace Home.Service.Linux
                 int debug = 0;
 #endif
 
+                // Read config 
+                string configJson = System.IO.File.ReadAllText(CONFIG_FILENAME);
+
+                // Strip comments
+                configJson = Regex.Replace(configJson, @"/\*(.*?)\*/", string.Empty, RegexOptions.Singleline);
+                config = JsonConvert.DeserializeObject<JObject>(configJson);
 
                 // ToDo: *** CheckForUpdates (ClientUpdate.dll is already compatible with Linux)
                 // It would be useful to specify the path of dotnet (/usr/bin/dotnet) in the config, so we can
                 // start the updating process from here with the correct dotnet installation.
+                string dotnetPath = config["dotnet_path"].Value<string>();
+
+                // Each version must have a lowest_dotnet_version to ensure that an installation
+                // won't update to a newer dotnet version.
+                // If the new client version requires a new dotnet-version, then there is manual work required (e.g. sudo apt-get install dotnet8)
+                // The same behivour should be implemented in the Windows.Version, same issue!
+
+
+                // Start the update:
+                string updateDll = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "ClientUpdate.dll");
+                Process.Start(dotnetPath, updateDll);
+
+
 
                 Thread apiThread = new Thread(new ParameterizedThreadStart((_) =>
                 {
@@ -65,7 +86,7 @@ namespace Home.Service.Linux
                 }));
                 apiThread.Start();
 
-                Task task = MainAsync(args);
+                Task task = MainAsync(args, configJson);
                 task.Wait();
 
                 // if (Console.KeyAvailable)
@@ -87,27 +108,20 @@ namespace Home.Service.Linux
             }
         }
 
-        public static async Task MainAsync(string[] args)
-        {
-            // Read config 
-            string configJson = System.IO.File.ReadAllText(CONFIG_FILENAME);
+        public static async Task MainAsync(string[] args, string configJson)
+        {       
+            bool isSignedIn = config["is_signed_in"].Value<bool>();
+            string id = config["id"].Value<string>();
 
-            // Strip comments
-            configJson = Regex.Replace(configJson, @"/\*(.*?)\*/", string.Empty, RegexOptions.Singleline);
-            jInfo = JsonConvert.DeserializeObject<JObject>(configJson);
-
-            bool isSignedIn = jInfo["is_signed_in"].Value<bool>();
-            string id = jInfo["id"].Value<string>();
-
-            api = new Communication.API(jInfo["api"].ToString());
+            api = new Communication.API(config["api"].ToString());
 
             currentDevice.ID = id;
-            currentDevice.Location = jInfo["location"].ToString();
-            currentDevice.DeviceGroup = jInfo["device_group"].ToString();
-            NormalUser = jInfo["user"].ToString();
-            currentDevice.OS = (OSType)jInfo["os"].Value<int>();
+            currentDevice.Location = config["location"].ToString();
+            currentDevice.DeviceGroup = config["device_group"].ToString();
+            NormalUser = config["user"].ToString();
+            currentDevice.OS = (OSType)config["os"].Value<int>();
             currentDevice.Environment.OSName = currentDevice.OS.ToString();
-            currentDevice.Type = (DeviceType)jInfo["type"].Value<int>();
+            currentDevice.Type = (DeviceType)config["type"].Value<int>();
             currentDevice.Environment.StartTimestamp = startTime;
             RefreshDeviceInfo();
 
@@ -115,21 +129,21 @@ namespace Home.Service.Linux
             {
                 // Generate id 
                 id = Guid.NewGuid().ToString();
-                jInfo["id"] = id;
+                config["id"] = id;
                 currentDevice.ID = id;
 
                 // Sign in
                 var result = await api.RegisterDeviceAsync(currentDevice);
                 if (result)
                 {
-                    jInfo["is_signed_in"] = true;
+                    config["is_signed_in"] = true;
                     isSignedIn = true;
                 }
 
                 try
                 {
                     System.IO.File.WriteAllText($"{CONFIG_FILENAME}.bak", configJson);
-                    System.IO.File.WriteAllText(CONFIG_FILENAME, JsonConvert.SerializeObject(jInfo));
+                    System.IO.File.WriteAllText(CONFIG_FILENAME, JsonConvert.SerializeObject(config));
                 }
                 catch (Exception ex)
                 {
@@ -148,7 +162,7 @@ namespace Home.Service.Linux
                 AckTimer_Elapsed(null, null);
             }
         }
-        #endregion
+#endregion
 
         #region Ack
 
@@ -234,7 +248,7 @@ namespace Home.Service.Linux
                 isSendingAck = false;
         }
 
-        #endregion
+#endregion
 
         #region Create Screenshot
         public static async Task CreateScreenshot()
@@ -263,7 +277,7 @@ namespace Home.Service.Linux
                 }
             }
         }
-        #endregion
+#endregion
 
         #region Refresh / Read Device Stats
 
@@ -345,7 +359,7 @@ namespace Home.Service.Linux
                     currentDevice.Environment.CPUUsage = usage;
             }
         }
-        #endregion
+#endregion
 
         #region Parse Hardware Info
 
@@ -555,6 +569,6 @@ namespace Home.Service.Linux
                 }
             }           
         }
-        #endregion
+#endregion
     }
 }
