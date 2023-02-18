@@ -1,4 +1,5 @@
 ﻿using Home.Service.Windows.Model;
+using Microsoft.AspNetCore.SignalR.Protocol;
 using Microsoft.Win32.TaskScheduler;
 using Newtonsoft.Json.Linq;
 using System;
@@ -21,7 +22,8 @@ namespace Home.Service.Windows
         private static readonly string GitHubReleaseUrl = "https://api.github.com/repos/andyld97/Home/releases/latest";
         private static readonly string AppExeName = "Home.Service.Windows.Setup.exe";
         private static readonly string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0";
-        private static readonly string LocalSetupFileName = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Home", "update.exe");
+        // private static readonly string LocalSetupFileName = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Home", "Home.Service.Windows.Setup.exe");
+        private static readonly string LocalSetupFileName = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Home", "hc-setup.zip");
 
         public static async Task<bool?> CheckForUpdatesAsync()
         {
@@ -148,7 +150,7 @@ namespace Home.Service.Windows
                     client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
 
                     var stream = await client.GetStreamAsync(downloadLink);
-                    using (FileStream fs = new FileStream(targetFilePath, FileMode.OpenOrCreate))
+                    using (FileStream fs = new FileStream(targetFilePath, FileMode.Create))
                     {
                         await stream.CopyToAsync(fs);
                     }
@@ -165,6 +167,8 @@ namespace Home.Service.Windows
 
         private static async Task<string> GetDownloadLinkAsync()
         {
+            return "https://code-a-software.net/home/content/hc-setup.zip";
+
             try
             {              
                 using (HttpClient client = new HttpClient())

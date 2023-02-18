@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.IO.Compression;
 
 namespace ClientUpdate
 {
@@ -57,24 +58,14 @@ namespace ClientUpdate
                 }
 
                 // Wait till app is closed
-                Task.Delay(2).Wait();
+                Thread.Sleep(2000);
 
                 string setupUrl = args[0];
                 string executable = args[1];
 
-                Log("Starting setup ...");
+                Log("Installing update ...");
 
-                // Start setup (verysilent)
-                Process.Start(new ProcessStartInfo()
-                {
-                    FileName = setupUrl,
-                    Arguments = "/sp /verysilent /supressmsgboxes /lang=\"english\" /forcecloseapplications",
-                });
-
-                Log("Waiting for setup to finish ...");
-
-                // Wait for 30 seconds
-                Thread.Sleep((int)TimeSpan.FromSeconds(30).TotalMilliseconds);
+                ZipFile.ExtractToDirectory(setupUrl, System.IO.Path.GetDirectoryName(executable)!, true);
 
                 Log("Restarting Home.Service.Windows ...");
 
