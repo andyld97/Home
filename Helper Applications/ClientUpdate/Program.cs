@@ -6,10 +6,10 @@ namespace ClientUpdate
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("Please wait while Home.Service is installing the update ...");
+            Console.WriteLine("Please wait while Home.Service is updating ...");
 
             if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
-                ExecuteUpdateWindowsAsync(args).Wait();
+                ExecuteUpdateWindows(args);
             else
                 ExecuteUpdateViaShellScript(args);
         }
@@ -36,44 +36,64 @@ namespace ClientUpdate
             Environment.Exit(0);
         }
 
+        private static void Log(string message) 
+        {
+            Console.WriteLine(message);
+        }
+
         /// <summary>
         /// Executes the setup and then starts the app again
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
-        private static async Task ExecuteUpdateWindowsAsync(string[] args)
+        private static void ExecuteUpdateWindows(string[] args)
         {
-            if (args.Length < 2)
-            {
-                Environment.Exit(-1);
-                return;
+            try
+            {                
+                if (args.Length < 2)
+                {
+                    Environment.Exit(-1);
+                    return;
+                }
+
+                // Wait till app is closed
+                Task.Delay(2).Wait();
+
+                string setupUrl = args[0];
+                string executable = args[1];
+
+                Log("Starting setup ...");
+
+                // Start setup (verysilent)
+                Process.Start(new ProcessStartInfo()
+                {
+                    FileName = setupUrl,
+                    Arguments = "/sp /verysilent /supressmsgboxes /lang=\"english\" /forcecloseapplications",
+                });
+
+                Log("Waiting for setup to finish ...");
+
+                // Wait for 30 seconds
+                Thread.Sleep((int)TimeSpan.FromSeconds(30).TotalMilliseconds);
+
+                Log("Restarting Home.Service.Windows ...");
+
+                // Start Home.Service.Windows.exe
+                Process.Start(executable, string.Empty);
+
+                // Wait 5s
+                Task.Delay(5000).Wait();
+
+                // Exit app
+               Environment.Exit(0);
             }
-
-            // Wait till app is closed
-            await Task.Delay(2);
-
-            string setupUrl = args[0];
-            string executable = args[1];
-
-            // Start setup (verysilent)
-            Process.Start(new ProcessStartInfo()
+            catch (Exception ex)
             {
-                FileName = setupUrl,
-                // Arguments = "/sp /verysilent /supressmsgboxes /lang=\"english\" /forcecloseapplications",
-                Arguments = "/sp /verysilent /lang=\"english\" /log=\"D:\\log.txt\"",
-            });
-
-            // Wait for 1 minute
-            await Task.Delay(TimeSpan.FromMinutes(1));
-
-            // Start Home.Service.Windows.exe
-            Process.Start(executable, string.Empty);
-
-            // Wait 5s
-            await Task.Delay(5000);
-
-            // Exit app
-            Environment.Exit(0);
+                Console.ForegroundColor = ConsoleColor.Red;
+                Log($"Error while updating occured: {ex.Message} ...");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.ReadLine();
+            }
         }
     }
 }

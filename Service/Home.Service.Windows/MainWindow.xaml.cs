@@ -70,6 +70,12 @@ namespace Home.Service.Windows
 
         private async Task InitalizeService()
         {
+            if (await UpdateService.CheckForUpdatesAsync() == true)
+            {
+                if (await UpdateService.UpdateServiceClient())
+                    return;
+            }
+
             api = new Communication.API(ServiceData.Instance.APIUrl);
             legacyAPI = new LegacyAPI(ServiceData.Instance.APIUrl);
 

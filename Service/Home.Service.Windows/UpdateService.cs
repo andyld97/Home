@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,7 +21,7 @@ namespace Home.Service.Windows
         private static readonly string GitHubReleaseUrl = "https://api.github.com/repos/andyld97/Home/releases/latest";
         private static readonly string AppExeName = "Home.Service.Windows.Setup.exe";
         private static readonly string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0";
-        private static readonly string LocalSetupFileName = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "hc-setup.exe");
+        private static readonly string LocalSetupFileName = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Home", "hc-setup.exe");
 
         public static async Task<bool?> CheckForUpdatesAsync()
         {
@@ -42,8 +43,14 @@ namespace Home.Service.Windows
                         string versionsJson = await versions.Content.ReadAsStringAsync();
 
                         var vObj = JObject.Parse(versionsJson);
+                        var clientWindowsVersion = vObj["Home.Service.Windows"];
 
-                        string version = vObj["Home.Service.Windows"].Value<string>();
+                        string version = clientWindowsVersion["version"].Value<string>();
+                        decimal dotnetVersion = clientWindowsVersion["dotnetVersion"].Value<decimal>();
+
+                        if (System.Environment.Version.Major != (int)dotnetVersion)
+                            return false;
+
                         if (Version.Parse(version) > typeof(UpdateService).Assembly.GetName().Version)
                         {
                             ServiceData.Instance.LastUpdateCheck = DateTime.Now;
@@ -92,22 +99,23 @@ namespace Home.Service.Windows
 
                 try
                 {
-                    // Scheduling setup execution (language is always set to english, because it's just the language of the setup itself)
-                    /*ScheduleTask("Home Update",
-                                 "Updates Home.Service.Windows",
-                                 LocalSetupFileName,
-                                 " /sp /verysilent /supressmsgboxes /lang=\"english\" /forcecloseapplications /log=\"D:\\log.txt\"",
-                                 TimeSpan.FromSeconds(5),
-                                 now.AddSeconds(50));
+                    // Copy updater to a temp directory
+                    var tempPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Home");
+                    if (!System.IO.Directory.Exists(tempPath))
+                        System.IO.Directory.CreateDirectory(tempPath);
 
-                    // Scheduling the start after the update (1 minute should be enough)
-                    ScheduleTask("Home Start",
-                                 "Start Home.Service.Windows after update",
-                                 currentServiceExecutable,
-                                 string.Empty,
-                                 TimeSpan.FromMinutes(1),
-                                 now.AddMinutes(2));*/
-                    string updaterLocation = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(currentServiceExecutable), "ClientUpdate.exe");
+                    // Copy updater files to temp directoy to execute it from there 
+                    // (to prevent that it gets killed via Setup)
+                    string[] filesToCopy = { "ClientUpdate.exe", "ClientUpdate.dll", "ClientUpdate.deps.json", "ClientUpdate.runtimeconfig.json", "Newtonsoft.Json.dll" };
+                    foreach (var file in filesToCopy)
+                    {
+                        string srcPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(currentServiceExecutable), file);
+                        string destPath = System.IO.Path.Combine(tempPath, file);
+                        System.IO.File.Copy(srcPath, destPath, true);
+                    }
+
+                    // string updaterLocation = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(currentServiceExecutable), "ClientUpdate.exe");
+                    string updaterLocation = System.IO.Path.Combine(tempPath, "ClientUpdate.exe");
                     string arguments = $"\"{LocalSetupFileName}\" \"{currentServiceExecutable}\"";
 
                     Process.Start(new ProcessStartInfo()
@@ -122,7 +130,7 @@ namespace Home.Service.Windows
                 }
                 catch (Exception ex)
                 {
-                    Trace.TraceError($"Failed to scheduling update: {ex.Message}");
+                    Trace.TraceError($"Failed to execute update: {ex.Message}");
                 }
             }
 
@@ -133,6 +141,10 @@ namespace Home.Service.Windows
         {
             try
             {
+                string dirName = System.IO.Path.GetDirectoryName(targetFilePath);
+                if (!System.IO.Directory.Exists(dirName))
+                    System.IO.Directory.CreateDirectory(dirName);
+
                 using (HttpClient client = new HttpClient())
                 {
                     client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
