@@ -23,6 +23,8 @@ namespace Home.Service.Linux
 {
     public class Program
     {
+        private static Mutex AppMutex = new Mutex(false, "3F911615-3164-47A1-831E-8CA56B49C3C4");
+
         #region Private Members
         private static readonly Device currentDevice = new Device();
         private static readonly DateTime startTime = DateTime.Now;
@@ -46,6 +48,13 @@ namespace Home.Service.Linux
 
         public static void Main(string[] args)
         {
+            // Check if mutex is aquired
+            if (!AppMutex.WaitOne(TimeSpan.FromSeconds(1), false))
+            {
+                Environment.Exit(-1);
+                return;
+            }
+
             try
             {
                 // Debug LSHW JSON FILES:
@@ -72,12 +81,11 @@ namespace Home.Service.Linux
                 // If the new client version requires a new dotnet-version, then there is manual work required (e.g. sudo apt-get install dotnet8)
                 // The same behivour should be implemented in the Windows.Version, same issue!
 
-
                 // Start the update:
                 string updateDll = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "ClientUpdate.dll");
                 Process.Start(dotnetPath, updateDll);
 
-
+                // ToDO: ALSO AppMutex.ReleaseMutex(); if exiting due to updating
 
                 Thread apiThread = new Thread(new ParameterizedThreadStart((_) =>
                 {
@@ -97,6 +105,7 @@ namespace Home.Service.Linux
                 {
                     System.Threading.Thread.Sleep(100);
                 }
+
                 // }
             }
             catch (Exception e)
@@ -105,7 +114,11 @@ namespace Home.Service.Linux
 
                 if (e.InnerException != null)
                     Console.WriteLine($"Inner Exception: {e.InnerException.ToString()}");
+
+                AppMutex.ReleaseMutex();
             }
+
+            AppMutex.ReleaseMutex();
         }
 
         public static async Task MainAsync(string[] args, string configJson)

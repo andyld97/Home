@@ -21,7 +21,7 @@ namespace Home.Service.Windows
         private static readonly string GitHubReleaseUrl = "https://api.github.com/repos/andyld97/Home/releases/latest";
         private static readonly string AppExeName = "Home.Service.Windows.Setup.exe";
         private static readonly string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0";
-        private static readonly string LocalSetupFileName = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Home", "hc-setup.exe");
+        private static readonly string LocalSetupFileName = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Home", "update.exe");
 
         public static async Task<bool?> CheckForUpdatesAsync()
         {
@@ -104,8 +104,7 @@ namespace Home.Service.Windows
                     if (!System.IO.Directory.Exists(tempPath))
                         System.IO.Directory.CreateDirectory(tempPath);
 
-                    // Copy updater files to temp directoy to execute it from there 
-                    // (to prevent that it gets killed via Setup)
+                    // Copy updater files to temp directoy to execute it from there (to prevent that it gets killed via Setup)
                     string[] filesToCopy = { "ClientUpdate.exe", "ClientUpdate.dll", "ClientUpdate.deps.json", "ClientUpdate.runtimeconfig.json", "Newtonsoft.Json.dll" };
                     foreach (var file in filesToCopy)
                     {
@@ -114,7 +113,6 @@ namespace Home.Service.Windows
                         System.IO.File.Copy(srcPath, destPath, true);
                     }
 
-                    // string updaterLocation = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(currentServiceExecutable), "ClientUpdate.exe");
                     string updaterLocation = System.IO.Path.Combine(tempPath, "ClientUpdate.exe");
                     string arguments = $"\"{LocalSetupFileName}\" \"{currentServiceExecutable}\"";
 
@@ -125,7 +123,7 @@ namespace Home.Service.Windows
                     });
 
                     // Exit to ensure that the setup can run without any problems
-                    Environment.Exit(0);
+                    SingleInstanceManager.Exit();
                     return true;
                 }
                 catch (Exception ex)
