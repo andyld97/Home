@@ -22,7 +22,6 @@ namespace Home.Service.Windows
         private static readonly string GitHubReleaseUrl = "https://api.github.com/repos/andyld97/Home/releases/latest";
         private static readonly string AppExeName = "Home.Service.Windows.Setup.exe";
         private static readonly string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0";
-        // private static readonly string LocalSetupFileName = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Home", "Home.Service.Windows.Setup.exe");
         private static readonly string LocalSetupFileName = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Home", "hc-setup.zip");
 
         public static async Task<bool?> CheckForUpdatesAsync()
@@ -167,7 +166,7 @@ namespace Home.Service.Windows
 
         private static async Task<string> GetDownloadLinkAsync()
         {
-            return "https://code-a-software.net/home/content/hc-setup.zip";
+            return "https://code-a-software.net/home/content/content.php?product=windows";
 
             try
             {              
@@ -196,30 +195,6 @@ namespace Home.Service.Windows
             }
 
             return string.Empty;
-        }
-
-        private static void ScheduleTask(string name, string description, string executable, string arguments, TimeSpan delay, DateTime endBoundary)
-        {
-            // Get the service on the local machine
-            using (TaskService ts = new TaskService())
-            {
-                // Create a new task definition and assign properties
-                TaskDefinition td = ts.NewTask();
-                td.RegistrationInfo.Description = description;
-                //td.Principal.RunLevel = TaskRunLevel.Highest;
-
-                // Create a trigger that will fire only once (EndBoundary)
-                td.Triggers.Add(new RegistrationTrigger() { Delay = delay, EndBoundary = endBoundary });
-
-                // Create an action that will launch Notepad whenever the trigger fires
-                td.Actions.Add(new ExecAction(executable, arguments, null));
-
-                // Register the task in the root folder
-                ts.RootFolder.RegisterTaskDefinition(name, td);
-
-                // Remove the task we just created
-                // ts.RootFolder.DeleteTask("Test");
-            }
         }
     }
 }

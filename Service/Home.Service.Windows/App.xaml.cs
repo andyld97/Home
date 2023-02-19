@@ -26,7 +26,7 @@ namespace Home.Service.Windows
                 CreateHostBuilder(args).Build().Run();
             }));
 
-            thread.Start();
+            //thread.Start();
         }
     }
 }
