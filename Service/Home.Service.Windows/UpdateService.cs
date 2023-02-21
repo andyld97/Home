@@ -18,7 +18,7 @@ namespace Home.Service.Windows
     public class UpdateService
     {
         private static readonly string VersionUrl = "https://ca-soft.net/home/client-versions.json";
-        private static readonly string GitHubReleaseUrl = "https://api.github.com/repos/andyld97/Home/releases/latest";
+        private static readonly string DownloadLink = "https://code-a-software.net/home/content/content.php?product=windows";
         private static readonly string AppExeName = "Home.Service.Windows.Setup.exe";
         private static readonly string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0";
         private static readonly string LocalSetupFileName = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Home", "hc-setup.zip");
@@ -88,10 +88,8 @@ namespace Home.Service.Windows
         }
 
         public static async Task<bool> UpdateServiceClient()
-        {
-            var downloadlink = await GetDownloadLinkAsync();           
-
-            if (await DownloadFileAsync(LocalSetupFileName, downloadlink))
+        {        
+            if (await DownloadFileAsync(LocalSetupFileName, DownloadLink))
             {
                 var now = DateTime.Now;
                 string currentServiceExecutable = System.Reflection.Assembly.GetExecutingAssembly().Location;
@@ -161,39 +159,6 @@ namespace Home.Service.Windows
             }
 
             return false;
-        }
-
-        private static async Task<string> GetDownloadLinkAsync()
-        {
-            return "https://code-a-software.net/home/content/content.php?product=windows";
-
-            try
-            {              
-                using (HttpClient client = new HttpClient())
-                {
-                    // GitHub API needs a User Agent
-                    client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
-
-                    var result = await client.GetAsync(GitHubReleaseUrl);
-                    string content = await result.Content.ReadAsStringAsync();
-                    var info = Newtonsoft.Json.JsonConvert.DeserializeObject<JObject>(content);
-
-                    foreach (var asset in info["assets"].Value<JArray>())
-                    {
-                        if (asset["name"].Value<string>() == AppExeName)
-                        {
-                            string downloadUrl = asset["browser_download_url"].Value<string>();
-                            return downloadUrl;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex) 
-            {
-                Trace.TraceError($"Failed to ask github API for getting the download link: {ex.Message}");
-            }
-
-            return string.Empty;
         }
     }
 }
