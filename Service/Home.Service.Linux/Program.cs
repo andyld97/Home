@@ -71,21 +71,40 @@ namespace Home.Service.Linux
                 configJson = Regex.Replace(configJson, @"/\*(.*?)\*/", string.Empty, RegexOptions.Singleline);
                 config = JsonConvert.DeserializeObject<JObject>(configJson);
 
-                // ToDo: *** CheckForUpdates (ClientUpdate.dll is already compatible with Linux)
-                // It would be useful to specify the path of dotnet (/usr/bin/dotnet) in the config, so we can
-                // start the updating process from here with the correct dotnet installation.
-                string dotnetPath = config["dotnet_path"].Value<string>();
+                var lastUpdateCheck = DateTime.MinValue;
+                try
+                {
+                    if (System.IO.File.Exists("update.txt"))
+                        lastUpdateCheck = DateTime.Parse(System.IO.File.ReadAllText("update.txt"));
+                }
+                catch
+                {
+                    // ignore
+                }
 
-                // Each version must have a lowest_dotnet_version to ensure that an installation
-                // won't update to a newer dotnet version.
-                // If the new client version requires a new dotnet-version, then there is manual work required (e.g. sudo apt-get install dotnet8)
-                // The same behivour should be implemented in the Windows.Version, same issue!
+                var result = Task.Run(async () => await UpdateService.CheckForUpdatesAsync(lastUpdateCheck)).Result;
 
-                // Start the update:
-                string updateDll = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "ClientUpdate.dll");
-                Process.Start(dotnetPath, updateDll);
+                if (result != null)
+                {
+                    try
+                    {
+                        System.IO.File.WriteAllText("update.txt", DateTime.Now.ToString("s"));
+                    }
+                    catch
+                    {
+                        // ignore
+                    }
+                }
 
-                // ToDO: ALSO AppMutex.ReleaseMutex(); if exiting due to updating
+                if (result.HasValue && result.Value)
+                {
+                    string dotnetPath = config["dotnet_path"].Value<string>();
+
+                    UpdateService.UpdateServiceClient(dotnetPath);
+                    AppMutex.ReleaseMutex();
+                    Environment.Exit(0);
+                    return;
+                } 
 
                 Thread apiThread = new Thread(new ParameterizedThreadStart((_) =>
                 {
@@ -261,7 +280,7 @@ namespace Home.Service.Linux
                 isSendingAck = false;
         }
 
-#endregion
+        #endregion
 
         #region Create Screenshot
         public static async Task CreateScreenshot()
@@ -282,7 +301,7 @@ namespace Home.Service.Linux
                     if (!screenshotResult.Success)
                         Console.WriteLine(screenshotResult.ErrorMessage);
                     else
-                        Console.WriteLine("Succsessfully uploaded screeenshot!");
+                        Console.WriteLine("Successfully uploaded screeenshot!");
                 }
                 catch (Exception ex)
                 {
@@ -290,7 +309,7 @@ namespace Home.Service.Linux
                 }
             }
         }
-#endregion
+        #endregion
 
         #region Refresh / Read Device Stats
 

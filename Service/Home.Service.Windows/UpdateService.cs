@@ -1,6 +1,5 @@
 ﻿using Home.Service.Windows.Model;
 using Microsoft.AspNetCore.SignalR.Protocol;
-using Microsoft.Win32.TaskScheduler;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
