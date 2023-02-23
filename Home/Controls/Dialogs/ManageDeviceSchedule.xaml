@@ -26,6 +26,7 @@
             <local:RuleToApiVisibilityConverter x:Key="ruleToApiVisibilityConverter" />
             <local:EnumToIndexConverter x:Key="enumToIndexConverter" />
             <local:TypeToReadOnlyConverter x:Key="typeToReadOnlyConverter" />
+            <local:DeviceIDResolutionConverter x:Key="deviceIDResolutionConverter" />
         </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -60,7 +61,10 @@
                             <Image MaxWidth="32" Margin="2" Source="../../resources/icons/device.png" />
 
                             <StackPanel Grid.Column="1" Margin="5,0,0,0" VerticalAlignment="Top">
-                                <TextBlock Text="{Binding Name}" FontWeight="Bold" />
+                                <TextBlock>
+                                    <Run Text="{Binding Name}" FontWeight="Bold" />
+                                    <Run Foreground="Gray" Text="(" /><Run Foreground="Gray" Text="{Binding AssociatedDeviceId, Converter={StaticResource deviceIDResolutionConverter}}" /><Run Text=")" Foreground="Gray" />
+                                </TextBlock>
                                 <TextBlock x:Name="TextListDescription" Height="{Binding ElementName=TextListDescription, Path=ActualHeight}" Text="{Binding Description}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                             </StackPanel>
                         </Grid>
