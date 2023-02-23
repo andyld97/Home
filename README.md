@@ -43,7 +43,7 @@ To get this working you need to setup `Home.API` as a self-hosted API on your lo
 | Shutdown/Restart Commands | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:     | :x:                |
 | Message/Execute Command   | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:     | :x:                |
 | Remote Shell              | Not implemented    | Not implemented    | Not implemented        | :x:                |
-| Auotmatic Client Updates  | :x:                | :heavy_check_mark: | :heavy_check_mark:     | :x:                |
+| Auotmatic Client Updates  | :x:                | :heavy_check_mark: | :heavy_check_mark: (4) | :x:                |
 | Wake On LAN (WOL) (3)     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:     | :x:                |
 
 (1) Each ack service has an integrated `ASP.NET Core`-Service which is hosted within the service itself (for Windows you need to permit firewall permissons!). It is hosted on http://0.0.0.0:5556 to make it accessible via network (the port can be changed: ``Home.Data.Consts.API_PORT``). This is used for remote file access!
@@ -51,6 +51,8 @@ To get this working you need to setup `Home.API` as a self-hosted API on your lo
 (2) For ``Home.Service.Linux`` some additional tools are required to successfully gather all information and there may be some additional steps required to make screenshots working on Ubuntu > 21.04 (due to Wayland securitiy restrictions).
 
 (3) For `Wake On LAN` your device must support this feature and must be configured properply. In the wiki there is a description/tutorial how you can setup WOL for your device!
+
+(4) To ensure that automatic client updates for `Linux` works correctly you need to setup the service as described in the wiki for `Home.Service.Linux`. If an update is executes the application exists and the service has set a restart timer of `10 seconds`, so without the service the application would not start again!
 
 ### Additonal Features
 - Access hardware info (cpu, ram, graphics, performance)
