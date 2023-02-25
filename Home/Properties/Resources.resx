@@ -821,4 +821,7 @@
   <data name="strFailedToDownloadFolder" xml:space="preserve">
     <value>Error while retrieving the folder:</value>
   </data>
+  <data name="strSuccessfullyAppliedChanges" xml:space="preserve">
+    <value>The changes have been successfully applied!</value>
+  </data>
 </root>

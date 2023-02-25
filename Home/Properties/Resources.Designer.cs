@@ -1870,6 +1870,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die The changes have been successfully applied! ähnelt.
+        /// </summary>
+        public static string strSuccessfullyAppliedChanges {
+            get {
+                return ResourceManager.GetString("strSuccessfullyAppliedChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Successfully cleared the device log! ähnelt.
         /// </summary>
         public static string strSuccessfullyClearedDeviceLog {

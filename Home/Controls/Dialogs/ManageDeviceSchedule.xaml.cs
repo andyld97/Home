@@ -118,6 +118,8 @@ namespace Home.Controls.Dialogs
                 MessageBox.Show(string.Format(Home.Properties.Resources.strManageDeviceSchedulingRulesDialog_FailedToSaveRules, result.ErrorMessage), Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+            else 
+                MessageBox.Show(Home.Properties.Resources.strSuccessfullyAppliedChanges, Properties.Resources.strSuccess, MessageBoxButton.OK, MessageBoxImage.Information);  
 
             closing = true;
             DialogResult = true;

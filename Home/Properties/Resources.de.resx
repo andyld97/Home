@@ -769,4 +769,7 @@
   <data name="strReady" xml:space="preserve">
     <value>Fertig!</value>
   </data>
+  <data name="strSuccessfullyAppliedChanges" xml:space="preserve">
+    <value>Die Änderungen wurden erfolgreich übernommen!</value>
+  </data>
 </root>
