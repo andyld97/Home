@@ -58,8 +58,10 @@ namespace Home.Service.Legacy
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
+#if DEBUG
             if (e.ExceptionObject != null)
                 MessageBox.Show((e.ExceptionObject as Exception).ToString());
+#endif
 
             // Debug:
             // MessageBox.Show("Debug");
@@ -234,7 +236,6 @@ namespace Home.Service.Legacy
             return screens;
         }
 
-
         public void PostScreenshot()
         {
             string fileName = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"capture{DateTime.Now.ToString(Consts.SCREENSHOT_DATE_FILE_FORMAT)}.png");
@@ -273,7 +274,7 @@ namespace Home.Service.Legacy
                 Visibility = Visibility.Hidden;
             }
             else
-                MessageBox.Show("Invalid data set", "Invalid data", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Properties.Resources.strInvalidDataSet, Home.Service.Legacy.Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }

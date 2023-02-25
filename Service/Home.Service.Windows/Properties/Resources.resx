@@ -135,4 +135,25 @@
   <data name="strInitalize" xml:space="preserve">
     <value>Initalize</value>
   </data>
+  <data name="strHomeVBSStartupFile" xml:space="preserve">
+    <value>Set WshShell = CreateObject("WScript.Shell" ) 
+WshShell.Run """{0}""", 0
+Set WshShell = Nothing</value>
+    <comment>@Invariant</comment>
+  </data>
+  <data name="strSetupAutostart" xml:space="preserve">
+    <value>Setup autostart</value>
+  </data>
+  <data name="strDevice" xml:space="preserve">
+    <value>Device</value>
+  </data>
+  <data name="strError" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="strFailedToSetupAutostart" xml:space="preserve">
+    <value>Failed to setup autostart: {0}</value>
+  </data>
+  <data name="strInvalidDataSet" xml:space="preserve">
+    <value>Invalid data set!</value>
+  </data>
 </root>

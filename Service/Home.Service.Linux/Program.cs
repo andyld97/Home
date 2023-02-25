@@ -51,6 +51,7 @@ namespace Home.Service.Linux
             // Check if mutex is aquired
             if (!AppMutex.WaitOne(TimeSpan.FromSeconds(1), false))
             {
+                Console.WriteLine("Home.Service.Linux is already started!");
                 Environment.Exit(-1);
                 return;
             }
@@ -113,19 +114,14 @@ namespace Home.Service.Linux
                 }));
                 apiThread.Start();
 
-                Task task = MainAsync(args, configJson);
-                task.Wait();
+                MainAsync(args, configJson);
+                //Task task = MainAsync(args, configJson);
+                //task.Wait();
 
-                // if (Console.KeyAvailable)
-                // Console.ReadKey();
-                // else
-                // {
                 while (true)
                 {
                     System.Threading.Thread.Sleep(100);
                 }
-
-                // }
             }
             catch (Exception e)
             {
@@ -140,8 +136,8 @@ namespace Home.Service.Linux
             AppMutex.ReleaseMutex();
         }
 
-        public static async Task MainAsync(string[] args, string configJson)
-        {       
+        public static void MainAsync(string[] args, string configJson)
+        {
             bool isSignedIn = config["is_signed_in"].Value<bool>();
             string id = config["id"].Value<string>();
 
@@ -165,7 +161,7 @@ namespace Home.Service.Linux
                 currentDevice.ID = id;
 
                 // Sign in
-                var result = await api.RegisterDeviceAsync(currentDevice);
+                var result = Task.Run(async () => await api.RegisterDeviceAsync(currentDevice)).Result;
                 if (result)
                 {
                     config["is_signed_in"] = true;

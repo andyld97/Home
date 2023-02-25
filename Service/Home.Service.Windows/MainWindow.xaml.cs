@@ -3,6 +3,7 @@ using Home.Data.Com;
 using Home.Measure.Windows;
 using Home.Model;
 using Home.Service.Windows.Model;
+using Microsoft.Extensions.Primitives;
 using Microsoft.VisualBasic;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -13,6 +14,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Runtime.Intrinsics.X86;
 using System.Threading.Tasks;
 using System.Windows;
@@ -60,9 +62,9 @@ namespace Home.Service.Windows
             if (ServiceData.Instance.HasLoggedInOnce)
             {
                 // WindowState = WindowState.Minimized;
+#if !DEBUG
                 Visibility = Visibility.Hidden;
-                ExpanderSettings.IsExpanded = false;
-                ExpanderSettings.IsEnabled = false;
+#endif
                 isInitalized = true;
                 await InitalizeService();
             }
@@ -70,6 +72,10 @@ namespace Home.Service.Windows
 
         private async Task InitalizeService()
         {
+#if DEBUG
+            return;
+#endif
+
             if (await UpdateService.CheckForUpdatesAsync() == true)
             {
                 if (await UpdateService.UpdateServiceClient())
@@ -313,12 +319,28 @@ namespace Home.Service.Windows
                 ServiceData.Instance.Location = location;
                 ServiceData.Instance.DeviceGroup = deviceGroup;
 
+                if (chkEnableStartupOnBoot.IsChecked == true)
+                {
+                    try
+                    {
+                        string homeVbsAutostartFilePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup), "home.vbs");
+                        string path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Home.Service.Windows.exe");
+                        string fileContent = string.Format(Properties.Resources.strHomeVBSStartupFile, path);
+
+                        await System.IO.File.WriteAllTextAsync(homeVbsAutostartFilePath, fileContent);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(string.Format(Home.Service.Windows.Properties.Resources.strFailedToSetupAutostart, ex.Message), Home.Service.Windows.Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);  
+                    }
+                }
+
                 await InitalizeService();
                 // WindowState = WindowState.Minimized;
                 Visibility = Visibility.Hidden;
             }
             else
-                MessageBox.Show("Invalid data set", "Invalid data", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Home.Service.Windows.Properties.Resources.strInvalidDataSet, Home.Service.Windows.Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 

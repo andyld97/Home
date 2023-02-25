@@ -145,4 +145,10 @@
     <value>Betriebssystem:</value>
     <comment>OS:</comment>
   </data>
+  <data name="strInvalidDataSet" xml:space="preserve">
+    <value>Ungültige Daten angegeben!</value>
+  </data>
+  <data name="strError" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
 </root>

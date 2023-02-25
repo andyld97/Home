@@ -118,4 +118,19 @@
   <data name="strOS" xml:space="preserve">
     <value>Betriebssystem:</value>
   </data>
+  <data name="strSetupAutostart" xml:space="preserve">
+    <value>Autostart einrichten</value>
+  </data>
+  <data name="strDevice" xml:space="preserve">
+    <value>Gerät</value>
+  </data>
+  <data name="strError" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
+  <data name="strFailedToSetupAutostart" xml:space="preserve">
+    <value>Fehler beim Einrichten des Autostarts: {0}</value>
+  </data>
+  <data name="strInvalidDataSet" xml:space="preserve">
+    <value>Ungültige Daten angegeben!</value>
+  </data>
 </root>
