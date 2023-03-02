@@ -160,12 +160,25 @@ namespace Home.Service.Linux
                 config["id"] = id;
                 currentDevice.ID = id;
 
+                Console.WriteLine($"Using guid: {id} ...");
+
                 // Sign in
-                var result = Task.Run(async () => await api.RegisterDeviceAsync(currentDevice)).Result;
-                if (result)
+                bool res = false;
+                var task = Task.Run(async () => res = await api.RegisterDeviceAsync(currentDevice));
+                task.Wait();
+
+                // var result = Task.Run(async () => await api.RegisterDeviceAsync(currentDevice)).Result;
+                if (res)
                 {
                     config["is_signed_in"] = true;
                     isSignedIn = true;
+                }
+                else
+                {
+                    Console.WriteLine("Failed to register device ... Exiting ...");
+                    AppMutex.ReleaseMutex();
+                    Environment.Exit(-1);
+                    return;
                 }
 
                 try

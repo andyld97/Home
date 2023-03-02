@@ -73,24 +73,34 @@ namespace Home.API.Controllers
             // Check if device exists
             if (!(await _context.Device.AnyAsync(p => p.Guid == device.ID)))
             {
-                device.Status = Device.DeviceStatus.Active;
-                device.LastSeen = now;
-                device.LogEntries.Clear();
-                var logEntry = new LogEntry(now, $"Device {device.Name} was successfully added!", LogEntry.LogLevel.Information, true);
-                device.LogEntries.Add(logEntry);
-                _logger.LogInformation($"New device {device.Environment.MachineName} has just registered!");
-                device.IsScreenshotRequired = true;
+                try
+                {
+                    device.Status = Device.DeviceStatus.Active;
+                    device.LastSeen = now;
+                    device.LogEntries.Clear();
+                    var logEntry = new LogEntry(now, $"Device {device.Name} was successfully added!", LogEntry.LogLevel.Information, true);
+                    device.LogEntries.Add(logEntry);
+                    _logger.LogInformation($"New device {device.Environment.MachineName} has just registered!");
+                    device.IsScreenshotRequired = true;
 
-                var dbDevice = ModelConverter.ConvertDevice(_context, _logger, device);
-                await _context.Device.AddAsync(dbDevice);
-                await _context.DeviceChange.AddAsync(new DeviceChange() { Timestamp = now, Device = dbDevice, Description = $"Device \"{dbDevice.Name}\" added to the system initally!" });
-                await _context.SaveChangesAsync();
+                    var dbDevice = ModelConverter.ConvertDevice(_context, _logger, device);
+                    await _context.Device.AddAsync(dbDevice);
+                    await _context.DeviceChange.AddAsync(new DeviceChange() { Timestamp = now, Device = dbDevice, Description = $"Device \"{dbDevice.Name}\" added to the system initally!" });
+                    await _context.SaveChangesAsync();
 
-                // To notify webhook:
-                ModelConverter.ConvertLogEntry(dbDevice, logEntry);
+                    // To notify webhook:
+                    ModelConverter.ConvertLogEntry(dbDevice, logEntry);
 
-                ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.NewDeviceConnected, device);
-                return Ok(AnswerExtensions.Success(true));
+                    ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.NewDeviceConnected, device);
+                    return Ok(AnswerExtensions.Success(true));
+                }
+                catch (Exception ex)
+                {
+                    string message = $"Failed to register device: {ex.Message}";
+                    _logger.LogError(message);
+                    Program.WebHookLogging.Enqueue((WebhookAPI.Webhook.LogLevel.Error, message));
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
             }
 
             return BadRequest(AnswerExtensions.Fail("Device-Register couldn't be processed!"));
