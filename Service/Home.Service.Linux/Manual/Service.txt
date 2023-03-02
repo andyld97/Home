@@ -1,11 +1,14 @@
 Anleitung: Service erstellen:
 
 1. Skript erstellen:
-sudo nano /etc/systemd/system/kestrel-hellomvc.service
+sudo nano /etc/systemd/system/home-client.service
 
 ----------------------------------------------------------------------              
 [Unit]
 Description=Home Service Linux
+Wants=network-online.target
+After=network.target network-online.target
+Description=HomeClient Service
 
 [Service]
 WorkingDirectory=/home/andy/Schreibtisch/Service
