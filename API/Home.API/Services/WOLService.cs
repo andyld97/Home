@@ -87,7 +87,7 @@ namespace Home.API.Services
         /// </summary>
         /// <param name="macAddress">MacAddress in any standard HEX format (- or : as separator)</param>
         /// <param name="port">The port to be send to (7 or 9)</param>
-        private async Task SendWolRequestWindowsAsync(string macAddress, int port)
+        private static async Task SendWolRequestWindowsAsync(string macAddress, int port)
         {
             byte[] magicPacket = BuildMagicPacket(macAddress);
             foreach (NetworkInterface networkInterface in NetworkInterface.GetAllNetworkInterfaces().Where((n) =>
@@ -99,7 +99,7 @@ namespace Home.API.Services
                     IPAddress multicastIpAddress = multicastIPAddressInformation.Address;
                     if (multicastIpAddress.ToString().StartsWith("ff02::1%", StringComparison.OrdinalIgnoreCase)) // Ipv6: All hosts on LAN (with zone index)
                     {
-                        UnicastIPAddressInformation? unicastIPAddressInformation = iPInterfaceProperties.UnicastAddresses.Where((u) =>
+                        UnicastIPAddressInformation unicastIPAddressInformation = iPInterfaceProperties.UnicastAddresses.Where((u) =>
                             u.Address.AddressFamily == AddressFamily.InterNetworkV6 && !u.Address.IsIPv6LinkLocal).FirstOrDefault();
                         if (unicastIPAddressInformation != null)
                         {
@@ -108,7 +108,7 @@ namespace Home.API.Services
                     }
                     else if (multicastIpAddress.ToString().Equals("224.0.0.1")) // Ipv4: All hosts on LAN
                     {
-                        UnicastIPAddressInformation? unicastIPAddressInformation = iPInterfaceProperties.UnicastAddresses.Where((u) =>
+                        UnicastIPAddressInformation unicastIPAddressInformation = iPInterfaceProperties.UnicastAddresses.Where((u) =>
                             u.Address.AddressFamily == AddressFamily.InterNetwork && !iPInterfaceProperties.GetIPv4Properties().IsAutomaticPrivateAddressingActive).FirstOrDefault();
                         if (unicastIPAddressInformation != null)
                         {

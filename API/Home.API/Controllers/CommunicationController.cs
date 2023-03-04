@@ -26,11 +26,13 @@ namespace Home.API.Controllers
     public class CommunicationController : ControllerBase
     {
         private readonly ILogger<CommunicationController> _logger;
+        private IClientService _clientService;
         private readonly HomeContext _context;
 
-        public CommunicationController(ILogger<CommunicationController> logger, HomeContext context)
+        public CommunicationController(ILogger<CommunicationController> logger, IClientService clientService, HomeContext context)
         {
             _logger = logger;
+            _clientService = clientService;
             _context = context;
         }
 
@@ -138,7 +140,7 @@ namespace Home.API.Controllers
                         if (!found)
                         {
                             // Fully materialize device here
-                            ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LiveModeChanged, (await _context.GetDeviceByIdAsync(partictularDevice.Guid)));
+                            _clientService.NotifyClientQueues(EventQueueItem.EventKind.LiveModeChanged, (await _context.GetDeviceByIdAsync(partictularDevice.Guid)));
                             partictularDevice.IsLive = false;
                             var logEntry = ModelConverter.CreateLogEntry(partictularDevice, $"Device \"{partictularDevice.Name}\" status changed to normal, because one or multiple clients (those that have aquired live view) have logged off!", LogEntry.LogLevel.Information, false);
                             await _context.DeviceLog.AddAsync(logEntry);
@@ -274,7 +276,7 @@ namespace Home.API.Controllers
                 device.DeviceLog.Clear();
                 await _context.SaveChangesAsync();                
                 
-                ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LogCleared, deviceID);
+                _clientService.NotifyClientQueues(EventQueueItem.EventKind.LogCleared, deviceID);
                 return Ok(AnswerExtensions.Success("ok"));
             }
             else
@@ -311,7 +313,7 @@ namespace Home.API.Controllers
 
             _logger.LogInformation($"Sent message to {device.Name}: {message}");
 
-            ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
+            _clientService.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
             return Ok(AnswerExtensions.Success("ok"));
         }
 
@@ -359,7 +361,7 @@ namespace Home.API.Controllers
             await _context.DeviceLog.AddAsync(logEntry);
             await _context.SaveChangesAsync();
 
-            ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LiveModeChanged, device);
+            _clientService.NotifyClientQueues(EventQueueItem.EventKind.LiveModeChanged, device);
 
             return Ok(AnswerExtensions.Success("ok"));
         }
@@ -414,7 +416,7 @@ namespace Home.API.Controllers
 
                 try
                 {
-                 
+                    _clientService.NotifyClientQueues(EventQueueItem.EventKind.DeviceDeleted, device.Guid);
                     await _context.SaveChangesAsync();
                     await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Success, $"Device \"{deviceName}\" removed!", "Communication");
                 }
@@ -450,7 +452,7 @@ namespace Home.API.Controllers
 
             await _context.SaveChangesAsync();
             _logger.LogInformation($"Sent command to {device.Name}: {command}");
-            ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);          
+            _clientService.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);          
             
             return Ok(AnswerExtensions.Success("ok"));
         }

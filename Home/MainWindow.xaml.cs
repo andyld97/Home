@@ -401,6 +401,15 @@ namespace Home
                             oldDevice.LogEntries.Clear();
                             await RefreshSelectedItem();
                         }
+                        else if (@event.EventDescription == EventQueueItem.EventKind.DeviceDeleted)
+                        {
+                            var device = deviceList.FirstOrDefault(d => d.ID == @event.DeviceID);
+                            if (device != null)
+                            {
+                                deviceList.Remove(device);
+                                RefreshDeviceHolder();
+                            }
+                        }
                         else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.LogEntriesRecieved)
                         {
                             oldDevice.LogEntries.Clear();

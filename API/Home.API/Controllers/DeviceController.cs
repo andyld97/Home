@@ -32,12 +32,14 @@ namespace Home.API.Controllers
     {
         private readonly ILogger<DeviceController> _logger;
         private readonly HomeContext _context;
+        private readonly IClientService _clientService;
         private readonly IDeviceAckService _deviceAckService;
 
-        public DeviceController(ILogger<DeviceController> logger, HomeContext homeContext, IDeviceAckService deviceAckService)
+        public DeviceController(ILogger<DeviceController> logger, HomeContext homeContext, IClientService clientService, IDeviceAckService deviceAckService)
         {
             _logger = logger;
             _context = homeContext;
+            _clientService = clientService;
             _deviceAckService = deviceAckService;
         }
 
@@ -91,7 +93,7 @@ namespace Home.API.Controllers
                     // To notify webhook:
                     ModelConverter.ConvertLogEntry(dbDevice, logEntry);
 
-                    ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.NewDeviceConnected, device);
+                    _clientService.NotifyClientQueues(EventQueueItem.EventKind.NewDeviceConnected, device);
                     return Ok(AnswerExtensions.Success(true));
                 }
                 catch (Exception ex)
@@ -207,7 +209,7 @@ namespace Home.API.Controllers
                 deviceFound.IsScreenshotRequired = false;
 
                 // Also append to event queue
-                ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.DeviceScreenshotRecieved, deviceFound);
+                _clientService.NotifyClientQueues(EventQueueItem.EventKind.DeviceScreenshotRecieved, deviceFound);
 
                 await _context.SaveChangesAsync();
                 return Ok(AnswerExtensions.Success(true));

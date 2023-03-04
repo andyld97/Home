@@ -175,122 +175,131 @@ namespace Home.API.Helper
 
         public static Device ConvertDevice(home.Models.Device device)
         {
-            Device result = new Device();
-
-            result.ServiceClientVersion = device.ServiceClientVersion;
-            result.DeviceGroup = device.DeviceGroup;
-            result.IP = device.Ip;
-            result.MacAddress = device.MacAddress;
-            result.IsLive = device.IsLive;
-            result.IsScreenshotRequired = device.IsScreenshotRequired;
-            result.LastSeen = device.LastSeen;
-            result.Location = device.Location;
-            result.Status = (device.Status ? DeviceStatus.Active : DeviceStatus.Offline);
-            if (device.Environment.Battery != null)
-                result.BatteryInfo = new Battery() { IsCharging = device.Environment.Battery.IsCharging, BatteryLevelInPercent = (int)device.Environment.Battery.Percentage };
-            result.OS = (OSType)device.OstypeNavigation.OstypeId;
-            result.Type = (Device.DeviceType)device.DeviceTypeId;
-            result.ID = device.Guid;
-            result.Name = device.Name;
-
-            // Enviornment
-            result.Environment = new Home.Model.DeviceEnvironment()
+            try
             {
-                CPUCount = (int)device.Environment.Cpucount,
-                CPUName = device.Environment.Cpuname,
-                MachineName = device.Environment.MachineName,
-                CPUUsage = device.Environment.Cpuusage.Value,
-                Description = device.Environment.Description,
-                DiskUsage = device.Environment.DiskUsage.Value,
-                DomainName = device.Environment.DomainName,
-                FreeRAM = device.Environment.FreeRam,
-                Is64BitOS = device.Environment.Is64BitOs,
-                Motherboard = device.Environment.Motherboard,
-                OSName = device.Environment.Osname,
-                OSVersion = device.Environment.Osversion,
-                Product = device.Environment.Product,
-                RunningTime = TimeSpan.FromTicks(device.Environment.RunningTime.Value),
-                StartTimestamp = device.Environment.StartTimestamp.Value,
-                TotalRAM = device.Environment.TotalRam.Value,
-                UserName = device.Environment.UserName,
-                Vendor = device.Environment.Vendor,
-            };
+                Device result = new Device();
 
-            // Screenshot
-            foreach (var item in device.DeviceScreenshot)
-                result.Screenshots.Add(new Screenshot() { ScreenIndex = item.Screen?.ScreenIndex, Filename = item.ScreenshotFileName, Timestamp = item.Timestamp });
+                result.ServiceClientVersion = device.ServiceClientVersion;
+                result.DeviceGroup = device.DeviceGroup;
+                result.IP = device.Ip;
+                result.MacAddress = device.MacAddress;
+                result.IsLive = device.IsLive;
+                result.IsScreenshotRequired = device.IsScreenshotRequired;
+                result.LastSeen = device.LastSeen;
+                result.Location = device.Location;
+                result.Status = (device.Status ? DeviceStatus.Active : DeviceStatus.Offline);
+                if (device.Environment.Battery != null)
+                    result.BatteryInfo = new Battery() { IsCharging = device.Environment.Battery.IsCharging, BatteryLevelInPercent = (int)device.Environment.Battery.Percentage };
+                result.OS = (OSType)device.OstypeNavigation.OstypeId;
+                result.Type = (Device.DeviceType)device.DeviceTypeId;
+                result.ID = device.Guid;
+                result.Name = device.Name;
 
-            // Log
-            foreach (var item in device.DeviceLog)
-                result.LogEntries.Add(new LogEntry(item.Timestamp.Value, item.Blob, (LogEntry.LogLevel)item.LogLevel, false));
-
-            // Graphics cards
-            foreach (var item in device.DeviceGraphic)
-                result.Environment.GraphicCards.Add(item.Name);
-
-            // Hard disks or SSDs
-            foreach (var disk in device.DeviceDiskDrive)
-                result.DiskDrives.Add(ConvertDisk(disk));
-
-            // Screens
-            foreach (var screen in device.DeviceScreen)
-                result.Screens.Add(ConvertScreen(screen));
-
-            // Device changes
-            foreach (var change in device.DeviceChange)
-                result.DevicesChanges.Add(new DeviceChangeEntry() { Timestamp = change.Timestamp, Description = change.Description, Type = (DeviceChangeEntry.DeviceChangeType)change.Type });
-
-            // Usage
-            result.Usage = new Home.Model.DeviceUsage();
-            if (device.DeviceUsage != null)
-            {
-                if (!string.IsNullOrEmpty(device.DeviceUsage.Cpu))
+                // Enviornment
+                result.Environment = new Home.Model.DeviceEnvironment()
                 {
-                    foreach (var item in device.DeviceUsage.Cpu.Split(new string[] { Consts.StatsSeperator }, StringSplitOptions.RemoveEmptyEntries))
+                    CPUCount = (int)device.Environment.Cpucount,
+                    CPUName = device.Environment.Cpuname,
+                    MachineName = device.Environment.MachineName,
+                    CPUUsage = device.Environment.Cpuusage.Value,
+                    Description = device.Environment.Description,
+                    DiskUsage = device.Environment.DiskUsage.Value,
+                    DomainName = device.Environment.DomainName,
+                    FreeRAM = device.Environment.FreeRam,
+                    Is64BitOS = device.Environment.Is64BitOs,
+                    Motherboard = device.Environment.Motherboard,
+                    OSName = device.Environment.Osname,
+                    OSVersion = device.Environment.Osversion,
+                    Product = device.Environment.Product,
+                    StartTimestamp = device.Environment.StartTimestamp.Value,
+                    TotalRAM = device.Environment.TotalRam.Value,
+                    UserName = device.Environment.UserName,
+                    Vendor = device.Environment.Vendor,
+                };
+                if (device.Environment.RunningTime != null)
+                    result.Environment.RunningTime = TimeSpan.FromTicks(device.Environment.RunningTime.Value);
+
+                // Screenshot
+                foreach (var item in device.DeviceScreenshot)
+                    result.Screenshots.Add(new Screenshot() { ScreenIndex = item.Screen?.ScreenIndex, Filename = item.ScreenshotFileName, Timestamp = item.Timestamp });
+
+                // Log
+                foreach (var item in device.DeviceLog)
+                    result.LogEntries.Add(new LogEntry(item.Timestamp.Value, item.Blob, (LogEntry.LogLevel)item.LogLevel, false));
+
+                // Graphics cards
+                foreach (var item in device.DeviceGraphic)
+                    result.Environment.GraphicCards.Add(item.Name);
+
+                // Hard disks or SSDs
+                foreach (var disk in device.DeviceDiskDrive)
+                    result.DiskDrives.Add(ConvertDisk(disk));
+
+                // Screens
+                foreach (var screen in device.DeviceScreen)
+                    result.Screens.Add(ConvertScreen(screen));
+
+                // Device changes
+                foreach (var change in device.DeviceChange)
+                    result.DevicesChanges.Add(new DeviceChangeEntry() { Timestamp = change.Timestamp, Description = change.Description, Type = (DeviceChangeEntry.DeviceChangeType)change.Type });
+
+                // Usage
+                result.Usage = new Home.Model.DeviceUsage();
+                if (device.DeviceUsage != null)
+                {
+                    if (!string.IsNullOrEmpty(device.DeviceUsage.Cpu))
                     {
-                        if (double.TryParse(item, out double res))
-                            result.Usage.AddCPUEntry(res);
+                        foreach (var item in device.DeviceUsage.Cpu.Split(new string[] { Consts.StatsSeperator }, StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            if (double.TryParse(item, out double res))
+                                result.Usage.AddCPUEntry(res);
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(device.DeviceUsage.Ram))
+                    {
+                        foreach (var item in device.DeviceUsage.Ram.Split(new string[] { Consts.StatsSeperator }, StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            if (double.TryParse(item, out double res))
+                                result.Usage.AddRAMEntry(res);
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(device.DeviceUsage.Disk))
+                    {
+                        foreach (var item in device.DeviceUsage.Disk.Split(new string[] { Consts.StatsSeperator }, StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            if (double.TryParse(item, out double res))
+                                result.Usage.AddDISKEntry(res);
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(device.DeviceUsage.Battery))
+                    {
+                        foreach (var item in device.DeviceUsage.Battery.Split(new string[] { Consts.StatsSeperator }, StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            if (int.TryParse(item, out int res))
+                                result.Usage.AddBatteryEntry(res);
+                        }
                     }
                 }
 
-                if (!string.IsNullOrEmpty(device.DeviceUsage.Ram))
+                // Also add warnings (if any)
+                foreach (var warning in device.DeviceWarning)
                 {
-                    foreach (var item in device.DeviceUsage.Ram.Split(new string[] { Consts.StatsSeperator }, StringSplitOptions.RemoveEmptyEntries))
-                    {
-                        if (double.TryParse(item, out double res))
-                            result.Usage.AddRAMEntry(res);
-                    }
+                    if (warning.WarningType == (int)WarningType.BatteryWarning)
+                        result.BatteryWarning = ModelConverter.ConvertBatteryWarning(warning);
+                    else if (warning.WarningType == (int)WarningType.StorageWarning)
+                        result.StorageWarnings.Add(ModelConverter.ConvertStorageWarning(warning));
                 }
 
-                if (!string.IsNullOrEmpty(device.DeviceUsage.Disk))
-                {
-                    foreach (var item in device.DeviceUsage.Disk.Split(new string[] { Consts.StatsSeperator }, StringSplitOptions.RemoveEmptyEntries))
-                    {
-                        if (double.TryParse(item, out double res))
-                            result.Usage.AddDISKEntry(res);
-                    }
-                }
-
-                if (!string.IsNullOrEmpty(device.DeviceUsage.Battery))
-                {
-                    foreach (var item in device.DeviceUsage.Battery.Split(new string[] { Consts.StatsSeperator }, StringSplitOptions.RemoveEmptyEntries))
-                    {
-                        if (int.TryParse(item, out int res))
-                            result.Usage.AddBatteryEntry(res);
-                    }
-                }
+                return result;
             }
-
-            // Also add warnings (if any)
-            foreach (var warning in device.DeviceWarning)
+            catch (Exception ex)
             {
-                if (warning.WarningType == (int)WarningType.BatteryWarning)
-                    result.BatteryWarning = ModelConverter.ConvertBatteryWarning(warning);
-                else  if (warning.WarningType == (int)WarningType.StorageWarning)
-                    result.StorageWarnings.Add(ModelConverter.ConvertStorageWarning(warning));
+                Program.WebHookLogging.Enqueue((Webhook.LogLevel.Error, $"Failed to convert device: {ex.Message}"));
+                throw;
             }
-
-            return result;
         }
 
         public static DiskDrive ConvertDisk(home.Models.DeviceDiskDrive dbDisk)

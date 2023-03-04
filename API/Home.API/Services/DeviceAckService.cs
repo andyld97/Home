@@ -23,11 +23,13 @@ namespace Home.API.Services
     public class DeviceAckService : IDeviceAckService
     {
         private readonly ILogger<DeviceAckService> _logger;
+        private readonly IClientService _clientService;
         private readonly HomeContext _context;
 
-        public DeviceAckService(ILogger<DeviceAckService> logger,  HomeContext context)
+        public DeviceAckService(ILogger<DeviceAckService> logger, IClientService clientService, HomeContext context)
         {
             _logger = logger;
+            _clientService = clientService;
             _context = context;
         }
 
@@ -105,7 +107,7 @@ namespace Home.API.Services
                     result = true;
                     await _context.SaveChangesAsync();
 
-                    ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.ACK, currentDevice);
+                    _clientService.NotifyClientQueues(EventQueueItem.EventKind.ACK, currentDevice);
                 }
                 else
                 {
@@ -114,7 +116,7 @@ namespace Home.API.Services
                     await _context.Device.AddAsync(ModelConverter.ConvertDevice(_context, _logger, requestedDevice));
                     await _context.SaveChangesAsync();
 
-                    ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.NewDeviceConnected, requestedDevice);
+                    _clientService.NotifyClientQueues(EventQueueItem.EventKind.NewDeviceConnected, requestedDevice);
                 }
 
                 if (result)

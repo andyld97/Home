@@ -67,7 +67,12 @@ namespace Home.Data.Events
             /// <summary>
             /// Denotes that the "live mode" of the event device got changed
             /// </summary>
-            LiveModeChanged
+            LiveModeChanged,
+
+            /// <summary>
+            /// Denotes that a device was deleted
+            /// </summary>
+            DeviceDeleted,
         }
     }
 
