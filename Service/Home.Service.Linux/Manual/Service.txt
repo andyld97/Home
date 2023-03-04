@@ -1,7 +1,7 @@
-Anleitung: Service erstellen:
+Manual: Create the systemd-service
 
-1. Skript erstellen:
-sudo nano /etc/systemd/system/home-client.service
+1. Create service file:
+sudo nano /etc/systemd/system/home.client.service
 
 ----------------------------------------------------------------------              
 [Unit]
@@ -16,18 +16,20 @@ ExecStart=/usr/bin/dotnet /home/andy/Schreibtisch/Service/Home.Service.Linux.dll
 Restart=always
 # Restart service after 10 seconds if the dotnet service crashes:
 RestartSec=10
+# Timeout to ensure that the service gets killed fast
+TimeoutStopSec=5
 SyslogIdentifier=home.service.linux
 User=root
 
 [Install]
 WantedBy=multi-user.target
 ----------------------------------------------------------------------  
+2. Setup service
 
-2. Service einrichten (aktivieren & starten)
+systemctl enable home.client.service	# Enables the service
+service home.client start
 
-systemctl enable  kestrel-hellomvc.service # Aktiviert den Service (auch Autostart)
-systemctl disable kestrel-hellomvc.service
-systemctl restart kestrel-hellomvc.service
-systemctl stop kestrel-hellomvc.service
-systemctl start kestrel-hellomvc.service
-systemctl status kestrel-hellomvc.service
+3. Further commands:
+- service home.client status
+- service home.client restart
+- service home.client stop
