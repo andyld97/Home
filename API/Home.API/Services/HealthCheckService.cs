@@ -39,7 +39,7 @@ namespace Home.API.Services
 
         /// <summary>
         /// Currently each hour this will be resetted in order to prevent spam. So in the worst case you will get a notication every hour (still better than each time the service runs)
-        /// ACK Errors gets LOGGED only ONCE per DEVICE. So if there is a an ack error you have to handle it,
+        /// ACK Errors get LOGGED only ONCE per DEVICE. So if there is a an ack error you have to handle it,
         /// but mostly such an error don't occur for only one device, but rather for all devices (e.g. if the db connection is lost)
         /// </summary>
         /// <returns>true if the webhook should be notified</returns>
