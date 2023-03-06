@@ -736,7 +736,7 @@ namespace Home
 
         private void MenuButtonOpenAbout_Click(object sender, RoutedEventArgs e)
         {
-            new AboutDialog().Show();
+            new AboutDialog().ShowDialog();
         }
 
         #region Report
