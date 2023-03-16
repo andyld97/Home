@@ -78,7 +78,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.0" />
-    <PackageReference Include="WebhookAPI" Version="1.0.1" />
+    <PackageReference Include="WebhookAPI" Version="1.0.2" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="resources\icons\cpu.png" />
