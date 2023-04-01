@@ -70,7 +70,7 @@ namespace Home.Service.Windows.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Device&quot;  ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Device ähnelt.
         /// </summary>
         public static string strDevice {
             get {
@@ -115,7 +115,7 @@ namespace Home.Service.Windows.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die {0} ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Failed to setup autostart: {0} ähnelt.
         /// </summary>
         public static string strFailedToSetupAutostart {
             get {
@@ -135,7 +135,7 @@ namespace Home.Service.Windows.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Initalize ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Initialize ähnelt.
         /// </summary>
         public static string strInitalize {
             get {
@@ -144,7 +144,7 @@ namespace Home.Service.Windows.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Invalid data set ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Invalid data set! ähnelt.
         /// </summary>
         public static string strInvalidDataSet {
             get {
@@ -171,7 +171,7 @@ namespace Home.Service.Windows.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Autostart einrichten ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Setup autostart ähnelt.
         /// </summary>
         public static string strSetupAutostart {
             get {

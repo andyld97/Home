@@ -106,7 +106,7 @@ namespace Home.Service.Legacy.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Initalize ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Initialize ähnelt.
         /// </summary>
         public static string strInitalize {
             get {

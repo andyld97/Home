@@ -286,7 +286,7 @@ namespace Home
 
             foreach (var group in groups)
             {
-                // Summarise * and string.Empty to a single group
+                // Summarize * and string.Empty to a single group
                 if (string.IsNullOrEmpty(group.Key) || group.Key.Trim() == "*")
                 {
                     foreach (var device in group.OrderBy(d => d.Name))
@@ -429,7 +429,7 @@ namespace Home
                         }
                         else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceScreenshotRecieved)
                         {
-                            // ToDo: *** Only recieve screenshot (probably await GetScreenshot(oldDevice))
+                            // ToDo: *** Only receive screenshot (probably await GetScreenshot(oldDevice))
 
                         }
                         else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceChangedState)
@@ -837,7 +837,7 @@ namespace Home
                 }
                 else if (dd.MediaType == "Removable Media" && dd.DiskInterface == "USB")
                 {
-                    // Mayebe usb disk or mounted image
+                    // Maybe usb disk or mounted image
                     image = "usb";
                 }
                 else if (dd.MediaType == "Removable Media" && dd.DiskInterface != "USB")

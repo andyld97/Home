@@ -113,7 +113,7 @@ namespace Home.Controls
                 {
                     if (await MainWindow.API.DownloadScreenshotToCache(device, MainWindow.CACHE_PATH, screenshot.Filename))
                     {
-                        // succuessfully downloaded image to cache
+                        // Successfully downloaded image to cache
                         if (screenshotToDisplay != null && screenshotToDisplay == screenshot)
                             await DisplayScreenshotAsync(path, device);
                     }

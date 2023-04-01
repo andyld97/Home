@@ -79,7 +79,7 @@ namespace Home.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Concept and realisation by Andreas L. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Concept and realization by Andreas L. ähnelt.
         /// </summary>
         public static string strAbout_Line1 {
             get {
@@ -988,7 +988,7 @@ namespace Home.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Managment ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Management ähnelt.
         /// </summary>
         public static string strManagment {
             get {
@@ -1555,7 +1555,7 @@ namespace Home.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Warning occured ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Warning occurred ähnelt.
         /// </summary>
         public static string strReport_WarningOccured {
             get {
@@ -1609,7 +1609,7 @@ namespace Home.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Aquire new screenshot ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Acquire new screenshot ähnelt.
         /// </summary>
         public static string strScreenshotViewer_AquireNewScreenshot {
             get {
@@ -1663,7 +1663,7 @@ namespace Home.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Paramter: ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Parameter: ähnelt.
         /// </summary>
         public static string strSendCommandDialog_Parameter {
             get {

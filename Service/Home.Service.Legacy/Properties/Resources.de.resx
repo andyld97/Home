@@ -134,8 +134,8 @@
     <comment>Device Type:</comment>
   </data>
   <data name="strInitalize" xml:space="preserve">
-    <value>Initalisieren</value>
-    <comment>Initalize</comment>
+    <value>Initialisieren</value>
+    <comment>Initialize</comment>
   </data>
   <data name="strLocation" xml:space="preserve">
     <value>Ort:</value>

@@ -41,7 +41,7 @@ namespace Home.Service.Windows
 
         // LEGACY-FLAG
         // The legacy flag is mode for Windows 7 SP1 x86 PCs.
-        // It's using a similiar implemented API like Home.Service.Legacy,
+        // It's using a similar implemented API like Home.Service.Legacy,
         // because since Home.Service.Windows stopped working on Windows 7 x86 (since .NET 6) (.NET 4.8 worked fine)
 
         public MainWindow()
@@ -169,7 +169,7 @@ namespace Home.Service.Windows
 
             if (!isInitalized)
             {
-                // Initalize
+                // Initialize
 #if LEGACY
                 isInitalized = legacyAPI.RegisterDeviceAsync(currentDevice);
 #else

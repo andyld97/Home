@@ -111,7 +111,7 @@ namespace Home.API.Services
                 }
                 else
                 {
-                    // Temporay fix if data is empty again :(
+                    // Temporary fix if data is empty again :(
                     requestedDevice.LastSeen = now;
                     await _context.Device.AddAsync(ModelConverter.ConvertDevice(_context, _logger, requestedDevice));
                     await _context.SaveChangesAsync();

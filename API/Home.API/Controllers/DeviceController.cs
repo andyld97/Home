@@ -87,7 +87,7 @@ namespace Home.API.Controllers
 
                     var dbDevice = ModelConverter.ConvertDevice(_context, _logger, device);
                     await _context.Device.AddAsync(dbDevice);
-                    await _context.DeviceChange.AddAsync(new DeviceChange() { Timestamp = now, Device = dbDevice, Description = $"Device \"{dbDevice.Name}\" added to the system initally!" });
+                    await _context.DeviceChange.AddAsync(new DeviceChange() { Timestamp = now, Device = dbDevice, Description = $"Device \"{dbDevice.Name}\" added to the system initially!" });
                     await _context.SaveChangesAsync();
 
                     // To notify webhook:
@@ -193,16 +193,16 @@ namespace Home.API.Controllers
                     {
                         ds.Screen = screen;
 
-                        var logEntry = ModelConverter.CreateLogEntry(deviceFound, $"Recieved screenshot from this device [{screen.DeviceName}]!", LogEntry.LogLevel.Information);
+                        var logEntry = ModelConverter.CreateLogEntry(deviceFound, $"Received screenshot from this device [{screen.DeviceName}]!", LogEntry.LogLevel.Information);
                         await _context.DeviceLog.AddAsync(logEntry);
-                        _logger.LogInformation($"Recieved screenshot from {deviceFound.Environment.MachineName} [{screen.DeviceName}]");
+                        _logger.LogInformation($"Received screenshot from {deviceFound.Environment.MachineName} [{screen.DeviceName}]");
                     }
                 }
                 else
                 {
-                    var logEntry = ModelConverter.CreateLogEntry(deviceFound, "Recieved screenshot from this device!", LogEntry.LogLevel.Information);
+                    var logEntry = ModelConverter.CreateLogEntry(deviceFound, "Received screenshot from this device!", LogEntry.LogLevel.Information);
                     await _context.DeviceLog.AddAsync(logEntry);
-                    _logger.LogInformation($"Recieved screenshot from {deviceFound.Environment.MachineName}");
+                    _logger.LogInformation($"Received screenshot from {deviceFound.Environment.MachineName}");
                 }
 
                 deviceFound.DeviceScreenshot.Add(ds);

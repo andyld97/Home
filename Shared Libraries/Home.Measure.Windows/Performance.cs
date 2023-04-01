@@ -39,7 +39,7 @@ namespace Home.Measure.Windows
  */
 
     /// <summary>
-    /// Capsels all methods available by Performance Counter
+    /// Capsules all methods available by Performance Counter
     /// </summary>
     public static class Performance
     {

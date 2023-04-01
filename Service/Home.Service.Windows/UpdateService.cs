@@ -31,7 +31,7 @@ namespace Home.Service.Windows
                 if (ServiceData.Instance.LastUpdateCheck != DateTime.MinValue && ServiceData.Instance.LastUpdateCheck.AddDays(1) >= DateTime.Now)
                 {
                     // This is to prevent, that if an update fails, then it would be executed still on each start
-                    // With this lock the update can be exectued in now+1day
+                    // With this lock the update can be executed in now+1day
                     result = null;
                 }
                 else
@@ -102,7 +102,7 @@ namespace Home.Service.Windows
                     if (!System.IO.Directory.Exists(tempPath))
                         System.IO.Directory.CreateDirectory(tempPath);
 
-                    // Copy updater files to temp directoy to execute it from there (to prevent that it gets killed via Setup)
+                    // Copy updater files to temp directory to execute it from there (to prevent that it gets killed via Setup)
                     string[] filesToCopy = { "ClientUpdate.exe", "ClientUpdate.dll", "ClientUpdate.deps.json", "ClientUpdate.runtimeconfig.json", "Newtonsoft.Json.dll" };
                     foreach (var file in filesToCopy)
                     {

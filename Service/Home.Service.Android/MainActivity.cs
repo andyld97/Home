@@ -174,7 +174,7 @@ namespace Home.Service.Android
 
             RefreshServiceStatus();
 
-            // Initalize serviceCheckingTimer
+            // Initialize serviceCheckingTimer
             serviceCheckingTimer = new System.Timers.Timer() { Interval = TimeSpan.FromSeconds(10).TotalMilliseconds };
             serviceCheckingTimer.Elapsed += ServiceCheckingTimer_Elapsed;
             serviceCheckingTimer.Start();
@@ -223,7 +223,7 @@ namespace Home.Service.Android
             
                 ServiceHelper.StartAckService(this);
                 RefreshServiceStatus();
-                Toast.MakeText(this, $"The device was registered succuessfully!", ToastLength.Short).Show();
+                Toast.MakeText(this, $"The device was registered successfully!", ToastLength.Short).Show();
             }
             else
                 Toast.MakeText(this, $"Failed to register device!", ToastLength.Short).Show();
@@ -254,7 +254,7 @@ namespace Home.Service.Android
             ledIsDeviceRegistered.SetImageResource(isDeviceRegistered ? Resource.Drawable.led_on : Resource.Drawable.led_off);
             ledIsServiceRunning.SetImageResource(isServiceRunning ? Resource.Drawable.led_on : Resource.Drawable.led_off);
 
-            // Assing texts
+            // Assign texts
             textRegister.Text = (isDeviceRegistered ? string.Format(GetString(Resource.String.strDeviceRegisteredText), currentDevice.Name) : string.Format(GetString(Resource.String.strDeviceNotRegisteredText), currentDevice.Name));
             textService.Text = (isServiceRunning ? GetString(Resource.String.strServiceActiveText) : GetString(Resource.String.strServiceInActiveText));
 

@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace Home.Measure.Windows
 {
     /// <summary>
-    /// Capsels all methods available via P/Invoke
+    /// Capsules all methods available via P/Invoke
     /// </summary>
     public static class Native
     {

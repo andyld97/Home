@@ -26,7 +26,7 @@ namespace Home.Service.Linux
                 if (lastUpdateCheck != DateTime.MinValue && lastUpdateCheck.AddDays(1) >= DateTime.Now)
                 {
                     // This is to prevent, that if an update fails, then it would be executed still on each start
-                    // With this lock the update can be exectued in now+1day
+                    // With this lock the update can be executed in now+1day
                     result = null;
                 }
                 else

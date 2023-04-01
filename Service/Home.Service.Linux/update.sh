@@ -4,11 +4,11 @@
 
 # Step 1: Download update.zip file
 echo "Downloading update $1 ..."
-curl --silent -L -o "update.tar" "$1"						# "<-Important for pathes with spaces
+curl --silent -L -o "update.tar" "$1"						# "<-Important for paths with spaces
 
 # Step 2: Extract the zip file to the folder $2 (override existing files)
 echo "Unzipping file to $2 ..."
-tar xf "update.tar" -C "$2"	--exclude="config.json"			# "<- Important for pathes with spaces, exclude config.json
+tar xf "update.tar" -C "$2"	--exclude="config.json"			# "<- Important for paths with spaces, exclude config.json
 
 # Step 3: Delete update.tar file
 rm "update.tar"

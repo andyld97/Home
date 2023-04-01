@@ -38,7 +38,7 @@ namespace Home.API.Services
         }
 
         /// <summary>
-        /// Currently each hour this will be resetted in order to prevent spam. So in the worst case you will get a notication every hour (still better than each time the service runs)
+        /// Currently each hour this will be resetted in order to prevent spam. So in the worst case you will get a notification every hour (still better than each time the service runs)
         /// ACK Errors get LOGGED only ONCE per DEVICE. So if there is a an ack error you have to handle it,
         /// but mostly such an error don't occur for only one device, but rather for all devices (e.g. if the db connection is lost)
         /// </summary>
@@ -170,7 +170,7 @@ namespace Home.API.Services
                 // Update the device status if it is inactive
                 await UpdateDeviceStatusAsync(context, device);
 
-                // Aquiring a new screenshot for all online devices (except android devices)
+                // Acquiring a new screenshot for all online devices (except android devices)
                 await CheckForScreenshotExpiredAsync(context, device, now);
 
                 // Delete screenshots which are older than the Program.GlobalConfig.RemoveOldScreenshots-Timestamp
@@ -224,7 +224,7 @@ namespace Home.API.Services
 
             if (device.DeviceScreenshot.Count == 0)
             {
-                // If there is no screenshot avaiable for the device a new one should be aquired
+                // If there is no screenshot available for the device a new one should be acquired
                 if (device.Ostype != (int)Home.Model.Device.OSType.Android)
                     device.IsScreenshotRequired = true;
                 return;
@@ -244,7 +244,7 @@ namespace Home.API.Services
             if (shot.Timestamp.Add(Program.GlobalConfig.AquireNewScreenshot) < now)
             {
                 device.IsScreenshotRequired = true;
-                var logEntry = ModelConverter.CreateLogEntry(device, $"Last screenshot was older than {Program.GlobalConfig.AquireNewScreenshot.TotalHours}h. Aquiring a new screenshot ...", LogEntry.LogLevel.Information);
+                var logEntry = ModelConverter.CreateLogEntry(device, $"Last screenshot was older than {Program.GlobalConfig.AquireNewScreenshot.TotalHours}h. Acquiring a new screenshot ...", LogEntry.LogLevel.Information);
                 await context.DeviceLog.AddAsync(logEntry);
                 _clientService.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
             }

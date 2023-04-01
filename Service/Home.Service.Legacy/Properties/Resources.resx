@@ -130,7 +130,7 @@
     <value>Device Type:</value>
   </data>
   <data name="strInitalize" xml:space="preserve">
-    <value>Initalize</value>
+    <value>Initialize</value>
   </data>
   <data name="strLocation" xml:space="preserve">
     <value>Location:</value>

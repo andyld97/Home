@@ -18,7 +18,7 @@ namespace Home.Data.Helper
         }
 
         /// <summary>
-        /// Calculates an approripate unit and returns the calculated ByteUnit instance
+        /// Calculates an appropriate unit and returns the calculated ByteUnit instance
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -57,7 +57,7 @@ namespace Home.Data.Helper
 
         public static bool operator <(ByteUnit x, ByteUnit y)
         {
-            // No conversation required if they are the same tyxpe
+            // No conversation required if they are the same type
             if (x.Type == y.Type)
                 return x.Length < y.Length;
 

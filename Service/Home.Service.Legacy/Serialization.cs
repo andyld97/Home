@@ -33,7 +33,7 @@ namespace Serialization
         /// <summary>
         /// Reads xmlData and creates a new instance of T
         /// </summary>
-        /// <typeparam name="T">The type which you want to deserilize</typeparam>
+        /// <typeparam name="T">The type which you want to deserialize</typeparam>
         /// <param name="xmlData">The xml data</param>
         /// <param name="encoding">The encoding which do you use</param>
         /// <returns></returns>
@@ -48,7 +48,7 @@ namespace Serialization
         /// <summary>
         /// Reads xmlBytes and creates a new instance of T
         /// </summary>
-        /// <typeparam name="T">The type which you want to deserilize</typeparam>
+        /// <typeparam name="T">The type which you want to deserialize</typeparam>
         /// <param name="xmlBytes">The bytes which contain the xmlData</param>
         /// <returns></returns>
         public static T ReadBytes<T>(byte[] xmlBytes)
@@ -122,7 +122,7 @@ namespace Serialization
         /// <summary>
         /// Reads fileStream and creates a new instance of T
         /// </summary>
-        /// <typeparam name="T">The type which you want to deserilize</typeparam>
+        /// <typeparam name="T">The type which you want to deserialize</typeparam>
         /// <param name="fileName">The file to read</param>
         /// <param name="mode">The mode <see cref="Mode"/></param>
         /// <returns></returns>
@@ -161,9 +161,9 @@ namespace Serialization
         /// <summary>
         /// Writes serialized content to your harddisk
         /// </summary>
-        /// <typeparam name="T">The type which you want to deserilize</typeparam>
+        /// <typeparam name="T">The type which you want to deserialize</typeparam>
         /// <param name="fileName">The file where you want it to save</param>
-        /// <param name="instance">The instance to serliaize</param>
+        /// <param name="instance">The instance to serialize</param>
         /// <param name="mode">The mode <see cref="Mode"/></param>
         public static void Save<T>(string fileName, T instance, Mode mode = Mode.Normal, Type[] additionalTypes = null)
         {
@@ -192,7 +192,7 @@ namespace Serialization
         /// <summary>
         /// Serializes the given instance and returns it's xml-content
         /// </summary>
-        /// <param name="instance">The instance to serliaize</param>
+        /// <param name="instance">The instance to serialize</param>
         /// <param name="encoding">The encoding which do you use</param>
         /// <returns></returns>
         public static string SaveToString<T>(T instance, System.Text.Encoding encoding, Type[] additionalTypes = null)
@@ -208,7 +208,7 @@ namespace Serialization
         /// Serializes the given instance and returns it's xml-content (as byte-array)
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="instance">The instance to serliaize</param>
+        /// <param name="instance">The instance to serialize</param>
         /// <returns></returns>
         public static byte[] SaveToBytes<T>(T instance, Type[] additionalTypes = null)
         {
@@ -224,9 +224,9 @@ namespace Serialization
         }
 
         /// <summary>
-        /// Serializes the given instance from the type type to a byte-array (xml-string as byte[])
+        /// Serializes the given instance from the type to a byte-array (xml-string as byte[])
         /// </summary>
-        /// <param name="instance">The instance to serializse</param>
+        /// <param name="instance">The instance to serializes</param>
         /// <param name="type">The type of the instance</param>
         /// <returns></returns>
         public static byte[] SaveToBytes(object instance, Type type, Type[] additionalTypes = null)
@@ -249,9 +249,9 @@ namespace Serialization
         }
 
         /// <summary>
-        /// Serializes the given instance from the type type to a xml-string
+        /// Serializes the given instance from the type to a xml-string
         /// </summary>
-        /// <param name="instance">The instance to serializse</param>
+        /// <param name="instance">The instance to serializes</param>
         /// <param name="type">The type of the instance</param>
         /// <param name="encoding">The encoding used to convert byte-array to string</param>
         /// <returns></returns>

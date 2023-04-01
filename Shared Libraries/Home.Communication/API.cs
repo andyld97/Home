@@ -63,7 +63,7 @@ namespace Home.Communication
                         return AnswerExtensions.Fail<List<Device>>(answer.ErrorMessage);
                 }
                 else
-                    return AnswerExtensions.Fail<List<Device>>("Invalid answer recieved!");
+                    return AnswerExtensions.Fail<List<Device>>("Invalid answer received!");
             }
             catch (Exception ex)
             {
@@ -107,7 +107,7 @@ namespace Home.Communication
                         return AnswerExtensions.Fail<string>(answer.ErrorMessage);
                 }
                 else
-                    return AnswerExtensions.Fail<string>("Invalid answer recieved!");
+                    return AnswerExtensions.Fail<string>("Invalid answer received!");
 
             }
             catch (Exception ex)
@@ -154,7 +154,7 @@ namespace Home.Communication
                 if (!string.IsNullOrEmpty(content))
                     return System.Text.Json.JsonSerializer.Deserialize<Answer<AckResult>>(content);
                 else
-                    return AnswerExtensions.Fail<AckResult>("Recieved empty string!");
+                    return AnswerExtensions.Fail<AckResult>("Received empty string!");
 
             }
             catch (Exception ex)

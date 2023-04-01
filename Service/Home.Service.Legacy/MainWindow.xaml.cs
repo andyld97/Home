@@ -129,7 +129,7 @@ namespace Home.Service.Legacy
 
             if (!isInitalized)
             {
-                // Initalize
+                // Initialize
                 isInitalized = api.RegisterDeviceAsync(currentDevice);
             }
             else

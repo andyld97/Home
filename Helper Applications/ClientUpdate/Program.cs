@@ -81,7 +81,7 @@ namespace ClientUpdate
             catch (Exception ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Log($"Error while updating occured: {ex.Message} ...");
+                Log($"Error while updating occurred: {ex.Message} ...");
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.ReadLine();
             }

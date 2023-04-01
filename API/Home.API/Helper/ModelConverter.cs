@@ -31,7 +31,7 @@ namespace Home.API.Helper
 
             updateDevice.Guid = device.ID;
             updateDevice.DeviceGroup = device.DeviceGroup;
-            // updateDevice.IsLive = device.IsLive; // This isn't to be updated, because the ack device don't know about the livve status
+            // updateDevice.IsLive = device.IsLive; // This isn't to be updated, because the ack device don't know about the live status
             updateDevice.DeviceTypeId = (int)device.Type;
             updateDevice.Name = device.Name;
             updateDevice.Ostype = (int)device.OS;
@@ -195,7 +195,7 @@ namespace Home.API.Helper
                 result.ID = device.Guid;
                 result.Name = device.Name;
 
-                // Enviornment
+                // Environment
                 result.Environment = new Home.Model.DeviceEnvironment()
                 {
                     CPUCount = (int)device.Environment.Cpucount,

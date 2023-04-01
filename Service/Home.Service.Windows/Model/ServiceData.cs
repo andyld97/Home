@@ -176,7 +176,7 @@ namespace Home.Service.Windows.Model
             return new ServiceData();
         }
 
-        public void NotifyPropertyChanged(string propertyName) // cannot use [CallerMemberName] due to compability issues
+        public void NotifyPropertyChanged(string propertyName) // cannot use [CallerMemberName] due to compatibility issues
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             if (Instance != null)

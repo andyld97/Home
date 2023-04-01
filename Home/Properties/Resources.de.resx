@@ -286,7 +286,7 @@
     <value>Anwendung:</value>
   </data>
   <data name="strSendCommandDialog_Parameter" xml:space="preserve">
-    <value>Paramter:</value>
+    <value>Parameter:</value>
   </data>
   <data name="strTo" xml:space="preserve">
     <value>an</value>
@@ -486,7 +486,7 @@
     <value>Darstellung:</value>
   </data>
   <data name="strSettings_AttentionText" xml:space="preserve">
-    <value>ACHTUNG: Die API-URL muss gesetzt, gültig und erreichbar sein, um die Einstellungen zu übernhemen!</value>
+    <value>ACHTUNG: Die API-URL muss gesetzt, gültig und erreichbar sein, um die Einstellungen zu übernehmen!</value>
   </data>
   <data name="strSettings_CheckConnection" xml:space="preserve">
     <value>Verbindung testen ...</value>

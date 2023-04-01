@@ -17,7 +17,7 @@ namespace Home.Service.Windows
         [STAThread]
         public static void Main(string[] args)
         {
-            // Check if mutex is aquired
+            // Check if mutex is acquired
             if (!AppMutex.WaitOne(TimeSpan.FromSeconds(1), false))
                 Environment.Exit(-1);
 

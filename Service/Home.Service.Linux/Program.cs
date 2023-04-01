@@ -48,7 +48,7 @@ namespace Home.Service.Linux
 
         public static void Main(string[] args)
         {
-            // Check if mutex is aquired
+            // Check if mutex is acquired
             if (!AppMutex.WaitOne(TimeSpan.FromSeconds(1), false))
             {
                 Console.WriteLine("Home.Service.Linux is already started!");
@@ -115,8 +115,6 @@ namespace Home.Service.Linux
                 apiThread.Start();
 
                 MainAsync(args, configJson);
-                //Task task = MainAsync(args, configJson);
-                //task.Wait();
 
                 while (true)
                 {
@@ -310,7 +308,7 @@ namespace Home.Service.Linux
                     if (!screenshotResult.Success)
                         Console.WriteLine(screenshotResult.ErrorMessage);
                     else
-                        Console.WriteLine("Successfully uploaded screeenshot!");
+                        Console.WriteLine("Successfully uploaded screenshot!");
                 }
                 catch (Exception ex)
                 {
@@ -472,7 +470,7 @@ namespace Home.Service.Linux
                 return false;
             }
 
-            // If nothing was found return "/"- as a diskdrive!
+            // If nothing was found return "/"- as a disk drive!
             if (device.DiskDrives.Count == 0)
                 device.DiskDrives.Add(new DiskDrive() { VolumeName = "/", DriveName = "/", DriveID = "linux_default_storage", PhysicalName = "linux_default_storage" });
 
@@ -498,7 +496,7 @@ namespace Home.Service.Linux
 
                         string[] lineValues = line.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 
-                        // lineValues[0] := Dateisysstem (/dev/sda1)
+                        // lineValues[0] := Dateisystem (/dev/sda1)
                         // lineValues[1] := Größe (4,0T)
                         // lineValues[2] := Benutzt (3,3T)
                         // lineValues[3] := Verfügbar (449G)
