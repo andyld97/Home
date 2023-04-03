@@ -44,9 +44,11 @@
     <None Remove="resources\icons\menu\pdf.png" />
     <None Remove="resources\icons\menu\print.png" />
     <None Remove="resources\icons\menu\report.png" />
+    <None Remove="resources\icons\menu\schedule.png" />
     <None Remove="resources\icons\menu\settings.png" />
     <None Remove="resources\icons\menu\wol.png" />
     <None Remove="resources\icons\motherboard.png" />
+    <None Remove="resources\icons\overview.png" />
     <None Remove="resources\icons\ram.png" />
     <None Remove="resources\icons\screen.png" />
     <None Remove="resources\images\default_phone.png" />
@@ -63,21 +65,21 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Fluent.Ribbon">
-      <Version>9.0.4</Version>
+      <Version>10.0.0-alpha0256</Version>
     </PackageReference>
     <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF">
-      <Version>2.0.0-beta.514</Version>
+	    <Version>2.0.0-beta.514</Version>
     </PackageReference>
     <PackageReference Include="MahApps.Metro" Version="2.4.9" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Web.WebView2">
-      <Version>1.0.1661.34</Version>
+      <Version>1.0.1724-prerelease</Version>
     </PackageReference>
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.6.0-preview3.19128.7" />
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.410601">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="8.0.0-preview.2.23128.3" />
     <PackageReference Include="WebhookAPI" Version="1.0.2" />
   </ItemGroup>
   <ItemGroup>
@@ -100,8 +102,10 @@
     <Resource Include="resources\icons\menu\pdf.png" />
     <Resource Include="resources\icons\menu\print.png" />
     <Resource Include="resources\icons\menu\report.png" />
+    <Resource Include="resources\icons\menu\schedule.png" />
     <Resource Include="resources\icons\menu\wol.png" />
     <Resource Include="resources\icons\motherboard.png" />
+    <Resource Include="resources\icons\menu\overview.png" />
     <Resource Include="resources\icons\ram.png" />
     <Resource Include="resources\icons\reset_view.png" />
     <Resource Include="resources\icons\devices\tablet.png" />
@@ -200,7 +204,7 @@
     <Resource Include="resources\icons\menu\settings.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ControlzEx" Version="5.0.2" />
+    <PackageReference Include="ControlzEx" Version="6.0.0-alpha0277" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
   </ItemGroup>
   <ItemGroup>

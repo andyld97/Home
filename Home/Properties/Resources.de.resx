@@ -772,4 +772,16 @@
   <data name="strSuccessfullyAppliedChanges" xml:space="preserve">
     <value>Die Änderungen wurden erfolgreich übernommen!</value>
   </data>
+  <data name="strDefault" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+  <data name="strSaveReportPdf" xml:space="preserve">
+    <value>PDF speichern</value>
+  </data>
+  <data name="strSaveReportHtml" xml:space="preserve">
+    <value>HTML speichern</value>
+  </data>
+  <data name="strToggleOverview" xml:space="preserve">
+    <value>Übersicht umschalten</value>
+  </data>
 </root>

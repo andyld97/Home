@@ -322,6 +322,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Default ähnelt.
+        /// </summary>
+        public static string strDefault {
+            get {
+                return ResourceManager.GetString("strDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Remove Device ähnelt.
         /// </summary>
         public static string strDeleteDevice {
@@ -1591,6 +1600,24 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Save HTML ähnelt.
+        /// </summary>
+        public static string strSaveReportHtml {
+            get {
+                return ResourceManager.GetString("strSaveReportHtml", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Save PDF ähnelt.
+        /// </summary>
+        public static string strSaveReportPdf {
+            get {
+                return ResourceManager.GetString("strSaveReportPdf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Screens ähnelt.
         /// </summary>
         public static string strScreens {
@@ -1911,6 +1938,15 @@ namespace Home.Properties {
         public static string strTo {
             get {
                 return ResourceManager.GetString("strTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Toggle Overview ähnelt.
+        /// </summary>
+        public static string strToggleOverview {
+            get {
+                return ResourceManager.GetString("strToggleOverview", resourceCulture);
             }
         }
         

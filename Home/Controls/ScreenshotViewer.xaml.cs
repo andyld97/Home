@@ -208,8 +208,8 @@ namespace Home.Controls
 
             var screens = new List<Screen>();
             if (device.Screens.Count != 1)
-                screens.Add(new Screen() { DeviceName = "Default" });
-            screens.AddRange(device.Screens);
+                screens.Add(new Screen() { DeviceName = Home.Properties.Resources.strDefault });
+            screens.AddRange(device.Screens.OrderBy(s => s.Index));
             cmbScreens.ItemsSource = screens;
 
             if (previousIndex != -1 && device.Screens.Count > 0 && restoreIndex)
@@ -303,7 +303,7 @@ namespace Home.Controls
             }
             else
             {
-                TextLive.Foreground = FindResource("BlackBrush") as SolidColorBrush;
+                TextLive.Foreground = FindResource("Fluent.Ribbon.Brushes.Black") as SolidColorBrush;
                 TextLive.Text = lastDate;
             }
         }

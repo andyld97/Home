@@ -7,16 +7,20 @@
         mc:Ignorable="d"
         WindowStyle="ThreeDBorderWindow"
         xmlns:res="clr-namespace:Home.Properties"
+        Background="{DynamicResource Fluent.Ribbon.Brushes.White}"
         Title="{x:Static res:Resources.strSendMessageDialog_Title}" WindowStartupLocation="CenterScreen"  ResizeMode="NoResize" Width="300" SizeToContent="Height">
-    <StackPanel>
+    <StackPanel Margin="5">
         <StackPanel.Resources>
             <Style TargetType="{x:Type TextBlock}">
-                <Setter Property="Margin" Value="2,0,2,0" />
+                <Setter Property="Margin" Value="0,0,2,0" />
                 <Setter Property="Padding" Value="2" />
+                <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.Black}" />
             </Style>
             <Style TargetType="{x:Type TextBox}">
                 <Setter Property="Margin" Value="2" />
                 <Setter Property="Padding" Value="2" />
+                <Setter Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.White}" />
+                <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.Black}" />
             </Style>
         </StackPanel.Resources>
         

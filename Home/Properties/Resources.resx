@@ -824,4 +824,16 @@
   <data name="strSuccessfullyAppliedChanges" xml:space="preserve">
     <value>The changes have been successfully applied!</value>
   </data>
+  <data name="strDefault" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="strSaveReportPdf" xml:space="preserve">
+    <value>Save PDF</value>
+  </data>
+  <data name="strSaveReportHtml" xml:space="preserve">
+    <value>Save HTML</value>
+  </data>
+  <data name="strToggleOverview" xml:space="preserve">
+    <value>Toggle Overview</value>
+  </data>
 </root>

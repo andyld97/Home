@@ -38,8 +38,8 @@ namespace Home.Controls
             // This legend is always switching colors, so I am going to use my own legend!
             plot.LegendPosition = LiveChartsCore.Measure.LegendPosition.Hidden; // top
             plot.LegendOrientation = LiveChartsCore.Measure.LegendOrientation.Horizontal;
-            plot.LegendBackground = FindResource("WhiteBrush") as SolidColorBrush;
-            plot.LegendTextBrush = FindResource("BlackBrush") as SolidColorBrush;
+            plot.LegendBackground = FindResource("Fluent.Ribbon.Brushes.White") as SolidColorBrush;
+            plot.LegendTextBrush = FindResource("Fluent.Ribbon.Brushes.Black") as SolidColorBrush;
 
             var xaxis = plot.XAxes.FirstOrDefault();
             var yaxis = plot.YAxes.FirstOrDefault();

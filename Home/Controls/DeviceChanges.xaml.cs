@@ -1,8 +1,10 @@
 ﻿using Home.Model;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.Caching.Hosting;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -39,6 +41,14 @@ namespace Home.Controls
 
             foreach (var change in changes)
             {
+                // Fix for android devices where you don't really get the cpu name, but all features of the CPU,
+                // see https://github.com/andyld97/Home/issues/13
+                foreach (var item in change)
+                {
+                    if (item.Type == DeviceChangeType.CPU && item.Description.Contains(Environment.NewLine) ||item.Description.Contains("\n"))
+                        item.Description = item.Description.Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+                }
+
                 ViewHolder.Children.Add(new TextBlock() 
                 {
                     Text = $"{change.Key.ToString(Properties.Resources.strDateTimeFormat)}:",
@@ -65,7 +75,7 @@ namespace Home.Controls
                 eventArg.RoutedEvent = UIElement.MouseWheelEvent;
                 eventArg.Source = sender;
                 var parent = ((Control)sender).Parent as UIElement;
-                parent.RaiseEvent(eventArg);
+                parent?.RaiseEvent(eventArg);
             }
         }
     }

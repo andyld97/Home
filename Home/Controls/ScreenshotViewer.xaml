@@ -18,7 +18,7 @@
                 <local:DefaultConverter x:Key="defaultConverter" />
             </Grid.Resources>
 
-            <Border x:Name="SubBorder" BorderBrush="{DynamicResource WhiteBrush}" BorderThickness="0" CornerRadius="0">
+            <Border x:Name="SubBorder" BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.White}" BorderThickness="0" CornerRadius="0">
                 <Grid>
                     <Grid HorizontalAlignment="Left">
                         <Grid>
@@ -35,7 +35,7 @@
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                         <StackPanel.Resources>
                             <Style TargetType="{x:Type Border}">
-                                <Setter Property="BorderBrush" Value="{DynamicResource BlackBrush}" />
+                                <Setter Property="BorderBrush" Value="{DynamicResource Fluent.Ribbon.Brushes.Black}" />
                             </Style>
                         </StackPanel.Resources>
                         <Border x:Name="ButtonToggleLiveMode" MouseDown="ButtonToggleLiveMode_MouseDown" Margin="5" BorderThickness="0" Cursor="Hand" ToolTip="{x:Static res:Resources.strScreenshotViewer_ToggleLiveView}">
@@ -79,7 +79,7 @@
 
             <Grid Grid.Row="1">
                 <local:ZoomImageViewer x:Name="ImageViewer" />
-                <fluent:ComboBox x:Name="cmbScreens" SelectionChanged="cmbScreens_SelectionChanged" Margin="-9,0,0,0" IsEditable="False" VerticalAlignment="Bottom" MinHeight="50">
+                <ComboBox x:Name="cmbScreens" SelectionChanged="cmbScreens_SelectionChanged" IsEditable="False" VerticalAlignment="Bottom" VerticalContentAlignment="Stretch" MinHeight="50">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <Grid>
@@ -90,7 +90,7 @@
 
                                 <Grid MaxHeight="50">
                                     <Image Source="../resources/icons/screen.png" />
-                                    <TextBlock Text="{Binding ., Converter={StaticResource defaultConverter}}" Margin="10,5" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="White" FontSize="14" />
+                                    <TextBlock Text="{Binding ., Converter={StaticResource defaultConverter}}" Margin="3,10,5,5" VerticalAlignment="Top" HorizontalAlignment="Center" FontWeight="Bold" Foreground="White" FontSize="14" />
                                 </Grid>
                                 <StackPanel Grid.Column="1" Margin="5,0,0,0">
                                     <TextBlock>
@@ -99,12 +99,11 @@
                                     </TextBlock>
                                     <TextBlock Text="{Binding Manufacturer}" />
                                     <TextBlock Text="{Binding BuiltDate}" />
-                                    <!--<TextBlock Text="{Binding ID}" /> -->
                                 </StackPanel>
                             </Grid>                            
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
-                </fluent:ComboBox>
+                </ComboBox>
             </Grid>
         </Grid>
     </Border>
