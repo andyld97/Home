@@ -11411,43 +11411,52 @@ namespace Home.Service.Android
 			public const int status_bar_notification_info_overflow = 2131755167;
 			
 			// aapt resource value: 0x7F1000A0
-			public const int strDeviceNotRegisteredText = 2131755168;
+			public const int strConnectedTo = 2131755168;
 			
 			// aapt resource value: 0x7F1000A1
-			public const int strDeviceRegisteredText = 2131755169;
+			public const int strDeviceNotRegisteredText = 2131755169;
 			
 			// aapt resource value: 0x7F1000A2
-			public const int strDeviceStatus = 2131755170;
+			public const int strDeviceRegisteredText = 2131755170;
 			
 			// aapt resource value: 0x7F1000A3
-			public const int strDeviceType = 2131755171;
+			public const int strDeviceSpecifications = 2131755171;
 			
 			// aapt resource value: 0x7F1000A4
-			public const int strGroup = 2131755172;
+			public const int strDeviceStatus = 2131755172;
 			
 			// aapt resource value: 0x7F1000A5
-			public const int strHost = 2131755173;
+			public const int strDeviceType = 2131755173;
 			
 			// aapt resource value: 0x7F1000A6
-			public const int strLocation = 2131755174;
+			public const int strGroup = 2131755174;
 			
 			// aapt resource value: 0x7F1000A7
-			public const int strRegisterDevice = 2131755175;
+			public const int strHost = 2131755175;
 			
 			// aapt resource value: 0x7F1000A8
-			public const int strServiceActiveText = 2131755176;
+			public const int strLocation = 2131755176;
 			
 			// aapt resource value: 0x7F1000A9
-			public const int strServiceInActiveText = 2131755177;
+			public const int strNotConnected = 2131755177;
 			
 			// aapt resource value: 0x7F1000AA
-			public const int strShowDeviceSpecs = 2131755178;
+			public const int strRegisterDevice = 2131755178;
 			
 			// aapt resource value: 0x7F1000AB
-			public const int strStartService = 2131755179;
+			public const int strServiceActiveText = 2131755179;
 			
 			// aapt resource value: 0x7F1000AC
-			public const int strStopService = 2131755180;
+			public const int strServiceInActiveText = 2131755180;
+			
+			// aapt resource value: 0x7F1000AD
+			public const int strShowDeviceSpecs = 2131755181;
+			
+			// aapt resource value: 0x7F1000AE
+			public const int strStartService = 2131755182;
+			
+			// aapt resource value: 0x7F1000AF
+			public const int strStopService = 2131755183;
 			
 			static String()
 			{

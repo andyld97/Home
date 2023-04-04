@@ -156,4 +156,10 @@ Set WshShell = Nothing</value>
   <data name="strInvalidDataSet" xml:space="preserve">
     <value>Invalid data set!</value>
   </data>
+  <data name="strSaveAndClose" xml:space="preserve">
+    <value>Save and Start</value>
+  </data>
+  <data name="strEnableScreenshots" xml:space="preserve">
+    <value>Enable Screenshots</value>
+  </data>
 </root>

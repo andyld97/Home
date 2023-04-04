@@ -27,7 +27,10 @@
             <TextBlock Text="{x:Static res:Resources.strAPIUrl}" FontWeight="Bold" />
             <TextBox x:Name="TextAPIUrl" Text="http://192.168.178.38:83" Margin="4,2,6,2" />
 
-            <GroupBox Header="{x:Static res:Resources.strDevice}" Margin="4,5,5,5">
+            <GroupBox Margin="4,5,5,5">
+                <GroupBox.Header>
+                    <TextBlock Text="{x:Static res:Resources.strDevice}" FontWeight="Bold" />
+                </GroupBox.Header>
                 <StackPanel>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -83,6 +86,7 @@
             </GroupBox>
 
             <CheckBox x:Name="chkEnableStartupOnBoot" Content="{x:Static res:Resources.strSetupAutostart}" IsChecked="True" Margin="4,2,0,4" />
+            <CheckBox x:Name="chkEnableScreenshots" Content="{x:Static res:Resources.strEnableScreenshots}" Margin="4,2,0,4" />
 
             <Border Background="WhiteSmoke">
                 <Grid Margin="5" HorizontalAlignment="Right">

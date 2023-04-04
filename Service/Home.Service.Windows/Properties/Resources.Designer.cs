@@ -106,6 +106,15 @@ namespace Home.Service.Windows.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Enable Screenshots ähnelt.
+        /// </summary>
+        public static string strEnableScreenshots {
+            get {
+                return ResourceManager.GetString("strEnableScreenshots", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Error ähnelt.
         /// </summary>
         public static string strError {
@@ -167,6 +176,15 @@ namespace Home.Service.Windows.Properties {
         public static string strOS {
             get {
                 return ResourceManager.GetString("strOS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Save and Start ähnelt.
+        /// </summary>
+        public static string strSaveAndClose {
+            get {
+                return ResourceManager.GetString("strSaveAndClose", resourceCulture);
             }
         }
         

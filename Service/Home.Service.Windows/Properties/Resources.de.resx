@@ -133,4 +133,10 @@
   <data name="strInvalidDataSet" xml:space="preserve">
     <value>Ungültige Daten angegeben!</value>
   </data>
+  <data name="strEnableScreenshots" xml:space="preserve">
+    <value>Screenshots aktivieren</value>
+  </data>
+  <data name="strSaveAndClose" xml:space="preserve">
+    <value>Speichern und starten</value>
+  </data>
 </root>

@@ -83,7 +83,7 @@ namespace Home.Service.Android
             }
 
             // Create notification
-            string textConntected = $"Verbunden mit {settings.Host}";
+            string textConntected = string.Format(GetString(Resource.String.strConnectedTo), settings.Host);
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
                     .SetContentTitle("Home.Service.Android")
                     .SetContentText(textConntected)
@@ -98,7 +98,7 @@ namespace Home.Service.Android
             {
                 if (!NetworkHelper.IsConnectedToWLAN(this))
                 {
-                    UpdateTextNotification("Nicht verbunden", notificationBuilder);
+                    UpdateTextNotification(GetString(Resource.String.strNotConnected), notificationBuilder);
                     return;
                 }
                 else

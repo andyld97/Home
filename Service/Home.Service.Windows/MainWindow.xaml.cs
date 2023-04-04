@@ -3,6 +3,8 @@ using Home.Data.Com;
 using Home.Measure.Windows;
 using Home.Model;
 using Home.Service.Windows.Model;
+using Home.Service.Windows.Properties;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Primitives;
 using Microsoft.VisualBasic;
 using Microsoft.Win32;
@@ -39,6 +41,8 @@ namespace Home.Service.Windows
         private bool isSendingAck = false;
         private readonly object _lock = new object();
 
+        private string homeVbsAutostartFilePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup), "home.vbs");
+
         // LEGACY-FLAG
         // The legacy flag is mode for Windows 7 SP1 x86 PCs.
         // It's using a similar implemented API like Home.Service.Legacy,
@@ -55,27 +59,39 @@ namespace Home.Service.Windows
             CmbOS.Items.Clear();
             CmbOS.ItemsSource = Enum.GetValues(typeof(Device.OSType));
             CmbOS.SelectedIndex = 0;
+
+            // Load settings
+            var data = Model.ServiceData.Instance;
+            TextAPIUrl.Text = data.APIUrl;
+            TextGroup.Text = data.DeviceGroup;
+            TextLocation.Text = data.Location;
+            CmbOS.SelectedItem = data.SystemType;
+            CmbDeviceType.SelectedItem = data.Type;
+            chkEnableScreenshots.IsChecked = data.PostScreenshots;
+
+            if (System.IO.File.Exists(homeVbsAutostartFilePath))
+                chkEnableStartupOnBoot.Visibility = Visibility.Collapsed;
+
+            if (App.IsConfigFlagSet)
+                ButtonInitalize.Content = Home.Service.Windows.Properties.Resources.strSaveAndClose;
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (ServiceData.Instance.HasLoggedInOnce)
+            if (App.IsConfigFlagSet)
+                return;
+
+            if (ServiceData.Instance.HasLoggedInOnce && !App.IsConfigFlagSet)
             {
                 // WindowState = WindowState.Minimized;
-#if !DEBUG
-                Visibility = Visibility.Hidden;
-#endif
-                isInitalized = true;
                 await InitalizeService();
+                isInitalized = true;
+                Visibility = Visibility.Hidden;
             }
         }
 
         private async Task InitalizeService()
         {
-#if DEBUG
-            return;
-#endif
-
             if (await UpdateService.CheckForUpdatesAsync() == true)
             {
                 if (await UpdateService.UpdateServiceClient())
@@ -266,6 +282,9 @@ namespace Home.Service.Windows
 
         public async Task PostScreenshot()
         {
+            if (!ServiceData.Instance.PostScreenshots)
+                return;
+
             string fileName = System.IO.Path.Combine(ServiceData.SCREENSHOT_PATH, $"capture{DateTime.Now.ToString(Consts.SCREENSHOT_DATE_FILE_FORMAT)}.png");
             var result = NET.CreateScreenshot(fileName);
 
@@ -296,12 +315,16 @@ namespace Home.Service.Windows
         protected override void OnClosing(CancelEventArgs e)
         {
             base.OnClosing(e);
+
+            if (App.IsConfigFlagSet)
+                return;
+
             e.Cancel = ServiceData.Instance.HasLoggedInOnce;
             if (ServiceData.Instance.HasLoggedInOnce)
                 WindowState = WindowState.Minimized;
-        }   
-   
-        private async void ButtonInitalize_Click(object sender, RoutedEventArgs e)
+        }
+
+        private bool SaveSettings()
         {
             // Apply settings
             string host = TextAPIUrl.Text;
@@ -318,24 +341,38 @@ namespace Home.Service.Windows
                 ServiceData.Instance.Type = dt;
                 ServiceData.Instance.Location = location;
                 ServiceData.Instance.DeviceGroup = deviceGroup;
+                ServiceData.Instance.PostScreenshots = chkEnableScreenshots.IsChecked.Value;
+                return true;
+            }
 
-                if (chkEnableStartupOnBoot.IsChecked == true)
+            return false;
+        }
+
+        private async Task SetupAutostart()
+        {
+            if (chkEnableStartupOnBoot.IsChecked == true && !System.IO.File.Exists(homeVbsAutostartFilePath))
+            {
+                try
                 {
-                    try
-                    {
-                        string homeVbsAutostartFilePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup), "home.vbs");
-                        string path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Home.Service.Windows.exe");
-                        string fileContent = string.Format(Properties.Resources.strHomeVBSStartupFile, path);
+                    string path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Home.Service.Windows.exe");
+                    string fileContent = string.Format(Properties.Resources.strHomeVBSStartupFile, path);
 
-                        await System.IO.File.WriteAllTextAsync(homeVbsAutostartFilePath, fileContent);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(string.Format(Home.Service.Windows.Properties.Resources.strFailedToSetupAutostart, ex.Message), Home.Service.Windows.Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);  
-                    }
+                    await System.IO.File.WriteAllTextAsync(homeVbsAutostartFilePath, fileContent);
                 }
-
+                catch (Exception ex)
+                {
+                    MessageBox.Show(string.Format(Home.Service.Windows.Properties.Resources.strFailedToSetupAutostart, ex.Message), Home.Service.Windows.Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+        
+        private async void ButtonInitalize_Click(object sender, RoutedEventArgs e)
+        {
+            if (SaveSettings())
+            {
+                await SetupAutostart();        
                 await InitalizeService();
+
                 // WindowState = WindowState.Minimized;
                 Visibility = Visibility.Hidden;
             }

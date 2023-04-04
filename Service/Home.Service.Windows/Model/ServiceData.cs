@@ -34,6 +34,7 @@ namespace Home.Service.Windows.Model
         private string location;
         private string osName;
         private bool hasLoggedIn = false;
+        private bool postScreenshots = true;
         private OSType osType;
         private DeviceType deviceType;
         private string apiURL = "http://192.168.178.38:83";
@@ -114,6 +115,19 @@ namespace Home.Service.Windows.Model
                 {
                     hasLoggedIn = value;
                     NotifyPropertyChanged(nameof(HasLoggedInOnce));
+                }
+            }
+        }
+
+        public bool PostScreenshots
+        {
+            get => postScreenshots;
+            set
+            {
+                if (postScreenshots != value)
+                {
+                    postScreenshots = value;
+                    NotifyPropertyChanged(nameof(PostScreenshots)); 
                 }
             }
         }

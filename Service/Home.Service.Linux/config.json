@@ -7,5 +7,6 @@
   "os": 1, /* Android = 0 | Linux = 1 | LinuxMint = 2 | LinuxUbuntu = 3 | Windows = 4-9 | Unix = 10 | Other = 11 */
   "type": 0, /* SingleBoardDevice = 0 | MiniPC = 1 | Notebook = 2 | Desktop = 3 | Server = 4 */
   "is_signed_in": false, /* should be false on first start! */
+  "enable_screenshots": true,
   "dotnet_path": "/usr/bin/dotnet"
 }

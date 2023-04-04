@@ -1032,7 +1032,12 @@ namespace Home.Model
         {
             string rn = Environment.NewLine;
             string graphics = GraphicCards.Count == 0 ? Graphics : string.Join(Environment.NewLine, GraphicCards.Count);
-            return $"OS: {OSName}{rn}OS-VER: {OSVersion}{rn}CPU: {CPUName}{rn}CPU-COUNT: {CPUCount}{rn}Motherboard: {Motherboard}{rn}Graphics: {graphics}{rn}RAM: {TotalRAM} GB{rn}FREE: {FreeRAM}{rn}Running-Time: {XmlRunningTime}";
+            string cpuName = CPUName;
+
+            if (cpuName.Contains(Environment.NewLine))
+                cpuName = cpuName.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+
+            return $"OS: {OSName}{rn}OS-VER: {OSVersion}{rn}CPU: {cpuName}{rn}CPU-COUNT: {CPUCount}{rn}Motherboard: {Motherboard}{rn}Graphics: {graphics}{rn}RAM: {TotalRAM} GB{rn}FREE: {FreeRAM}{rn}Running-Time: {XmlRunningTime}";
         }
 
         public void OnPropertyChanged(string propertyName) // Cannot use [CallerMemberName] due to compatibility issues

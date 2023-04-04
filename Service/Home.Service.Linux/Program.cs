@@ -36,6 +36,7 @@ namespace Home.Service.Linux
         private static readonly object _lock = new object();
         private static bool isSendingAck = false;
         private static string NormalUser = string.Empty;
+        private static bool enableScreenshots = true;
         #endregion
 
         #region Main
@@ -71,6 +72,10 @@ namespace Home.Service.Linux
                 // Strip comments
                 configJson = Regex.Replace(configJson, @"/\*(.*?)\*/", string.Empty, RegexOptions.Singleline);
                 config = JsonConvert.DeserializeObject<JObject>(configJson);
+
+                if (config.ContainsKey("enable_screenshots"))
+                    enableScreenshots = config["enable_screenshots"].Value<bool>();
+
 
                 var lastUpdateCheck = DateTime.MinValue;
                 try
@@ -292,6 +297,9 @@ namespace Home.Service.Linux
         #region Create Screenshot
         public static async Task CreateScreenshot()
         {
+            if (!enableScreenshots)
+                return;
+
             Console.WriteLine("Creating a screenshot ...");
 
             // 1) Create a screenshot (but ensure that this command will be executed as the normal user)

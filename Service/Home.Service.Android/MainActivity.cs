@@ -8,6 +8,8 @@ using Home.Model;
 using A = Android;
 using System;
 using System.Collections.Generic;
+using Android.Content;
+using AlertDialog = AndroidX.AppCompat.App.AlertDialog;
 
 namespace Home.Service.Android
 {
@@ -232,7 +234,18 @@ namespace Home.Service.Android
         private void BtnShowInfos_Click(object sender, System.EventArgs e)
         {
             currentDevice.RefreshDevice(ContentResolver, this);
-            Toast.MakeText(this, currentDevice.ToString(), ToastLength.Long).Show();
+            Dialog diag = null;
+
+            // Show dialog instead off a toast message
+            string info = currentDevice.ToString();
+            AlertDialog.Builder alertDiag = new AlertDialog.Builder(this);
+            alertDiag.SetTitle(GetString(Resource.String.strDeviceSpecifications));
+            alertDiag.SetMessage(info);
+            alertDiag.SetPositiveButton("OK", (senderAlert, args) => {
+                diag.Dismiss();    
+            });
+            diag = alertDiag.Create();
+            diag.Show();
         }
 
         #region Service Status
