@@ -240,8 +240,8 @@ namespace Home.Service.Windows
                     // Show message
                     try
                     {
-                        // Notification is in a different folder, otherwise there are problems with different versions of Newtonsoft.JSOn
-                        System.Diagnostics.Process.Start(@"Notification\Notification.exe", Convert.ToBase64String(System.Text.Encoding.Default.GetBytes(ackResult.Result.JsonData)));
+                        // Notification is in a different folder, otherwise there are problems with different versions of Newtonsoft.JSON
+                        System.Diagnostics.Process.Start(@"Notification\Notification.exe", Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(ackResult.Result.JsonData)));
                     }
                     catch (Exception ex)
                     {
