@@ -350,7 +350,6 @@ namespace Home.Model
 #endif
         public Battery BatteryInfo { get; set; }
 
-
         public enum DeviceStatus
         {
             Active,
@@ -360,16 +359,37 @@ namespace Home.Model
 
         public enum DeviceType
         {
+            [Description("Singleboard-Device")]
             SingleBoardDevice,
+
+            [Description("Mini PC")]
             MiniPC,
+
+            [Description("Notebook")]
             Notebook,
+
+            [Description("Desktop")]
             Desktop,
+
+            [Description("Server")]
             Server,
+
+            [Description("Smartphone")]
             Smartphone,
+
+            [Description("Smart TV")]
             SmartTV,
+
+            [Description("Set Top Box")]
             SetTopBox,
+
+            [Description("Tablet")]
             Tablet,
+
+            [Description("Virtual Machine")]
             VirtualMachine,
+
+            [Description("Android TV Stick")]
             AndroidTVStick
         }
 

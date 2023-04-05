@@ -106,6 +106,15 @@ namespace Home.Service.Windows.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Enable automatic search for updates ähnelt.
+        /// </summary>
+        public static string strEnableAutomaticUpdateSearch {
+            get {
+                return ResourceManager.GetString("strEnableAutomaticUpdateSearch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Enable Screenshots ähnelt.
         /// </summary>
         public static string strEnableScreenshots {
@@ -140,6 +149,15 @@ namespace Home.Service.Windows.Properties {
         public static string strHomeVBSStartupFile {
             get {
                 return ResourceManager.GetString("strHomeVBSStartupFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Hours ähnelt.
+        /// </summary>
+        public static string strHours {
+            get {
+                return ResourceManager.GetString("strHours", resourceCulture);
             }
         }
         
@@ -185,6 +203,15 @@ namespace Home.Service.Windows.Properties {
         public static string strSaveAndClose {
             get {
                 return ResourceManager.GetString("strSaveAndClose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Install updates at startup (if available) ähnelt.
+        /// </summary>
+        public static string strSearchForUpdatesOnStart {
+            get {
+                return ResourceManager.GetString("strSearchForUpdatesOnStart", resourceCulture);
             }
         }
         

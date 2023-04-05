@@ -35,6 +35,11 @@ namespace Home.Service.Windows.Model
         private string osName;
         private bool hasLoggedIn = false;
         private bool postScreenshots = true;
+        
+        private bool updateOnStartup = true;
+        private bool useUpdateTimer = false;
+        private int updateTimerIntervalHours = 24;
+
         private OSType osType;
         private DeviceType deviceType;
         private string apiURL = "http://192.168.178.38:83";
@@ -167,6 +172,45 @@ namespace Home.Service.Windows.Model
                 {
                     lastUpdateCheck = value;
                     NotifyPropertyChanged(nameof(LastUpdateCheck));
+                }
+            }
+        }
+
+        public bool UpdateOnStartup
+        {
+            get => updateOnStartup;
+            set
+            {
+                if (updateOnStartup != value)
+                {
+                    updateOnStartup = value;    
+                    NotifyPropertyChanged(nameof(UpdateOnStartup)); 
+                }
+            }
+        }
+
+        public bool UseUpdateTimer
+        {
+            get => useUpdateTimer;
+            set
+            {
+                if (useUpdateTimer != value)
+                {
+                    useUpdateTimer = value; 
+                    NotifyPropertyChanged(nameof(UseUpdateTimer));  
+                }
+            }
+        }
+
+        public int UpdateTimerIntervalHours
+        {
+            get => updateTimerIntervalHours;
+            set
+            {
+                if (updateTimerIntervalHours != value)
+                {
+                    updateTimerIntervalHours = value;   
+                    NotifyPropertyChanged(nameof(UpdateTimerIntervalHours));    
                 }
             }
         }

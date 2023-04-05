@@ -19,7 +19,6 @@ namespace Home.Service.Windows
     {
         private static readonly string VersionUrl = "https://ca-soft.net/home/client-versions.json";
         private static readonly string DownloadLink = "https://code-a-software.net/home/content/content.php?product=windows";
-        private static readonly string AppExeName = "Home.Service.Windows.Setup.exe";
         private static readonly string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0";
         private static readonly string LocalSetupFileName = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Home", "hc-setup.zip");
 

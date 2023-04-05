@@ -52,6 +52,7 @@
     <ProjectReference Include="..\..\Shared Libraries\Home.Measure.Windows\Home.Measure.Windows.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Dirkster.NumericUpDownLib" Version="3.4.0" />
     <PackageReference Include="DotnetRuntimeBootstrapper" Version="2.4.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

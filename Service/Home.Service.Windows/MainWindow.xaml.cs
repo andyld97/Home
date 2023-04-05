@@ -13,6 +13,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -20,6 +21,7 @@ using System.Reflection;
 using System.Runtime.Intrinsics.X86;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Threading;
 using static Home.Model.Device;
 
@@ -37,6 +39,7 @@ namespace Home.Service.Windows
 
         private Device currentDevice = null;
         private readonly DispatcherTimer ackTimer = new DispatcherTimer();
+        private readonly DispatcherTimer updateTimer = new DispatcherTimer();
         private bool isInitalized = false;
         private bool isSendingAck = false;
         private readonly object _lock = new object();
@@ -60,20 +63,7 @@ namespace Home.Service.Windows
             CmbOS.ItemsSource = Enum.GetValues(typeof(Device.OSType));
             CmbOS.SelectedIndex = 0;
 
-            // Load settings
-            var data = Model.ServiceData.Instance;
-            TextAPIUrl.Text = data.APIUrl;
-            TextGroup.Text = data.DeviceGroup;
-            TextLocation.Text = data.Location;
-            CmbOS.SelectedItem = data.SystemType;
-            CmbDeviceType.SelectedItem = data.Type;
-            chkEnableScreenshots.IsChecked = data.PostScreenshots;
-
-            if (System.IO.File.Exists(homeVbsAutostartFilePath))
-                chkEnableStartupOnBoot.Visibility = Visibility.Collapsed;
-
-            if (App.IsConfigFlagSet)
-                ButtonInitalize.Content = Home.Service.Windows.Properties.Resources.strSaveAndClose;
+            LoadSettings();
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
@@ -92,10 +82,13 @@ namespace Home.Service.Windows
 
         private async Task InitalizeService()
         {
-            if (await UpdateService.CheckForUpdatesAsync() == true)
+            if (ServiceData.Instance.UpdateOnStartup)
             {
-                if (await UpdateService.UpdateServiceClient())
-                    return;
+                if (await UpdateService.CheckForUpdatesAsync() == true)
+                {
+                    if (await UpdateService.UpdateServiceClient())
+                        return;
+                }
             }
 
             api = new Communication.API(ServiceData.Instance.APIUrl);
@@ -149,6 +142,13 @@ namespace Home.Service.Windows
             ackTimer.Tick += AckTimer_Tick;
             ackTimer.Interval = TimeSpan.FromMinutes(1);
             ackTimer.Start();
+
+            if (ServiceData.Instance.UseUpdateTimer)
+            {
+                updateTimer.Tick += UpdateTimer_Tick;
+                updateTimer.Interval = TimeSpan.FromHours(ServiceData.Instance.UpdateTimerIntervalHours);
+                updateTimer.Start();
+            }
         }
 
         private List<Screen> GetScreenInformation()
@@ -162,7 +162,7 @@ namespace Home.Service.Windows
                     ID = screen["id"].Value<string>(),
                     Manufacturer = screen["manufacturer"].Value<string>(),
                     Serial = screen["serial"].Value<string>(),
-                    BuiltDate  = screen["built_date"].Value<string>(),
+                    BuiltDate = screen["built_date"].Value<string>(),
                     Index = screen["index"].Value<int>(),
                     IsPrimary = screen["is_primary"].Value<bool>(),
                     DeviceName = screen["device_name"].Value<string>(),
@@ -172,6 +172,8 @@ namespace Home.Service.Windows
 
             return screens;
         }
+
+        #region Timer
 
         private async void AckTimer_Tick(object sender, EventArgs e)
         {
@@ -204,7 +206,24 @@ namespace Home.Service.Windows
             }
         }
 
- 
+        private async void UpdateTimer_Tick(object sender, EventArgs e)
+        {
+            if (await UpdateService.CheckForUpdatesAsync() == true)
+            {
+                // Stop timers
+                updateTimer.Stop();
+                ackTimer.Stop();
+
+                // Do the "update"
+                if (await UpdateService.UpdateServiceClient())
+                    return;
+            }
+        }
+
+        #endregion
+
+        #region ACK
+
         private async Task SendAck()
         {
             var now = DateTime.Now;
@@ -261,7 +280,7 @@ namespace Home.Service.Windows
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(ex.Message); 
+                        Console.WriteLine(ex.Message);
                     }
                 }
                 else if (ackResult.Result.Result.HasFlag(AckResult.Ack.CommandRecieved))
@@ -312,6 +331,8 @@ namespace Home.Service.Windows
 #endif
         }
 
+        #endregion
+
         protected override void OnClosing(CancelEventArgs e)
         {
             base.OnClosing(e);
@@ -322,6 +343,28 @@ namespace Home.Service.Windows
             e.Cancel = ServiceData.Instance.HasLoggedInOnce;
             if (ServiceData.Instance.HasLoggedInOnce)
                 WindowState = WindowState.Minimized;
+        }
+
+        #region Settings
+
+        private void LoadSettings()
+        {
+            var data = Model.ServiceData.Instance;
+            TextAPIUrl.Text = data.APIUrl;
+            TextGroup.Text = data.DeviceGroup;
+            TextLocation.Text = data.Location;
+            CmbOS.SelectedItem = data.SystemType;
+            CmbDeviceType.SelectedItem = data.Type;
+            chkEnableScreenshots.IsChecked = data.PostScreenshots;
+            chkEnableUpdatesOnStartup.IsChecked = ServiceData.Instance.UpdateOnStartup;
+            chkEnableUpdateSearch.IsChecked = ServiceData.Instance.UseUpdateTimer;
+            NumUpdateHours.Value = ServiceData.Instance.UpdateTimerIntervalHours;
+
+            if (System.IO.File.Exists(homeVbsAutostartFilePath))
+                chkEnableStartupOnBoot.Visibility = Visibility.Collapsed;
+
+            if (App.IsConfigFlagSet)
+                ButtonInitalize.Content = Home.Service.Windows.Properties.Resources.strSaveAndClose;
         }
 
         private bool SaveSettings()
@@ -342,12 +385,18 @@ namespace Home.Service.Windows
                 ServiceData.Instance.Location = location;
                 ServiceData.Instance.DeviceGroup = deviceGroup;
                 ServiceData.Instance.PostScreenshots = chkEnableScreenshots.IsChecked.Value;
+                ServiceData.Instance.UpdateOnStartup = chkEnableUpdatesOnStartup.IsChecked.Value;
+                ServiceData.Instance.UseUpdateTimer = chkEnableUpdateSearch.IsChecked.Value;
+                ServiceData.Instance.UpdateTimerIntervalHours = NumUpdateHours.Value;
+
                 return true;
             }
 
             return false;
         }
+        #endregion
 
+        #region Setup
         private async Task SetupAutostart()
         {
             if (chkEnableStartupOnBoot.IsChecked == true && !System.IO.File.Exists(homeVbsAutostartFilePath))
@@ -365,12 +414,12 @@ namespace Home.Service.Windows
                 }
             }
         }
-        
+
         private async void ButtonInitalize_Click(object sender, RoutedEventArgs e)
         {
             if (SaveSettings())
             {
-                await SetupAutostart();        
+                await SetupAutostart();
                 await InitalizeService();
 
                 // WindowState = WindowState.Minimized;
@@ -379,7 +428,68 @@ namespace Home.Service.Windows
             else
                 MessageBox.Show(Home.Service.Windows.Properties.Resources.strInvalidDataSet, Home.Service.Windows.Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
         }
+        #endregion
     }
+
+    #region Converter
+
+    public class BooleanToVisibiltyConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool b && b)
+                return Visibility.Visible;
+
+            return Visibility.Collapsed;    
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class EnumDescriptionConverter : IValueConverter
+    {
+        private string GetEnumDescription(Enum enumObj)
+        {
+            FieldInfo fieldInfo = enumObj.GetType().GetField(enumObj.ToString());
+            object[] attribArray = fieldInfo.GetCustomAttributes(false);
+
+            if (attribArray.Length == 0)
+                return enumObj.ToString();
+            else
+            {
+                DescriptionAttribute attrib = null;
+
+                foreach (var att in attribArray)
+                {
+                    if (att is DescriptionAttribute)
+                        attrib = att as DescriptionAttribute;
+                }
+
+                if (attrib != null)
+                    return attrib.Description;
+
+                return enumObj.ToString();
+            }
+        }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            Enum myEnum = (Enum)value;
+            string description = GetEnumDescription(myEnum);
+            return description;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return string.Empty;
+        }
+    }
+
+
+    #endregion
 
     public class LegacyAPI
     {

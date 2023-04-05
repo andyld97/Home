@@ -139,4 +139,13 @@
   <data name="strSaveAndClose" xml:space="preserve">
     <value>Speichern und starten</value>
   </data>
+  <data name="strEnableAutomaticUpdateSearch" xml:space="preserve">
+    <value>Automatische Suche nach Updates aktivieren</value>
+  </data>
+  <data name="strHours" xml:space="preserve">
+    <value>Stunden</value>
+  </data>
+  <data name="strSearchForUpdatesOnStart" xml:space="preserve">
+    <value>Updates beim Start installieren (wenn verfügbar)</value>
+  </data>
 </root>

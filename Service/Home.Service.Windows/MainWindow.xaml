@@ -4,10 +4,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" ResizeMode="CanMinimize"
-        xmlns:res="clr-namespace:Home.Service.Windows.Properties"
+        xmlns:res="clr-namespace:Home.Service.Windows.Properties" xmlns:numericupdownlib="clr-namespace:NumericUpDownLib;assembly=NumericUpDownLib" xmlns:local="clr-namespace:Home.Service.Windows"
         ShowInTaskbar="False"
         Title="Home Service Client" SizeToContent="Height" Width="400" Loaded="Window_Loaded">
     <Grid>
+        <Grid.Resources>
+            <local:BooleanToVisibiltyConverter x:Key="boolToVisibiltyConverter" />
+            <local:EnumDescriptionConverter x:Key="enumDescriptionConverter" />
+        </Grid.Resources>
         <StackPanel Margin="0">
             <StackPanel.Resources>
                 <Style TargetType="{x:Type TextBlock}">
@@ -21,6 +25,9 @@
                 <Style TargetType="{x:Type TextBox}">
                     <Setter Property="Margin" Value="4,0,0,0" />
                     <Setter Property="Padding" Value="3" />
+                </Style>
+                <Style TargetType="{x:Type CheckBox}">
+                    <Setter Property="Margin" Value="4,2,0,4" />
                 </Style>
             </StackPanel.Resources>
 
@@ -41,28 +48,22 @@
                         <StackPanel>
                             <TextBlock Text="{x:Static res:Resources.strOS}" />
                             <ComboBox x:Name="CmbOS" SelectedIndex="0">
-                                <ComboBox.Items>
-                                    <ComboBoxItem Content="Windows XP" />
-                                    <ComboBoxItem Content="Windows Vista" />
-                                    <ComboBoxItem Content="Windows 7" />
-                                    <ComboBoxItem Content="Windows 10" />
-                                    <ComboBoxItem Content="Windows 11" />
-                                    <ComboBoxItem Content="Linux" />
-                                    <ComboBoxItem Content="Ubuntu" />
-                                    <ComboBoxItem Content="Mint" />
-                                </ComboBox.Items>
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding ., Converter={StaticResource enumDescriptionConverter}}" />
+                                    </DataTemplate>                                        
+                                </ComboBox.ItemTemplate>
                             </ComboBox>
                         </StackPanel>
 
                         <StackPanel Grid.Column="1" Margin="5,0,0,0">
                             <TextBlock Text="{x:Static res:Resources.strDeviceType}" />
                             <ComboBox x:Name="CmbDeviceType" SelectedIndex="0">
-                                <ComboBox.Items>
-                                    <ComboBoxItem Content="SingleBoardDevice" />
-                                    <ComboBoxItem Content="Notebook" />
-                                    <ComboBoxItem Content="Mini-PC" />
-                                    <ComboBoxItem Content="Desktop" />
-                                </ComboBox.Items>
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding ., Converter={StaticResource enumDescriptionConverter}}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
                             </ComboBox>
                         </StackPanel>
                     </Grid>
@@ -85,9 +86,29 @@
                 </StackPanel>
             </GroupBox>
 
-            <CheckBox x:Name="chkEnableStartupOnBoot" Content="{x:Static res:Resources.strSetupAutostart}" IsChecked="True" Margin="4,2,0,4" />
-            <CheckBox x:Name="chkEnableScreenshots" Content="{x:Static res:Resources.strEnableScreenshots}" Margin="4,2,0,4" />
+            <GroupBox Margin="4,0,5,5">
+                <GroupBox.Header>
+                    <TextBlock Text="Weitere Einstellungen" FontWeight="Bold" />
+                </GroupBox.Header>
 
+                <StackPanel Margin="2">
+                    <CheckBox x:Name="chkEnableStartupOnBoot" Content="{x:Static res:Resources.strSetupAutostart}" IsChecked="True" />
+                    <CheckBox x:Name="chkEnableScreenshots" Content="{x:Static res:Resources.strEnableScreenshots}" />
+
+                    <CheckBox x:Name="chkEnableUpdatesOnStartup" Content="{x:Static res:Resources.strSearchForUpdatesOnStart}" />
+                    <CheckBox x:Name="chkEnableUpdateSearch" Content="{x:Static res:Resources.strEnableAutomaticUpdateSearch}" />
+
+                    <Grid Margin="0,0,0,10" Visibility="{Binding ElementName=chkEnableUpdateSearch, Path=IsChecked, Converter={StaticResource boolToVisibiltyConverter}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <numericupdownlib:NumericUpDown x:Name="NumUpdateHours" Width="100" MinValue="1" MaxValue="48" Margin="5,0,5,0" />
+                        <TextBlock Grid.Column="1" Text="{x:Static res:Resources.strHours}" />
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
             <Border Background="WhiteSmoke">
                 <Grid Margin="5" HorizontalAlignment="Right">
                     <Button x:Name="ButtonInitalize" FontWeight="Bold" Click="ButtonInitalize_Click" HorizontalAlignment="Left" Content="{x:Static res:Resources.strInitalize}" Margin="3" Padding="4" Width="200" />

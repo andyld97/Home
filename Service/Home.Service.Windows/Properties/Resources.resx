@@ -162,4 +162,13 @@ Set WshShell = Nothing</value>
   <data name="strEnableScreenshots" xml:space="preserve">
     <value>Enable Screenshots</value>
   </data>
+  <data name="strSearchForUpdatesOnStart" xml:space="preserve">
+    <value>Install updates at startup (if available)</value>
+  </data>
+  <data name="strEnableAutomaticUpdateSearch" xml:space="preserve">
+    <value>Enable automatic search for updates</value>
+  </data>
+  <data name="strHours" xml:space="preserve">
+    <value>Hours</value>
+  </data>
 </root>
