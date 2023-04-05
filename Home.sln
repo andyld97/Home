@@ -53,7 +53,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "screenshots", "screenshots"
 	ProjectSection(SolutionItems) = preProject
 		Assets\screenshots\home.png = Assets\screenshots\home.png
 		Assets\screenshots\Home.Service.Android.jpg = Assets\screenshots\Home.Service.Android.jpg
-		F:\Eigene Dateien\Desktop\Home.Service.Windows.png = F:\Eigene Dateien\Desktop\Home.Service.Windows.png
+		Assets\screenshots\Home.Service.Windows.png = Assets\screenshots\Home.Service.Windows.png
 		Assets\screenshots\overview.png = Assets\screenshots\overview.png
 	EndProjectSection
 EndProject
