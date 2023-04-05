@@ -171,4 +171,7 @@ Set WshShell = Nothing</value>
   <data name="strHours" xml:space="preserve">
     <value>Hours</value>
   </data>
+  <data name="strFurtherSettings" xml:space="preserve">
+    <value>More settings</value>
+  </data>
 </root>

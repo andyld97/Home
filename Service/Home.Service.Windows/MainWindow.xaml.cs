@@ -82,7 +82,7 @@ namespace Home.Service.Windows
 
         private async Task InitalizeService()
         {
-            if (ServiceData.Instance.UpdateOnStartup)
+            if (ServiceData.Instance.UpdateOnStartup && !App.IsConfigFlagSet)
             {
                 if (await UpdateService.CheckForUpdatesAsync() == true)
                 {
@@ -90,6 +90,9 @@ namespace Home.Service.Windows
                         return;
                 }
             }
+
+            if (App.IsConfigFlagSet)
+                App.StartAspNETApiThread();
 
             api = new Communication.API(ServiceData.Instance.APIUrl);
             legacyAPI = new LegacyAPI(ServiceData.Instance.APIUrl);

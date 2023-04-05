@@ -142,6 +142,15 @@ namespace Home.Service.Windows.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die More settings ähnelt.
+        /// </summary>
+        public static string strFurtherSettings {
+            get {
+                return ResourceManager.GetString("strFurtherSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Set WshShell = CreateObject(&quot;WScript.Shell&quot; ) 
         ///WshShell.Run &quot;&quot;&quot;{0}&quot;&quot;&quot;, 0
         ///Set WshShell = Nothing ähnelt.

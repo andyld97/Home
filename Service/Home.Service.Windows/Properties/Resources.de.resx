@@ -148,4 +148,7 @@
   <data name="strSearchForUpdatesOnStart" xml:space="preserve">
     <value>Updates beim Start installieren (wenn verfügbar)</value>
   </data>
+  <data name="strFurtherSettings" xml:space="preserve">
+    <value>Weitere Einstellungen</value>
+  </data>
 </root>

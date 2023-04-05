@@ -24,7 +24,10 @@ namespace Home.Service.Windows
         });
 
         private void Application_Startup(object sender, StartupEventArgs e)
-        {   
+        {
+            /*Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+            Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en-US");*/
+
             if (Environment.GetCommandLineArgs().Length > 0) 
                 IsConfigFlagSet = Environment.GetCommandLineArgs().Any(p => p.ToLower().Contains("/config"));
 
@@ -38,9 +41,10 @@ namespace Home.Service.Windows
                 thread.Start();
         }
 
-        public static void StartThread()
+        public static void StartAspNETApiThread()
         {
-            thread.Start();
+            if (IsConfigFlagSet)
+                thread.Start();
         }
     }
 }

@@ -88,7 +88,7 @@
 
             <GroupBox Margin="4,0,5,5">
                 <GroupBox.Header>
-                    <TextBlock Text="Weitere Einstellungen" FontWeight="Bold" />
+                    <TextBlock Text="{x:Static res:Resources.strFurtherSettings}" FontWeight="Bold" />
                 </GroupBox.Header>
 
                 <StackPanel Margin="2">

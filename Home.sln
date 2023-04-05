@@ -53,11 +53,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "screenshots", "screenshots"
 	ProjectSection(SolutionItems) = preProject
 		Assets\screenshots\home.png = Assets\screenshots\home.png
 		Assets\screenshots\Home.Service.Android.jpg = Assets\screenshots\Home.Service.Android.jpg
-		Assets\screenshots\Home.Service.Windows.png = Assets\screenshots\Home.Service.Windows.png
+		F:\Eigene Dateien\Desktop\Home.Service.Windows.png = F:\Eigene Dateien\Desktop\Home.Service.Windows.png
 		Assets\screenshots\overview.png = Assets\screenshots\overview.png
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientUpdate", "Helper Applications\ClientUpdate\ClientUpdate.csproj", "{DA072891-955D-4BDD-AEAC-06B3C258B3CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientUpdate", "Helper Applications\ClientUpdate\ClientUpdate.csproj", "{DA072891-955D-4BDD-AEAC-06B3C258B3CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
