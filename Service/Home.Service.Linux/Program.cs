@@ -33,10 +33,16 @@ namespace Home.Service.Linux
 
         private static readonly string CONFIG_FILENAME = "config.json";
         private static readonly Timer ackTimer = new Timer();
+        private static readonly Timer updateTimer = new Timer();
         private static readonly object _lock = new object();
         private static bool isSendingAck = false;
         private static string NormalUser = string.Empty;
+        
         private static bool enableScreenshots = true;
+        private static bool checkForUpdatesOnStart = true;
+        private static bool useAutomaticUpdateTimer = false;
+        private static int automaticTimerIntervalHours = 24;
+
         #endregion
 
         #region Main
@@ -73,44 +79,21 @@ namespace Home.Service.Linux
                 configJson = Regex.Replace(configJson, @"/\*(.*?)\*/", string.Empty, RegexOptions.Singleline);
                 config = JsonConvert.DeserializeObject<JObject>(configJson);
 
+                // Parse settings
                 if (config.ContainsKey("enable_screenshots"))
                     enableScreenshots = config["enable_screenshots"].Value<bool>();
+                
+                if (config.ContainsKey("check_for_updates_on_start"))
+                    checkForUpdatesOnStart = config["check_for_updates_on_start"].Value<bool>();
 
+                if (config.ContainsKey("use_automatic_update_timer"))
+                    useAutomaticUpdateTimer = config["use_automatic_update_timer"].Value<bool>();
 
-                var lastUpdateCheck = DateTime.MinValue;
-                try
-                {
-                    if (System.IO.File.Exists("update.txt"))
-                        lastUpdateCheck = DateTime.Parse(System.IO.File.ReadAllText("update.txt"));
-                }
-                catch
-                {
-                    // ignore
-                }
+                if (config.ContainsKey("automatic_timer_interval_hours"))
+                    automaticTimerIntervalHours = config["automatic_timer_interval_hours"].Value<int>();
 
-                var result = Task.Run(async () => await UpdateService.CheckForUpdatesAsync(lastUpdateCheck)).Result;
-
-                if (result != null)
-                {
-                    try
-                    {
-                        System.IO.File.WriteAllText("update.txt", DateTime.Now.ToString("s"));
-                    }
-                    catch
-                    {
-                        // ignore
-                    }
-                }
-
-                if (result.HasValue && result.Value)
-                {
-                    string dotnetPath = config["dotnet_path"].Value<string>();
-
-                    UpdateService.UpdateServiceClient(dotnetPath);
-                    AppMutex.ReleaseMutex();
-                    Environment.Exit(0);
+                if (checkForUpdatesOnStart && CheckAndExecuteUpdate())
                     return;
-                } 
 
                 Thread apiThread = new Thread(new ParameterizedThreadStart((_) =>
                 {
@@ -134,6 +117,7 @@ namespace Home.Service.Linux
                     Console.WriteLine($"Inner Exception: {e.InnerException.ToString()}");
 
                 AppMutex.ReleaseMutex();
+                return;
             }
 
             AppMutex.ReleaseMutex();
@@ -202,11 +186,20 @@ namespace Home.Service.Linux
                 ackTimer.Elapsed += AckTimer_Elapsed;
                 ackTimer.Start();
 
+                // Update timer
+                if (useAutomaticUpdateTimer)
+                {
+                    updateTimer.Interval = TimeSpan.FromHours(automaticTimerIntervalHours).TotalMilliseconds;
+                    updateTimer.Elapsed += UpdateTimer_Elapsed;
+                    updateTimer.Start();
+                }
+
                 // Execute on start
                 AckTimer_Elapsed(null, null);
             }
         }
-#endregion
+
+        #endregion
 
         #region Ack
 
@@ -290,6 +283,11 @@ namespace Home.Service.Linux
 
             lock (_lock)
                 isSendingAck = false;
+        }
+
+        private static void UpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            CheckAndExecuteUpdate();
         }
 
         #endregion
@@ -616,6 +614,52 @@ namespace Home.Service.Linux
                 }
             }           
         }
-#endregion
+        #endregion
+
+        #region Update
+
+        private static bool CheckAndExecuteUpdate()
+        {
+            var lastUpdateCheck = DateTime.MinValue;
+            try
+            {
+                if (System.IO.File.Exists("update.txt"))
+                    lastUpdateCheck = DateTime.Parse(System.IO.File.ReadAllText("update.txt"));
+            }
+            catch
+            {
+                // ignore
+            }
+
+            var result = Task.Run(async () => await UpdateService.CheckForUpdatesAsync(lastUpdateCheck)).Result;
+
+            if (result != null)
+            {
+                try
+                {
+                    // Write last update datetime-stamp
+                    System.IO.File.WriteAllText("update.txt", DateTime.Now.ToString("s"));
+                }
+                catch
+                {
+                    // ignore
+                }
+            }
+
+            if (result.HasValue && result.Value)
+            {
+                string dotnetPath = config["dotnet_path"].Value<string>();
+
+                UpdateService.UpdateServiceClient(dotnetPath);
+                AppMutex.ReleaseMutex();
+                Environment.Exit(0);
+                return true;
+            }
+
+            return false;
+        }
+
+
+        #endregion
     }
 }
