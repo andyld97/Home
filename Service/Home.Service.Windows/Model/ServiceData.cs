@@ -34,9 +34,16 @@ namespace Home.Service.Windows.Model
         private string location;
         private string osName;
         private bool hasLoggedIn = false;
+        private bool postScreenshots = true;
+        
+        private bool updateOnStartup = true;
+        private bool useUpdateTimer = false;
+        private int updateTimerIntervalHours = 24;
+
         private OSType osType;
         private DeviceType deviceType;
         private string apiURL = "http://192.168.178.38:83";
+        private DateTime lastUpdateCheck = DateTime.MinValue;
         public event PropertyChangedEventHandler PropertyChanged;
 
         public string ID 
@@ -117,6 +124,19 @@ namespace Home.Service.Windows.Model
             }
         }
 
+        public bool PostScreenshots
+        {
+            get => postScreenshots;
+            set
+            {
+                if (postScreenshots != value)
+                {
+                    postScreenshots = value;
+                    NotifyPropertyChanged(nameof(PostScreenshots)); 
+                }
+            }
+        }
+
         public string DeviceGroup
         {
             get => deviceGroup;
@@ -143,6 +163,58 @@ namespace Home.Service.Windows.Model
             }
         }
 
+        public DateTime LastUpdateCheck
+        {
+            get => lastUpdateCheck;
+            set
+            {
+                if (lastUpdateCheck != value)
+                {
+                    lastUpdateCheck = value;
+                    NotifyPropertyChanged(nameof(LastUpdateCheck));
+                }
+            }
+        }
+
+        public bool UpdateOnStartup
+        {
+            get => updateOnStartup;
+            set
+            {
+                if (updateOnStartup != value)
+                {
+                    updateOnStartup = value;    
+                    NotifyPropertyChanged(nameof(UpdateOnStartup)); 
+                }
+            }
+        }
+
+        public bool UseUpdateTimer
+        {
+            get => useUpdateTimer;
+            set
+            {
+                if (useUpdateTimer != value)
+                {
+                    useUpdateTimer = value; 
+                    NotifyPropertyChanged(nameof(UseUpdateTimer));  
+                }
+            }
+        }
+
+        public int UpdateTimerIntervalHours
+        {
+            get => updateTimerIntervalHours;
+            set
+            {
+                if (updateTimerIntervalHours != value)
+                {
+                    updateTimerIntervalHours = value;   
+                    NotifyPropertyChanged(nameof(UpdateTimerIntervalHours));    
+                }
+            }
+        }
+
         public static ServiceData Load()
         {
             try
@@ -162,7 +234,7 @@ namespace Home.Service.Windows.Model
             return new ServiceData();
         }
 
-        public void NotifyPropertyChanged(string propertyName) // cannot use [CallerMemberName] due to compability issues
+        public void NotifyPropertyChanged(string propertyName) // cannot use [CallerMemberName] due to compatibility issues
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             if (Instance != null)

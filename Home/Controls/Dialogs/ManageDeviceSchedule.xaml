@@ -5,9 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Home.Controls.Dialogs" xmlns:controls="clr-namespace:Home.Controls"
         xmlns:res="clr-namespace:Home.Properties"
+        xmlns:fluent="urn:fluent-ribbon"
         mc:Ignorable="d"
         xmlns:converters="clr-namespace:Home.Converter"
         ResizeMode="NoResize"
+        Background="{DynamicResource Fluent.Ribbon.Brushes.White}"
         WindowStartupLocation="CenterScreen"
         Title="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Title}" Height="450" Width="800">    
     <Grid Margin="2">
@@ -15,10 +17,20 @@
             <Style TargetType="TextBlock">
                 <Setter Property="Margin" Value="2" />
                 <Setter Property="Padding" Value="0,2" />
+                <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.Black}" />
+            </Style>
+            <Style TargetType="CheckBox">
+                <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.Black}" />
             </Style>
             <Style TargetType="TextBox">
                 <Setter Property="Margin" Value="2" />
                 <Setter Property="Padding" Value="2" />
+                <Setter Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.White}" />
+                <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.Black}" />
+            </Style>
+            <Style TargetType="fluent:ComboBox">
+                <Setter Property="Margin" Value="-8,0,0,0" />
+                <Setter Property="IsEditable" Value="False" />
             </Style>
 
             <local:DeviceImageConverter x:Key="deviceImageConverter" />
@@ -26,6 +38,7 @@
             <local:RuleToApiVisibilityConverter x:Key="ruleToApiVisibilityConverter" />
             <local:EnumToIndexConverter x:Key="enumToIndexConverter" />
             <local:TypeToReadOnlyConverter x:Key="typeToReadOnlyConverter" />
+            <local:DeviceIDResolutionConverter x:Key="deviceIDResolutionConverter" />
         </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -48,7 +61,7 @@
                 <TextBlock Text="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Rules}" />
             </StackPanel>
 
-            <ListBox x:Name="ListRules" SelectionChanged="ListRules_SelectionChanged" Grid.Row="1" Margin="0,2,0,0">
+            <ListBox x:Name="ListRules" Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}" Background="{DynamicResource Fluent.Ribbon.Brushes.White}" SelectionChanged="ListRules_SelectionChanged" Grid.Row="1" Margin="0,2,0,0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid ToolTip="{Binding Description}" MaxWidth="350" Opacity="{Binding IsActive, Converter={StaticResource disabledRuleOpacityConverter}}">
@@ -60,7 +73,10 @@
                             <Image MaxWidth="32" Margin="2" Source="../../resources/icons/device.png" />
 
                             <StackPanel Grid.Column="1" Margin="5,0,0,0" VerticalAlignment="Top">
-                                <TextBlock Text="{Binding Name}" FontWeight="Bold" />
+                                <TextBlock>
+                                    <Run Text="{Binding Name}" FontWeight="Bold" />
+                                    <Run Foreground="Gray" Text="(" /><Run Foreground="Gray" Text="{Binding AssociatedDeviceId, Converter={StaticResource deviceIDResolutionConverter}}" /><Run Text=")" Foreground="Gray" />
+                                </TextBlock>
                                 <TextBlock x:Name="TextListDescription" Height="{Binding ElementName=TextListDescription, Path=ActualHeight}" Text="{Binding Description}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                             </StackPanel>
                         </Grid>
@@ -89,10 +105,17 @@
             <StackPanel>
                 <TextBlock Text="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_RuleName}" />
                 <TextBox Text="{Binding Name}" FontWeight="Bold" />
-                <CheckBox IsChecked="{Binding IsActive}" Content="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_RuleIsActive}" />
+                <CheckBox Margin="1,3" IsChecked="{Binding IsActive}" Content="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_RuleIsActive}" />
             </StackPanel>
 
-            <TabControl x:Name="MainTabControl" Margin="0,5,0,0" Grid.Row="1">
+            <TabControl x:Name="MainTabControl" Margin="0,5,0,0" Background="{DynamicResource Fluent.Ribbon.Brushes.White}" Grid.Row="1">
+                <TabControl.Resources>
+                    <ResourceDictionary>
+                        <ResourceDictionary.MergedDictionaries>
+                            <ResourceDictionary Source="..\..\resources\TabControlStyle.xaml"/>
+                        </ResourceDictionary.MergedDictionaries>
+                    </ResourceDictionary>
+                </TabControl.Resources>
                 <TabItem Header="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_General}">
                     <StackPanel Margin="5">
                         <TextBlock>
@@ -124,7 +147,7 @@
                             <Run Text="A1:B2:C3:D4:E5:F6" FontFamily="Consolas" /><Run Text="):" />
                         </TextBlock>
 
-                        <TextBox Text="{Binding CustomMacAddress}" FontFamily="Consolas" MaxLength="17" />
+                        <TextBox Text="{Binding CustomMacAddress}" Padding="3" FontFamily="Consolas" MaxLength="17" />
 
                         <TextBlock Text="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_RuleDescription}" />
                         <TextBox Text="{Binding Description}" TextWrapping="Wrap" Height="80" AcceptsReturn="True" />
@@ -142,11 +165,11 @@
                             <TextBox IsEnabled="{Binding Type, Converter={StaticResource typeToReadOnlyConverter}}" Text="{Binding Time}" MaxLength="5" MaxLines="1" />
 
                             <TextBlock Text="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Action}" />
-                            <ComboBox x:Name="CmbBootAction" SelectedIndex="{Binding Type, Converter={StaticResource enumToIndexConverter}}" >
+                            <fluent:ComboBox x:Name="CmbBootAction" SelectedIndex="{Binding Type, Converter={StaticResource enumToIndexConverter}}" >
                                 <ComboBoxItem Content="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Action_None}" />
                                 <ComboBoxItem Content="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Action_WOL}"/>
                                 <ComboBoxItem Content="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Action_APICall}" />
-                            </ComboBox>
+                            </fluent:ComboBox>
                         </StackPanel>
 
                         <Border Margin="5" BorderBrush="LightGray" BorderThickness="1" CornerRadius="3" Grid.Row="1" Visibility="{Binding Type, Converter={StaticResource ruleToApiVisibilityConverter}, ConverterParameter=visibility}">
@@ -155,10 +178,10 @@
                                 <TextBox Text="{Binding Url}" />
 
                                 <TextBlock Text="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Action_APICall_Method}"/>
-                                <ComboBox SelectedIndex="{Binding HttpMethod, Converter={StaticResource enumToIndexConverter}}">
+                                <fluent:ComboBox SelectedIndex="{Binding HttpMethod, Converter={StaticResource enumToIndexConverter}}">
                                     <ComboBoxItem Content="GET" />
                                     <ComboBoxItem Content="POST" />
-                                </ComboBox>
+                                </fluent:ComboBox>
                             </StackPanel>
                         </Border>
                     </Grid>
@@ -175,13 +198,13 @@
                             <TextBox IsEnabled="{Binding Type, Converter={StaticResource typeToReadOnlyConverter}}" Text="{Binding Time}" MaxLength="5" MaxLines="1" />
 
                             <TextBlock Text="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Action}" />
-                            <ComboBox x:Name="CmbShutdownAction" SelectedIndex="{Binding Type, Converter={StaticResource enumToIndexConverter}}">
+                            <fluent:ComboBox x:Name="CmbShutdownAction" SelectedIndex="{Binding Type, Converter={StaticResource enumToIndexConverter}}">
                                 <ComboBoxItem Content="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Action_None}" />
                                 <ComboBoxItem Content="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Shutdown}" />
                                 <ComboBoxItem Content="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Action_Reboot}" />
                                 <ComboBoxItem Content="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Action_ExecuteCommand}" />
                                 <ComboBoxItem Content="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_Action_APICall}"/>
-                            </ComboBox>
+                            </fluent:ComboBox>
                         </StackPanel>
 
                         <Border Margin="5" BorderBrush="LightGray" BorderThickness="1" CornerRadius="3" Grid.Row="1" Visibility="{Binding Type, Converter={StaticResource ruleToApiVisibilityConverter}, ConverterParameter=visibility}">
@@ -190,10 +213,10 @@
                                 <TextBox Text="{Binding Url}" />
 
                                 <TextBlock Text="{x:Static res:Resources.HttpMethode}" />
-                                <ComboBox SelectedIndex="{Binding HttpMethod, Converter={StaticResource enumToIndexConverter}}">
+                                <fluent:ComboBox SelectedIndex="{Binding HttpMethod, Converter={StaticResource enumToIndexConverter}}">
                                     <ComboBoxItem Content="GET" />
                                     <ComboBoxItem Content="POST" />
-                                </ComboBox>
+                                </fluent:ComboBox>
                             </StackPanel>
                         </Border>
 
@@ -211,7 +234,7 @@
             </TabControl>
         </Grid>
 
-        <Grid Background="WhiteSmoke" Grid.Row="1" Grid.ColumnSpan="2">
+        <Grid Background="{DynamicResource Fluent.Ribbon.Brushes.Gray9}" Grid.Row="1" Grid.ColumnSpan="2">
             <StackPanel Margin="5" Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button x:Name="ButtonApply" Click="ButtonApply_Click" Margin="0,0,5,0" Padding="5" Content="{x:Static res:Resources.strApply}" Width="200" FontWeight="Bold" />
                 <Button x:Name="ButtoCancel" Click="ButtoCancel_Click" Margin="0,0,0,0" Content="{x:Static res:Resources.strCancel}" Width="150" />

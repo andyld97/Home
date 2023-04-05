@@ -12,14 +12,14 @@ namespace Home.API
         public static readonly string SCREENSHOTS_PATH = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "screenshots");
 
         /// <summary>
-        /// The complete url where this api is hosted (port inclusve, see default value) <br />
+        /// The complete url where this api is hosted (port inclusive, see default value) <br />
         /// Can be set to http://0.0.0.0:5250 for using without reverse proxy!
         /// </summary>
         [JsonPropertyName("host")]
         public string HostUrl { get; set; } = "http://localhost:5250";
 
         /// <summary>
-        /// The db connection string (used here to prevent commiting passwords) in appsettings.json :(
+        /// The db connection string (used here to prevent committing passwords) in appsettings.json :(
         /// </summary>
         [JsonPropertyName("connection_string")]
         public string ConnectionString { get; set; } = "Server=YOUR_PC\\SQLEXPRESS,1433;User Id=user;password=set_your_password;Database=home;Trusted_Connection=False;MultipleActiveResultSets=true";
@@ -39,7 +39,7 @@ namespace Home.API
 
         /// <summary>
         /// The HealthCheckTimer manages a few things:<br/><br/>
-        /// - Aquires new screenshots <br/>
+        /// - Acquires new screenshots <br/>
         /// - Deletes old screenshots <br/>
         /// - Removes inactive client queues <br/>
         /// - Saves devices.xml <br/>
@@ -54,7 +54,7 @@ namespace Home.API
         public TimeSpan RemoveInactiveGUIClients { get; set; } = TimeSpan.FromMinutes(10);
 
         /// <summary>
-        /// Describes how much time must elapse after the last ACK for the client to be recognised as offline.
+        /// Describes how much time must elapse after the last ACK for the client to be recognized as offline.
         /// </summary>
         [JsonPropertyName("remove_inactive_clients")]
         public TimeSpan RemoveInactiveClients { get; set; } = TimeSpan.FromMinutes(3);
@@ -72,19 +72,19 @@ namespace Home.API
         public TimeSpan RemoveOldScreenshots { get; set; } = TimeSpan.FromDays(1);
 
         /// <summary>
-        /// Treshold, when a storage warning should appear (%, percentage left)
+        /// Threshold, when a storage warning should appear (%, percentage left)
         /// </summary>
         [JsonPropertyName("storage_warning_percentage")]
         public int StorageWarningPercentage { get; set; } = 10;
 
         /// <summary>
-        /// Treshold, when a battery warning should appear (%, percentage left)
+        /// Threshold, when a battery warning should appear (%, percentage left)
         /// </summary>
         [JsonPropertyName("battery_warning_percentage")]
         public int BatteryWarningPercentage { get; set; } = 10;
 
         /// <summary>
-        /// Timeformat for messages sent to the webhook endpoint
+        /// Time format for messages sent to the webhook endpoint
         /// </summary>
         [JsonPropertyName("web_hook_date_time_format")]
         public string WebHookDateTimeFormat { get; set; } = "dd.MM.yyyy HH:mm";

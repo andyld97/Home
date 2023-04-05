@@ -20,13 +20,13 @@ namespace Notification
             base.OnStartup(e);
 
             // Debug:
-            // MessageBox.Show(Convert.ToBase64String(System.Text.Encoding.Default.GetBytes(JsonConvert.SerializeObject(new Message("Dies ist ein Test", "TEst-Text", Message.MessageImage.Error)))));
+            // MessageBox.Show(Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new Message("Dies ist ein Test", "TEst-Text", Message.MessageImage.Error)))));
             string[] args = Environment.GetCommandLineArgs();
             if (args.Length >= 2)
             {
                 try
                 {
-                    var message = JsonConvert.DeserializeObject<Message>(System.Text.Encoding.Default.GetString(Convert.FromBase64String(args[1])));
+                    var message = JsonConvert.DeserializeObject<Message>(System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(args[1])));
                     if (message != null)
                     {
                         MessageBoxImage image = MessageBoxImage.Information;

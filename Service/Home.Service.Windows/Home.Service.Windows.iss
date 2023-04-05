@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Home.Service.Windows"
-#define MyAppVersion "1.0.4"
+#define MyAppVersion "1.0.5"
 #define MyAppPublisher "Code A Software"
 #define MyAppURL "https://github.com/andyld97/Home"
 #define MyAppExeName "Home.Service.Windows.exe"
@@ -24,7 +24,7 @@ VersionInfoVersion={#MyAppVersion}
 ;PrivilegesRequired=admin
 OutputDir=bin\Release\net7.0-windows\publish\
 OutputBaseFilename=Home.Service.Windows.Setup
-SetupIconFile=BotIcon.ico
+SetupIconFile=icon.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -55,6 +55,8 @@ Source: "bin\Release\net7.0-windows\publish\zh-Hans\*"; DestDir: "{app}\zh-Hans"
 Source: "bin\Release\net7.0-windows\publish\zh-Hant\*"; DestDir: "{app}\zh-Hant"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; MUST BE COMPILED IN RELEASE BEFORE!
 Source: "..\..\Helper Applications\Notification\bin\Release\*"; DestDir: "{app}\Notification"; Flags: ignoreversion recursesubdirs createallsubdirs
+; MUST BE COMPILED/PUBLISHED IN RELEASE BEFORE!
+Source: "..\..\Helper Applications\ClientUpdate\bin\Release\net7.0\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "bin\Release\net7.0-windows\publish\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\App.config"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\Home.Communication.dll"; DestDir: "{app}"; Flags: ignoreversion

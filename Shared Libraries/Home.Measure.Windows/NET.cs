@@ -9,7 +9,7 @@ using System.Net.Sockets;
 namespace Home.Measure.Windows
 {
     /// <summary>
-    /// Capsels all methods available by .NET
+    /// Capsules all methods available by .NET
     /// </summary>
     public static class NET
     {

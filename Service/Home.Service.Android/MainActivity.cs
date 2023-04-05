@@ -8,6 +8,8 @@ using Home.Model;
 using A = Android;
 using System;
 using System.Collections.Generic;
+using Android.Content;
+using AlertDialog = AndroidX.AppCompat.App.AlertDialog;
 
 namespace Home.Service.Android
 {
@@ -174,7 +176,7 @@ namespace Home.Service.Android
 
             RefreshServiceStatus();
 
-            // Initalize serviceCheckingTimer
+            // Initialize serviceCheckingTimer
             serviceCheckingTimer = new System.Timers.Timer() { Interval = TimeSpan.FromSeconds(10).TotalMilliseconds };
             serviceCheckingTimer.Elapsed += ServiceCheckingTimer_Elapsed;
             serviceCheckingTimer.Start();
@@ -223,7 +225,7 @@ namespace Home.Service.Android
             
                 ServiceHelper.StartAckService(this);
                 RefreshServiceStatus();
-                Toast.MakeText(this, $"The device was registered succuessfully!", ToastLength.Short).Show();
+                Toast.MakeText(this, $"The device was registered successfully!", ToastLength.Short).Show();
             }
             else
                 Toast.MakeText(this, $"Failed to register device!", ToastLength.Short).Show();
@@ -232,7 +234,18 @@ namespace Home.Service.Android
         private void BtnShowInfos_Click(object sender, System.EventArgs e)
         {
             currentDevice.RefreshDevice(ContentResolver, this);
-            Toast.MakeText(this, currentDevice.ToString(), ToastLength.Long).Show();
+            Dialog diag = null;
+
+            // Show dialog instead off a toast message
+            string info = currentDevice.ToString();
+            AlertDialog.Builder alertDiag = new AlertDialog.Builder(this);
+            alertDiag.SetTitle(GetString(Resource.String.strDeviceSpecifications));
+            alertDiag.SetMessage(info);
+            alertDiag.SetPositiveButton("OK", (senderAlert, args) => {
+                diag.Dismiss();    
+            });
+            diag = alertDiag.Create();
+            diag.Show();
         }
 
         #region Service Status
@@ -254,7 +267,7 @@ namespace Home.Service.Android
             ledIsDeviceRegistered.SetImageResource(isDeviceRegistered ? Resource.Drawable.led_on : Resource.Drawable.led_off);
             ledIsServiceRunning.SetImageResource(isServiceRunning ? Resource.Drawable.led_on : Resource.Drawable.led_off);
 
-            // Assing texts
+            // Assign texts
             textRegister.Text = (isDeviceRegistered ? string.Format(GetString(Resource.String.strDeviceRegisteredText), currentDevice.Name) : string.Format(GetString(Resource.String.strDeviceNotRegisteredText), currentDevice.Name));
             textService.Text = (isServiceRunning ? GetString(Resource.String.strServiceActiveText) : GetString(Resource.String.strServiceInActiveText));
 

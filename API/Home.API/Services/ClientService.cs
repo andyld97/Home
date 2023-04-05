@@ -1,17 +1,48 @@
 ﻿using Home.Data.Events;
-using System;
+using Microsoft.Extensions.Logging;
 using System.Linq;
+using System;
+using Home.API.Helper;
 
-namespace Home.API.Helper
+namespace Home.API.Services
 {
-    public static class ClientHelper
+    public interface IClientService
     {
         /// <summary>
         /// Notifies all active client queues that there is a new event for the device
         /// </summary>
         /// <param name="eventKind"></param>
         /// <param name="device"></param>
-        public static void NotifyClientQueues(EventQueueItem.EventKind eventKind, Home.Model.Device device)
+        void NotifyClientQueues(EventQueueItem.EventKind eventKind, Home.Model.Device device);
+
+
+        /// <summary>
+        /// Notifies all active client queues that there is a new event for the device
+        /// </summary>
+        /// <param name="eventKind"></param>
+        /// <param name="device"></param>
+        void NotifyClientQueues(EventQueueItem.EventKind eventKind, home.Models.Device device);
+
+
+        /// <summary>
+        /// Notifies all active client queues that there is a new event for the device
+        /// </summary>
+        /// <param name="eventKind"></param>
+        /// <param name="deviceId"></param>
+        void NotifyClientQueues(EventQueueItem.EventKind eventKind, string deviceId);
+
+    }
+
+    public class ClientService : IClientService 
+    {
+        private readonly ILogger<IClientService> _logger;
+
+        public ClientService(ILogger<IClientService> logger)
+        {
+            _logger = logger;
+        }
+
+        public void NotifyClientQueues(EventQueueItem.EventKind eventKind, Model.Device device)
         {
             var now = DateTime.Now;
 
@@ -38,22 +69,12 @@ namespace Home.API.Helper
             }
         }
 
-        /// <summary>
-        /// Notifies all active client queues that there is a new event for the device
-        /// </summary>
-        /// <param name="eventKind"></param>
-        /// <param name="device"></param>
-        public static void NotifyClientQueues(EventQueueItem.EventKind eventKind, home.Models.Device device)
+        public void NotifyClientQueues(EventQueueItem.EventKind eventKind, home.Models.Device device)
         {
             NotifyClientQueues(eventKind, ModelConverter.ConvertDevice(device));
         }
 
-        /// <summary>
-        /// Notifies all active client queues that there is a new event for the device
-        /// </summary>
-        /// <param name="eventKind"></param>
-        /// <param name="deviceId"></param>
-        public static void NotifyClientQueues(EventQueueItem.EventKind eventKind, string deviceId)
+        public void NotifyClientQueues(EventQueueItem.EventKind eventKind, string deviceId)
         {
             var now = DateTime.Now;
 

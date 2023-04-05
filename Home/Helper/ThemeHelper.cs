@@ -1,9 +1,11 @@
 ﻿using ControlzEx.Theming;
+using Home;
 using Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
+using System.Windows.Media;
 
 namespace Helper
 {
@@ -16,6 +18,15 @@ namespace Helper
 
         public static void ApplyTheme()
         {
+            if (Settings.Instance.UseDarkMode)
+            {
+                App.Current.Resources["Item.SelectedColor"] = new SolidColorBrush(Colors.White);
+            }
+            else
+            {
+                App.Current.Resources["Item.SelectedColor"] = new SolidColorBrush(Colors.Gray);
+            }
+
             ThemeManager.Current.ChangeTheme(Application.Current, GetCurrentTheme());
         }
     }

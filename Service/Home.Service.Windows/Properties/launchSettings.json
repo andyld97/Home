@@ -2,11 +2,12 @@
   "profiles": {
     "Home.Service.Windows": {
       "commandName": "Project",
+      "commandLineArgs": "/config",
       "jsWebView2Debugging": false,
       "remoteDebugEnabled": false,
       "authenticationMode": "Windows",
       "remoteDebugMachine": "192.168.178.172:4026",
-      "nativeDebugging": false
+      "nativeDebugging": true
     }
   }
 }

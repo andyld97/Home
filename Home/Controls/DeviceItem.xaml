@@ -5,15 +5,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Home.Controls"
              mc:Ignorable="d" 
+             xmlns:res="clr-namespace:Home.Properties"
              ToolTip="{Binding Environment.MachineName}"
              ContextMenu="{DynamicResource DeviceMenu}"
-             Width="280" Height="80" Foreground="{DynamicResource BlackBrush}">
+             Width="280" Height="80" Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}">
     <UserControl.Resources>
         <local:StateToColorConverter x:Key="stateToColorConverter" />
         <local:TypeToBorderConverter x:Key="typeToBorderConverter" />
         <local:ImageConverter x:Key="imageConverter" />
         <local:DeviceToOpacityConverter x:Key="deviceToOpacityConverter" />
     </UserControl.Resources>
+    
     <UserControl.Effect>
         <DropShadowEffect />
     </UserControl.Effect>
@@ -27,10 +29,10 @@
         </Grid.ColumnDefinitions>
 
         <Grid Grid.Column="0">
-            <Border x:Name="BorderSelected" Visibility="Collapsed" Width="8" Background="{DynamicResource BlackBrush}" Margin="0,0,7,0" />
+            <Border x:Name="BorderSelected" Visibility="Collapsed" Width="8" Background="{DynamicResource Item.SelectedColor}" Margin="0,0,7,0" />
         </Grid>
 
-        <Border Grid.Column="1" CornerRadius="5" Background="{DynamicResource Fluent.Ribbon.Brushes.AccentColorBrush60}">
+        <Border Grid.Column="1" CornerRadius="5" Background="{DynamicResource Fluent.Ribbon.Brushes.Accent60}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -44,7 +46,7 @@
                     </Grid.RowDefinitions>
 
                     <Image Margin="8,5" Source="{Binding ., Converter={StaticResource imageConverter}}" Width="64" />
-                    <Ellipse Fill="{Binding Status, Converter={StaticResource stateToColorConverter}}" Grid.Row="1" Stroke="{DynamicResource WhiteBrush}" StrokeThickness="1" Width="10" Height="10" HorizontalAlignment="Center" Margin="0,5,0,5" Visibility="Collapsed" />
+                    <Ellipse Fill="{Binding Status, Converter={StaticResource stateToColorConverter}}" Grid.Row="1" Stroke="{DynamicResource Fluent.Ribbon.Brushes.White}" StrokeThickness="1" Width="10" Height="10" HorizontalAlignment="Center" Margin="0,5,0,5" Visibility="Collapsed" />
                 </Grid>
 
                 <Grid Grid.Column="1">
@@ -56,12 +58,10 @@
                     <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <TextBlock Text="{Binding Environment.MachineName}" Width="170" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" TextTrimming="CharacterEllipsis" />
                         <TextBlock TextAlignment="Left" Foreground="White">
-                          <!--  <Run Text="IP:" /> -->
                             <Run Text="{Binding IP}" />
                         </TextBlock>
                         <TextBlock TextAlignment="Left" Foreground="White">
-                            <!-- <Run Text="Zuletzt gesehen:" /> -->
-                            <Run Text="{Binding LastSeen, StringFormat=dd.MM.yyyy HH:mm}" />
+                            <Run Text="{Binding LastSeen, StringFormat={x:Static res:Resources.strDateTimeFormat}}" />
                         </TextBlock>
                     </StackPanel>
                 </Grid>

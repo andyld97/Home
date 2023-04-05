@@ -12,8 +12,11 @@
 	<string name="strStopService">Service beenden</string>
 	<string name="strServiceActiveText">Home.Service.Android ist aktiv!</string>
 	<string name="strServiceInActiveText">Home.Service.Android nicht ist aktiv!</string>
-	<string name="strDeviceRegisteredText">Das Gerät {0} ist nicht registriert!</string>
+	<string name="strDeviceRegisteredText">Das Gerät {0} ist registriert!</string>
 	<string name="strDeviceNotRegisteredText">Das Gerät {0} ist nicht registriert!</string>
+	<string name="strConnectedTo">Verbunden mit {0}</string>
+	<string name="strNotConnected">Nicht verbunden</string>
+	<string name="strDeviceSpecifications">Geräte Spezifikationen</string>
 	<string-array name="device_type">
 		<item>Smartphone</item>
 		<item>SmartTV</item>

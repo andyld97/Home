@@ -134,8 +134,8 @@
     <comment>Device Type:</comment>
   </data>
   <data name="strInitalize" xml:space="preserve">
-    <value>Initalisieren</value>
-    <comment>Initalize</comment>
+    <value>Initialisieren</value>
+    <comment>Initialize</comment>
   </data>
   <data name="strLocation" xml:space="preserve">
     <value>Ort:</value>
@@ -144,5 +144,11 @@
   <data name="strOS" xml:space="preserve">
     <value>Betriebssystem:</value>
     <comment>OS:</comment>
+  </data>
+  <data name="strInvalidDataSet" xml:space="preserve">
+    <value>Ungültige Daten angegeben!</value>
+  </data>
+  <data name="strError" xml:space="preserve">
+    <value>Fehler</value>
   </data>
 </root>

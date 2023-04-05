@@ -27,7 +27,7 @@ namespace Home.Data.Com
             Invalid = 2,
             ScreenshotRequired = 4,
             MessageRecieved = 8,
-            CommandRecieved = 16
+            CommandRecieved = 16,
         }
 
         public AckResult()

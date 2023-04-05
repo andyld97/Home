@@ -123,10 +123,10 @@ namespace Home.API.Services
         #region Actions
 
         /// <summary>
-        /// Exceutes a command for a device given the deviceId, executable and parameter
+        /// Executes a command for a device given the deviceId, executable and parameter
         /// </summary>
         /// <param name="_context">The db context</param>
-        /// <param name="deviceId">The device which will recieve the command</param>
+        /// <param name="deviceId">The device which will receive the command</param>
         /// <param name="executable">The executable to run on the device</param>
         /// <param name="parameter">The parameters to run the process</param>
         private async Task ExecuteCommandAsync(HomeContext _context, string deviceId, string executable, string parameter)
@@ -149,8 +149,8 @@ namespace Home.API.Services
         /// Wakes up the given host
         /// </summary>
         /// <param name="_context">The db context</param>
-        /// <param name="deviceId">The device id which will recieve the magic package</param>
-        /// <param name="customMacAddress">Optional overriden mac address (e.g. if device mac is not set)</param>
+        /// <param name="deviceId">The device id which will receive the magic package</param>
+        /// <param name="customMacAddress">Optional overridden mac address (e.g. if device mac is not set)</param>
         private async Task ExecuteWakeOnLanAsync(HomeContext _context, string deviceId, string customMacAddress)
         {           
             string macAddress;

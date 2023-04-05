@@ -133,6 +133,45 @@
     <value>Group:</value>
   </data>
   <data name="strInitalize" xml:space="preserve">
-    <value>Initalize</value>
+    <value>Initialize</value>
+  </data>
+  <data name="strHomeVBSStartupFile" xml:space="preserve">
+    <value>Set WshShell = CreateObject("WScript.Shell" ) 
+WshShell.Run """{0}""", 0
+Set WshShell = Nothing</value>
+    <comment>@Invariant</comment>
+  </data>
+  <data name="strSetupAutostart" xml:space="preserve">
+    <value>Setup autostart</value>
+  </data>
+  <data name="strDevice" xml:space="preserve">
+    <value>Device</value>
+  </data>
+  <data name="strError" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="strFailedToSetupAutostart" xml:space="preserve">
+    <value>Failed to setup autostart: {0}</value>
+  </data>
+  <data name="strInvalidDataSet" xml:space="preserve">
+    <value>Invalid data set!</value>
+  </data>
+  <data name="strSaveAndClose" xml:space="preserve">
+    <value>Save and Start</value>
+  </data>
+  <data name="strEnableScreenshots" xml:space="preserve">
+    <value>Enable Screenshots</value>
+  </data>
+  <data name="strSearchForUpdatesOnStart" xml:space="preserve">
+    <value>Install updates at startup (if available)</value>
+  </data>
+  <data name="strEnableAutomaticUpdateSearch" xml:space="preserve">
+    <value>Enable automatic search for updates</value>
+  </data>
+  <data name="strHours" xml:space="preserve">
+    <value>Hours</value>
+  </data>
+  <data name="strFurtherSettings" xml:space="preserve">
+    <value>More settings</value>
   </data>
 </root>

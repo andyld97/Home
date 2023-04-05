@@ -118,6 +118,8 @@ namespace Home.Controls.Dialogs
                 MessageBox.Show(string.Format(Home.Properties.Resources.strManageDeviceSchedulingRulesDialog_FailedToSaveRules, result.ErrorMessage), Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+            else 
+                MessageBox.Show(Home.Properties.Resources.strSuccessfullyAppliedChanges, Properties.Resources.strSuccess, MessageBoxButton.OK, MessageBoxImage.Information);  
 
             closing = true;
             DialogResult = true;
@@ -255,6 +257,28 @@ namespace Home.Controls.Dialogs
             }
 
             return null;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class DeviceIDResolutionConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is string guid)
+            {
+                var devices = MainWindow.W_INSTANCE.GetDevices();
+                var device = devices.FirstOrDefault(d => d.ID == guid);
+                if (device == null)
+                    return "<unkown>";
+                return device.Name; 
+            }
+
+            return "<unkown>";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

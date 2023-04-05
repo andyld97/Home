@@ -61,7 +61,7 @@ namespace Home.Service.Android.Helper
 
                 string[] lineValues = line.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 
-                // lineValues[0] := Dateisysstem (/dev/sda1)
+                // lineValues[0] := Dateisystem (/dev/sda1)
                 // lineValues[1] := Größe (4,0T)
                 // lineValues[2] := Benutzt (3,3T)
                 // lineValues[3] := Verfügbar (449G)

@@ -40,17 +40,17 @@ namespace Home.Data.Events
             DeviceChangedState,
 
             /// <summary>
-            /// Device ACK will be recieved every minute with full information of the device
+            /// Device ACK will be received every minute with full information of the device
             /// </summary>
             ACK,
 
             /// <summary>
-            /// Denotes that the API just recieved a screenshot of this device
+            /// Denotes that the API just received a screenshot of this device
             /// </summary>
             DeviceScreenshotRecieved,
 
             /// <summary>
-            /// Denotes that the API recieved log entries related to the event device
+            /// Denotes that the API received log entries related to the event device
             /// </summary>
             LogEntriesRecieved,
 
@@ -67,7 +67,12 @@ namespace Home.Data.Events
             /// <summary>
             /// Denotes that the "live mode" of the event device got changed
             /// </summary>
-            LiveModeChanged
+            LiveModeChanged,
+
+            /// <summary>
+            /// Denotes that a device was deleted
+            /// </summary>
+            DeviceDeleted,
         }
     }
 

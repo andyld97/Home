@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Home.Service.Android</string>
     <string name="action_settings">Settings</string>
-	<string name="strShowDeviceSpecs">Show devices specifitications</string>
+	<string name="strShowDeviceSpecs">Show devices specifications</string>
 	<string name="strRegisterDevice">Register device</string>
 	<string name="strHost">Host:</string>
 	<string name="strLocation">Location:</string>
@@ -14,6 +14,9 @@
 	<string name="strServiceInActiveText">Home.Service.Android is not active!</string>
 	<string name="strDeviceRegisteredText">The Device {0} is registered!</string>
 	<string name="strDeviceNotRegisteredText">The Device {0} is not registered!</string>
+	<string name="strConnectedTo">Connected to {0}</string>
+	<string name="strNotConnected">Not connected</string>
+	<string name="strDeviceSpecifications">Devices specifications</string>
 	<string-array name="strDeviceType">
 		<item>Smartphone</item>
 		<item>SmartTV</item>

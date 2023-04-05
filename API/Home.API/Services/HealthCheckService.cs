@@ -25,19 +25,21 @@ namespace Home.API.Services
     public class HealthCheckService : BackgroundService
     {
         private readonly ILogger<HealthCheckService> _logger;
+        private readonly IClientService _clientService;
         private IServiceScopeFactory serviceProvider;
 
         private int hour = -1;
 
-        public HealthCheckService(ILogger<HealthCheckService> logger, IServiceScopeFactory serviceProvider)
+        public HealthCheckService(ILogger<HealthCheckService> logger, IClientService clientService, IServiceScopeFactory serviceProvider)
         {
             _logger = logger;
+            _clientService = clientService;
             this.serviceProvider = serviceProvider;
         }
 
         /// <summary>
-        /// Currently each hour will resets this, so in the worst case you will get a notication every hour (still better than each time the service runs)
-        /// ACK Errors gets LOGGED only ONCE per DEVICE. So if there is a an ack error you have to handle it,
+        /// Currently each hour this will be resetted in order to prevent spam. So in the worst case you will get a notification every hour (still better than each time the service runs)
+        /// ACK Errors get LOGGED only ONCE per DEVICE. So if there is a an ack error you have to handle it,
         /// but mostly such an error don't occur for only one device, but rather for all devices (e.g. if the db connection is lost)
         /// </summary>
         /// <returns>true if the webhook should be notified</returns>
@@ -168,7 +170,7 @@ namespace Home.API.Services
                 // Update the device status if it is inactive
                 await UpdateDeviceStatusAsync(context, device);
 
-                // Aquiring a new screenshot for all online devices (except android devices)
+                // Acquiring a new screenshot for all online devices (except android devices)
                 await CheckForScreenshotExpiredAsync(context, device, now);
 
                 // Delete screenshots which are older than the Program.GlobalConfig.RemoveOldScreenshots-Timestamp
@@ -207,7 +209,7 @@ namespace Home.API.Services
                 var logEntry = ModelConverter.CreateLogEntry(device, $"No activity detected ... Device \"{device.Name}\" was flagged as offline!", level, notifyWebHook);
                 await homeContext.DeviceLog.AddAsync(logEntry);
 
-                ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.DeviceChangedState, device);
+                _clientService.NotifyClientQueues(EventQueueItem.EventKind.DeviceChangedState, device);
             }
         }
 
@@ -222,7 +224,7 @@ namespace Home.API.Services
 
             if (device.DeviceScreenshot.Count == 0)
             {
-                // If there is no screenshot avaiable for the device a new one should be aquired
+                // If there is no screenshot available for the device a new one should be acquired
                 if (device.Ostype != (int)Home.Model.Device.OSType.Android)
                     device.IsScreenshotRequired = true;
                 return;
@@ -242,9 +244,9 @@ namespace Home.API.Services
             if (shot.Timestamp.Add(Program.GlobalConfig.AquireNewScreenshot) < now)
             {
                 device.IsScreenshotRequired = true;
-                var logEntry = ModelConverter.CreateLogEntry(device, $"Last screenshot was older than {Program.GlobalConfig.AquireNewScreenshot.TotalHours}h. Aquiring a new screenshot ...", LogEntry.LogLevel.Information);
+                var logEntry = ModelConverter.CreateLogEntry(device, $"Last screenshot was older than {Program.GlobalConfig.AquireNewScreenshot.TotalHours}h. Acquiring a new screenshot ...", LogEntry.LogLevel.Information);
                 await context.DeviceLog.AddAsync(logEntry);
-                ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
+                _clientService.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
             }
         }
 
@@ -352,7 +354,7 @@ namespace Home.API.Services
                         toRemove.Add(warning.p);                                               
                         var logEntry = ModelConverter.CreateLogEntry(device, $"[Storage Warning]: Removed for device \"{device.Name}\" DISK \"{associatedDisk.DriveName}\"", LogEntry.LogLevel.Information, true);
                         await context.DeviceLog.AddAsync(logEntry);
-                        ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
+                        _clientService.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
                     }
                 }
 
@@ -391,7 +393,7 @@ namespace Home.API.Services
                 var logEntry = ModelConverter.CreateLogEntry(device, "Truncated log file of this device!", LogEntry.LogLevel.Information);
                 await homeContext.DeviceLog.AddAsync(logEntry);
 
-                ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
+                _clientService.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
             }
         }
 

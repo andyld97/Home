@@ -62,6 +62,8 @@ namespace Home
         private bool scrollToEnd = true;
         private int oldDeviceCount = -1;
 
+        private static Fluent.IRibbonControl[] deviceDependendButtons;
+
         static MainWindow()
         {
             try
@@ -104,6 +106,21 @@ namespace Home
             ScreenshotViewer.OnResize += ScreenshotViewer_OnResize;
             ScreenshotViewer.OnScreenShotAquired += ScreenshotViewer_OnScreenShotAquired;
             App.OnShutdownOrRestart += App_OnShutdownOrRestart;
+
+            deviceDependendButtons = new Fluent.IRibbonControl[]
+            {
+                MenuButtonSendMessage,
+                MenuButtonShutdownMenu,
+                MenuButtonSendCommand,
+                MenuButtonDeleteDevice,
+                MenuButtonGenerateReport,
+                MenuPrintReport,
+                MenuButtonClearLog
+            };
+
+            // Disable all device depended buttons since there is no device selected at the beginning
+            foreach (var element in deviceDependendButtons)
+                (element as UIElement).IsEnabled = false;
         }
 
         private async void App_OnShutdownOrRestart(Device device, bool shutdown, bool wol)
@@ -286,7 +303,7 @@ namespace Home
 
             foreach (var group in groups)
             {
-                // Summarise * and string.Empty to a single group
+                // Summarize * and string.Empty to a single group
                 if (string.IsNullOrEmpty(group.Key) || group.Key.Trim() == "*")
                 {
                     foreach (var device in group.OrderBy(d => d.Name))
@@ -294,7 +311,7 @@ namespace Home
                     continue;
                 }
 
-                DeviceItemGroup deviceItemGroup = new DeviceItemGroup { GroupName = group.Key, IsScreenshotView = ChkOverviewShowScreenshots.IsChecked.Value };
+                DeviceItemGroup deviceItemGroup = new DeviceItemGroup { GroupName = group.Key, IsScreenshotView = MenuButtonTotalOverviewShowScreenshots.IsChecked.Value };
                 deviceItemGroup.OnGroupSelectionChanged += (string grp) =>
                 {
                     foreach (var currentGroup in PanelOverview.Children.OfType<DeviceItemGroup>().Where(d => d.GroupName != grp))
@@ -314,7 +331,7 @@ namespace Home
                 {
                     GroupName = Properties.Resources.strDeviceLocationNotAssigend,
                     Devices = notAssociatedDevices,
-                    IsScreenshotView = ChkOverviewShowScreenshots.IsChecked.Value
+                    IsScreenshotView = MenuButtonTotalOverviewShowScreenshots.IsChecked.Value
                 };
 
                 PanelOverview.Children.Add(dig);
@@ -401,6 +418,15 @@ namespace Home
                             oldDevice.LogEntries.Clear();
                             await RefreshSelectedItem();
                         }
+                        else if (@event.EventDescription == EventQueueItem.EventKind.DeviceDeleted)
+                        {
+                            var device = deviceList.FirstOrDefault(d => d.ID == @event.DeviceID);
+                            if (device != null)
+                            {
+                                deviceList.Remove(device);
+                                RefreshDeviceHolder();
+                            }
+                        }
                         else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.LogEntriesRecieved)
                         {
                             oldDevice.LogEntries.Clear();
@@ -420,7 +446,7 @@ namespace Home
                         }
                         else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceScreenshotRecieved)
                         {
-                            // ToDo: *** Only recieve screenshot (probably await GetScreenshot(oldDevice))
+                            // ToDo: *** Only receive screenshot (probably await GetScreenshot(oldDevice))
 
                         }
                         else if (@event.EventDescription == Data.Events.EventQueueItem.EventKind.DeviceChangedState)
@@ -459,6 +485,10 @@ namespace Home
 
                 DeviceInfo.Visibility = Visibility.Visible;
                 DeviceInfoHint.Visibility = Visibility.Collapsed;
+
+                foreach (var element in deviceDependendButtons)
+                    (element as UIElement).IsEnabled = true;
+
                 MenuButtonSendMessage.IsEnabled = true;
                 scrollToEnd = true;
 
@@ -471,6 +501,9 @@ namespace Home
                 MenuButtonSendMessage.IsEnabled = false;
                 DeviceInfo.Visibility = Visibility.Collapsed;
                 DeviceInfoHint.Visibility = Visibility.Visible;
+
+                foreach (var element in deviceDependendButtons)
+                    (element as UIElement).IsEnabled = false;
             }
         }
 
@@ -627,12 +660,6 @@ namespace Home
             BottomTabControl.Height = 23;
         }
 
-        private void ChkOverviewShowScreenshots_Checked(object sender, RoutedEventArgs e)
-        {
-            foreach (var item in PanelOverview.Children.OfType<DeviceItemGroup>())
-                item.IsScreenshotView = ChkOverviewShowScreenshots.IsChecked.Value;
-        }
-
         private async void MenuButtonDeleteDevice_Click(object sender, RoutedEventArgs e)
         {
             if (currentDevice != null)
@@ -718,16 +745,16 @@ namespace Home
         public void UpdateGlowingBrush()
         {
             if (Settings.Instance.ActivateGlowingBrush)
-                GlowBrush = new SolidColorBrush((System.Windows.Media.Color)FindResource("Fluent.Ribbon.Colors.AccentColor60"));
+                GlowColor = (System.Windows.Media.Color)FindResource("Fluent.Ribbon.Colors.Accent60");
             else
-                GlowBrush = null;
+                GlowColor = null;
 
-            NonActiveBorderBrush = GlowBrush;
+            NonActiveBorderBrush = new SolidColorBrush(GlowColor.Value);
         }
 
         private void MenuButtonOpenAbout_Click(object sender, RoutedEventArgs e)
         {
-            new AboutDialog().Show();
+            new AboutDialog().ShowDialog();
         }
 
         #region Report
@@ -807,6 +834,29 @@ namespace Home
             else
                 MessageBox.Show(string.Format(Home.Properties.Resources.strDeviceScheduling_Settings_FailedToRecieveData, result.ErrorMessage), Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
         }
+
+        private void MenuButtonTotalOverviewShowScreenshots_Checked(object sender, RoutedEventArgs e)
+        {
+            foreach (var item in PanelOverview.Children.OfType<DeviceItemGroup>())
+                item.IsScreenshotView = MenuButtonTotalOverviewShowScreenshots.IsChecked.Value;
+        }
+
+        private void MenuButtonToggleOverivew_Checked(object sender, RoutedEventArgs e)
+        {
+            if (MenuButtonToggleOverivew.IsChecked.Value)
+            {
+                GridNetworkOverview.Visibility = Visibility.Visible;
+                GridIndividualOverview.Visibility = Visibility.Hidden;
+                MenuButtonTotalOverviewShowScreenshots.IsEnabled = true;
+            }
+            else
+            {
+                GridIndividualOverview.Visibility = Visibility.Visible;
+                GridNetworkOverview.Visibility = Visibility.Hidden;
+                MenuButtonTotalOverviewShowScreenshots.IsEnabled = false;
+                MenuButtonTotalOverviewShowScreenshots.IsChecked = false;
+            }
+        }
     }
 
     #region Converter
@@ -828,7 +878,7 @@ namespace Home
                 }
                 else if (dd.MediaType == "Removable Media" && dd.DiskInterface == "USB")
                 {
-                    // Mayebe usb disk or mounted image
+                    // Maybe usb disk or mounted image
                     image = "usb";
                 }
                 else if (dd.MediaType == "Removable Media" && dd.DiskInterface != "USB")

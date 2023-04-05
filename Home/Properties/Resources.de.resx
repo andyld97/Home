@@ -286,7 +286,7 @@
     <value>Anwendung:</value>
   </data>
   <data name="strSendCommandDialog_Parameter" xml:space="preserve">
-    <value>Paramter:</value>
+    <value>Parameter:</value>
   </data>
   <data name="strTo" xml:space="preserve">
     <value>an</value>
@@ -486,7 +486,7 @@
     <value>Darstellung:</value>
   </data>
   <data name="strSettings_AttentionText" xml:space="preserve">
-    <value>ACHTUNG: Die API-URL muss gesetzt, gültig und erreichbar sein, um die Einstellungen zu übernhemen!</value>
+    <value>ACHTUNG: Die API-URL muss gesetzt, gültig und erreichbar sein, um die Einstellungen zu übernehmen!</value>
   </data>
   <data name="strSettings_CheckConnection" xml:space="preserve">
     <value>Verbindung testen ...</value>
@@ -756,5 +756,32 @@
   </data>
   <data name="strWOLNotPossible" xml:space="preserve">
     <value>Dieses Gerät hat keine Mac Adresse gemeldet, daher ist Wake On LAN aktuell nicht möglich!</value>
+  </data>
+  <data name="strFailedToDownloadFile" xml:space="preserve">
+    <value>Fehler beim Herunterladen der Datei:</value>
+  </data>
+  <data name="strFailedToDownloadFolder" xml:space="preserve">
+    <value>Fehler beim Abrufen des Ordners:</value>
+  </data>
+  <data name="strPreview" xml:space="preserve">
+    <value>Vorschau:</value>
+  </data>
+  <data name="strReady" xml:space="preserve">
+    <value>Fertig!</value>
+  </data>
+  <data name="strSuccessfullyAppliedChanges" xml:space="preserve">
+    <value>Die Änderungen wurden erfolgreich übernommen!</value>
+  </data>
+  <data name="strDefault" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+  <data name="strSaveReportPdf" xml:space="preserve">
+    <value>PDF speichern</value>
+  </data>
+  <data name="strSaveReportHtml" xml:space="preserve">
+    <value>HTML speichern</value>
+  </data>
+  <data name="strToggleOverview" xml:space="preserve">
+    <value>Übersicht umschalten</value>
   </data>
 </root>
