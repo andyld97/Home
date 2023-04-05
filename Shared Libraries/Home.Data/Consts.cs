@@ -17,8 +17,8 @@ namespace Home.Data
 
         public const string HomeServiceLinuxClientVersion = "1.1.1";
 
-        public const string HomeServiceLegacyClientVersion = "1.0.6";      
+        public const string HomeServiceLegacyClientVersion = "1.0.7";      
 
-        public const string HomeServiceAndroidClientVersion = "1.0.9";
+        public const string HomeServiceAndroidClientVersion = "1.1.0";
     }
 }

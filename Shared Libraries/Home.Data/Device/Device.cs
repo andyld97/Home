@@ -359,7 +359,7 @@ namespace Home.Model
 
         public enum DeviceType
         {
-            [Description("Singleboard-Device")]
+            [Description("Single-Board-Device")]
             SingleBoardDevice,
 
             [Description("Mini PC")]
@@ -475,6 +475,9 @@ namespace Home.Model
                     break;
                 case DeviceType.SingleBoardDevice: { image = "pi"; } break;
             }
+
+            if ((Status == DeviceStatus.Offline) && (Type == DeviceType.Notebook || Type == DeviceType.Desktop || Type == DeviceType.Smartphone || Type == DeviceType.Tablet))
+                image = $"offline/{image}";
 
             return $"{image}.png";
         }

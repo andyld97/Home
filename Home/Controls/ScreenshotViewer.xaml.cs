@@ -15,17 +15,19 @@ using System.Collections.Generic;
 using System.Windows.Data;
 using System.Collections.Concurrent;
 using System.Windows.Threading;
+using System.ComponentModel;
+using System.Drawing;
 
 namespace Home.Controls
 {
     /// <summary>
     /// Interaktionslogik für ScreenshotViewer.xaml
     /// </summary>
-    public partial class ScreenshotViewer : UserControl
+    public partial class ScreenshotViewer : UserControl, INotifyPropertyChanged
     {
         private bool isSmall = true;
         private string lastDate = string.Empty;
-        private Device lastSelectedDevice = null;
+        private Device lastSelectedDevice1 = null;
         private bool ignoreCmbScreenSelectionChanged = false;
 
         #region Download Queue
@@ -39,6 +41,20 @@ namespace Home.Controls
         public event resizeHandler OnResize;
 
         public event EventHandler OnScreenShotAquired;
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public Device LastSelectedDevice
+        {
+            get => lastSelectedDevice1;
+            set
+            {
+                if (value != lastSelectedDevice1)
+                {
+                    lastSelectedDevice1 = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LastSelectedDevice"));
+                }
+            }
+        }
 
         public ScreenshotViewer()
         {
@@ -60,20 +76,20 @@ namespace Home.Controls
 
                 if (screenshotToDisplay == null)
                 {
-                    UpdateDate(lastSelectedDevice.LastSeen.ToString(Properties.Resources.strDateTimeFormat));
-                    await SetImageSourceAsync(null, string.Empty, (lastSelectedDevice.Type != Device.DeviceType.Smartphone && lastSelectedDevice.Status == Device.DeviceStatus.Offline), lastSelectedDevice);
+                    UpdateDate(LastSelectedDevice.LastSeen.ToString(Properties.Resources.strDateTimeFormat));
+                    await SetImageSourceAsync(null, string.Empty, (LastSelectedDevice.Type != Device.DeviceType.Smartphone && LastSelectedDevice.Status == Device.DeviceStatus.Offline), LastSelectedDevice);
                 }
                 else
                 {
                     // Display it if it exists (otherwise put it to the queue)
-                    var path = GetScreenshotPath(lastSelectedDevice, screenshotToDisplay);
+                    var path = GetScreenshotPath(LastSelectedDevice, screenshotToDisplay);
 
                     if (!string.IsNullOrEmpty(path))
-                        await DisplayScreenshotAsync(path, lastSelectedDevice);
+                        await DisplayScreenshotAsync(path, LastSelectedDevice);
                     else
                     {
-                        await SetImageSourceAsync(null, string.Empty, (lastSelectedDevice.Type != Device.DeviceType.Smartphone && lastSelectedDevice.Status == Device.DeviceStatus.Offline), lastSelectedDevice);
-                        downloadQueue.Enqueue((lastSelectedDevice, value));
+                        await SetImageSourceAsync(null, string.Empty, (LastSelectedDevice.Type != Device.DeviceType.Smartphone && LastSelectedDevice.Status == Device.DeviceStatus.Offline), LastSelectedDevice);
+                        downloadQueue.Enqueue((LastSelectedDevice, value));
                     }
                 }
             }
@@ -84,8 +100,8 @@ namespace Home.Controls
             if (screenshotToDisplay == null)
                 return;
 
-            await SetImageSourceAsync(null, path, lastSelectedDevice.Status == Device.DeviceStatus.Offline, lastSelectedDevice);
-
+            await SetImageSourceAsync(null, path, LastSelectedDevice.Status == Device.DeviceStatus.Offline, LastSelectedDevice);
+                
             if (screenshotToDisplay.Timestamp != null)
                 UpdateDate(screenshotToDisplay.Timestamp.Value.ToString(Properties.Resources.strDateTimeFormat));
         }
@@ -175,15 +191,15 @@ namespace Home.Controls
         #region Update
         public void UpdateDate(string text)
         {
-            if (lastSelectedDevice == null)
+            if (LastSelectedDevice == null)
                 return;
 
             lastDate = text;
 
-            if (lastSelectedDevice.OS == Device.OSType.Android)
-                lastDate = text = $"{lastSelectedDevice.LastSeen.ToString(Properties.Resources.strDateTimeFormat)}";
+            if (LastSelectedDevice.OS == Device.OSType.Android)
+                lastDate = text = $"{LastSelectedDevice.LastSeen.ToString(Properties.Resources.strDateTimeFormat)}";
 
-            if (lastSelectedDevice.IsLive is true)
+            if (LastSelectedDevice.IsLive is true)
                 TextLive.Text = $"Live - {text}";
             else
                 TextLive.Text = $"{text}";
@@ -197,10 +213,10 @@ namespace Home.Controls
 
             bool restoreIndex = false;
 
-            if (lastSelectedDevice?.ID == device.ID)
+            if (LastSelectedDevice?.ID == device.ID)
                 restoreIndex = true;
 
-            lastSelectedDevice = device;
+            LastSelectedDevice = device;
             bool enabled = device.Status != Device.DeviceStatus.Offline;
             bool status = device.IsLive ?? false;
 
@@ -278,17 +294,17 @@ namespace Home.Controls
                 image = "offline";
 
             string path = $"pack://application:,,,/Home;Component/resources/icons/live/{image}.png";
-            ImageToggleLive.Source = ImageHelper.LoadImage(path, false, lastSelectedDevice?.Type == Device.DeviceType.Smartphone);
+            ImageToggleLive.Source = ImageHelper.LoadImage(path, false, LastSelectedDevice?.Type == Device.DeviceType.Smartphone);
         }
 
         private void UpdateLiveImage(bool state, bool enabled)
         {
             string image = state ? "toggle" : "offline";
-            if (!state && lastSelectedDevice.Status == Device.DeviceStatus.Active)
+            if (!state && LastSelectedDevice.Status == Device.DeviceStatus.Active)
                 image = "online";
 
             string path = $"pack://application:,,,/Home;Component/resources/icons/live/{image}.png";
-            ImageLive.Source = ImageHelper.LoadImage(path, false, lastSelectedDevice?.Type == Device.DeviceType.Smartphone);
+            ImageLive.Source = ImageHelper.LoadImage(path, false, LastSelectedDevice?.Type == Device.DeviceType.Smartphone);
         }
 
         private void UpdateLiveStatus(bool state, bool enabled)
@@ -375,16 +391,16 @@ namespace Home.Controls
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 AnimateButton(sender);
-                if (lastSelectedDevice?.Status == Device.DeviceStatus.Offline)
+                if (LastSelectedDevice?.Status == Device.DeviceStatus.Offline)
                 {
                     MessageBox.Show(Home.Properties.Resources.strDeviceCannotSwitchToLiveMode, Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
-                if (lastSelectedDevice.IsLive == true)
-                    await MainWindow.API.SetLiveStatusAsync(MainWindow.CLIENT, lastSelectedDevice, !lastSelectedDevice.IsLive.Value);
+                if (LastSelectedDevice.IsLive == true)
+                    await MainWindow.API.SetLiveStatusAsync(MainWindow.CLIENT, LastSelectedDevice, !LastSelectedDevice.IsLive.Value);
                 else
-                    await MainWindow.API.SetLiveStatusAsync(MainWindow.CLIENT, lastSelectedDevice, true);
+                    await MainWindow.API.SetLiveStatusAsync(MainWindow.CLIENT, LastSelectedDevice, true);
             }
         }
 
@@ -401,8 +417,8 @@ namespace Home.Controls
         {
             if (ignoreCmbScreenSelectionChanged)
                 return;
-
-            await UpdateScreenshotAsync(lastSelectedDevice);
+                
+            await UpdateScreenshotAsync(LastSelectedDevice);
         }
         #endregion
     }
@@ -429,12 +445,38 @@ namespace Home.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is Home.Model.Screen sr && sr.DeviceName == "Default")
+            if (value is Home.Model.Screen sr && sr.DeviceName == Properties.Resources.strDefault)
                 return Home.Properties.Resources.strAll;
             else if (value is Home.Model.Screen screen)
                 return screen.Index;                
 
             return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class ScreenIconConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            // Offline and Online icon
+            string path = $"pack://application:,,,/Home;Component/resources/icons/";
+
+            if (value is Device d && d.Status == Device.DeviceStatus.Active)
+                path += "screen.png";
+            else
+                path += "screen_offline.png";
+
+            BitmapImage bi = new BitmapImage();
+            bi.BeginInit();
+            bi.UriSource = new Uri(path);
+            bi.EndInit();
+
+            return bi;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
