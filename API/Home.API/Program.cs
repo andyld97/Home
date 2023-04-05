@@ -44,7 +44,7 @@ namespace Home.API
             var loggerFactory = LoggerFactory.Create(builder => { builder.AddConsole(); });
             _logger = loggerFactory.CreateLogger<Startup>();
 
-            // Initalize config.json to GlobalConfig
+            // Initialize config.json to GlobalConfig
             // Read config json (if any) [https://stackoverflow.com/a/28700387/6237448]
             string configPath = System.IO.Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "config.json");
             DeviceSchedulingRulesPath = System.IO.Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "scheduling.json");
@@ -55,7 +55,7 @@ namespace Home.API
                 {
                     string configJson = System.IO.File.ReadAllText(configPath);
                     GlobalConfig = System.Text.Json.JsonSerializer.Deserialize<Config>(configJson);
-                    _logger.LogInformation("Successfully initalized config file!");
+                    _logger.LogInformation("Successfully initialized config file!");
                 }
                 catch (Exception ex)
                 {
@@ -68,7 +68,7 @@ namespace Home.API
                 GlobalConfig = new Config();
             }
 
-            // Initalize webhook
+            // Initialize webhook
             WebHook = new Webhook(GlobalConfig.WebHookUrl, "Home");
 
             CreateHostBuilder(args).Build().Run();
@@ -78,6 +78,12 @@ namespace Home.API
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder.ConfigureLogging((ctx, builder) => 
+                    {
+                        builder.AddConfiguration(ctx.Configuration.GetSection("Logging"));
+                        builder.AddFile(o => o.RootPath = ctx.HostingEnvironment.ContentRootPath);
+                    });
+
                     webBuilder.UseStartup<Startup>();
                     webBuilder.UseUrls(GlobalConfig.HostUrl);
                 });

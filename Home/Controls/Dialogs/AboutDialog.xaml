@@ -10,8 +10,8 @@
         ResizeMode="NoResize"
         xmlns:data="clr-namespace:Home.Data;assembly=Home.Data"
         WindowStartupLocation="CenterScreen">
-    <Grid Background="{DynamicResource WhiteBrush}">
-        <TabControl x:Name="MainTabControl" Margin="5,5,5,5" Background="Transparent">
+    <Grid Background="{DynamicResource Fluent.Ribbon.Brushes.White}">
+        <!--<TabControl x:Name="MainTabControl" Margin="5,5,5,5" Background="Transparent">
             <TabControl.Resources>
                 <ResourceDictionary>
                     <ResourceDictionary.MergedDictionaries>
@@ -20,16 +20,16 @@
                 </ResourceDictionary>
             </TabControl.Resources>
 
-            <TabItem Header="{x:Static res:Resources.strAbout}">
+            <TabItem Header="{x:Static res:Resources.strAbout}">-->
                 <StackPanel>
                     <StackPanel.Resources>
                         <Style TargetType="{x:Type Hyperlink}">
-                            <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+                            <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.Black}" />
                         </Style>
                     </StackPanel.Resources>
                     <Image Source="../../resources/images/logo.png" Width="250" Margin="0,15,0,0" />
 
-                    <TextBlock Margin="5,10,0,0" HorizontalAlignment="Center" Foreground="{DynamicResource BlackBrush}">
+                    <TextBlock Margin="5,10,0,0" HorizontalAlignment="Center" Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}">
                         <Run Text="{x:Static res:Resources.strAbout_Line1}" FontWeight="Bold" />
                         <LineBreak />
                         <LineBreak />
@@ -66,7 +66,7 @@
                         <Run x:Name="TextDotNetVersion" FontWeight="Bold" />
                     </TextBlock>
                 </StackPanel>
-            </TabItem>                       
-        </TabControl>
+            <!--</TabItem>                       
+        </TabControl>-->
     </Grid>
 </Window>

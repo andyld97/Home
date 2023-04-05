@@ -56,6 +56,7 @@ namespace Home.API
             services.AddHostedService<HealthCheckService>();
             services.AddHostedService<DeviceScheduleService>();
             services.AddTransient<IDeviceAckService, DeviceAckService>();
+            services.AddTransient<IClientService, ClientService>();
             services.AddSingleton<IWOLService, WOLService>();
             services.AddControllers();
             services.AddEndpointsApiExplorer();

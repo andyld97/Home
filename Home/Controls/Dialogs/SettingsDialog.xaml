@@ -8,26 +8,26 @@
         xmlns:Fluent="urn:fluent-ribbon"
         xmlns:controlzEx="urn:controlzex"
         ResizeMode="NoResize"
-        Background="{DynamicResource WhiteBrush}"
+        Background="{DynamicResource Fluent.Ribbon.Brushes.White}"
         WindowStartupLocation="CenterScreen"
         Title="{x:Static res:Resources.strSettings}" Height="350" Width="400">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
         <Style TargetType="{x:Type CheckBox}">
-            <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.Black}" />
         </Style>
         <Style TargetType="{x:Type RadioButton}">
-            <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.Black}" />
         </Style>
         <Style TargetType="{x:Type TextBlock}">
-            <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.Black}" />
         </Style>
         <Style TargetType="{x:Type TextBox}">
-            <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
-            <Setter Property="Background" Value="{DynamicResource WhiteBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.Black}" />
+            <Setter Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.White}" />
         </Style>
     </Window.Resources>
-    <TabControl Background="{DynamicResource WhiteBrush}" Margin="2">
+    <TabControl Background="{DynamicResource Fluent.Ribbon.Brushes.White}" Margin="2">
         <TabControl.Resources>
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>

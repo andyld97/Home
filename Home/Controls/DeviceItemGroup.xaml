@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Home.Controls" xmlns:converter="clr-namespace:Home.Converter"
+             xmlns:fluent="urn:fluent-ribbon"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -12,7 +13,7 @@
             <local:ScreenshotVisibiltyConverter x:Key="screenshotVisiblityConverter" />
             <converter:OSNameConverter x:Key="osNameConverter" />
             <converter:OS64BitConverter x:Key="os64BitConverter" />
-            <BooleanToVisibilityConverter x:Key="boolToVisibiltyConverter" />
+            <BooleanToVisibilityConverter x:Key="Fluent.Ribbon.Converters.BoolToVisibilityConverter" />
             <converter:ScreenshotConverter x:Key="deviceScreenConverter" />
         </Grid.Resources>
         <Grid.RowDefinitions>
@@ -24,15 +25,15 @@
             <!-- #6D77D7 -->
             <Expander x:Name="ExpandList" IsExpanded="True">
                 <Expander.Header>
-                    <TextBlock Text="{Binding GroupName}" Foreground="{DynamicResource BlackBrush}" FontWeight="Bold" />
+                    <TextBlock Text="{Binding GroupName}" Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}" FontWeight="Bold" />
                 </Expander.Header>
             </Expander>
 
-            <Border Margin="26,0,0,0" BorderBrush="{DynamicResource BlackBrush}" BorderThickness="0 0 0 1" />
+            <Border Margin="26,0,0,0" BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.Black}" BorderThickness="0 0 0 1" />
         </StackPanel>
 
 
-        <ListView x:Name="ListViewDevices" Visibility="{Binding ElementName=ExpandList, Path=IsExpanded, Converter={StaticResource boolToVisibilityConverter}}" ItemsSource="{Binding Devices}" Background="{DynamicResource WhiteBrush}" BorderThickness="0" Grid.Row="1" SelectionChanged="ListViewDevices_SelectionChanged" PreviewMouseWheel="ListViewDevices_PreviewMouseWheel">
+        <ListView x:Name="ListViewDevices" Visibility="{Binding ElementName=ExpandList, Path=IsExpanded, Converter={StaticResource Fluent.Ribbon.Converters.BoolToVisibilityConverter}}" ItemsSource="{Binding Devices}" Background="{DynamicResource Fluent.Ribbon.Brushes.White}" BorderThickness="0" Grid.Row="1" SelectionChanged="ListViewDevices_SelectionChanged" PreviewMouseWheel="ListViewDevices_PreviewMouseWheel">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <!-- MinWidth="{Binding ItemWidth, RelativeSource={RelativeSource Self}}" ItemHeight="{Binding (ListView.View).ItemHeight, RelativeSource={RelativeSource AncestorType=ListView}}" -->
@@ -52,20 +53,22 @@
                         <Border Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.IsScreenshotView, Converter={StaticResource screenshotVisiblityConverter}, ConverterParameter=1}" Background="Black" Height="200">
                             <Grid>
                                 <Image Visibility="Visible" StretchDirection="DownOnly" Source="{Binding ., Converter={StaticResource deviceScreenConverter}}" />
-                                <TextBlock Foreground="{DynamicResource BlackBrush}" Text="{Binding Environment.MachineName}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                <TextBlock Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}" Text="{Binding Environment.MachineName}" VerticalAlignment="Center" HorizontalAlignment="Center" />
                             </Grid>
                         </Border>
 
-                        <Grid Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.IsScreenshotView, Converter={StaticResource screenshotVisiblityConverter}, ConverterParameter=2}">                           
+                        <Grid Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.IsScreenshotView, Converter={StaticResource screenshotVisiblityConverter}, ConverterParameter=2}">
                             <Grid.Resources>
                                 <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+                                    <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.Black}" />
                                 </Style>
                             </Grid.Resources>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
+
+                            <TextBlock x:Name="txtOneLineDummy" Text="One line" TextWrapping="NoWrap" Visibility="Hidden" VerticalAlignment="Top" />
                             <Image VerticalAlignment="Top" HorizontalAlignment="Center" StretchDirection="DownOnly" Height="64" Width="64" Margin="2" Source="{Binding ., Converter={StaticResource localDeviceImageConverter}}" />
                             <StackPanel Margin="5,5,0,0" Grid.Column="2" Orientation="Vertical">
                                 <TextBlock TextDecorations="Underline">
@@ -78,16 +81,11 @@
                                 <Run Text="{Binding OS, Converter={StaticResource osNameConverter}}" />
                                 <Run Text="(" /><Run Text="{Binding Environment.Is64BitOS, Converter={StaticResource os64BitConverter}}" /><Run Text=")" />
                                 </TextBlock>
-
-                                <TextBlock Text="{Binding Environment.CPUName}" TextTrimming="CharacterEllipsis" />
+                                <TextBlock Text="{Binding Environment.CPUName}"  TextTrimming="CharacterEllipsis" Height="{Binding ElementName=txtOneLineDummy, Path=ActualHeight}" />
                                 <TextBlock Text="{Binding Environment.Motherboard}" TextTrimming="CharacterEllipsis" />
-                                <!-- <TextBlock Text="{Binding Environment.Graphics}" TextTrimming="CharacterEllipsis" /> -->
                             </StackPanel>
                         </Grid>
-
-                    </Grid>
-                    
-               
+                    </Grid>                                 
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

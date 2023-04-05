@@ -117,7 +117,7 @@ namespace Home.Controls
                     return;
 
                 string path = System.IO.Path.GetDirectoryName(remoteDirectory.Path);
-                // Linux only accepts "/"-pathes
+                // Linux only accepts "/"-paths
                 if (!device.OS.IsWindows(false))
                     path = path.Replace(@"\", "/");
 

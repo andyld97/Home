@@ -79,7 +79,7 @@ namespace Home.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Concept and realisation by Andreas L. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Concept and realization by Andreas L. ähnelt.
         /// </summary>
         public static string strAbout_Line1 {
             get {
@@ -318,6 +318,15 @@ namespace Home.Properties {
         public static string strDays {
             get {
                 return ResourceManager.GetString("strDays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Default ähnelt.
+        /// </summary>
+        public static string strDefault {
+            get {
+                return ResourceManager.GetString("strDefault", resourceCulture);
             }
         }
         
@@ -988,7 +997,7 @@ namespace Home.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Managment ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Management ähnelt.
         /// </summary>
         public static string strManagment {
             get {
@@ -1555,7 +1564,7 @@ namespace Home.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Warning occured ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Warning occurred ähnelt.
         /// </summary>
         public static string strReport_WarningOccured {
             get {
@@ -1591,6 +1600,24 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Save HTML ähnelt.
+        /// </summary>
+        public static string strSaveReportHtml {
+            get {
+                return ResourceManager.GetString("strSaveReportHtml", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Save PDF ähnelt.
+        /// </summary>
+        public static string strSaveReportPdf {
+            get {
+                return ResourceManager.GetString("strSaveReportPdf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Screens ähnelt.
         /// </summary>
         public static string strScreens {
@@ -1609,7 +1636,7 @@ namespace Home.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Aquire new screenshot ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Acquire new screenshot ähnelt.
         /// </summary>
         public static string strScreenshotViewer_AquireNewScreenshot {
             get {
@@ -1663,7 +1690,7 @@ namespace Home.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Paramter: ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Parameter: ähnelt.
         /// </summary>
         public static string strSendCommandDialog_Parameter {
             get {
@@ -1870,6 +1897,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die The changes have been successfully applied! ähnelt.
+        /// </summary>
+        public static string strSuccessfullyAppliedChanges {
+            get {
+                return ResourceManager.GetString("strSuccessfullyAppliedChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Successfully cleared the device log! ähnelt.
         /// </summary>
         public static string strSuccessfullyClearedDeviceLog {
@@ -1902,6 +1938,15 @@ namespace Home.Properties {
         public static string strTo {
             get {
                 return ResourceManager.GetString("strTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Toggle Overview ähnelt.
+        /// </summary>
+        public static string strToggleOverview {
+            get {
+                return ResourceManager.GetString("strToggleOverview", resourceCulture);
             }
         }
         

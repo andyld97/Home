@@ -23,6 +23,7 @@
             <Setter Property="TextTrimming" Value="CharacterEllipsis" />
             <Setter Property="TextWrapping" Value="NoWrap" />
             <Setter Property="FontFamily" Value="Segoe UI Light" />
+            <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.Black}" />
         </Style>
 
         <Style x:Key="headline" TargetType="{x:Type TextBlock}">
@@ -38,7 +39,7 @@
         </Style>
 
         <Style TargetType="{x:Type Separator}">
-            <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.Black}" />
         </Style>
     </UserControl.Resources>
 

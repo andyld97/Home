@@ -35,11 +35,11 @@ namespace Home.Controls
 
         private void InitalizeDeviceActivityPlot()
         {
-            // This legened is always switching colors, so I am going to use my own legend!
+            // This legend is always switching colors, so I am going to use my own legend!
             plot.LegendPosition = LiveChartsCore.Measure.LegendPosition.Hidden; // top
             plot.LegendOrientation = LiveChartsCore.Measure.LegendOrientation.Horizontal;
-            plot.LegendBackground = FindResource("WhiteBrush") as SolidColorBrush;
-            plot.LegendTextBrush = FindResource("BlackBrush") as SolidColorBrush;
+            plot.LegendBackground = FindResource("Fluent.Ribbon.Brushes.White") as SolidColorBrush;
+            plot.LegendTextBrush = FindResource("Fluent.Ribbon.Brushes.Black") as SolidColorBrush;
 
             var xaxis = plot.XAxes.FirstOrDefault();
             var yaxis = plot.YAxes.FirstOrDefault();
@@ -53,7 +53,7 @@ namespace Home.Controls
                     return String.Empty;
 
                 // 60 is not true if there are not 60 values in the list
-                // and remember that all values (cpu, ram, disk) MUST have the same amount, also if they get cleard (they get all cleard)
+                // and remember that all values (cpu, ram, disk) MUST have the same amount, also if they get cleared (they get all cleared)
                 var n = currentDevice.LastSeen.AddMinutes(-(currentDevice.Usage.CPU.Count - x));
                 return n.ToString("HH:mm");
             };
@@ -138,8 +138,8 @@ namespace Home.Controls
                 Stroke = new SolidColorPaint(SkiaSharp.SKColors.Green, 3),
                 Fill = null,
                 GeometrySize = 0,
-                Name = "Battery Remaning (%)",
-                TooltipLabelFormatter = (s) => $"Battery Remaning: {s.PrimaryValue} %"
+                Name = "Battery Remaining (%)",
+                TooltipLabelFormatter = (s) => $"Battery Remaining: {s.PrimaryValue} %"
             };
 
             List<ISeries> series = new List<ISeries>(); // { cpuSeries, ramSeries, diskSeries };

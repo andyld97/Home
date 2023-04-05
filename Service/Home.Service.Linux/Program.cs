@@ -9,7 +9,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,17 +23,26 @@ namespace Home.Service.Linux
 {
     public class Program
     {
+        private static Mutex AppMutex = new Mutex(false, "3F911615-3164-47A1-831E-8CA56B49C3C4");
+
         #region Private Members
         private static readonly Device currentDevice = new Device();
         private static readonly DateTime startTime = DateTime.Now;
         private static Home.Communication.API api;
-        private static JObject jInfo = null;
+        private static JObject config = null;
 
         private static readonly string CONFIG_FILENAME = "config.json";
         private static readonly Timer ackTimer = new Timer();
+        private static readonly Timer updateTimer = new Timer();
         private static readonly object _lock = new object();
         private static bool isSendingAck = false;
         private static string NormalUser = string.Empty;
+        
+        private static bool enableScreenshots = true;
+        private static bool checkForUpdatesOnStart = true;
+        private static bool useAutomaticUpdateTimer = false;
+        private static int automaticTimerIntervalHours = 24;
+
         #endregion
 
         #region Main
@@ -44,6 +55,14 @@ namespace Home.Service.Linux
 
         public static void Main(string[] args)
         {
+            // Check if mutex is acquired
+            if (!AppMutex.WaitOne(TimeSpan.FromSeconds(1), false))
+            {
+                Console.WriteLine("Home.Service.Linux is already started!");
+                Environment.Exit(-1);
+                return;
+            }
+
             try
             {
                 // Debug LSHW JSON FILES:
@@ -53,6 +72,29 @@ namespace Home.Service.Linux
                 int debug = 0;
 #endif
 
+                // Read config 
+                string configJson = System.IO.File.ReadAllText(CONFIG_FILENAME);
+
+                // Strip comments
+                configJson = Regex.Replace(configJson, @"/\*(.*?)\*/", string.Empty, RegexOptions.Singleline);
+                config = JsonConvert.DeserializeObject<JObject>(configJson);
+
+                // Parse settings
+                if (config.ContainsKey("enable_screenshots"))
+                    enableScreenshots = config["enable_screenshots"].Value<bool>();
+                
+                if (config.ContainsKey("check_for_updates_on_start"))
+                    checkForUpdatesOnStart = config["check_for_updates_on_start"].Value<bool>();
+
+                if (config.ContainsKey("use_automatic_update_timer"))
+                    useAutomaticUpdateTimer = config["use_automatic_update_timer"].Value<bool>();
+
+                if (config.ContainsKey("automatic_timer_interval_hours"))
+                    automaticTimerIntervalHours = config["automatic_timer_interval_hours"].Value<int>();
+
+                if (checkForUpdatesOnStart && CheckAndExecuteUpdate())
+                    return;
+
                 Thread apiThread = new Thread(new ParameterizedThreadStart((_) =>
                 {
                     var args = Environment.GetCommandLineArgs();
@@ -60,18 +102,12 @@ namespace Home.Service.Linux
                 }));
                 apiThread.Start();
 
-                Task task = MainAsync(args);
-                task.Wait();
+                MainAsync(args, configJson);
 
-                // if (Console.KeyAvailable)
-                // Console.ReadKey();
-                // else
-                // {
                 while (true)
                 {
                     System.Threading.Thread.Sleep(100);
                 }
-                // }
             }
             catch (Exception e)
             {
@@ -79,30 +115,28 @@ namespace Home.Service.Linux
 
                 if (e.InnerException != null)
                     Console.WriteLine($"Inner Exception: {e.InnerException.ToString()}");
+
+                AppMutex.ReleaseMutex();
+                return;
             }
+
+            AppMutex.ReleaseMutex();
         }
 
-        public static async Task MainAsync(string[] args)
+        public static void MainAsync(string[] args, string configJson)
         {
-            // Read config 
-            string configJson = System.IO.File.ReadAllText(CONFIG_FILENAME);
+            bool isSignedIn = config["is_signed_in"].Value<bool>();
+            string id = config["id"].Value<string>();
 
-            // Strip comments
-            configJson = Regex.Replace(configJson, @"/\*(.*?)\*/", string.Empty, RegexOptions.Singleline);
-            jInfo = JsonConvert.DeserializeObject<JObject>(configJson);
-
-            bool isSignedIn = jInfo["is_signed_in"].Value<bool>();
-            string id = jInfo["id"].Value<string>();
-
-            api = new Communication.API(jInfo["api"].ToString());
+            api = new Communication.API(config["api"].ToString());
 
             currentDevice.ID = id;
-            currentDevice.Location = jInfo["location"].ToString();
-            currentDevice.DeviceGroup = jInfo["device_group"].ToString();
-            NormalUser = jInfo["user"].ToString();
-            currentDevice.OS = (OSType)jInfo["os"].Value<int>();
+            currentDevice.Location = config["location"].ToString();
+            currentDevice.DeviceGroup = config["device_group"].ToString();
+            NormalUser = config["user"].ToString();
+            currentDevice.OS = (OSType)config["os"].Value<int>();
             currentDevice.Environment.OSName = currentDevice.OS.ToString();
-            currentDevice.Type = (DeviceType)jInfo["type"].Value<int>();
+            currentDevice.Type = (DeviceType)config["type"].Value<int>();
             currentDevice.Environment.StartTimestamp = startTime;
             RefreshDeviceInfo();
 
@@ -110,21 +144,34 @@ namespace Home.Service.Linux
             {
                 // Generate id 
                 id = Guid.NewGuid().ToString();
-                jInfo["id"] = id;
+                config["id"] = id;
                 currentDevice.ID = id;
 
+                Console.WriteLine($"Using guid: {id} ...");
+
                 // Sign in
-                var result = await api.RegisterDeviceAsync(currentDevice);
-                if (result)
+                bool res = false;
+                var task = Task.Run(async () => res = await api.RegisterDeviceAsync(currentDevice));
+                task.Wait();
+
+                // var result = Task.Run(async () => await api.RegisterDeviceAsync(currentDevice)).Result;
+                if (res)
                 {
-                    jInfo["is_signed_in"] = true;
+                    config["is_signed_in"] = true;
                     isSignedIn = true;
+                }
+                else
+                {
+                    Console.WriteLine("Failed to register device ... Exiting ...");
+                    AppMutex.ReleaseMutex();
+                    Environment.Exit(-1);
+                    return;
                 }
 
                 try
                 {
                     System.IO.File.WriteAllText($"{CONFIG_FILENAME}.bak", configJson);
-                    System.IO.File.WriteAllText(CONFIG_FILENAME, JsonConvert.SerializeObject(jInfo));
+                    System.IO.File.WriteAllText(CONFIG_FILENAME, JsonConvert.SerializeObject(config));
                 }
                 catch (Exception ex)
                 {
@@ -139,10 +186,19 @@ namespace Home.Service.Linux
                 ackTimer.Elapsed += AckTimer_Elapsed;
                 ackTimer.Start();
 
+                // Update timer
+                if (useAutomaticUpdateTimer)
+                {
+                    updateTimer.Interval = TimeSpan.FromHours(automaticTimerIntervalHours).TotalMilliseconds;
+                    updateTimer.Elapsed += UpdateTimer_Elapsed;
+                    updateTimer.Start();
+                }
+
                 // Execute on start
                 AckTimer_Elapsed(null, null);
             }
         }
+
         #endregion
 
         #region Ack
@@ -200,7 +256,7 @@ namespace Home.Service.Linux
 
                         }
 
-                        Console.WriteLine("Showing message " + shellScript);
+                        Console.WriteLine($"Showing message: {shellScript}");
                         Helper.ExecuteSystemCommand("sudo", $"-H -u {NormalUser} bash -c \"sh zenity.sh\"", async: true);
                         Console.WriteLine("Test");
                     }
@@ -229,11 +285,19 @@ namespace Home.Service.Linux
                 isSendingAck = false;
         }
 
+        private static void UpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            CheckAndExecuteUpdate();
+        }
+
         #endregion
 
         #region Create Screenshot
         public static async Task CreateScreenshot()
         {
+            if (!enableScreenshots)
+                return;
+
             Console.WriteLine("Creating a screenshot ...");
 
             // 1) Create a screenshot (but ensure that this command will be executed as the normal user)
@@ -250,7 +314,7 @@ namespace Home.Service.Linux
                     if (!screenshotResult.Success)
                         Console.WriteLine(screenshotResult.ErrorMessage);
                     else
-                        Console.WriteLine("Succsessfully uploaded screeenshot!");
+                        Console.WriteLine("Successfully uploaded screenshot!");
                 }
                 catch (Exception ex)
                 {
@@ -340,7 +404,7 @@ namespace Home.Service.Linux
                     currentDevice.Environment.CPUUsage = usage;
             }
         }
-        #endregion
+#endregion
 
         #region Parse Hardware Info
 
@@ -412,7 +476,7 @@ namespace Home.Service.Linux
                 return false;
             }
 
-            // If nothing was found return "/"- as a diskdrive!
+            // If nothing was found return "/"- as a disk drive!
             if (device.DiskDrives.Count == 0)
                 device.DiskDrives.Add(new DiskDrive() { VolumeName = "/", DriveName = "/", DriveID = "linux_default_storage", PhysicalName = "linux_default_storage" });
 
@@ -438,7 +502,7 @@ namespace Home.Service.Linux
 
                         string[] lineValues = line.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 
-                        // lineValues[0] := Dateisysstem (/dev/sda1)
+                        // lineValues[0] := Dateisystem (/dev/sda1)
                         // lineValues[1] := Größe (4,0T)
                         // lineValues[2] := Benutzt (3,3T)
                         // lineValues[3] := Verfügbar (449G)
@@ -550,6 +614,52 @@ namespace Home.Service.Linux
                 }
             }           
         }
+        #endregion
+
+        #region Update
+
+        private static bool CheckAndExecuteUpdate()
+        {
+            var lastUpdateCheck = DateTime.MinValue;
+            try
+            {
+                if (System.IO.File.Exists("update.txt"))
+                    lastUpdateCheck = DateTime.Parse(System.IO.File.ReadAllText("update.txt"));
+            }
+            catch
+            {
+                // ignore
+            }
+
+            var result = Task.Run(async () => await UpdateService.CheckForUpdatesAsync(lastUpdateCheck)).Result;
+
+            if (result != null)
+            {
+                try
+                {
+                    // Write last update datetime-stamp
+                    System.IO.File.WriteAllText("update.txt", DateTime.Now.ToString("s"));
+                }
+                catch
+                {
+                    // ignore
+                }
+            }
+
+            if (result.HasValue && result.Value)
+            {
+                string dotnetPath = config["dotnet_path"].Value<string>();
+
+                UpdateService.UpdateServiceClient(dotnetPath);
+                AppMutex.ReleaseMutex();
+                Environment.Exit(0);
+                return true;
+            }
+
+            return false;
+        }
+
+
         #endregion
     }
 }

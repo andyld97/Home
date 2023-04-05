@@ -126,7 +126,7 @@
     <comment>DeviceFileExplorer.xaml</comment>
   </data>
   <data name="strManagment" xml:space="preserve">
-    <value>Managment</value>
+    <value>Management</value>
   </data>
   <data name="strTools" xml:space="preserve">
     <value>Tools</value>
@@ -285,7 +285,7 @@
     <comment>ScreenshotViewer.xaml</comment>
   </data>
   <data name="strScreenshotViewer_AquireNewScreenshot" xml:space="preserve">
-    <value>Aquire new screenshot</value>
+    <value>Acquire new screenshot</value>
     <comment>ScreenshotViewer.xaml</comment>
   </data>
   <data name="strScreenshotViewer_ChangeSize" xml:space="preserve">
@@ -306,7 +306,7 @@
     <comment>SendCommandDialog.xaml</comment>
   </data>
   <data name="strSendCommandDialog_Parameter" xml:space="preserve">
-    <value>Paramter:</value>
+    <value>Parameter:</value>
     <comment>SendCommandDialog.xaml</comment>
   </data>
   <data name="strOK" xml:space="preserve">
@@ -481,7 +481,7 @@
     <value>Message</value>
   </data>
   <data name="strReport_WarningOccured" xml:space="preserve">
-    <value>Warning occured</value>
+    <value>Warning occurred</value>
   </data>
   <data name="strError" xml:space="preserve">
     <value>Error!</value>
@@ -584,7 +584,7 @@
     <comment>*</comment>
   </data>
   <data name="strAbout_Line1" xml:space="preserve">
-    <value>Concept and realisation by Andreas L.</value>
+    <value>Concept and realization by Andreas L.</value>
   </data>
   <data name="strAbout_Line2" xml:space="preserve">
     <value>Many thanks ...</value>
@@ -820,5 +820,20 @@
   </data>
   <data name="strFailedToDownloadFolder" xml:space="preserve">
     <value>Error while retrieving the folder:</value>
+  </data>
+  <data name="strSuccessfullyAppliedChanges" xml:space="preserve">
+    <value>The changes have been successfully applied!</value>
+  </data>
+  <data name="strDefault" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="strSaveReportPdf" xml:space="preserve">
+    <value>Save PDF</value>
+  </data>
+  <data name="strSaveReportHtml" xml:space="preserve">
+    <value>Save HTML</value>
+  </data>
+  <data name="strToggleOverview" xml:space="preserve">
+    <value>Toggle Overview</value>
   </data>
 </root>

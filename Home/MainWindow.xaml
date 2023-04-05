@@ -25,7 +25,7 @@
         <Fluent:Ribbon Background="Transparent">
             <Fluent:Ribbon.Menu>
                 <Fluent:ApplicationMenu Header="{x:Static res:Resources.strFile}" MaxDropDownHeight="500" BorderBrush="Blue">
-                    <!--<Fluent:MenuItem x:Name="MenuButtonChangeTheme" Click="MenuButtonChangeTheme_Click" Header="{x:Static res:Resources.strToggleTheme}" />-->
+                    <Fluent:MenuItem x:Name="MenuButtonWakeOnLan" Click="MenuButtonWakeOnLan_Click" Header="{x:Static res:Resources.strManageDeviceSchedulingRules}" Icon="/resources/icons/menu/schedule.png" />
                     <Fluent:MenuItem x:Name="MenuButtonOpenSettings" Click="MenuButtonOpenSettings_Click" Header="{x:Static res:Resources.strSettings}" Icon="resources/icons/menu/settings.png" />
                     <Fluent:MenuItem x:Name="MenuButtonOpenAbout" Click="MenuButtonOpenAbout_Click" Header="{x:Static res:Resources.strAbout}" Icon="resources/icons/menu/about.png" />
                     <Fluent:MenuItem x:Name="MenuButtonExit" Click="MenuButtonExit_Click" Icon="resources/icons/menu/exit.png" Header="{x:Static res:Resources.strExit}" />
@@ -33,18 +33,22 @@
             </Fluent:Ribbon.Menu>
 
             <Fluent:RibbonTabItem Header="{x:Static res:Resources.strGeneral}">
+                <Fluent:RibbonGroupBox Header="{x:Static res:Resources.strOverview}">
+                    <Fluent:ToggleButton x:Name="MenuButtonToggleOverivew" Checked="MenuButtonToggleOverivew_Checked" Unchecked="MenuButtonToggleOverivew_Checked" Header="{x:Static res:Resources.strToggleOverview}" LargeIcon="/resources/icons/menu/overview.png" />
+                    <Fluent:ToggleButton x:Name="MenuButtonTotalOverviewShowScreenshots" IsEnabled="False" Checked="MenuButtonTotalOverviewShowScreenshots_Checked" Unchecked="MenuButtonTotalOverviewShowScreenshots_Checked" Header="{x:Static res:Resources.strShowScreenshots}" LargeIcon="/resources/icons/screen.png" />
+                </Fluent:RibbonGroupBox>
+                
                 <Fluent:RibbonGroupBox Header="{x:Static res:Resources.strCommands}">
                     <Fluent:Button x:Name="MenuButtonSendMessage" Click="MenuButtonSendMessage_Click" Header="{x:Static res:Resources.strSendMessage}" LargeIcon="/resources/icons/menu/send_message.png"/>
-                    <Fluent:DropDownButton Header="{x:Static res:Resources.strShutdownMenu}" LargeIcon="/resources/icons/menu/shutdown.png">
+                    <Fluent:DropDownButton x:Name="MenuButtonShutdownMenu" Header="{x:Static res:Resources.strShutdownMenu}" LargeIcon="/resources/icons/menu/shutdown.png">
                         <Fluent:MenuItem x:Name="MenuButtonWOL" Click="MenuButtonWOL_Click" Header="{x:Static res:Resources.strWakeUp}" Icon="/resources/icons/menu/wol.png" />
                         <Fluent:MenuItem x:Name="MenuButtonShutdown" Click="MenuButtonShutdown_Click" Header="{x:Static res:Resources.strShutdown}" Icon="/resources/icons/menu/shutdown.png" />
                         <Fluent:MenuItem x:Name="MenuButtonReboot" Click="MenuButtonReboot_Click" Header="{x:Static res:Resources.strReboot}" Icon="/resources/icons/menu/reboot.png" />
                     </Fluent:DropDownButton>
                     <Fluent:Button x:Name="MenuButtonSendCommand" Click="MenuButtonSendCommand_Click" Header="{x:Static res:Resources.strExecuteCommand}" LargeIcon="/resources/icons/menu/command.png" />
                 </Fluent:RibbonGroupBox>
-                
+
                 <Fluent:RibbonGroupBox Header="{x:Static res:Resources.strOperations}">
-                    <Fluent:Button x:Name="MenuButtonWakeOnLan" Click="MenuButtonWakeOnLan_Click" Header="{x:Static res:Resources.strManageDeviceSchedulingRules}" LargeIcon="/resources/icons/menu/settings.png" />
                     <Fluent:Button x:Name="MenuButtonClearLog" Click="MenuButtonClearLog_Click" Header="{x:Static res:Resources.strClearLog}" LargeIcon="/resources/icons/menu/clear_log.png" />
                     <Fluent:Button x:Name="MenuButtonDeleteDevice" Click="MenuButtonDeleteDevice_Click" Header="{x:Static res:Resources.strDeleteDevice}" LargeIcon="/resources/icons/menu/add.png" />
                     <Fluent:Button Visibility="Collapsed" Header="{x:Static res:Resources.strRemoteShell}" LargeIcon="/resources/icons/menu/shell.png" IsEnabled="False" />
@@ -53,8 +57,8 @@
                 </Fluent:RibbonGroupBox>
 
                 <Fluent:RibbonGroupBox Header="{x:Static res:Resources.strReport}">
-                    <Fluent:Button x:Name="MenuButtonGenerateReport" Header="{x:Static res:Resources.strSaveReport}" LargeIcon="/resources/icons/menu/report.png" Click="MenuButtonGenerateReport_Click" />
-                    <Fluent:Button x:Name="MenuPrintReport" Header="{x:Static res:Resources.strSaveReport}" LargeIcon="/resources/icons/menu/pdf.png" Click="MenuPrintReport_Click" />
+                    <Fluent:Button x:Name="MenuButtonGenerateReport" Header="{x:Static res:Resources.strSaveReportHtml}" LargeIcon="/resources/icons/menu/report.png" Click="MenuButtonGenerateReport_Click" />
+                    <Fluent:Button x:Name="MenuPrintReport" Header="{x:Static res:Resources.strSaveReportPdf}" LargeIcon="/resources/icons/menu/pdf.png" Click="MenuPrintReport_Click" />
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
 
@@ -65,7 +69,8 @@
             </Fluent:RibbonTabItem>-->
         </Fluent:Ribbon>
 
-        <Border Grid.Row="1" BorderThickness="2" CornerRadius="5" BorderBrush="Gray" Margin="5,5,-1,5">
+        <!-- BorderThickness="2" CornerRadius="5" BorderBrush="Gray" -->
+        <Border Grid.Row="1" Margin="5,5,-1,5" >
             <Border.Resources>
                 <Style x:Key="_ListBoxItemStyle" TargetType="ListBoxItem">
                     <Setter Property="Template">
@@ -87,66 +92,94 @@
                 </Style>
             </Border.Resources>
 
-            <TabControl SelectedIndex="1" Background="{DynamicResource WhiteBrush}">
-                <TabControl.Resources>
-                    <ResourceDictionary>
-                        <ResourceDictionary.MergedDictionaries>
-                            <ResourceDictionary Source="resources\TabControlStyle.xaml"/>
-                        </ResourceDictionary.MergedDictionaries>
-                    </ResourceDictionary>
-                </TabControl.Resources>
+            <Grid x:Name="MainGrid">
+                <Grid x:Name="GridNetworkOverview" Visibility="Collapsed">                    
+                    <ScrollViewer>
+                        <StackPanel x:Name="PanelOverview" />
+                    </ScrollViewer>
+                </Grid>
 
-                <TabItem Header="{x:Static res:Resources.strOverview}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
+                <Grid x:Name="GridIndividualOverview">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
 
-                        <StackPanel Grid.Row="0">
-                            <CheckBox x:Name="ChkOverviewShowScreenshots" Checked="ChkOverviewShowScreenshots_Checked" Unchecked="ChkOverviewShowScreenshots_Checked" Content="{x:Static res:Resources.strShowScreenshots}" Foreground="{DynamicResource BlackBrush}" Margin="5" />
-                        </StackPanel>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="325" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
-                        <ScrollViewer Grid.Row="1">
-                            <StackPanel x:Name="PanelOverview" />
-                        </ScrollViewer>
+                    <Grid Grid.Row="1">
+                        <Border BorderThickness="2" CornerRadius="5" BorderBrush="Gray" Margin="5,5,-1,5">
+                            <Border.Resources>
+                                <Style x:Key="_ListBoxItemStyle" TargetType="ListBoxItem">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListBoxItem">
+                                                <Border Name="_Border" Padding="2" SnapsToDevicePixels="true">
+                                                    <ContentPresenter />
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsSelected" Value="true">
+                                                        <Setter TargetName="_Border" Property="Background" Value="Transparent" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Border.Resources>
+                            <TabControl Background="{DynamicResource Fluent.Ribbon.Brushes.White}">
+                                <TabControl.Resources>
+                                    <ResourceDictionary>
+                                        <ResourceDictionary.MergedDictionaries>
+                                            <ResourceDictionary Source="resources\TabControlStyle.xaml"/>
+                                        </ResourceDictionary.MergedDictionaries>
+                                    </ResourceDictionary>
+                                </TabControl.Resources>
+
+                                <TabItem x:Name="TabActiveDevices">
+                                    <TabItem.Header>
+                                        <Border Height="20">
+                                            <TextBlock x:Name="TextActiveDevices" Text="Aktive Geräte" TextAlignment="Center" />
+                                        </Border>
+                                    </TabItem.Header>
+                                    <ListBox x:Name="DeviceHolderActive" ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" Background="{DynamicResource Fluent.Ribbon.Brushes.White}" BorderThickness="0" SelectionChanged="DeviceHolder_SelectionChanged" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" />
+                                </TabItem>
+                                <TabItem x:Name="TabOfflineDevices">
+                                    <TabItem.Header>
+                                        <Border Height="20">
+                                            <TextBlock x:Name="TextOfflineDevices" Text="Inaktive Geräte" TextAlignment="Center" />
+                                        </Border>
+                                    </TabItem.Header>
+                                    <ListBox x:Name="DeviceHolderOffline" ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" Background="{DynamicResource Fluent.Ribbon.Brushes.White}" BorderThickness="0" SelectionChanged="DeviceHolder_SelectionChanged" Grid.Row="1" />
+                                </TabItem>
+                                <TabItem x:Name="TabAllDevices" Background="{DynamicResource Fluent.Ribbon.Brushes.White}">
+                                    <TabItem.Header>
+                                        <Border Height="20">
+                                            <TextBlock x:Name="TextAllDevices" Text="Alle Geräte" TextAlignment="Center" />
+                                        </Border>
+                                    </TabItem.Header>
+                                    <ListBox x:Name="DeviceHolderAll" ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" Background="{DynamicResource Fluent.Ribbon.Brushes.White}" BorderThickness="0" SelectionChanged="DeviceHolder_SelectionChanged" Grid.Row="1" />
+                                </TabItem>
+                            </TabControl>
+                        </Border>
                     </Grid>
-                </TabItem>
-                <TabItem Header="{x:Static res:Resources.strIndividualOverview}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
 
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="325" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+                    <Border Grid.Column="1" Grid.Row="1" BorderThickness="2" CornerRadius="5" BorderBrush="Gray" Margin="5">
+                        <Grid>
+                            <Grid x:Name="DeviceInfoHint" Visibility="Visible">
+                                <TextBlock Text="{x:Static res:Resources.strNoDeviceSelected}" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}" FontSize="33" />
+                            </Grid>
 
-                        <Grid Grid.Row="1">
-                            <Border BorderThickness="2" CornerRadius="5" BorderBrush="Gray" Margin="5,5,-1,5">
-                                <Border.Resources>
-                                    <Style x:Key="_ListBoxItemStyle" TargetType="ListBoxItem">
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="ListBoxItem">
-                                                    <Border Name="_Border"
-                                Padding="2"
-                                SnapsToDevicePixels="true">
-                                                        <ContentPresenter />
-                                                    </Border>
-                                                    <ControlTemplate.Triggers>
-                                                        <Trigger Property="IsSelected" Value="true">
-                                                            <Setter TargetName="_Border" Property="Background" Value="Transparent" />
-                                                        </Trigger>
-                                                    </ControlTemplate.Triggers>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </Border.Resources>
-                                <TabControl Background="{DynamicResource WhiteBrush}">
+                            <Grid x:Name="DeviceInfo" Visibility="Hidden">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <TabControl x:Name="TabDevice" Margin="0,0,0,-4" Background="{DynamicResource Fluent.Ribbon.Brushes.White}">
                                     <TabControl.Resources>
                                         <ResourceDictionary>
                                             <ResourceDictionary.MergedDictionaries>
@@ -154,48 +187,142 @@
                                             </ResourceDictionary.MergedDictionaries>
                                         </ResourceDictionary>
                                     </TabControl.Resources>
+                                    <TabItem>
+                                        <TabItem.Header>
+                                            <StackPanel Orientation="Horizontal" Height="20">
+                                                <Image Source="resources/icons/info.png" Width="16" />
+                                                <TextBlock Margin="5,0,0,0" Text="System" TextAlignment="Center" />
+                                            </StackPanel>
+                                        </TabItem.Header>
+                                        <Grid>
+                                            <Grid.Resources>
+                                                <Style TargetType="{x:Type TextBlock}">
+                                                    <Setter Property="Margin" Value="2,0,2,2" />
+                                                    <Setter Property="Padding" Value="0" />
+                                                    <Setter Property="FontSize" Value="15" />
+                                                    <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                                                    <Setter Property="TextWrapping" Value="NoWrap" />
+                                                </Style>
+                                            </Grid.Resources>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
 
-                                    <TabItem x:Name="TabActiveDevices">
-                                        <TabItem.Header>
-                                            <Border Height="20">
-                                                <TextBlock x:Name="TextActiveDevices" Text="Aktive Geräte" TextAlignment="Center" />
-                                            </Border>
-                                        </TabItem.Header>
-                                        <ListBox x:Name="DeviceHolderActive" ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" Background="{DynamicResource WhiteBrush}" BorderThickness="0" SelectionChanged="DeviceHolder_SelectionChanged" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" />
+                                            <Grid x:Name="InfoGrid">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="*" />
+                                                </Grid.RowDefinitions>
+
+                                                <controls:DeviceInfoDisplay x:Name="DeviceInfoDisplay" />
+                                                <controls:DeviceActivityPlot x:Name="DeviceActivityPlot" Grid.Row="1" />
+                                            </Grid>
+
+                                            <Grid x:Name="ScreeshotViewHolder" Grid.Column="1">
+                                                <controls:ScreenshotViewer x:Name="ScreenshotViewer" Margin="0,-3,-3,-3" />
+                                                <TextBlock Text="{Binding Environment.MachineName}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Grid>
                                     </TabItem>
-                                    <TabItem x:Name="TabOfflineDevices">
+                                    <TabItem>
                                         <TabItem.Header>
-                                            <Border Height="20">
-                                                <TextBlock x:Name="TextOfflineDevices" Text="Inaktive Geräte" TextAlignment="Center" />
-                                            </Border>
+                                            <StackPanel Orientation="Horizontal" Height="20">
+                                                <Image Source="resources/icons/hdd.png" Width="16" />
+                                                <TextBlock Margin="5,0,0,0" Text="{x:Static res:Resources.strDisk}" TextAlignment="Center" />
+                                            </StackPanel>
                                         </TabItem.Header>
-                                        <ListBox x:Name="DeviceHolderOffline" ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" Background="{DynamicResource WhiteBrush}" BorderThickness="0" SelectionChanged="DeviceHolder_SelectionChanged" Grid.Row="1" />
+                                        <Grid>
+                                            <controls:DeviceFileExplorer x:Name="DeviceExplorer" OnHomeButtonPressed="DeviceExplorer_OnHomeButtonPressed" Visibility="Hidden" />
+
+                                            <ListBox x:Name="ListHDD" Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}" Background="{DynamicResource Fluent.Ribbon.Brushes.White}" ItemsSource="{Binding DiskDrives}" MouseDoubleClick="ListHDD_MouseDoubleClick">
+                                                <ListBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="Auto" />
+                                                                <ColumnDefinition Width="*" />
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <Grid>
+                                                                <Grid.RowDefinitions>
+                                                                    <RowDefinition Height="*" />
+                                                                    <RowDefinition Height="Auto" />
+                                                                </Grid.RowDefinitions>
+
+                                                                <Image Source="{Binding ., Converter={StaticResource diskImageConverter}}" Width="48" Margin="5" />
+                                                                <TextBlock Text="{Binding FileSystem}" FontWeight="Bold" HorizontalAlignment="Center" Grid.Row="1" />
+                                                            </Grid>
+                                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                                <TextBlock FontWeight="Bold">
+                                                    <Run Text="{Binding VolumeName}" />
+                                                    <Run Text="(" /><Run Text="{Binding DriveID}" /><Run Text=")" />
+                                                                </TextBlock>
+                                                                <TextBlock>
+                                                    <Run Text="{Binding DiskName}" />
+                                                                </TextBlock>
+                                                                <TextBlock>
+                                                    <Run Text="{Binding FreeSpace, Converter={StaticResource byteToGBConverter}}" />
+                                                    <Run Text="GB" />
+                                                    <Run Text="{x:Static res:Resources.strHDD_FreeOf}" />
+                                                    <Run Text="{Binding TotalSpace, Converter={StaticResource byteToGBConverter}}" />
+                                                    <Run Text="GB" />
+                                                                </TextBlock>
+                                                                <ProgressBar Margin="0,3,0,0" Value="{Binding ., Converter={StaticResource spaceToProgressBarConverter}}" Height="10" Maximum="100" Foreground="{Binding ., Converter={StaticResource spaceToProgressBarColorConverter}}" />
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </ListBox.ItemTemplate>
+                                            </ListBox>
+                                        </Grid>
                                     </TabItem>
-                                    <TabItem x:Name="TabAllDevices" Background="{DynamicResource WhiteBrush}">
+                                    <TabItem>
                                         <TabItem.Header>
-                                            <Border Height="20">
-                                                <TextBlock x:Name="TextAllDevices" Text="Alle Geräte" TextAlignment="Center" />
-                                            </Border>
+                                            <StackPanel Orientation="Horizontal" Height="20">
+                                                <Image Source="resources/icons/user.png" Width="16" />
+                                                <TextBlock Margin="5,0,0,0" Text="{x:Static res:Resources.strUser}" TextAlignment="Center" />
+                                            </StackPanel>
                                         </TabItem.Header>
-                                        <ListBox x:Name="DeviceHolderAll" ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" Background="{DynamicResource WhiteBrush}" BorderThickness="0" SelectionChanged="DeviceHolder_SelectionChanged" Grid.Row="1" />
+
+                                        <ListView Background="{DynamicResource Fluent.Ribbon.Brushes.White}">
+                                            <ListView.Items>
+                                                <ListViewItem>
+                                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="2">
+                                                        <Image Source="resources/icons/user.png" Width="32" />
+                                                        <TextBlock VerticalAlignment="Center" Margin="5,0,0,0" Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}">
+                                                                <Run Text="{Binding Environment.UserName}" />
+                                                                <LineBreak />
+                                                                <Run Text="{Binding Environment.DomainName}" Typography.Capitals="AllSmallCaps" />
+                                                        </TextBlock>
+                                                    </StackPanel>
+                                                </ListViewItem>
+                                            </ListView.Items>
+                                        </ListView>
+                                    </TabItem>
+                                    <TabItem>
+                                        <TabItem.Header>
+                                            <StackPanel Orientation="Horizontal" Height="20">
+                                                <Image Source="resources/icons/menu/report.png" Width="16" />
+                                                <TextBlock Margin="5,0,0,0" Text="{x:Static res:Resources.strReport}" TextAlignment="Center" />
+                                            </StackPanel>
+                                        </TabItem.Header>
+                                        <wpf1:WebView2 x:Name="webViewReport" />
+                                    </TabItem>
+                                    <TabItem>
+                                        <TabItem.Header>
+                                            <StackPanel Orientation="Horizontal" Height="20">
+                                                <Image Source="resources/icons/menu/change.png" Width="16" />
+                                                <TextBlock Margin="5,0,0,0" Text="{x:Static res:Resources.strDeviceChanges}" TextAlignment="Center" />
+                                            </StackPanel>
+                                        </TabItem.Header>
+
+                                        <controls:DeviceChanges x:Name="DeviceHardwareProtocol" />
                                     </TabItem>
                                 </TabControl>
-                            </Border>
-                        </Grid>
 
-                        <Border Grid.Column="1" Grid.Row="1" BorderThickness="2" CornerRadius="5" BorderBrush="Gray" Margin="5">
-                            <Grid>
-                                <Grid x:Name="DeviceInfoHint" Visibility="Visible">
-                                    <TextBlock Text="{x:Static res:Resources.strNoDeviceSelected}" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Foreground="{DynamicResource BlackBrush}" FontSize="33" />
-                                </Grid>
-
-                                <Grid x:Name="DeviceInfo" Visibility="Hidden">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-
-                                    <TabControl x:Name="TabDevice" Margin="0,0,0,-4" Background="{DynamicResource WhiteBrush}">
+                                <Grid Grid.Row="1">
+                                    <Expander x:Name="TabExpander" IsExpanded="False" Collapsed="TabExpander_Collapsed" Expanded="TabExpander_Expanded" Panel.ZIndex="1000" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,2,5,5" />
+                                    <TabControl x:Name="BottomTabControl" Height="200" Margin="0,-0,0,0" Background="{DynamicResource Fluent.Ribbon.Brushes.White}">
                                         <TabControl.Resources>
                                             <ResourceDictionary>
                                                 <ResourceDictionary.MergedDictionaries>
@@ -203,177 +330,33 @@
                                                 </ResourceDictionary.MergedDictionaries>
                                             </ResourceDictionary>
                                         </TabControl.Resources>
-                                        <TabItem>
+                                        <TabItem x:Name="TabLog">
                                             <TabItem.Header>
-                                                <StackPanel Orientation="Horizontal" Height="20">
-                                                    <Image Source="resources/icons/info.png" Width="16" />
-                                                    <TextBlock Margin="5,0,0,0" Text="System" TextAlignment="Center" />
+                                                <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Center">
+                                                    <Image Source="resources/icons/log.png" Width="16" />
+                                                    <TextBlock Margin="5,0,0,0" Text="{x:Static res:Resources.strDeviceLog}" TextAlignment="Center" />
                                                 </StackPanel>
                                             </TabItem.Header>
-                                            <Grid>
-                                                <Grid.Resources>
-                                                    <Style TargetType="{x:Type TextBlock}">
-                                                        <Setter Property="Margin" Value="2,0,2,2" />
-                                                        <Setter Property="Padding" Value="0" />
-                                                        <Setter Property="FontSize" Value="15" />
-                                                        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                                                        <Setter Property="TextWrapping" Value="NoWrap" />
-                                                    </Style>
-                                                </Grid.Resources>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*" />
-                                                    <ColumnDefinition Width="*" />
-                                                </Grid.ColumnDefinitions>
-
-                                                <Grid x:Name="InfoGrid">
-                                                    <Grid.RowDefinitions>
-                                                        <RowDefinition Height="Auto" />
-                                                        <RowDefinition Height="*" />
-                                                    </Grid.RowDefinitions>
-                                                    
-                                                    <controls:DeviceInfoDisplay x:Name="DeviceInfoDisplay" />
-                                                    <controls:DeviceActivityPlot x:Name="DeviceActivityPlot" Grid.Row="1" />
-                                                </Grid>
-
-                                                <Grid x:Name="ScreeshotViewHolder" Grid.Column="1">
-                                                    <controls:ScreenshotViewer x:Name="ScreenshotViewer" Margin="0,-3,-3,-3" />
-                                                    <TextBlock Text="{Binding Environment.MachineName}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                </Grid>
-                                            </Grid>
+                                            <ScrollViewer x:Name="LogScrollViewer" Grid.Column="1">
+                                                <FlowDocumentScrollViewer x:Name="LogHolder" PreviewMouseWheel="LogHolder_PreviewMouseWheel" VerticalScrollBarVisibility="Disabled" />
+                                            </ScrollViewer>
                                         </TabItem>
                                         <TabItem>
                                             <TabItem.Header>
-                                                <StackPanel Orientation="Horizontal" Height="20">
-                                                    <Image Source="resources/icons/hdd.png" Width="16" />
-                                                    <TextBlock Margin="5,0,0,0" Text="{x:Static res:Resources.strDisk}" TextAlignment="Center" />
+                                                <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Center">
+                                                    <Image Source="resources/icons/menu/shell.png" Width="16" />
+                                                    <TextBlock Margin="5,0,0,0" Text="Remote Shell" TextAlignment="Center" VerticalAlignment="Center"/>
                                                 </StackPanel>
                                             </TabItem.Header>
-                                            <Grid>
-                                                <controls:DeviceFileExplorer x:Name="DeviceExplorer" OnHomeButtonPressed="DeviceExplorer_OnHomeButtonPressed" Visibility="Hidden" />
-
-                                                <ListBox x:Name="ListHDD" Foreground="{DynamicResource BlackBrush}" Background="{DynamicResource WhiteBrush}" ItemsSource="{Binding DiskDrives}" MouseDoubleClick="ListHDD_MouseDoubleClick">
-                                                    <ListBox.ItemTemplate>
-                                                        <DataTemplate>
-                                                            <Grid>
-                                                                <Grid.ColumnDefinitions>
-                                                                    <ColumnDefinition Width="Auto" />
-                                                                    <ColumnDefinition Width="*" />
-                                                                </Grid.ColumnDefinitions>
-
-                                                                <Grid>
-                                                                    <Grid.RowDefinitions>
-                                                                        <RowDefinition Height="*" />
-                                                                        <RowDefinition Height="Auto" />
-                                                                    </Grid.RowDefinitions>
-
-                                                                    <Image Source="{Binding ., Converter={StaticResource diskImageConverter}}" Width="48" Margin="5" />
-                                                                    <TextBlock Text="{Binding FileSystem}" FontWeight="Bold" HorizontalAlignment="Center" Grid.Row="1" />
-                                                                </Grid>
-                                                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                                    <TextBlock FontWeight="Bold">
-                                                    <Run Text="{Binding VolumeName}" />
-                                                    <Run Text="(" /><Run Text="{Binding DriveID}" /><Run Text=")" />
-                                                                    </TextBlock>
-                                                                    <TextBlock>
-                                                    <Run Text="{Binding DiskName}" />
-                                                                    </TextBlock>
-                                                                    <TextBlock>
-                                                    <Run Text="{Binding FreeSpace, Converter={StaticResource byteToGBConverter}}" />
-                                                    <Run Text="GB" />
-                                                    <Run Text="{x:Static res:Resources.strHDD_FreeOf}" />
-                                                    <Run Text="{Binding TotalSpace, Converter={StaticResource byteToGBConverter}}" />
-                                                    <Run Text="GB" />
-                                                                    </TextBlock>
-                                                                    <ProgressBar Margin="0,3,0,0" Value="{Binding ., Converter={StaticResource spaceToProgressBarConverter}}" Height="10" Maximum="100" Foreground="{Binding ., Converter={StaticResource spaceToProgressBarColorConverter}}" />
-                                                                </StackPanel>
-                                                            </Grid>
-                                                        </DataTemplate>
-                                                    </ListBox.ItemTemplate>
-                                                </ListBox>
-                                            </Grid>
-                                        </TabItem>
-                                        <TabItem>
-                                            <TabItem.Header>
-                                                <StackPanel Orientation="Horizontal" Height="20">
-                                                    <Image Source="resources/icons/user.png" Width="16" />
-                                                    <TextBlock Margin="5,0,0,0" Text="{x:Static res:Resources.strUser}" TextAlignment="Center" />
-                                                </StackPanel>
-                                            </TabItem.Header>
-
-                                            <ListView Background="{DynamicResource WhiteBrush}">
-                                                <ListView.Items>
-                                                    <ListViewItem>
-                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="2">
-                                                            <Image Source="resources/icons/user.png" Width="32" />
-                                                            <TextBlock VerticalAlignment="Center" Margin="5,0,0,0" Foreground="{DynamicResource BlackBrush}">
-                                                                <Run Text="{Binding Environment.UserName}" />
-                                                                <LineBreak />
-                                                                <Run Text="{Binding Environment.DomainName}" Typography.Capitals="AllSmallCaps" />
-                                                            </TextBlock>
-                                                        </StackPanel>
-                                                    </ListViewItem>
-                                                </ListView.Items>
-                                            </ListView>
-                                        </TabItem>
-                                        <TabItem>
-                                            <TabItem.Header>
-                                                <StackPanel Orientation="Horizontal" Height="20">
-                                                    <Image Source="resources/icons/menu/report.png" Width="16" />
-                                                    <TextBlock Margin="5,0,0,0" Text="{x:Static res:Resources.strReport}" TextAlignment="Center" />
-                                                </StackPanel>
-                                            </TabItem.Header>
-                                            <wpf1:WebView2 x:Name="webViewReport" />
-                                        </TabItem>
-                                        <TabItem>
-                                            <TabItem.Header>
-                                                <StackPanel Orientation="Horizontal" Height="20">
-                                                    <Image Source="resources/icons/menu/change.png" Width="16" />
-                                                    <TextBlock Margin="5,0,0,0" Text="{x:Static res:Resources.strDeviceChanges}" TextAlignment="Center" />
-                                                </StackPanel>
-                                            </TabItem.Header>
-
-                                            <controls:DeviceChanges x:Name="DeviceHardwareProtocol" />
+                                            <TextBox AcceptsReturn="True" Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}" Background="Transparent" TextWrapping="Wrap" />
                                         </TabItem>
                                     </TabControl>
-
-                                    <Grid Grid.Row="1">
-                                        <Expander x:Name="TabExpander" IsExpanded="False" Collapsed="TabExpander_Collapsed" Expanded="TabExpander_Expanded" Panel.ZIndex="1000" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,2,5,5" />
-                                        <TabControl x:Name="BottomTabControl" Height="200" Margin="0,-0,0,0" Background="{DynamicResource WhiteBrush}">
-                                            <TabControl.Resources>
-                                                <ResourceDictionary>
-                                                    <ResourceDictionary.MergedDictionaries>
-                                                        <ResourceDictionary Source="resources\TabControlStyle.xaml"/>
-                                                    </ResourceDictionary.MergedDictionaries>
-                                                </ResourceDictionary>
-                                            </TabControl.Resources>
-                                            <TabItem x:Name="TabLog">
-                                                <TabItem.Header>
-                                                    <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Center">
-                                                        <Image Source="resources/icons/log.png" Width="16" />
-                                                        <TextBlock Margin="5,0,0,0" Text="{x:Static res:Resources.strDeviceLog}" TextAlignment="Center" /> 
-                                                    </StackPanel>
-                                                </TabItem.Header>
-                                                <ScrollViewer x:Name="LogScrollViewer" Grid.Column="1">
-                                                    <FlowDocumentScrollViewer x:Name="LogHolder" PreviewMouseWheel="LogHolder_PreviewMouseWheel" VerticalScrollBarVisibility="Disabled" />
-                                                </ScrollViewer>
-                                            </TabItem>
-                                            <TabItem>
-                                                <TabItem.Header>
-                                                    <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Center">
-                                                        <Image Source="resources/icons/menu/shell.png" Width="16" />
-                                                        <TextBlock Margin="5,0,0,0" Text="Remote Shell" TextAlignment="Center" VerticalAlignment="Center"/>
-                                                    </StackPanel>
-                                                </TabItem.Header>
-                                                <TextBox AcceptsReturn="True" Foreground="{DynamicResource BlackBrush}" Background="Transparent" TextWrapping="Wrap" />
-                                            </TabItem>
-                                        </TabControl>
-                                    </Grid>
                                 </Grid>
                             </Grid>
-                        </Border>
-                    </Grid>
-                </TabItem>
-            </TabControl>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
         </Border>
     </Grid>
 </Fluent:RibbonWindow>

@@ -210,7 +210,7 @@ namespace Home.Model
         }
 
         /// <summary>
-        /// Determines if this device is beeing watched.
+        /// Determines if this device is being watched.
         /// It's not really live, but if this property is true, the device will be forced to send a screenshot in every ack!
         /// </summary>
         [JsonProperty("is_live")]
@@ -219,7 +219,7 @@ namespace Home.Model
         #endif
         [XmlIgnore] 
         // Ignore (won't save) because on api start we do not know any clients which may be still using this
-        // to prevent that if there are no clients that we generate unneccessary data
+        // to prevent that if there are no clients that we generate unnecessary data
         public bool? IsLive
         {
             get => isLive;
@@ -350,7 +350,6 @@ namespace Home.Model
 #endif
         public Battery BatteryInfo { get; set; }
 
-
         public enum DeviceStatus
         {
             Active,
@@ -360,16 +359,37 @@ namespace Home.Model
 
         public enum DeviceType
         {
+            [Description("Single-Board-Device")]
             SingleBoardDevice,
+
+            [Description("Mini PC")]
             MiniPC,
+
+            [Description("Notebook")]
             Notebook,
+
+            [Description("Desktop")]
             Desktop,
+
+            [Description("Server")]
             Server,
+
+            [Description("Smartphone")]
             Smartphone,
+
+            [Description("Smart TV")]
             SmartTV,
+
+            [Description("Set Top Box")]
             SetTopBox,
+
+            [Description("Tablet")]
             Tablet,
+
+            [Description("Virtual Machine")]
             VirtualMachine,
+
+            [Description("Android TV Stick")]
             AndroidTVStick
         }
 
@@ -455,6 +475,9 @@ namespace Home.Model
                     break;
                 case DeviceType.SingleBoardDevice: { image = "pi"; } break;
             }
+
+            if ((Status == DeviceStatus.Offline) && (Type == DeviceType.Notebook || Type == DeviceType.Desktop || Type == DeviceType.Smartphone || Type == DeviceType.Tablet))
+                image = $"offline/{image}";
 
             return $"{image}.png";
         }
@@ -645,7 +668,7 @@ namespace Home.Model
                 LogEntries.Add(entry);
         }
 
-        public void OnPropertyChanged(string propertyName) // Cannot use [CallerMemberName] due to compability issues
+        public void OnPropertyChanged(string propertyName) // Cannot use [CallerMemberName] due to compatibility issues
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -1032,10 +1055,15 @@ namespace Home.Model
         {
             string rn = Environment.NewLine;
             string graphics = GraphicCards.Count == 0 ? Graphics : string.Join(Environment.NewLine, GraphicCards.Count);
-            return $"OS: {OSName}{rn}OS-VER: {OSVersion}{rn}CPU: {CPUName}{rn}CPU-COUNT: {CPUCount}{rn}Motherboard: {Motherboard}{rn}Graphics: {graphics}{rn}RAM: {TotalRAM} GB{rn}FREE: {FreeRAM}{rn}Running-Time: {XmlRunningTime}";
+            string cpuName = CPUName;
+
+            if (cpuName.Contains(Environment.NewLine))
+                cpuName = cpuName.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+
+            return $"OS: {OSName}{rn}OS-VER: {OSVersion}{rn}CPU: {cpuName}{rn}CPU-COUNT: {CPUCount}{rn}Motherboard: {Motherboard}{rn}Graphics: {graphics}{rn}RAM: {TotalRAM} GB{rn}FREE: {FreeRAM}{rn}Running-Time: {XmlRunningTime}";
         }
 
-        public void OnPropertyChanged(string propertyName) // Cannot use [CallerMemberName] due to compability issues
+        public void OnPropertyChanged(string propertyName) // Cannot use [CallerMemberName] due to compatibility issues
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -1323,7 +1351,8 @@ namespace Home.Model
         {
             EnsureListHasEnoughSpace(Battery);
             Battery.Add(value);
-            // Notice: for example a smartphone sometimes doesn't sends the ack, due to engery savings.
+
+            // Notice: for example a smartphone sometimes doesn't sends the ack, due to energy savings.
             // So, the values might not be fully accurate on android (to be so, an ack timestamp is required, but it is currently not supported)
         }
 
@@ -1349,7 +1378,7 @@ namespace Home.Model
         public bool IsCharging { get; set; }
 
         /// <summary>
-        /// Determines the remaing battery percetange 
+        /// Determines the remaining battery percentage 
         /// </summary>
         [JsonProperty("battery_level")]
 #if !LEGACY
@@ -1440,7 +1469,7 @@ namespace Home.Model
     public abstract class Warning<T>
     {
         /// <summary>
-        /// The timestamp when this warning firstly occoured
+        /// The timestamp when this warning firstly occurred
         /// </summary>
         [JsonPropertyName("warning_occoured")]
         public DateTime WarningOccoured { get; set; }

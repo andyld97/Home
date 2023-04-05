@@ -32,12 +32,14 @@ namespace Home.API.Controllers
     {
         private readonly ILogger<DeviceController> _logger;
         private readonly HomeContext _context;
+        private readonly IClientService _clientService;
         private readonly IDeviceAckService _deviceAckService;
 
-        public DeviceController(ILogger<DeviceController> logger, HomeContext homeContext, IDeviceAckService deviceAckService)
+        public DeviceController(ILogger<DeviceController> logger, HomeContext homeContext, IClientService clientService, IDeviceAckService deviceAckService)
         {
             _logger = logger;
             _context = homeContext;
+            _clientService = clientService;
             _deviceAckService = deviceAckService;
         }
 
@@ -73,24 +75,34 @@ namespace Home.API.Controllers
             // Check if device exists
             if (!(await _context.Device.AnyAsync(p => p.Guid == device.ID)))
             {
-                device.Status = Device.DeviceStatus.Active;
-                device.LastSeen = now;
-                device.LogEntries.Clear();
-                var logEntry = new LogEntry(now, $"Device {device.Name} was successfully added!", LogEntry.LogLevel.Information, true);
-                device.LogEntries.Add(logEntry);
-                _logger.LogInformation($"New device {device.Environment.MachineName} has just registered!");
-                device.IsScreenshotRequired = true;
+                try
+                {
+                    device.Status = Device.DeviceStatus.Active;
+                    device.LastSeen = now;
+                    device.LogEntries.Clear();
+                    var logEntry = new LogEntry(now, $"Device {device.Name} was successfully added!", LogEntry.LogLevel.Information, true);
+                    device.LogEntries.Add(logEntry);
+                    _logger.LogInformation($"New device {device.Environment.MachineName} has just registered!");
+                    device.IsScreenshotRequired = true;
 
-                var dbDevice = ModelConverter.ConvertDevice(_context, _logger, device);
-                await _context.Device.AddAsync(dbDevice);
-                await _context.DeviceChange.AddAsync(new DeviceChange() { Timestamp = now, Device = dbDevice, Description = $"Device \"{dbDevice.Name}\" added to the system initally!" });
-                await _context.SaveChangesAsync();
+                    var dbDevice = ModelConverter.ConvertDevice(_context, _logger, device);
+                    await _context.Device.AddAsync(dbDevice);
+                    await _context.DeviceChange.AddAsync(new DeviceChange() { Timestamp = now, Device = dbDevice, Description = $"Device \"{dbDevice.Name}\" added to the system initially!" });
+                    await _context.SaveChangesAsync();
 
-                // To notify webhook:
-                ModelConverter.ConvertLogEntry(dbDevice, logEntry);
+                    // To notify webhook:
+                    ModelConverter.ConvertLogEntry(dbDevice, logEntry);
 
-                ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.NewDeviceConnected, device);
-                return Ok(AnswerExtensions.Success(true));
+                    _clientService.NotifyClientQueues(EventQueueItem.EventKind.NewDeviceConnected, device);
+                    return Ok(AnswerExtensions.Success(true));
+                }
+                catch (Exception ex)
+                {
+                    string message = $"Failed to register device: {ex.Message}";
+                    _logger.LogError(message);
+                    Program.WebHookLogging.Enqueue((WebhookAPI.Webhook.LogLevel.Error, message));
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
             }
 
             return BadRequest(AnswerExtensions.Fail("Device-Register couldn't be processed!"));
@@ -181,23 +193,23 @@ namespace Home.API.Controllers
                     {
                         ds.Screen = screen;
 
-                        var logEntry = ModelConverter.CreateLogEntry(deviceFound, $"Recieved screenshot from this device [{screen.DeviceName}]!", LogEntry.LogLevel.Information);
+                        var logEntry = ModelConverter.CreateLogEntry(deviceFound, $"Received screenshot from this device [{screen.DeviceName}]!", LogEntry.LogLevel.Information);
                         await _context.DeviceLog.AddAsync(logEntry);
-                        _logger.LogInformation($"Recieved screenshot from {deviceFound.Environment.MachineName} [{screen.DeviceName}]");
+                        _logger.LogInformation($"Received screenshot from {deviceFound.Environment.MachineName} [{screen.DeviceName}]");
                     }
                 }
                 else
                 {
-                    var logEntry = ModelConverter.CreateLogEntry(deviceFound, "Recieved screenshot from this device!", LogEntry.LogLevel.Information);
+                    var logEntry = ModelConverter.CreateLogEntry(deviceFound, "Received screenshot from this device!", LogEntry.LogLevel.Information);
                     await _context.DeviceLog.AddAsync(logEntry);
-                    _logger.LogInformation($"Recieved screenshot from {deviceFound.Environment.MachineName}");
+                    _logger.LogInformation($"Received screenshot from {deviceFound.Environment.MachineName}");
                 }
 
                 deviceFound.DeviceScreenshot.Add(ds);
                 deviceFound.IsScreenshotRequired = false;
 
                 // Also append to event queue
-                ClientHelper.NotifyClientQueues(EventQueueItem.EventKind.DeviceScreenshotRecieved, deviceFound);
+                _clientService.NotifyClientQueues(EventQueueItem.EventKind.DeviceScreenshotRecieved, deviceFound);
 
                 await _context.SaveChangesAsync();
                 return Ok(AnswerExtensions.Success(true));

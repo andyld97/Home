@@ -25,9 +25,9 @@ namespace Home.API.Controllers
         }
 
         /// <summary>
-        /// Sends the magick package to to given client
+        /// Sends the magick package to given client
         /// </summary>
-        /// <param name="macAddress">The mac address in hexformat</param>
+        /// <param name="macAddress">The mac address in hex format</param>
         /// <param name="port">The port from the settings will be used: Should be 7 or 9</param>
         /// <returns></returns>
         [HttpGet("SendWakeUpRequest/{macAddress}/{port:int?}")]

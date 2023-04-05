@@ -42,13 +42,13 @@ namespace Home.Controls
         {
             // ToDo: *** This won't update if the theme will be changed
             if (value is null || string.IsNullOrEmpty(value.ToString()))
-                return Application.Current.FindResource("BlackBrush");
+                return Application.Current.FindResource("Black");
 
             string[] versions = { $"vWindows{Consts.HomeServiceWindowsClientVersion}", $"vLinux{Consts.HomeServiceLinuxClientVersion}", $"vAndroid{Consts.HomeServiceAndroidClientVersion}", $"vLegacy{Consts.HomeServiceLegacyClientVersion}" };
             if (!versions.Any(v => v == value.ToString()))
                 return new SolidColorBrush(Colors.Yellow);
 
-            return Application.Current.FindResource("BlackBrush");
+            return Application.Current.FindResource("Fluent.Ribbon.Brushes.Black");
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
