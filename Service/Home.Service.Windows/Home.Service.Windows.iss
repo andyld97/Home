@@ -95,6 +95,7 @@ Source: "bin\Release\net7.0-windows\publish\System.ServiceModel.Syndication.dll"
 Source: "bin\Release\net7.0-windows\publish\System.ServiceProcess.ServiceController.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\System.Speech.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\System.Web.Services.Description.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net7.0-windows\publish\NumericUpDownLib.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
