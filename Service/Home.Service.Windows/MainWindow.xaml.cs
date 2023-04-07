@@ -64,6 +64,14 @@ namespace Home.Service.Windows
             CmbOS.SelectedIndex = 0;
 
             LoadSettings();
+
+            // If it is the first start, set simulate the /config flag
+            if (!ServiceData.Instance.HasLoggedInOnce)
+                App.IsConfigFlagSet = true;
+
+            // Hide the window if it is not the first start and not the config flag
+            if (ServiceData.Instance.HasLoggedInOnce && !App.IsConfigFlagSet)
+                Opacity = 0;
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
@@ -74,9 +82,9 @@ namespace Home.Service.Windows
             if (ServiceData.Instance.HasLoggedInOnce && !App.IsConfigFlagSet)
             {
                 // WindowState = WindowState.Minimized;
+                Visibility = Visibility.Hidden;
                 await InitalizeService();
                 isInitalized = true;
-                Visibility = Visibility.Hidden;
             }
         }
 
