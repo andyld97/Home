@@ -1,0 +1,110 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" FontFamily="Segoe UI" FontSize="12"
+             x:Class="Home.Avalonia.Controls.DeviceInfoDisplay">
+	<UserControl.Styles>
+		<Style Selector="TextBlock">
+			<Setter Property="Margin" Value="2,0,2,2" />
+			<Setter Property="Padding" Value="0" />
+			<Setter Property="FontSize" Value="15" />
+			<Setter Property="TextTrimming" Value="CharacterEllipsis" />
+			<Setter Property="TextWrapping" Value="NoWrap" />
+			<Setter Property="FontFamily" Value="Segoe UI Light" />
+			<Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.Black}" />
+		</Style>
+		<Style Selector="TextBlock.Headline">
+			<Setter Property="FontSize" Value="25" />
+			<Setter Property="Margin" Value="0" />
+			<Setter Property="VerticalAlignment" Value="Center" />
+			<Setter Property="FontWeight" Value="Bold" />
+		</Style>
+		<Style Selector="Separator.Splitter">
+			<Setter Property="Height" Value="1" />
+			<Setter Property="Background" Value="LightGray" />
+		</Style>
+	</UserControl.Styles>
+
+	<StackPanel Margin="5,0,0,0" Grid.IsSharedSizeScope="True">
+
+		<StackPanel Orientation="Horizontal">
+			<Image Source="resm:Home.Avalonia.Assets.icons.device.png" Height="24" Margin="5" />
+			<TextBlock Text="Device" Classes="Headline" />
+		</StackPanel>
+		
+		<Separator Classes="Splitter" />
+		
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition SharedSizeGroup="Property" Width="Auto" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+
+			<StackPanel>
+				<TextBlock Text="Manufacturer:" />
+				<TextBlock Text="Product:" />
+				<TextBlock Text="Description:"/>
+				<TextBlock Text="Operating System:" />
+				<TextBlock Text="OS-Version:" />
+				<TextBlock Text="Device Start:" />
+				<TextBlock Text="Device Online Time:" />
+				<TextBlock Text="Location:" />
+				<TextBlock Text="Device Client Version:"/>
+			</StackPanel>
+
+			<StackPanel Grid.Column="1" Margin="5,0,0,0">
+				<TextBlock Text="{Binding Environment.Vendor}" />
+				<TextBlock Text="{Binding Environment.Product}" />
+				<TextBlock Text="{Binding Environment.Description}" />
+				<TextBlock Text="{Binding Environment.OSName}" />
+				<TextBlock Text="{Binding Environment.OSVersion}" />
+				<TextBlock Text="{Binding Environment.StartTimestamp}" />
+				<TextBlock Text="{Binding Environment.RunningTime}" />
+				<TextBlock Text="{Binding Location}" />
+				<TextBlock Text="{Binding ServiceClientVersion}" />
+			</StackPanel>							
+		</Grid>
+
+		<StackPanel Orientation="Horizontal">
+			<Image Source="resm:Home.Avalonia.Assets.icons.hardware.png" Height="24" Margin="5" />
+			<TextBlock Text="Hardware" Classes="Headline" />
+		</StackPanel>
+		
+		<Separator Classes="Splitter" />
+
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition SharedSizeGroup="Property" Width="Auto" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+
+			<StackPanel>
+				<TextBlock Text="CPU:" />
+				<TextBlock Text="Motherboard:" />
+				<TextBlock Text="RAM:" />
+				<TextBlock Text="Graphics:" Height="30" />
+				<TextBlock Text="Battery:" />
+			</StackPanel>
+
+			<StackPanel Grid.Column="1" Margin="5,0,0,0">	
+				<TextBlock x:Name="TextCPUName" Text="{Binding Environment.CPUName}" />
+				<TextBlock Text="{Binding Environment.Motherboard}" />
+				<TextBlock Text="{Binding Environment.TotalRAM}" />
+				<ComboBox x:Name="CmbGraphics" Height="30" />
+				<TextBlock Text="TODO" />
+			</StackPanel>
+		</Grid>
+
+		<StackPanel Orientation="Horizontal">
+			<Image Source="resm:Home.Avalonia.Assets.icons.activity.png" Height="24" Margin="5" />
+			<TextBlock Text="Activity" Classes="Headline" />
+		</StackPanel>
+		
+		<Separator Classes="Splitter" />
+
+		<lvc:CartesianChart x:Name="plot" />
+		
+	</StackPanel> 
+</UserControl>

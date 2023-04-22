@@ -1,0 +1,118 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Assets\icons\devices\offline\" />
+    <AvaloniaResource Include="Assets\**" />
+    <None Remove=".gitignore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\Home\resources\icons\activity.png" Link="Assets\icons\activity.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\cpu.png" Link="Assets\icons\cpu.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\device.png" Link="Assets\icons\device.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\error.png" Link="Assets\icons\error.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\graphics.png" Link="Assets\icons\graphics.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\hardware.png" Link="Assets\icons\hardware.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\hdd.png" Link="Assets\icons\hdd.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\info.png" Link="Assets\icons\info.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\log.png" Link="Assets\icons\log.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\motherboard.png" Link="Assets\icons\motherboard.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\ram.png" Link="Assets\icons\ram.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\reset_view.png" Link="Assets\icons\reset_view.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\screen.png" Link="Assets\icons\screen.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\screen_offline.png" Link="Assets\icons\screen_offline.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\user.png" Link="Assets\icons\user.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\warning.png" Link="Assets\icons\warning.png" />
+    <Content Include="icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\Home\icon.ico" Link="Assets\icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\Home\resources\icons\devices\androidtvstick.png" Link="Assets\icons\devices\androidtvstick.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\desktop_linux.png" Link="Assets\icons\devices\desktop_linux.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\desktop_mint.png" Link="Assets\icons\devices\desktop_mint.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\desktop_ubuntu.png" Link="Assets\icons\devices\desktop_ubuntu.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\desktop_windows_10.png" Link="Assets\icons\devices\desktop_windows_10.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\desktop_windows_11.png" Link="Assets\icons\devices\desktop_windows_11.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\desktop_windows_7.png" Link="Assets\icons\devices\desktop_windows_7.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\desktop_windows_8.png" Link="Assets\icons\devices\desktop_windows_8.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\desktop_windows_vista.png" Link="Assets\icons\devices\desktop_windows_vista.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\desktop_windows_xp.png" Link="Assets\icons\devices\desktop_windows_xp.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\notebook_linux.png" Link="Assets\icons\devices\notebook_linux.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\notebook_mint.png" Link="Assets\icons\devices\notebook_mint.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\notebook_ubuntu.png" Link="Assets\icons\devices\notebook_ubuntu.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\notebook_windows_10.png" Link="Assets\icons\devices\notebook_windows_10.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\notebook_windows_11.png" Link="Assets\icons\devices\notebook_windows_11.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\notebook_windows_7.png" Link="Assets\icons\devices\notebook_windows_7.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\notebook_windows_8.png" Link="Assets\icons\devices\notebook_windows_8.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\notebook_windows_vista.png" Link="Assets\icons\devices\notebook_windows_vista.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\notebook_windows_xp.png" Link="Assets\icons\devices\notebook_windows_xp.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\pi.png" Link="Assets\icons\devices\pi.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\server_linux.png" Link="Assets\icons\devices\server_linux.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\server_mint.png" Link="Assets\icons\devices\server_mint.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\server_ubuntu.png" Link="Assets\icons\devices\server_ubuntu.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\server_windows_10.png" Link="Assets\icons\devices\server_windows_10.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\server_windows_11.png" Link="Assets\icons\devices\server_windows_11.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\server_windows_7.png" Link="Assets\icons\devices\server_windows_7.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\server_windows_8.png" Link="Assets\icons\devices\server_windows_8.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\server_windows_vista.png" Link="Assets\icons\devices\server_windows_vista.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\server_windows_xp.png" Link="Assets\icons\devices\server_windows_xp.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\settopbox.png" Link="Assets\icons\devices\settopbox.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\smartphone.png" Link="Assets\icons\devices\smartphone.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\smarttv.png" Link="Assets\icons\devices\smarttv.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\tablet.png" Link="Assets\icons\devices\tablet.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\Home\resources\icons\devices\offline\desktop_linux.png" Link="Assets\icons\devices\offline\desktop_linux.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\offline\desktop_mint.png" Link="Assets\icons\devices\offline\desktop_mint.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\offline\desktop_ubuntu.png" Link="Assets\icons\devices\offline\desktop_ubuntu.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\offline\desktop_windows_10.png" Link="Assets\icons\devices\offline\desktop_windows_10.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\offline\desktop_windows_11.png" Link="Assets\icons\devices\offline\desktop_windows_11.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\offline\desktop_windows_7.png" Link="Assets\icons\devices\offline\desktop_windows_7.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\offline\desktop_windows_8.png" Link="Assets\icons\devices\offline\desktop_windows_8.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\offline\desktop_windows_vista.png" Link="Assets\icons\devices\offline\desktop_windows_vista.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\offline\desktop_windows_xp.png" Link="Assets\icons\devices\offline\desktop_windows_xp.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\offline\notebook_linux.png" Link="Assets\icons\devices\offline\notebook_linux.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\offline\notebook_mint.png" Link="Assets\icons\devices\offline\notebook_mint.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\offline\notebook_ubuntu.png" Link="Assets\icons\devices\offline\notebook_ubuntu.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\offline\notebook_windows_10.png" Link="Assets\icons\devices\offline\notebook_windows_10.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\offline\notebook_windows_11.png" Link="Assets\icons\devices\offline\notebook_windows_11.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\offline\notebook_windows_7.png" Link="Assets\icons\devices\offline\notebook_windows_7.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\offline\notebook_windows_8.png" Link="Assets\icons\devices\offline\notebook_windows_8.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\offline\notebook_windows_vista.png" Link="Assets\icons\devices\offline\notebook_windows_vista.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\offline\notebook_windows_xp.png" Link="Assets\icons\devices\offline\notebook_windows_xp.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\offline\smartphone.png" Link="Assets\icons\devices\offline\smartphone.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\devices\offline\tablet.png" Link="Assets\icons\devices\offline\tablet.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TrimmerRootDescriptor Include="Roots.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="0.10.18" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.10.18" />
+    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="0.10.18" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.18" />
+    <PackageReference Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.0.0-beta.501" />
+    <PackageReference Include="XamlNameReferenceGenerator" Version="1.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shared Libraries\Home.Communication\Home.Communication.csproj" />
+    <ProjectReference Include="..\Shared Libraries\Home.Data\Home.Data.csproj" />
+  </ItemGroup>
+</Project>
