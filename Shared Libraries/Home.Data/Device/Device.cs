@@ -65,7 +65,7 @@ namespace Home.Model
             get => guid?.ToString();
             set
             {
-                if (guid != null)
+                if (guid != value)
                 {
                     guid = value;
                     OnPropertyChanged(nameof(ID));
