@@ -8,6 +8,7 @@
 		xmlns:controls="using:Home.Avalonia.Controls"
         Icon="resm:Home.Avalonia.Assets.icon.ico"
         FontFamily="Segoe UI" FontSize="12"
+		xmlns:ribbon="clr-namespace:AvaloniaUI.Ribbon;assembly=AvaloniaUI.Ribbon"
         Title="Home">
 	<Window.Styles>
 		<Style Selector="TabControl">
@@ -56,6 +57,75 @@
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 
+		<Grid>
+			<ribbon:Ribbon Name="RibbonControl" DockPanel.Dock="Top" Orientation="Horizontal">
+				<ribbon:Ribbon.Tabs>
+					<ribbon:RibbonTab Header="General">
+						<ribbon:RibbonTab.Groups>
+							<ribbon:RibbonGroupBox Header="Network Overview">
+								<ribbon:RibbonButton Content="Toggle Overview">
+									<ribbon:RibbonButton.LargeIcon>
+										<ControlTemplate>
+											<Image Source="resm:Home.Avalonia.Assets.icons.menu.overview.png" />
+										</ControlTemplate>
+									</ribbon:RibbonButton.LargeIcon>
+								</ribbon:RibbonButton>
+								<ribbon:RibbonButton Content="Show screenshots">
+									<ribbon:RibbonButton.LargeIcon>
+										<ControlTemplate>
+											<Image Source="resm:Home.Avalonia.Assets.icons.screen.png" />
+										</ControlTemplate>
+									</ribbon:RibbonButton.LargeIcon>
+								</ribbon:RibbonButton>
+							</ribbon:RibbonGroupBox>
+							<ribbon:RibbonGroupBox Header="Commands">
+								<ribbon:RibbonButton Content="Send message">
+									<ribbon:RibbonButton.LargeIcon>
+										<ControlTemplate>
+											<Image Source="resm:Home.Avalonia.Assets.icons.menu.send_message.png" />
+										</ControlTemplate>
+									</ribbon:RibbonButton.LargeIcon>
+								</ribbon:RibbonButton>
+								<ribbon:RibbonButton Content="Shutdown menu">
+									<ribbon:RibbonButton.LargeIcon>
+										<ControlTemplate>
+											<Image Source="resm:Home.Avalonia.Assets.icons.menu.shutdown.png" />
+										</ControlTemplate>
+									</ribbon:RibbonButton.LargeIcon>
+								</ribbon:RibbonButton>
+								<ribbon:RibbonButton Content="Execute Command">
+									<ribbon:RibbonButton.LargeIcon>
+										<ControlTemplate>
+											<Image Source="resm:Home.Avalonia.Assets.icons.menu.shell.png" />
+										</ControlTemplate>
+									</ribbon:RibbonButton.LargeIcon>
+								</ribbon:RibbonButton>
+							</ribbon:RibbonGroupBox>
+							<ribbon:RibbonGroupBox Header="Operations">
+								<ribbon:RibbonButton Content="Clear Log">
+									<ribbon:RibbonButton.LargeIcon>
+										<ControlTemplate>
+											<Image Source="resm:Home.Avalonia.Assets.icons.menu.clear_log.png" />
+										</ControlTemplate>
+									</ribbon:RibbonButton.LargeIcon>
+								</ribbon:RibbonButton>
+								<ribbon:RibbonButton Content="Remove Device">
+									<ribbon:RibbonButton.LargeIcon>
+										<ControlTemplate>
+											<Image Source="resm:Home.Avalonia.Assets.icons.menu.exit.png" />
+										</ControlTemplate>
+									</ribbon:RibbonButton.LargeIcon>
+								</ribbon:RibbonButton>
+							</ribbon:RibbonGroupBox>
+							<ribbon:RibbonGroupBox Header="Report">
+								
+							</ribbon:RibbonGroupBox>
+						</ribbon:RibbonTab.Groups>
+					</ribbon:RibbonTab>
+				</ribbon:Ribbon.Tabs>
+			</ribbon:Ribbon>
+		</Grid>
+
 		<Grid Grid.Row="1" Background="LightGray">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="275" />
@@ -89,7 +159,6 @@
 					
 				</TabItem>
 				<TabItem Header="Hardware Protokoll">
-					
 					
 				</TabItem>
 			</TabControl>

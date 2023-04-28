@@ -4,5 +4,6 @@
              x:Class="Home.Avalonia.App">
     <Application.Styles>
         <FluentTheme Mode="Light"/>
+		<StyleInclude Source="avares://AvaloniaUI.Ribbon/Styles/Fluent/AvaloniaRibbon.xaml" />
     </Application.Styles>
 </Application>

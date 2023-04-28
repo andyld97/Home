@@ -53,16 +53,30 @@ namespace Home.Avalonia.Views
 
             foreach (var device in deviceList.Where(p => p.Status == Device.DeviceStatus.Active))
             {
-                DeviceHolder.Children.Add(new DeviceItem(device));
+                var di = new DeviceItem(device);
+                di.OnDeviceItemSelected += Di_OnDeviceItemSelected;
+                DeviceHolder.Children.Add(di);
             }
 
             foreach (var device in deviceList.Where(p => p.Status == Device.DeviceStatus.Offline))
             {
-                DeviceHolderOffline.Children.Add(new DeviceItem(device));
+                var di = new DeviceItem(device);
+                di.OnDeviceItemSelected += Di_OnDeviceItemSelected;
+                DeviceHolderOffline.Children.Add(di);
             }
 
             var selectedDevice = deviceList.Where(p => p.Name.ToUpper() == "ANDY-PC").FirstOrDefault();
+            RefreshSelectedDevice(selectedDevice);
+        }
+
+        public void RefreshSelectedDevice(Device selectedDevice)
+        {
             DeviceInfo.Refresh(selectedDevice);
+        }
+
+        private void Di_OnDeviceItemSelected(DeviceItem deviceItem, Device device)
+        {
+            RefreshSelectedDevice(device);
         }
 
         /*private async void OnButtonClick(object sender, RoutedEventArgs e)

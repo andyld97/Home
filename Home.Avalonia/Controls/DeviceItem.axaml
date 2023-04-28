@@ -3,7 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" Height="80" Padding="2" CornerRadius="5"
-             x:Class="Home.Avalonia.Controls.DeviceItem" FontFamily="Segoe UI">
+             x:Class="Home.Avalonia.Controls.DeviceItem" FontFamily="Segoe UI"
+			 PointerPressed="DeviceItem_PointerPressed">
 	<Border BoxShadow="1 1 1 Black" CornerRadius="5">
 		<Grid>
 			<Grid.ColumnDefinitions>

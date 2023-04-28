@@ -11,6 +11,7 @@
   <ItemGroup>
     <Folder Include="Assets\icons\devices\offline\" />
     <AvaloniaResource Include="Assets\**" />
+    <Folder Include="Assets\icons\menu\" />
     <None Remove=".gitignore" />
   </ItemGroup>
 
@@ -31,6 +32,26 @@
     <EmbeddedResource Include="..\Home\resources\icons\screen_offline.png" Link="Assets\icons\screen_offline.png" />
     <EmbeddedResource Include="..\Home\resources\icons\user.png" Link="Assets\icons\user.png" />
     <EmbeddedResource Include="..\Home\resources\icons\warning.png" Link="Assets\icons\warning.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\menu\about.png" Link="Assets\icons\menu\about.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\menu\add.png" Link="Assets\icons\menu\add.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\menu\change.png" Link="Assets\icons\menu\change.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\menu\clear_log.png" Link="Assets\icons\menu\clear_log.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\menu\command.png" Link="Assets\icons\menu\command.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\menu\exit.png" Link="Assets\icons\menu\exit.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\menu\mute.png" Link="Assets\icons\menu\mute.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\menu\overview.png" Link="Assets\icons\menu\overview.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\menu\pdf.png" Link="Assets\icons\menu\pdf.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\menu\print.png" Link="Assets\icons\menu\print.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\menu\rdp.png" Link="Assets\icons\menu\rdp.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\menu\reboot.png" Link="Assets\icons\menu\reboot.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\menu\report.png" Link="Assets\icons\menu\report.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\menu\run.png" Link="Assets\icons\menu\run.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\menu\schedule.png" Link="Assets\icons\menu\schedule.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\menu\send_message.png" Link="Assets\icons\menu\send_message.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\menu\settings.png" Link="Assets\icons\menu\settings.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\menu\shell.png" Link="Assets\icons\menu\shell.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\menu\shutdown.png" Link="Assets\icons\menu\shutdown.png" />
+    <EmbeddedResource Include="..\Home\resources\icons\menu\wol.png" Link="Assets\icons\menu\wol.png" />
     <Content Include="icon.ico" />
   </ItemGroup>
 
@@ -107,6 +128,7 @@
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="0.10.18" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.18" />
+    <PackageReference Include="AvaloniaUIRibbon" Version="1.1.0-beta" />
     <PackageReference Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.0.0-beta.501" />
     <PackageReference Include="XamlNameReferenceGenerator" Version="1.5.1" />
   </ItemGroup>
