@@ -784,4 +784,10 @@
   <data name="strToggleOverview" xml:space="preserve">
     <value>Übersicht umschalten</value>
   </data>
+  <data name="strProvideValidValues_Message" xml:space="preserve">
+    <value>Bitte geben Sie gültige Werte ein!</value>
+  </data>
+  <data name="strProvideValidValues_Title" xml:space="preserve">
+    <value>Ungültige Werte!</value>
+  </data>
 </root>

@@ -30,7 +30,7 @@ namespace Home.Controls.Dialogs
         {
             if (string.IsNullOrEmpty(TextMessage.Text) || string.IsNullOrEmpty(TextTitle.Text))
             {
-                MessageBox.Show("Bitte geben Sie gültige Werte ein!", "Leere Werte!", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Home.Properties.Resources.strProvideValidValues_Message, Home.Properties.Resources.strProvideValidValues_Title, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 

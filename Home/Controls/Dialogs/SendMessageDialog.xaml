@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Home.Controls.Dialogs"
+        xmlns:fluent="urn:fluent-ribbon"
         mc:Ignorable="d"
         WindowStyle="ThreeDBorderWindow"
         xmlns:res="clr-namespace:Home.Properties"
@@ -31,11 +32,11 @@
         <TextBox x:Name="TextMessage" Height="150" AcceptsReturn="True" TextWrapping="Wrap" />
 
         <TextBlock Text="{x:Static res:Resources.strSendMessageDialog_LogLevel}" />
-        <ComboBox x:Name="CmbType" SelectedIndex="0" Padding="3" Margin="2">
+        <fluent:ComboBox x:Name="CmbType" IsEditable="False" Margin="-7,2,2,2" SelectedIndex="0" Padding="3">
             <ComboBoxItem Content="{x:Static res:Resources.strSendMessageDialog_LogLevel_Information}" />
             <ComboBoxItem Content="{x:Static res:Resources.strSendMessageDialog_LogLevel_Warning}" />
             <ComboBoxItem Content="{x:Static res:Resources.strSendMessageDialog_LogLevel_Error}" />
-        </ComboBox>
+        </fluent:ComboBox>
 
         <Button x:Name="ButtonSend" Click="ButtonSend_Click" Margin="2,10,2,2" Height="30" Width="120" Content="{x:Static res:Resources.strOK}" HorizontalAlignment="Right" FontWeight="Bold" />
     </StackPanel>

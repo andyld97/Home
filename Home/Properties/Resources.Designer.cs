@@ -1168,6 +1168,24 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Please enter valid values! ähnelt.
+        /// </summary>
+        public static string strProvideValidValues_Message {
+            get {
+                return ResourceManager.GetString("strProvideValidValues_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Invalid values! ähnelt.
+        /// </summary>
+        public static string strProvideValidValues_Title {
+            get {
+                return ResourceManager.GetString("strProvideValidValues_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die RAM: ähnelt.
         /// </summary>
         public static string strRAMDescription {
@@ -1681,7 +1699,7 @@ namespace Home.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die App: ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Executable: ähnelt.
         /// </summary>
         public static string strSendCommandDialog_App {
             get {

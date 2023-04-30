@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:Home.Controls.Dialogs"
         mc:Ignorable="d" WindowStyle="ThreeDBorderWindow"
         xmlns:res="clr-namespace:Home.Properties"
-        Title="{x:Static res:Resources.strSendCommandDialog_Title}" WindowStartupLocation="CenterScreen"  ResizeMode="NoResize" Width="300" SizeToContent="Height" Background="{DynamicResource Fluent.Ribbon.Brushes.White}">
+        Title="{x:Static res:Resources.strSendCommandDialog_Title}" WindowStartupLocation="CenterScreen"  ResizeMode="NoResize" Width="500" SizeToContent="Height" 
+        Background="{DynamicResource Fluent.Ribbon.Brushes.White}">
     <StackPanel Margin="5">
         <StackPanel.Resources>
             <Style TargetType="{x:Type TextBlock}">
@@ -16,9 +17,10 @@
             </Style>
             <Style TargetType="{x:Type TextBox}">
                 <Setter Property="Margin" Value="2" />
-                <Setter Property="Padding" Value="2" />
+                <Setter Property="Padding" Value="3" />
                 <Setter Property="Background" Value="{DynamicResource Fluent.Ribbon.Brushes.White}" />
                 <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.Black}" />
+                <Setter Property="FontFamily" Value="Consolas" />
             </Style>
         </StackPanel.Resources>
         

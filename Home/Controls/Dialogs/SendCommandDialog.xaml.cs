@@ -25,7 +25,7 @@ namespace Home.Controls.Dialogs
         {
             if (string.IsNullOrEmpty(TextExecutable.Text))
             {
-                MessageBox.Show(this, "Bitte geben Sie gültige Werte ein!", "Ungültige Werte", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(this, Home.Properties.Resources.strProvideValidValues_Message, Home.Properties.Resources.strProvideValidValues_Title, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
