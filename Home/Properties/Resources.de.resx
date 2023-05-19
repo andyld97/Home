@@ -790,4 +790,28 @@
   <data name="strProvideValidValues_Title" xml:space="preserve">
     <value>Ungültige Werte!</value>
   </data>
+  <data name="strClientVersionNotUpToDate" xml:space="preserve">
+    <value>Das Gerät verwendet eine veraltete Client-Version!</value>
+  </data>
+  <data name="strClientVersionUpToDate" xml:space="preserve">
+    <value>Das Gerät verwendet die neuste Client-Version!</value>
+  </data>
+  <data name="strDeviceActivityPlot_Battery_Name" xml:space="preserve">
+    <value>Verbleibende Batterie (%)</value>
+  </data>
+  <data name="strDeviceActivityPlot_Battery_Tooltip" xml:space="preserve">
+    <value>Verbleibende Batterie: {0} %</value>
+  </data>
+  <data name="strDeviceActivityPlot_DISK_Name" xml:space="preserve">
+    <value>HDD-Nutzung (%)</value>
+  </data>
+  <data name="strDeviceActivityPlot_DISK_Tooltip" xml:space="preserve">
+    <value>HDD: {0} %</value>
+  </data>
+  <data name="strDeviceActivityPlot_RAM_Name" xml:space="preserve">
+    <value>RAM-Nutzung (%)</value>
+  </data>
+  <data name="strDeviceActivityPlot_CPU_Name" xml:space="preserve">
+    <value>CPU-Nutzung (%)</value>
+  </data>
 </root>

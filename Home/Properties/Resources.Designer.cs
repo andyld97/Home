@@ -250,6 +250,24 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die The device uses an outdated client version! ähnelt.
+        /// </summary>
+        public static string strClientVersionNotUpToDate {
+            get {
+                return ResourceManager.GetString("strClientVersionNotUpToDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die The device uses the latest client version! ähnelt.
+        /// </summary>
+        public static string strClientVersionUpToDate {
+            get {
+                return ResourceManager.GetString("strClientVersionUpToDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Commands ähnelt.
         /// </summary>
         public static string strCommands {
@@ -345,6 +363,78 @@ namespace Home.Properties {
         public static string strDevice {
             get {
                 return ResourceManager.GetString("strDevice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Battery Remaining (%) ähnelt.
+        /// </summary>
+        public static string strDeviceActivityPlot_Battery_Name {
+            get {
+                return ResourceManager.GetString("strDeviceActivityPlot_Battery_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Battery Remaining: {0} % ähnelt.
+        /// </summary>
+        public static string strDeviceActivityPlot_Battery_Tooltip {
+            get {
+                return ResourceManager.GetString("strDeviceActivityPlot_Battery_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die CPU Usage (%) ähnelt.
+        /// </summary>
+        public static string strDeviceActivityPlot_CPU_Name {
+            get {
+                return ResourceManager.GetString("strDeviceActivityPlot_CPU_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die CPU: {0} % ähnelt.
+        /// </summary>
+        public static string strDeviceActivityPlot_CPU_Tooltip {
+            get {
+                return ResourceManager.GetString("strDeviceActivityPlot_CPU_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die DISK Usage (%) ähnelt.
+        /// </summary>
+        public static string strDeviceActivityPlot_DISK_Name {
+            get {
+                return ResourceManager.GetString("strDeviceActivityPlot_DISK_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die DISK: {0} % ähnelt.
+        /// </summary>
+        public static string strDeviceActivityPlot_DISK_Tooltip {
+            get {
+                return ResourceManager.GetString("strDeviceActivityPlot_DISK_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die RAM Usage (%) ähnelt.
+        /// </summary>
+        public static string strDeviceActivityPlot_RAM_Name {
+            get {
+                return ResourceManager.GetString("strDeviceActivityPlot_RAM_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die RAM: {0} % ähnelt.
+        /// </summary>
+        public static string strDeviceActivityPlot_RAM_Tooltip {
+            get {
+                return ResourceManager.GetString("strDeviceActivityPlot_RAM_Tooltip", resourceCulture);
             }
         }
         

@@ -14,6 +14,7 @@
         <home:BatteryInfoConverter x:Key="batteryInfoConverter" />
         <converter:OSNameConverter x:Key="osNameConverter" />
         <converter:OS64BitConverter x:Key="os64BitConverter" />
+        <controls:ServiceVersionToolTipConverter x:Key="serviceVersionToolTipConverter" />
         <controls:ServiceVersionTextColorConverter x:Key="serviceVersionTextColorConverter" />
 
         <Style x:Key="infoBox" TargetType="{x:Type TextBlock}">
@@ -93,7 +94,7 @@
                     </TextBlock.Text>
                 </TextBlock>
                 <TextBlock Text="{Binding Location, Converter={StaticResource emptyConverter}}" />
-                <TextBlock Text="{Binding ServiceClientVersion, Converter={StaticResource emptyConverter}}" Foreground="{Binding ServiceClientVersion, Converter={StaticResource serviceVersionTextColorConverter}}" />
+                <TextBlock Text="{Binding ServiceClientVersion, Converter={StaticResource emptyConverter}}" ToolTip="{Binding ServiceClientVersion, Converter={StaticResource serviceVersionToolTipConverter}}" Foreground="{Binding ServiceClientVersion, Converter={StaticResource serviceVersionTextColorConverter}}" />
             </StackPanel>
         </Grid>
 

@@ -62,6 +62,7 @@
     <None Remove="resources\icons\menu\about.png" />
     <None Remove="resources\icons\menu\command.png" />
     <None Remove="resources\icons\menu\exit.png" />
+    <None Remove="resources\icons\menu\html.png" />
     <None Remove="resources\icons\menu\pdf.png" />
     <None Remove="resources\icons\menu\print.png" />
     <None Remove="resources\icons\menu\report.png" />
@@ -87,15 +88,15 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Fluent.Ribbon">
-      <Version>10.0.0</Version>
+      <Version>10.0.1-rc0001</Version>
     </PackageReference>
     <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF">
-	    <Version>2.0.0-beta.514</Version>
+	    <Version>2.0.0-beta.710</Version>
     </PackageReference>
     <PackageReference Include="MahApps.Metro" Version="2.4.9" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Web.WebView2">
-      <Version>1.0.1777-prerelease</Version>
+      <Version>1.0.1829-prerelease</Version>
     </PackageReference>
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.6.0-preview3.19128.7" />
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.421302">
@@ -141,6 +142,7 @@
     <Resource Include="resources\icons\explorer\undo.png" />
     <Resource Include="resources\icons\menu\command.png" />
     <Resource Include="resources\icons\menu\exit.png" />
+    <Resource Include="resources\icons\menu\html.png" />
     <Resource Include="resources\icons\menu\pdf.png" />
     <Resource Include="resources\icons\menu\print.png" />
     <Resource Include="resources\icons\menu\report.png" />

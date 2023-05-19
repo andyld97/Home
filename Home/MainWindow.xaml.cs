@@ -737,9 +737,14 @@ namespace Home
             Application.Current.Shutdown();
         }
 
-        private void MenuButtonOpenSettings_Click(object sender, RoutedEventArgs e)
+        private async void MenuButtonOpenSettings_Click(object sender, RoutedEventArgs e)
         {
             new SettingsDialog(true).ShowDialog();
+
+            // This is necessary due to possible theming changes (that everything applies)
+            RefreshOverview();
+            RefreshDeviceHolder();
+            await RefreshSelectedItem();
         }
 
         public void UpdateGlowingBrush()
@@ -802,28 +807,7 @@ namespace Home
 
             // Restore old tab index
             TabDevice.SelectedIndex = oldTabIndex;
-
-            // webViewReport.NavigationStarting += WebViewReport_NavigationStarting;
-            // webViewReport.CoreWebView2.ExecuteScriptAsync("window.print();");            
         }
-
-        /*private void WebViewReport_NavigationStarting(object sender, CoreWebView2NavigationStartingEventArgs e)
-        {
-            webViewReport.CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
-        }
-
-        private void WebViewReport_Initialized(object sender, EventArgs e)
-        {
-       
-        }
-
-        private void CoreWebView2_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
-        {
-            webViewReport.CoreWebView2.PrintToPdfAsync(@"F:\Eigene Dateien\Desktop\test.pdf");
-            webViewReport.CoreWebView2.NavigationCompleted -= CoreWebView2_NavigationCompleted;
-            webViewReport.NavigationStarting -= WebViewReport_NavigationStarting;
-        }*/
-
         #endregion
 
         private async void MenuButtonWakeOnLan_Click(object sender, RoutedEventArgs e)

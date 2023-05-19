@@ -57,7 +57,7 @@
                 </Fluent:RibbonGroupBox>
 
                 <Fluent:RibbonGroupBox Header="{x:Static res:Resources.strReport}">
-                    <Fluent:Button x:Name="MenuButtonGenerateReport" Header="{x:Static res:Resources.strSaveReportHtml}" LargeIcon="/resources/icons/menu/report.png" Click="MenuButtonGenerateReport_Click" />
+                    <Fluent:Button x:Name="MenuButtonGenerateReport" Header="{x:Static res:Resources.strSaveReportHtml}" LargeIcon="/resources/icons/menu/html.png" Click="MenuButtonGenerateReport_Click" />
                     <Fluent:Button x:Name="MenuPrintReport" Header="{x:Static res:Resources.strSaveReportPdf}" LargeIcon="/resources/icons/menu/pdf.png" Click="MenuPrintReport_Click" />
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
@@ -76,14 +76,12 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="ListBoxItem">
-                                <Border Name="_Border"
-                                Padding="2"
-                                SnapsToDevicePixels="true">
-                                    <ContentPresenter />
+                                <Border Name="_Border" Padding="2" SnapsToDevicePixels="true">
+									<ContentPresenter />
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsSelected" Value="true">
-                                        <Setter TargetName="_Border" Property="Background" Value="Transparent" />
+                                       <Setter TargetName="_Border" Property="Background" Value="Transparent" />
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
@@ -145,7 +143,7 @@
                                             <TextBlock x:Name="TextActiveDevices" Text="Aktive Geräte" TextAlignment="Center" />
                                         </Border>
                                     </TabItem.Header>
-                                    <ListBox x:Name="DeviceHolderActive" ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" Background="{DynamicResource Fluent.Ribbon.Brushes.White}" BorderThickness="0" SelectionChanged="DeviceHolder_SelectionChanged" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" />
+									<ListBox x:Name="DeviceHolderActive" ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" Background="{DynamicResource Fluent.Ribbon.Brushes.White}" BorderThickness="0" SelectionChanged="DeviceHolder_SelectionChanged" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" />
                                 </TabItem>
                                 <TabItem x:Name="TabOfflineDevices">
                                     <TabItem.Header>

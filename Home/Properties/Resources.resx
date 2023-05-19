@@ -842,4 +842,36 @@
   <data name="strProvideValidValues_Title" xml:space="preserve">
     <value>Invalid values!</value>
   </data>
+  <data name="strClientVersionNotUpToDate" xml:space="preserve">
+    <value>The device uses an outdated client version!</value>
+  </data>
+  <data name="strClientVersionUpToDate" xml:space="preserve">
+    <value>The device uses the latest client version!</value>
+  </data>
+  <data name="strDeviceActivityPlot_CPU_Name" xml:space="preserve">
+    <value>CPU Usage (%)</value>
+  </data>
+  <data name="strDeviceActivityPlot_CPU_Tooltip" xml:space="preserve">
+    <value>CPU: {0} %</value>
+    <comment>@Invariant</comment>
+  </data>
+  <data name="strDeviceActivityPlot_RAM_Name" xml:space="preserve">
+    <value>RAM Usage (%)</value>
+  </data>
+  <data name="strDeviceActivityPlot_RAM_Tooltip" xml:space="preserve">
+    <value>RAM: {0} %</value>
+    <comment>@Invariant</comment>
+  </data>
+  <data name="strDeviceActivityPlot_Battery_Name" xml:space="preserve">
+    <value>Battery Remaining (%)</value>
+  </data>
+  <data name="strDeviceActivityPlot_Battery_Tooltip" xml:space="preserve">
+    <value>Battery Remaining: {0} %</value>
+  </data>
+  <data name="strDeviceActivityPlot_DISK_Name" xml:space="preserve">
+    <value>DISK Usage (%)</value>
+  </data>
+  <data name="strDeviceActivityPlot_DISK_Tooltip" xml:space="preserve">
+    <value>DISK: {0} %</value>
+  </data>
 </root>

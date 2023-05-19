@@ -17,6 +17,11 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Home.Model;
+using SkiaSharp;
+using Home.Data.Helper;
+using Model;
+using System.Diagnostics;
+using SkiaSharp.Views.WPF;
 
 namespace Home.Controls
 {
@@ -26,23 +31,28 @@ namespace Home.Controls
     public partial class DeviceActivityPlot : UserControl
     {
         private Device currentDevice;
+        private SolidColorPaint white = new SolidColorPaint(SKColors.White);
+        private SolidColorPaint black = new SolidColorPaint(SKColors.Black);
+
+        private Axis xaxis, yaxis;
+
+        private bool? darkMode = null;
 
         public DeviceActivityPlot()
         {
             InitializeComponent();
             InitalizeDeviceActivityPlot();
-        }
+        }         
 
         private void InitalizeDeviceActivityPlot()
         {
             // This legend is always switching colors, so I am going to use my own legend!
-            plot.LegendPosition = LiveChartsCore.Measure.LegendPosition.Hidden; // top
-            plot.LegendOrientation = LiveChartsCore.Measure.LegendOrientation.Horizontal;
-            plot.LegendBackground = FindResource("Fluent.Ribbon.Brushes.White") as SolidColorBrush;
-            plot.LegendTextBrush = FindResource("Fluent.Ribbon.Brushes.Black") as SolidColorBrush;
+            xaxis =  plot.XAxes.FirstOrDefault() as Axis;
+            yaxis = plot.YAxes.FirstOrDefault() as Axis;            
 
-            var xaxis = plot.XAxes.FirstOrDefault();
-            var yaxis = plot.YAxes.FirstOrDefault();
+            // Make tooltip smaller (https://github.com/beto-rodriguez/LiveCharts2/releases/tag/v2.0.0-beta.700)
+            plot.TooltipTextSize = 12;
+
             yaxis.Labeler = (y) => $"{y}%";
             xaxis.Labeler = (x) =>
             {
@@ -59,6 +69,9 @@ namespace Home.Controls
             };
         }
 
+        private static List<SKColor> darkColors = new List<SKColor>() { SKColors.AliceBlue, SKColors.Violet, SKColors.Orange, SKColors.Green };
+        private static List<SKColor> lightColors = new List<SKColor>() { SKColors.LightGray, SKColors.Violet, SKColors.Orange, SKColors.Green };
+
         public void RenderPlot(Device currentDevice)
         {
             if (currentDevice == null)
@@ -66,10 +79,32 @@ namespace Home.Controls
 
             this.currentDevice = currentDevice;
 
+            if (darkMode == null || (darkMode != null && darkMode != Settings.Instance.UseDarkMode))
+            {
+                // Paint will only be changed if dark mode is changed.
+                // If LabelsPaint will be set every time in this method, the labels are not visible anymore
+                var paint = Settings.Instance.UseDarkMode ? white : black;
+
+                xaxis.LabelsPaint =
+                yaxis.LabelsPaint = paint;
+                darkMode = Settings.Instance.UseDarkMode;
+
+                if (darkMode == true)
+                    PathCPU.Fill = new SolidColorBrush(darkColors[0].ToColor());
+                else
+                    PathCPU.Fill = new SolidColorBrush(lightColors[0].ToColor());
+            } 
+
             List<Point> cpuPoints = new List<Point>();
             List<Point> ramPoints = new List<Point>();
             List<Point> diskPoints = new List<Point>();
             List<Point> batteryPoints = new List<Point>();
+
+            List<SKColor> colors = new List<SKColor>();
+            if (Settings.Instance.UseDarkMode)
+                colors.AddRange(darkColors);
+            else
+                colors.AddRange(lightColors);
 
             int cpuCounter = 1;
             foreach (var cpu in currentDevice.Usage.CPU)
@@ -90,59 +125,58 @@ namespace Home.Controls
                     batteryPoints.Add(new Point(batteryCounter++, bPercent));
             }
 
-            //  Fill = new SolidColorPaint(SkiaSharp.SKColors.LightBlue.WithAlpha(128)),
-
             void mapping(Point s, ChartPoint e)
             {
                 e.SecondaryValue = s.X;
                 e.PrimaryValue = s.Y;
             }
 
+            // ToDo Localized
             var cpuSeries = new LineSeries<Point>()
             {
                 Values = cpuPoints,
                 Mapping = mapping,
-                Stroke = new SolidColorPaint(SkiaSharp.SKColors.AliceBlue, 3),
+                Stroke = new SolidColorPaint(colors[0], 3),
                 Fill = null,
                 GeometrySize = 0,
-                Name = "CPU Usage (%)",
-                TooltipLabelFormatter = (s) => $"CPU: {s.PrimaryValue} %",
+                Name = Home.Properties.Resources.strDeviceActivityPlot_CPU_Name,
+                TooltipLabelFormatter = (s) => string.Format(Home.Properties.Resources.strDeviceActivityPlot_CPU_Tooltip, Math.Round(s.PrimaryValue, 0)),
             };
 
             var ramSeries = new LineSeries<Point>()
             {
                 Values = ramPoints,
                 Mapping = mapping,
-                Stroke = new SolidColorPaint(SkiaSharp.SKColors.Violet, 3),
+                Stroke = new SolidColorPaint(colors[1], 3),
                 Fill = null,
                 GeometrySize = 0,
-                Name = "RAM Usage (%)",
-                TooltipLabelFormatter = (s) => $"RAM: {s.PrimaryValue} %",
+                Name = Home.Properties.Resources.strDeviceActivityPlot_RAM_Name,
+                TooltipLabelFormatter = (s) => string.Format(Home.Properties.Resources.strDeviceActivityPlot_RAM_Tooltip, Math.Round(s.PrimaryValue, 0)),
             };
 
             var diskSeries = new LineSeries<Point>()
             {
                 Values = diskPoints,
                 Mapping = mapping,
-                Stroke = new SolidColorPaint(SkiaSharp.SKColors.Orange, 3),
+                Stroke = new SolidColorPaint(colors[2], 3),
                 Fill = null,
                 GeometrySize = 0,
-                Name = "DISK Usage (%)",
-                TooltipLabelFormatter = (s) => $"DISK: {s.PrimaryValue} %",
+                Name = Home.Properties.Resources.strDeviceActivityPlot_DISK_Name,
+                TooltipLabelFormatter = (s) => string.Format(Home.Properties.Resources.strDeviceActivityPlot_DISK_Tooltip, Math.Round(s.PrimaryValue, 0)),
             };
 
             var batterySeries = new LineSeries<Point>()
             {
                 Values = batteryPoints,
                 Mapping = mapping,
-                Stroke = new SolidColorPaint(SkiaSharp.SKColors.Green, 3),
+                Stroke = new SolidColorPaint(colors[3], 3),
                 Fill = null,
                 GeometrySize = 0,
-                Name = "Battery Remaining (%)",
-                TooltipLabelFormatter = (s) => $"Battery Remaining: {s.PrimaryValue} %"
+                Name = Home.Properties.Resources.strDeviceActivityPlot_Battery_Name,
+                TooltipLabelFormatter = (s) => string.Format(Home.Properties.Resources.strDeviceActivityPlot_Battery_Tooltip, Math.Round(s.PrimaryValue, 0))
             };
 
-            List<ISeries> series = new List<ISeries>(); // { cpuSeries, ramSeries, diskSeries };
+            List<ISeries> series = new List<ISeries>();
 
             if (ChkCPULegend.IsChecked.Value)
                 series.Add(cpuSeries);
