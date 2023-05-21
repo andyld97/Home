@@ -219,7 +219,7 @@
     <value>Inactive Devices: {0}</value>
   </data>
   <data name="strShowScreenshots" xml:space="preserve">
-    <value>Show screenshots</value>
+    <value>Show screens</value>
   </data>
   <data name="strFileExplorerName" xml:space="preserve">
     <value>Name</value>
@@ -888,5 +888,8 @@
   </data>
   <data name="strConnectedSuccessfullyMessage" xml:space="preserve">
     <value>Successfully connected to "{0}"!</value>
+  </data>
+  <data name="strShowActivity" xml:space="preserve">
+    <value>Show activity</value>
   </data>
 </root>

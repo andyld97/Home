@@ -36,13 +36,15 @@ using static SkiaSharp.HarfBuzz.SKShaper;
 using System.IO;
 using Microsoft.Extensions.FileSystemGlobbing.Internal.PathSegments;
 using System.Diagnostics;
+using System.Windows.Interop;
+using System.ComponentModel;
 
 namespace Home
 {
     /// <summary>
     /// Interaktionslogik für MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : RibbonWindow
+    public partial class MainWindow : RibbonWindow, INotifyPropertyChanged
     {
         public static Client CLIENT = new Client() { IsRealClient = true };
         public static Communication.API API = null;
@@ -120,6 +122,7 @@ namespace Home
                 (element as UIElement).IsEnabled = false;
 
             AddProtocolEntry(string.Format(Home.Properties.Resources.strStartMessage, typeof(MainWindow).Assembly.GetName().Version.ToString(3)));
+            Legend.DataContext = this;
         }
 
         private async Task CleanUpCacheAsync()
@@ -397,7 +400,7 @@ namespace Home
                     continue;
                 }
 
-                DeviceItemGroup deviceItemGroup = new DeviceItemGroup { GroupName = group.Key, IsScreenshotView = MenuButtonTotalOverviewShowScreenshots.IsChecked.Value };
+                DeviceItemGroup deviceItemGroup = new DeviceItemGroup { GroupName = group.Key, RenderMode = DetermineOverviewMode() };
                 deviceItemGroup.OnGroupSelectionChanged += (string grp) =>
                 {
                     foreach (var currentGroup in PanelOverview.Children.OfType<DeviceItemGroup>().Where(d => d.GroupName != grp))
@@ -417,7 +420,7 @@ namespace Home
                 {
                     GroupName = Properties.Resources.strDeviceLocationNotAssigend,
                     Devices = notAssociatedDevices,
-                    IsScreenshotView = MenuButtonTotalOverviewShowScreenshots.IsChecked.Value
+                    RenderMode = DetermineOverviewMode()
                 };
 
                 PanelOverview.Children.Add(dig);
@@ -905,10 +908,111 @@ namespace Home
                 MessageBox.Show(string.Format(Home.Properties.Resources.strDeviceScheduling_Settings_FailedToRecieveData, result.ErrorMessage), Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
+        #region Overview
+        private bool ignoreCheckedChangedToggle = false;
+        private bool legendDisplayCPU = true;
+        private bool legendDisplayRAM = true;
+        private bool legendDisplayDISK = true;
+        private bool legendDisplayBattery = true;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public bool LegendDisplayCPU
+        {
+            get => legendDisplayCPU;
+            set
+            {
+                if (legendDisplayCPU != value)
+                {
+                    legendDisplayCPU = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LegendDisplayCPU)));
+                }
+            }
+        }
+
+        public bool LegendDisplayRAM
+        {
+            get => legendDisplayRAM;
+            set
+            {
+                if (legendDisplayRAM != value)
+                {
+                    legendDisplayRAM = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LegendDisplayRAM)));
+                }
+            }
+        }
+
+        public bool LegendDisplayDISK
+        {
+            get => legendDisplayDISK;
+            set
+            {
+                if (legendDisplayDISK != value)
+                {
+                    legendDisplayDISK = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LegendDisplayDISK)));
+                }
+            }
+        }
+
+        public bool LegendDisplayBattery
+        {
+            get => legendDisplayBattery;
+            set
+            {
+                if (legendDisplayBattery != value)
+                {
+                    legendDisplayBattery = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LegendDisplayBattery)));
+                }
+            }
+        }
+
         private void MenuButtonTotalOverviewShowScreenshots_Checked(object sender, RoutedEventArgs e)
         {
+            if (ignoreCheckedChangedToggle) return;
+            if (MenuButtonTotalOverviewShowScreenshots.IsChecked == true)
+            {
+                ignoreCheckedChangedToggle = true;
+                MenuButtonTotalOverviewShowPlot.IsChecked = false;
+                ignoreCheckedChangedToggle = false;
+            }
+
             foreach (var item in PanelOverview.Children.OfType<DeviceItemGroup>())
-                item.IsScreenshotView = MenuButtonTotalOverviewShowScreenshots.IsChecked.Value;
+                item.RenderMode = DetermineOverviewMode();
+        }
+
+        private void MenuButtonTotalOverviewShowPlot_Checked(object sender, RoutedEventArgs e)
+        {
+            if (ignoreCheckedChangedToggle) return;
+            if (MenuButtonTotalOverviewShowPlot.IsChecked == true)
+            {
+                ignoreCheckedChangedToggle = true;
+                MenuButtonTotalOverviewShowScreenshots.IsChecked = false;
+                ignoreCheckedChangedToggle = false;
+            }
+
+            foreach (var item in PanelOverview.Children.OfType<DeviceItemGroup>())
+                item.RenderMode = DetermineOverviewMode();
+        }
+
+        private Mode DetermineOverviewMode()
+        {
+            Mode result;
+            if (MenuButtonTotalOverviewShowScreenshots.IsChecked.Value)
+                result = Mode.Screenshot;
+            else if (MenuButtonTotalOverviewShowPlot.IsChecked.Value)
+                result = Mode.Diagram;
+            else result = Mode.Info;
+
+            // Hide legend when info or screenshot is shown
+            if (result == Mode.Diagram)
+                Legend.Visibility = Visibility.Visible;
+            else
+                Legend.Visibility = Visibility.Collapsed;
+
+            return result;
         }
 
         private void MenuButtonToggleOverivew_Checked(object sender, RoutedEventArgs e)
@@ -917,16 +1021,21 @@ namespace Home
             {
                 GridNetworkOverview.Visibility = Visibility.Visible;
                 GridIndividualOverview.Visibility = Visibility.Hidden;
-                MenuButtonTotalOverviewShowScreenshots.IsEnabled = true;
+                MenuButtonTotalOverviewShowScreenshots.IsEnabled = 
+                MenuButtonTotalOverviewShowPlot.IsEnabled = true;
             }
             else
             {
                 GridIndividualOverview.Visibility = Visibility.Visible;
                 GridNetworkOverview.Visibility = Visibility.Hidden;
-                MenuButtonTotalOverviewShowScreenshots.IsEnabled = false;
-                MenuButtonTotalOverviewShowScreenshots.IsChecked = false;
+                MenuButtonTotalOverviewShowScreenshots.IsEnabled =
+                MenuButtonTotalOverviewShowPlot.IsEnabled = false;
+                MenuButtonTotalOverviewShowScreenshots.IsChecked =
+                MenuButtonTotalOverviewShowPlot.IsChecked = false;
             }
         }
+
+        #endregion
     }
 
     #region Converter

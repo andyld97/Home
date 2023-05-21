@@ -2005,7 +2005,16 @@ namespace Home.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Show screenshots ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Show activity ähnelt.
+        /// </summary>
+        public static string strShowActivity {
+            get {
+                return ResourceManager.GetString("strShowActivity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Show screens ähnelt.
         /// </summary>
         public static string strShowScreenshots {
             get {

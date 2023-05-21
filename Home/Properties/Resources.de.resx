@@ -217,7 +217,7 @@
     <value>Inaktive Geräte: {0}</value>
   </data>
   <data name="strShowScreenshots" xml:space="preserve">
-    <value>Screenshots anzeigen</value>
+    <value>Bilder anzeigen</value>
   </data>
   <data name="strFileExplorerDateOfChange" xml:space="preserve">
     <value>Änderungsdatum</value>
@@ -828,5 +828,8 @@
   </data>
   <data name="strConnectedSuccessfullyMessage" xml:space="preserve">
     <value>Erfolgreich verbunden mit "{0}"!</value>
+  </data>
+  <data name="strShowActivity" xml:space="preserve">
+    <value>Aktivität anzeigen</value>
   </data>
 </root>

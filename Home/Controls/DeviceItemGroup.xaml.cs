@@ -18,7 +18,7 @@ namespace Home.Controls
     public partial class DeviceItemGroup : UserControl, INotifyPropertyChanged
     {
         private string groupName;
-        private bool isScreenshotView;
+        private Mode renderMode = Mode.Info;
         private bool ignoreSelectionChanged = false;
         private List<Device> devices = new List<Device>();
 
@@ -51,14 +51,14 @@ namespace Home.Controls
             }
         }
 
-        public bool IsScreenshotView
+        public Mode RenderMode
         {
-            get => isScreenshotView;
+            get => renderMode;
             set
             {
-                if (isScreenshotView != value)
+                if (renderMode != value)
                 {
-                    isScreenshotView = value;
+                    renderMode = value;
                     OnPropertyChanged();
                 }
             }
@@ -118,6 +118,13 @@ namespace Home.Controls
         }
     }
 
+    public enum Mode
+    {
+        Info,
+        Screenshot,
+        Diagram
+    }
+
     #region Converter
 
     public class DeviceImageConverter : IValueConverter
@@ -141,11 +148,13 @@ namespace Home.Controls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             int.TryParse(parameter.ToString(), out int i);
-            if (value is bool b)
+            if (value is Mode m)
             {
-                if (b && i == 1)
+                if (m == Mode.Info && i == 1)
                     return Visibility.Visible;
-                else if (!b && i == 2)
+                else if (m == Mode.Screenshot && i == 2)
+                    return Visibility.Visible;
+                else if (m == Mode.Diagram && i == 3)
                     return Visibility.Visible;
             }
 

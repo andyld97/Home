@@ -33,16 +33,40 @@ namespace Home.Controls
         private Device currentDevice;
         private SolidColorPaint white = new SolidColorPaint(SKColors.White);
         private SolidColorPaint black = new SolidColorPaint(SKColors.Black);
+        private static List<SKColor> darkColors = new List<SKColor>() { SKColors.AliceBlue, SKColors.Violet, SKColors.Orange, SKColors.Green };
+        private static List<SKColor> lightColors = new List<SKColor>() { SKColors.LightGray, SKColors.Violet, SKColors.Orange, SKColors.Green };
 
         private Axis xaxis, yaxis;
 
         private bool? darkMode = null;
+        private bool hasNoOwnLegend = false;
 
         public DeviceActivityPlot()
         {
             InitializeComponent();
             InitalizeDeviceActivityPlot();
-        }         
+
+            Loaded += DeviceActivityPlot_Loaded;
+        }
+
+        private void DeviceActivityPlot_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is Device d)
+            {
+                // Is called from overview, so we have to render the plot from binding and hide the legend
+                RenderPlot(d);
+                Legend.Visibility = Visibility.Collapsed;
+
+                MainWindow.W_INSTANCE.PropertyChanged += W_INSTANCE_PropertyChanged;
+                hasNoOwnLegend = true;
+            }
+        }
+
+        private void W_INSTANCE_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "LegendDisplayCPU" || e.PropertyName == "LegendDisplayRAM" || e.PropertyName == "LegendDisplayDISK" || e.PropertyName == "LegendDisplayBattery")
+                RenderPlot(currentDevice);
+        }
 
         private void InitalizeDeviceActivityPlot()
         {
@@ -68,9 +92,6 @@ namespace Home.Controls
                 return n.ToString("HH:mm");
             };
         }
-
-        private static List<SKColor> darkColors = new List<SKColor>() { SKColors.AliceBlue, SKColors.Violet, SKColors.Orange, SKColors.Green };
-        private static List<SKColor> lightColors = new List<SKColor>() { SKColors.LightGray, SKColors.Violet, SKColors.Orange, SKColors.Green };
 
         public void RenderPlot(Device currentDevice)
         {
@@ -130,8 +151,6 @@ namespace Home.Controls
                 e.SecondaryValue = s.X;
                 e.PrimaryValue = s.Y;
             }
-
-            // ToDo Localized
             var cpuSeries = new LineSeries<Point>()
             {
                 Values = cpuPoints,
@@ -178,18 +197,45 @@ namespace Home.Controls
 
             List<ISeries> series = new List<ISeries>();
 
-            if (ChkCPULegend.IsChecked.Value)
+            bool displayCPU;
+            if (hasNoOwnLegend)
+                displayCPU = MainWindow.W_INSTANCE.LegendDisplayCPU;
+            else
+                displayCPU = ChkCPULegend.IsChecked.Value;
+
+            if (displayCPU)
                 series.Add(cpuSeries);
 
-            if (ChkRAMLegend.IsChecked.Value)
+            bool displayRAM;
+            if (hasNoOwnLegend)
+                displayRAM = MainWindow.W_INSTANCE.LegendDisplayRAM;
+            else
+                displayRAM = ChkRAMLegend.IsChecked.Value;
+
+            if (displayRAM)
                 series.Add(ramSeries);
 
-            if (ChkDiskLegend.IsChecked.Value)
+            bool displayDISK;
+            if (hasNoOwnLegend)
+                displayDISK = MainWindow.W_INSTANCE.LegendDisplayDISK;
+            else
+                displayDISK = ChkDiskLegend.IsChecked.Value;
+
+            if (displayDISK)
                 series.Add(diskSeries);
 
-            if (ChkBatteryLegend.IsChecked.Value && currentDevice.BatteryInfo != null)
-                series.Add(batterySeries);
+            bool displayBattery = false;
+            if (currentDevice.BatteryInfo != null)
+            {
+                if (hasNoOwnLegend)
+                    displayBattery = MainWindow.W_INSTANCE.LegendDisplayBattery;
+                else
+                    displayBattery = ChkBatteryLegend.IsChecked.Value;
+            }
 
+            if (displayBattery)
+                series.Add(batterySeries);
+            
             plot.Series = series;
         }
 
