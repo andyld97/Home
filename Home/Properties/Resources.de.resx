@@ -814,4 +814,19 @@
   <data name="strDeviceActivityPlot_CPU_Name" xml:space="preserve">
     <value>CPU-Nutzung (%)</value>
   </data>
+  <data name="strCleanUpResultMessage" xml:space="preserve">
+    <value>{0} Screenshots ({1}) wurden bereinigt!</value>
+  </data>
+  <data name="strProtocol" xml:space="preserve">
+    <value>Protokoll</value>
+  </data>
+  <data name="strStartMessage" xml:space="preserve">
+    <value>Starten von Home.WPF v{0} ...</value>
+  </data>
+  <data name="strFailedToConnectMessage" xml:space="preserve">
+    <value>Die Verbindung zu "{0}" konnte nicht hergestellt werden: {1}</value>
+  </data>
+  <data name="strConnectedSuccessfullyMessage" xml:space="preserve">
+    <value>Erfolgreich verbunden mit "{0}"!</value>
+  </data>
 </root>

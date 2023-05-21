@@ -241,6 +241,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die {0} Screenshots ({1}) have been cleaned up! ähnelt.
+        /// </summary>
+        public static string strCleanUpResultMessage {
+            get {
+                return ResourceManager.GetString("strCleanUpResultMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Clear Log ähnelt.
         /// </summary>
         public static string strClearLog {
@@ -273,6 +282,15 @@ namespace Home.Properties {
         public static string strCommands {
             get {
                 return ResourceManager.GetString("strCommands", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Successfully connected to &quot;{0}&quot;! ähnelt.
+        /// </summary>
+        public static string strConnectedSuccessfullyMessage {
+            get {
+                return ResourceManager.GetString("strConnectedSuccessfullyMessage", resourceCulture);
             }
         }
         
@@ -597,6 +615,15 @@ namespace Home.Properties {
         public static string strFailedToClearDeviceLog {
             get {
                 return ResourceManager.GetString("strFailedToClearDeviceLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Failed to connected to &quot;{0}&quot;: {1} ähnelt.
+        /// </summary>
+        public static string strFailedToConnectMessage {
+            get {
+                return ResourceManager.GetString("strFailedToConnectMessage", resourceCulture);
             }
         }
         
@@ -1254,6 +1281,15 @@ namespace Home.Properties {
         public static string strProperty {
             get {
                 return ResourceManager.GetString("strProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Protocol ähnelt.
+        /// </summary>
+        public static string strProtocol {
+            get {
+                return ResourceManager.GetString("strProtocol", resourceCulture);
             }
         }
         
@@ -1992,6 +2028,15 @@ namespace Home.Properties {
         public static string strShutdownMenu {
             get {
                 return ResourceManager.GetString("strShutdownMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Starting Home.WPF v{0} ... ähnelt.
+        /// </summary>
+        public static string strStartMessage {
+            get {
+                return ResourceManager.GetString("strStartMessage", resourceCulture);
             }
         }
         

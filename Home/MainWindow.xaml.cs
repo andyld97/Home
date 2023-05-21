@@ -33,6 +33,9 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static Home.Model.DeviceChangeEntry;
 using Home.Data.Events;
 using static SkiaSharp.HarfBuzz.SKShaper;
+using System.IO;
+using Microsoft.Extensions.FileSystemGlobbing.Internal.PathSegments;
+using System.Diagnostics;
 
 namespace Home
 {
@@ -41,12 +44,6 @@ namespace Home
     /// </summary>
     public partial class MainWindow : RibbonWindow
     {
-        /// <summary>
-        /// ToDo: *** Move to a Consts.cs file
-        /// </summary>
-        public static readonly string CACHE_PATH = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Home", "Cache");
-        public static readonly string WEBVIEW_CACHE_PATH = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Home", "WebView2Cache");
-
         public static Client CLIENT = new Client() { IsRealClient = true };
         public static Communication.API API = null;
         public static MainWindow W_INSTANCE = null;
@@ -68,14 +65,14 @@ namespace Home
         {
             try
             {
-                System.IO.Directory.CreateDirectory(CACHE_PATH);
+                System.IO.Directory.CreateDirectory(HomeConsts.CACHE_PATH);
             }
             catch
             { }
 
             try
             {
-                System.IO.Directory.CreateDirectory(WEBVIEW_CACHE_PATH);
+                System.IO.Directory.CreateDirectory(HomeConsts.WEBVIEW_CACHE_PATH);
             }
             catch
             { }
@@ -121,7 +118,92 @@ namespace Home
             // Disable all device depended buttons since there is no device selected at the beginning
             foreach (var element in deviceDependendButtons)
                 (element as UIElement).IsEnabled = false;
+
+            AddProtocolEntry(string.Format(Home.Properties.Resources.strStartMessage, typeof(MainWindow).Assembly.GetName().Version.ToString(3)));
         }
+
+        private async Task CleanUpCacheAsync()
+        {
+            var di = new DirectoryInfo(HomeConsts.CACHE_PATH);
+            var now = DateTime.Now;
+
+            List<FileInfo> files = new List<FileInfo>();
+
+            long length = 0;
+
+            foreach (var file in di.EnumerateFiles("*.png", SearchOption.AllDirectories))
+            {
+                // Ignore this file if it's parent directory has only one file to keep old screenshots when there is only one available
+                if (file.Directory?.EnumerateFiles("*.png", SearchOption.TopDirectoryOnly).Count() == 1)
+                    continue;
+
+                // Parse filename as date
+                if (DateTime.TryParseExact(System.IO.Path.GetFileNameWithoutExtension(file.Name), Consts.SCREENSHOT_DATE_FILE_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var date))
+                {
+                    if (date.AddDays(14) > now)
+                        files.Add(file);
+                }
+            }
+
+            length = files.Sum(f => f.Length);
+
+   
+            foreach (var file in files) 
+            {
+                try
+                {
+                    System.IO.File.Delete(file.FullName);   
+                }
+                catch
+                {
+                    // ignore
+                }
+            }
+
+            if (files.Count > 0)
+            {
+                var bytes = ByteUnit.FindUnit(length);
+                AddProtocolEntry(string.Format(Properties.Resources.strCleanUpResultMessage, files.Count, bytes));
+            }
+        }
+
+        #region Protocol
+
+        private Paragraph cuurrentParagraph;
+
+        /// <summary>
+        /// Adds a protocol entry (protocol is only visible on the start page of Home.WPF)
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="isError"></param>
+        /// <param name="isSucess"></param>
+        private void AddProtocolEntry(string message, bool isError = false, bool isSucess = false)
+        {
+            var now = DateTime.Now;
+            string formattedMessage = string.Empty;
+
+            if (cuurrentParagraph == null)
+            {
+                cuurrentParagraph = new Paragraph();
+                TextProtocol.Document.Blocks.Clear();
+                TextProtocol.Document.Blocks.Add(cuurrentParagraph);
+            }
+
+            string level = "Info";
+            if (isError)
+                level = Properties.Resources.strSendMessageDialog_LogLevel_Error;
+
+            formattedMessage = $"[{level} @ {now.ToString(Properties.Resources.strDateTimeFormat)}]: {message}";
+            var run = new Run(formattedMessage);
+            if (isError)
+                run.Foreground = new SolidColorBrush(Colors.Red);
+            else if (isSucess)
+                run.Foreground = new SolidColorBrush(Colors.LightGreen);
+
+            cuurrentParagraph.Inlines.Add(run);
+            cuurrentParagraph.Inlines.Add(new LineBreak());
+        }
+        #endregion
 
         private async void App_OnShutdownOrRestart(Device device, bool shutdown, bool wol)
         {
@@ -163,12 +245,13 @@ namespace Home
         {
             base.OnContentRendered(e);
 
-            webView2Environment = await CoreWebView2Environment.CreateAsync(userDataFolder: WEBVIEW_CACHE_PATH);
+            webView2Environment = await CoreWebView2Environment.CreateAsync(userDataFolder: HomeConsts.WEBVIEW_CACHE_PATH);
             await webViewReport.EnsureCoreWebView2Async(webView2Environment);
         }
 
         private async void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            await CleanUpCacheAsync();
             await Initalize();
         }
 
@@ -179,9 +262,12 @@ namespace Home
                 deviceList = result.Result;
 
             if (result.Success)
+            {
+                AddProtocolEntry(string.Format(Properties.Resources.strConnectedSuccessfullyMessage, Settings.Instance.Host), isSucess: true);
                 RefreshDeviceHolder();
+            }
             else
-                MessageBox.Show(result.ErrorMessage, Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
+                AddProtocolEntry(string.Format(Properties.Resources.strFailedToConnectMessage, Settings.Instance.Host, result.ErrorMessage), true);
 
             updateTimer.Interval = TimeSpan.FromSeconds(5);
             updateTimer.Tick += UpdateTimer_Tick;

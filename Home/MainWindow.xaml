@@ -169,6 +169,16 @@
                         <Grid>
                             <Grid x:Name="DeviceInfoHint" Visibility="Visible">
                                 <TextBlock Text="{x:Static res:Resources.strNoDeviceSelected}" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}" FontSize="33" />
+
+								<Grid HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="*" />
+									</Grid.RowDefinitions>
+
+									<TextBlock Text="{x:Static res:Resources.strProtocol}" FontSize="24" FontWeight="Bold" Margin="4,2" />
+									<RichTextBox x:Name="TextProtocol" Grid.Row="1" FontFamily="Consolas" Background="{DynamicResource Fluent.Ribbon.Brushes.White}" IsReadOnly="True" FontSize="16"  Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}" Height="200" />
+								</Grid>
                             </Grid>
 
                             <Grid x:Name="DeviceInfo" Visibility="Hidden">

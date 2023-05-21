@@ -874,4 +874,19 @@
   <data name="strDeviceActivityPlot_DISK_Tooltip" xml:space="preserve">
     <value>DISK: {0} %</value>
   </data>
+  <data name="strProtocol" xml:space="preserve">
+    <value>Protocol</value>
+  </data>
+  <data name="strCleanUpResultMessage" xml:space="preserve">
+    <value>{0} Screenshots ({1}) have been cleaned up!</value>
+  </data>
+  <data name="strStartMessage" xml:space="preserve">
+    <value>Starting Home.WPF v{0} ...</value>
+  </data>
+  <data name="strFailedToConnectMessage" xml:space="preserve">
+    <value>Failed to connected to "{0}": {1}</value>
+  </data>
+  <data name="strConnectedSuccessfullyMessage" xml:space="preserve">
+    <value>Successfully connected to "{0}"!</value>
+  </data>
 </root>

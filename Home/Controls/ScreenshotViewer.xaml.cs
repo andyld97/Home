@@ -124,10 +124,10 @@ namespace Home.Controls
                 var device = data.Item1;
                 var screenshot = data.Item2;    
 
-                string path = System.IO.Path.Combine(MainWindow.CACHE_PATH, device.ID, screenshot.Filename) + ".png";
+                string path = System.IO.Path.Combine(HomeConsts.CACHE_PATH, device.ID, screenshot.Filename) + ".png";
                 if (!System.IO.File.Exists(path))
                 {
-                    if (await MainWindow.API.DownloadScreenshotToCache(device, MainWindow.CACHE_PATH, screenshot.Filename))
+                    if (await MainWindow.API.DownloadScreenshotToCache(device, HomeConsts.CACHE_PATH, screenshot.Filename))
                     {
                         // Successfully downloaded image to cache
                         if (screenshotToDisplay != null && screenshotToDisplay == screenshot)
@@ -328,7 +328,7 @@ namespace Home.Controls
         #region Events / Helper Methods
         private string GetScreenshotPath(Device device, Screenshot screenshot)
         {
-            string path = System.IO.Path.Combine(MainWindow.CACHE_PATH, device.ID, screenshot.Filename) + ".png";
+            string path = System.IO.Path.Combine(HomeConsts.CACHE_PATH, device.ID, screenshot.Filename) + ".png";
             if (System.IO.File.Exists(path))
                 return path;
 
