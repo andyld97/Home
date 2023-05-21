@@ -71,7 +71,7 @@ namespace Home.API.Services
                     }
 
                     // If there is a change, append it in the log and notify webhook
-                    await DetectAnyDevicesChangesAndLogAsync(currentDevice, requestedDevice, now);
+                    await DetectAndRegisterDeviceChangesAsync(currentDevice, requestedDevice, now);
 
                     isScreenshotRequired = currentDevice.IsScreenshotRequired;
 
@@ -327,10 +327,14 @@ namespace Home.API.Services
             _logger.LogInformation(message);
         }
 
-        private async Task DetectAnyDevicesChangesAndLogAsync(home.Models.Device currentDevice, Home.Model.Device requestedDevice, DateTime now)
+        private async Task DetectAndRegisterDeviceChangesAsync(home.Models.Device currentDevice, Home.Model.Device requestedDevice, DateTime now)
         {
             // Detect any device changes and log them (also log to Webhook)            
             string prefix = $"Device \"{requestedDevice.Name}\"";
+
+            // Check if the device name changed
+            if (currentDevice.Name != requestedDevice.Name)
+                await RegisterDeviceChangeAsync(prefix, $"Name changed from {currentDevice.Name} to {requestedDevice.Name}", DeviceChangeEntry.DeviceChangeType.None, currentDevice, now);
 
             // Check if a newer client version is used
             if (currentDevice.ServiceClientVersion != requestedDevice.ServiceClientVersion && !string.IsNullOrEmpty(currentDevice.ServiceClientVersion))
