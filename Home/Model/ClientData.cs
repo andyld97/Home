@@ -9,6 +9,8 @@ namespace Home.Model
 
         public string ClientID { get; set; } = Guid.NewGuid().ToString();
 
+        public bool IgnoreWebVie2Error { get; set; }    
+
         public static ClientData Load()
         {
             try

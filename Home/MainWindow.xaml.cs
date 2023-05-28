@@ -180,7 +180,7 @@ namespace Home
         /// <param name="message"></param>
         /// <param name="isError"></param>
         /// <param name="isSucess"></param>
-        private void AddProtocolEntry(string message, bool isError = false, bool isSucess = false)
+        private void AddProtocolEntry(string message, bool isError = false, bool isSucess = false, bool isWarning = false)
         {
             var now = DateTime.Now;
             string formattedMessage = string.Empty;
@@ -195,6 +195,8 @@ namespace Home
             string level = "Info";
             if (isError)
                 level = Properties.Resources.strSendMessageDialog_LogLevel_Error;
+            else if (isWarning)
+                level = Properties.Resources.strSendMessageDialog_LogLevel_Warning;
 
             formattedMessage = $"[{level} @ {now.ToString(Properties.Resources.strDateTimeFormat)}]: {message}";
             var run = new Run(formattedMessage);
@@ -202,6 +204,8 @@ namespace Home
                 run.Foreground = new SolidColorBrush(Colors.Red);
             else if (isSucess)
                 run.Foreground = new SolidColorBrush(Colors.LightGreen);
+            else if (isWarning)
+                run.Foreground = new SolidColorBrush(Colors.DarkOrange);
 
             cuurrentParagraph.Inlines.Add(run);
             cuurrentParagraph.Inlines.Add(new LineBreak());
@@ -248,8 +252,27 @@ namespace Home
         {
             base.OnContentRendered(e);
 
-            webView2Environment = await CoreWebView2Environment.CreateAsync(userDataFolder: HomeConsts.WEBVIEW_CACHE_PATH);
-            await webViewReport.EnsureCoreWebView2Async(webView2Environment);
+            try
+            {
+                webView2Environment = await CoreWebView2Environment.CreateAsync(userDataFolder: HomeConsts.WEBVIEW_CACHE_PATH);
+                await webViewReport.EnsureCoreWebView2Async(webView2Environment);
+
+                if (ClientData.Instance.IgnoreWebVie2Error)
+                {
+                    ClientData.Instance.IgnoreWebVie2Error = false;
+                    ClientData.Instance.Save();
+                }
+            }
+            catch (Exception)
+            {
+                if (!ClientData.Instance.IgnoreWebVie2Error)
+                    MessageBox.Show(this, Properties.Resources.strWebView2RuntimeNotFound_Message, Home.Properties.Resources.strWebView2RuntimeNotFound_Title, MessageBoxButton.OK, MessageBoxImage.Error);
+                else
+                    AddProtocolEntry(Properties.Resources.strWebView2RuntimeNotFound_Message, isWarning: true);
+
+                ClientData.Instance.IgnoreWebVie2Error = true;
+                ClientData.Instance.Save();
+            }
         }
 
         private async void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
@@ -581,8 +604,12 @@ namespace Home
                 MenuButtonSendMessage.IsEnabled = true;
                 scrollToEnd = true;
 
-                await webViewReport.EnsureCoreWebView2Async(webView2Environment);
-                webViewReport.NavigateToString(Report.GenerateHtmlDeviceReport(currentDevice, Properties.Resources.strDateTimeFormat));
+                if (webView2Environment != null)
+                {
+                    await webViewReport?.EnsureCoreWebView2Async(webView2Environment);
+
+                    webViewReport.NavigateToString(Report.GenerateHtmlDeviceReport(currentDevice, Properties.Resources.strDateTimeFormat));
+                }
             }
             else
             {
@@ -891,7 +918,7 @@ namespace Home
             var result = sfd.ShowDialog();
 
             // Note we can only print if the view is already rendered!
-            if (result.HasValue && result.Value)
+            if (result.HasValue && result.Value && webView2Environment != null)
                 await webViewReport.CoreWebView2.PrintToPdfAsync(sfd.FileName);
 
             // Restore old tab index

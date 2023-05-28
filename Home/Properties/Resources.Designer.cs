@@ -2167,6 +2167,26 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die WebView2 Runtime couldn&apos;t be created, make sure WebView2 Runtime is installed!
+        ///
+        ///Download: https://developer.microsoft.com/en-us/microsoft-edge/webview2/ ähnelt.
+        /// </summary>
+        public static string strWebView2RuntimeNotFound_Message {
+            get {
+                return ResourceManager.GetString("strWebView2RuntimeNotFound_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die WebView2 Runtime not found! ähnelt.
+        /// </summary>
+        public static string strWebView2RuntimeNotFound_Title {
+            get {
+                return ResourceManager.GetString("strWebView2RuntimeNotFound_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die The Magic packet could not be sent: {0}! ähnelt.
         /// </summary>
         public static string strWOL_MagickPackageSendError {
