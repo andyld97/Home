@@ -904,4 +904,22 @@ Download: https://developer.microsoft.com/en-us/microsoft-edge/webview2/</value>
     <value>n/a</value>
     <comment>@Invariant</comment>
   </data>
+  <data name="strMacAddress" xml:space="preserve">
+    <value>MAC Address:</value>
+  </data>
+  <data name="strWakeUp_" xml:space="preserve">
+    <value>Wake Up!</value>
+  </data>
+  <data name="strWakeOnLanDialog_Title" xml:space="preserve">
+    <value>Wake On Lan</value>
+  </data>
+  <data name="strWakeOnLanDialog_InvalidMac" xml:space="preserve">
+    <value>Please enter a valid MAC address!</value>
+  </data>
+  <data name="strWakeOnLanDialog_FailedToSendWOLRequest" xml:space="preserve">
+    <value>Error while sending the WOL request!</value>
+  </data>
+  <data name="strWakeUpDevice" xml:space="preserve">
+    <value>Wake Up Device</value>
+  </data>
 </root>

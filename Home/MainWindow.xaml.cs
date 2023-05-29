@@ -224,7 +224,7 @@ namespace Home
 
             var result = await API.AquireScreenshotAsync(CLIENT, currentDevice);
             if (!result.Success)
-                MessageBox.Show(result.ErrorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(result.ErrorMessage, Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
         private void ScreenshotViewer_OnResize(bool isLittle)
@@ -397,6 +397,11 @@ namespace Home
                 else
                     MessageBox.Show(string.Format(Home.Properties.Resources.strWOL_MagickPackageSendError, result.ErrorMessage), Properties.Resources.strSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
             }
+        }
+        
+        public async Task<Answer<bool>> WakeUpDeviceAsync(string macAddress)
+        {
+            return await API.WakeOnLanAsync(macAddress);
         }
 
         private void RefreshOverview()
@@ -926,6 +931,7 @@ namespace Home
         }
         #endregion
 
+        #region Wake On LAN (WOL)
         private async void MenuButtonWakeOnLan_Click(object sender, RoutedEventArgs e)
         {
             var result = await API.GetSchedulingRulesAsync();
@@ -934,6 +940,12 @@ namespace Home
             else
                 MessageBox.Show(string.Format(Home.Properties.Resources.strDeviceScheduling_Settings_FailedToRecieveData, result.ErrorMessage), Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
         }
+
+        private void MenuButtonWakeUp_Click(object sender, RoutedEventArgs e)
+        {
+            new WOLDialog().ShowDialog();
+        }
+        #endregion
 
         #region Overview
         private bool ignoreCheckedChangedToggle = false;

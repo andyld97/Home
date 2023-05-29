@@ -46,6 +46,7 @@
                         <Fluent:MenuItem x:Name="MenuButtonShutdown" Click="MenuButtonShutdown_Click" Header="{x:Static res:Resources.strShutdown}" Icon="/resources/icons/menu/shutdown.png" />
                         <Fluent:MenuItem x:Name="MenuButtonReboot" Click="MenuButtonReboot_Click" Header="{x:Static res:Resources.strReboot}" Icon="/resources/icons/menu/reboot.png" />
                     </Fluent:DropDownButton>
+                    <Fluent:Button x:Name="MenuButtonWakeUp" Click="MenuButtonWakeUp_Click" LargeIcon="/resources/icons/menu/wol.png" Header="{x:Static res:Resources.strWakeUpDevice}" />
                     <Fluent:Button x:Name="MenuButtonSendCommand" Click="MenuButtonSendCommand_Click" Header="{x:Static res:Resources.strExecuteCommand}" LargeIcon="/resources/icons/menu/command.png" />
                 </Fluent:RibbonGroupBox>
 

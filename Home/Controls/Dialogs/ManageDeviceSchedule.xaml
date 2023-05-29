@@ -121,26 +121,8 @@
                         <TextBlock>
                             <Run Text="{x:Static res:Resources.strDevice}" /><Run Text=":" />
                         </TextBlock>
-                        <ComboBox x:Name="CmbDevices" Height="64" SelectionChanged="CmbDevices_SelectionChanged">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="64" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
 
-                                        <Image MaxHeight="64" Stretch="Uniform" Source="{Binding ., Converter={StaticResource deviceImageConverter}}" />
-
-                                        <StackPanel Margin="5,5,0,0" Orientation="Vertical" Grid.Column="1">
-                                            <TextBlock Text="{Binding Name}" FontWeight="Bold" />
-                                            <TextBlock Text="{Binding IP}" FontFamily="Consolas" />
-                                            <TextBlock Text="{Binding MacAddress}" FontFamily="Consolas" />
-                                        </StackPanel>
-                                    </Grid>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
+                        <ComboBox x:Name="CmbDevices" ItemTemplate="{DynamicResource DeviceComboBoxItemTemplate}" Height="64" SelectionChanged="CmbDevices_SelectionChanged" />
 
                         <TextBlock>
                             <Run Text="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_CustomMacAddress}" />

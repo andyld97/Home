@@ -261,10 +261,15 @@ namespace Home.Communication
 
         public async Task<Answer<bool>> WakeOnLanAsync(Device d)
         {
+            return await WakeOnLanAsync(d.MacAddress);
+        }
+
+        public async Task<Answer<bool>> WakeOnLanAsync(string macAddress)
+        {
             try
             {
                 string url = GenerateEpUrl(Endpoint.WOL, SendWakeUpRequest);
-                var result = await httpClient.GetAsync($"{url}/{d.MacAddress}/9");
+                var result = await httpClient.GetAsync($"{url}/{macAddress}/9");
 
                 result.EnsureSuccessStatusCode();
 

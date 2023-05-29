@@ -871,6 +871,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die MAC Address: ähnelt.
+        /// </summary>
+        public static string strMacAddress {
+            get {
+                return ResourceManager.GetString("strMacAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Manage rules ähnelt.
         /// </summary>
         public static string strManageDeviceSchedulingRules {
@@ -2167,11 +2176,56 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Error while sending the WOL request! ähnelt.
+        /// </summary>
+        public static string strWakeOnLanDialog_FailedToSendWOLRequest {
+            get {
+                return ResourceManager.GetString("strWakeOnLanDialog_FailedToSendWOLRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Please enter a valid MAC address! ähnelt.
+        /// </summary>
+        public static string strWakeOnLanDialog_InvalidMac {
+            get {
+                return ResourceManager.GetString("strWakeOnLanDialog_InvalidMac", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Wake On Lan ähnelt.
+        /// </summary>
+        public static string strWakeOnLanDialog_Title {
+            get {
+                return ResourceManager.GetString("strWakeOnLanDialog_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Wake Up (WOL) ähnelt.
         /// </summary>
         public static string strWakeUp {
             get {
                 return ResourceManager.GetString("strWakeUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Wake Up! ähnelt.
+        /// </summary>
+        public static string strWakeUp_ {
+            get {
+                return ResourceManager.GetString("strWakeUp_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Wake Up Device ähnelt.
+        /// </summary>
+        public static string strWakeUpDevice {
+            get {
+                return ResourceManager.GetString("strWakeUpDevice", resourceCulture);
             }
         }
         
