@@ -1159,6 +1159,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die n/a ähnelt.
+        /// </summary>
+        public static string strNA {
+            get {
+                return ResourceManager.GetString("strNA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die No ähnelt.
         /// </summary>
         public static string strNo {

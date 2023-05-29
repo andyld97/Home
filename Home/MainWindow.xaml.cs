@@ -1206,7 +1206,7 @@ namespace Home
             if (value is Battery b)
                 return $"{b.BatteryLevelInPercent}% ({Home.Properties.Resources.strCharging}: {(b.IsCharging ? Properties.Resources.strYes : Properties.Resources.strNo)})";
 
-            return "n/a";
+            return Properties.Resources.strNA;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

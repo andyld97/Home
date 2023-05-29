@@ -134,6 +134,7 @@
                     <Run Text="GB" />
                 </TextBlock>
                 <Fluent:ComboBox x:Name="CmbGraphics" Margin="-8,0,5,0" IsEditable="False" ItemsSource="{Binding Environment.GraphicCards}" SelectedIndex="0" />
+                <TextBlock x:Name="TextGraphics" Visibility="Collapsed" />
                 <TextBlock Text="{Binding BatteryInfo, Converter={StaticResource batteryInfoConverter}}" />
             </StackPanel>
         </Grid>

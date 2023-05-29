@@ -36,6 +36,21 @@ namespace Home.Controls
             // See ServiceVersionTextColorConverter: It the color is not set dynamically so if you change the theme in the settings to light/dark mode it needs
             // to be updated that it will be shown properly
             currentDevice.OnPropertyChanged(nameof(currentDevice.ServiceClientVersion));
+
+            if (currentDevice.Environment.GraphicCards.Count > 1)
+            {
+                CmbGraphics.Visibility = Visibility.Visible;
+                TextGraphics.Visibility = Visibility.Collapsed; 
+            }
+            else
+            {
+                CmbGraphics.Visibility = Visibility.Collapsed;
+                string graphics = currentDevice.Environment.GraphicCards.FirstOrDefault();
+                if (string.IsNullOrEmpty(graphics))
+                    graphics = Home.Properties.Resources.strUnkown;
+                TextGraphics.Text = graphics;
+                TextGraphics.Visibility = Visibility.Visible;
+            }
         }
     }
 
