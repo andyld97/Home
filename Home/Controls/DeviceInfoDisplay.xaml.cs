@@ -40,7 +40,7 @@ namespace Home.Controls
             if (currentDevice.Environment.GraphicCards.Count > 1)
             {
                 CmbGraphics.Visibility = Visibility.Visible;
-                TextGraphics.Visibility = Visibility.Collapsed; 
+                TextGraphics.Visibility = Visibility.Collapsed;
             }
             else
             {
@@ -49,6 +49,7 @@ namespace Home.Controls
                 if (string.IsNullOrEmpty(graphics))
                     graphics = Home.Properties.Resources.strUnkown;
                 TextGraphics.Text = graphics;
+                TextGraphics.ToolTip = graphics;
                 TextGraphics.Visibility = Visibility.Visible;
             }
         }
