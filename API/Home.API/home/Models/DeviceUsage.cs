@@ -17,5 +17,5 @@ public partial class DeviceUsage
 
     public string Battery { get; set; }
 
-    public virtual ICollection<Device> Device { get; } = new List<Device>();
+    public virtual ICollection<Device> Device { get; set; } = new List<Device>();
 }

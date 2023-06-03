@@ -1420,6 +1420,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die BIOS ähnelt.
+        /// </summary>
+        public static string strReport_BIOS {
+            get {
+                return ResourceManager.GetString("strReport_BIOS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Built Date ähnelt.
         /// </summary>
         public static string strReport_BuiltDate {
@@ -1659,6 +1668,15 @@ namespace Home.Properties {
         public static string strReport_RAM {
             get {
                 return ResourceManager.GetString("strReport_RAM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Release Date ähnelt.
+        /// </summary>
+        public static string strReport_ReleaseDate {
+            get {
+                return ResourceManager.GetString("strReport_ReleaseDate", resourceCulture);
             }
         }
         

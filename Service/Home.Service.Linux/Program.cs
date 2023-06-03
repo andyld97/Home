@@ -10,6 +10,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -533,6 +534,22 @@ namespace Home.Service.Linux
 
                 if (vendor != null && product != null)
                     device.Environment.Motherboard = $"{vendor} {product}";
+            }
+            if (childClass == "memory" && childID == "firmware")
+            {
+                string date = child.Value<string?>("date");
+                DateTime value = DateTime.MinValue;
+
+                if (date != null && DateTime.TryParse(date, CultureInfo.InvariantCulture, out value))
+                { }
+
+                device.BIOS = new BIOS()
+                {
+                    Description = child.Value<string?>("description"),
+                    ReleaseDate = value,
+                    Vendor = child.Value<string?>("vendor"),
+                    Version = child.Value<string?>("version"),
+                };
             }
             if (childClass == "memory")
                 device.Environment.TotalRAM = child.Value<long>("size");

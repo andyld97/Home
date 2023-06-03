@@ -207,6 +207,49 @@ namespace Home.Measure.Windows
             return string.Empty;
         }
 
+        public static void GetBIOSInfo(out string vendor, out string version, out string description, out DateTime? releaseDate)
+        {
+            vendor = string.Empty;
+            version = string.Empty;
+            description = string.Empty;
+            releaseDate = null;
+
+            ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_BIOS");
+
+            foreach (ManagementObject mo in searcher.Get())
+            {
+                foreach (PropertyData property in mo.Properties)
+                {
+                    if (property.Name == "Manufacturer")
+                        vendor = property.Value?.ToString();
+                    else if (property.Name == "SMBIOSBIOSVersion")
+                        version = property.Value?.ToString();
+                    else if (property.Name == "Description")
+                        description = property.Value?.ToString();
+                    else if (property.Name == "ReleaseDate" && property.Type == CimType.DateTime) 
+                    {
+                        // See https://github.com/vinaypamnani/wmie2/blob/master/WmiExplorer/Classes/ManagementBaseObjectPropertyDescriptor.cs#L206 for reference
+                        string dateString = property.Value.ToString();
+                        try
+                        {
+                            releaseDate = new DateTime(
+                            int.Parse(dateString.Substring(0, 4)),
+                            int.Parse(dateString.Substring(4, 2)),
+                            int.Parse(dateString.Substring(6, 2)),
+                            int.Parse(dateString.Substring(8, 2)),
+                            int.Parse(dateString.Substring(10, 2)),
+                            int.Parse(dateString.Substring(12, 2)),
+                            int.Parse(dateString.Substring(15, 6)) / 1000, DateTimeKind.Local);
+                        }
+                        catch (ArgumentOutOfRangeException)
+                        {
+                            releaseDate = null;
+                        }
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// May not be compatible with Windows XP
         /// </summary>
@@ -229,10 +272,8 @@ namespace Home.Measure.Windows
                     {
                         if (property.Name == "Name")
                             product = property.Value?.ToString();
-
                         else if (property.Name == "Description")
                             description = property.Value?.ToString();
-
                         else if (property.Name == "Vendor")
                             vendor = property.Value?.ToString();
                     }

@@ -922,4 +922,11 @@ Download: https://developer.microsoft.com/en-us/microsoft-edge/webview2/</value>
   <data name="strWakeUpDevice" xml:space="preserve">
     <value>Wake Up Device</value>
   </data>
+  <data name="strReport_BIOS" xml:space="preserve">
+    <value>BIOS</value>
+    <comment>@Invariant</comment>
+  </data>
+  <data name="strReport_ReleaseDate" xml:space="preserve">
+    <value>Release Date</value>
+  </data>
 </root>

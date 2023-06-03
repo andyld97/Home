@@ -858,4 +858,7 @@ Herunterladen: https://developer.microsoft.com/en-us/microsoft-edge/webview2/</v
   <data name="strWakeUpDevice" xml:space="preserve">
     <value>Gerät aufwecken</value>
   </data>
+  <data name="strReport_ReleaseDate" xml:space="preserve">
+    <value>Erscheinungsdatum</value>
+  </data>
 </root>

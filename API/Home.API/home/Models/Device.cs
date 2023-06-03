@@ -39,27 +39,29 @@ public partial class Device
 
     public int? DeviceUsageId { get; set; }
 
-    public virtual ICollection<DeviceChange> DeviceChange { get; } = new List<DeviceChange>();
+    public virtual ICollection<DeviceBios> DeviceBios { get; set; } = new List<DeviceBios>();
 
-    public virtual ICollection<DeviceCommand> DeviceCommand { get; } = new List<DeviceCommand>();
+    public virtual ICollection<DeviceChange> DeviceChange { get; set; } = new List<DeviceChange>();
 
-    public virtual ICollection<DeviceDiskDrive> DeviceDiskDrive { get; } = new List<DeviceDiskDrive>();
+    public virtual ICollection<DeviceCommand> DeviceCommand { get; set; } = new List<DeviceCommand>();
 
-    public virtual ICollection<DeviceGraphic> DeviceGraphic { get; } = new List<DeviceGraphic>();
+    public virtual ICollection<DeviceDiskDrive> DeviceDiskDrive { get; set; } = new List<DeviceDiskDrive>();
 
-    public virtual ICollection<DeviceLog> DeviceLog { get; } = new List<DeviceLog>();
+    public virtual ICollection<DeviceGraphic> DeviceGraphic { get; set; } = new List<DeviceGraphic>();
 
-    public virtual ICollection<DeviceMessage> DeviceMessage { get; } = new List<DeviceMessage>();
+    public virtual ICollection<DeviceLog> DeviceLog { get; set; } = new List<DeviceLog>();
 
-    public virtual ICollection<DeviceScreen> DeviceScreen { get; } = new List<DeviceScreen>();
+    public virtual ICollection<DeviceMessage> DeviceMessage { get; set; } = new List<DeviceMessage>();
 
-    public virtual ICollection<DeviceScreenshot> DeviceScreenshot { get; } = new List<DeviceScreenshot>();
+    public virtual ICollection<DeviceScreen> DeviceScreen { get; set; } = new List<DeviceScreen>();
+
+    public virtual ICollection<DeviceScreenshot> DeviceScreenshot { get; set; } = new List<DeviceScreenshot>();
 
     public virtual DeviceType DeviceType { get; set; }
 
     public virtual DeviceUsage DeviceUsage { get; set; }
 
-    public virtual ICollection<DeviceWarning> DeviceWarning { get; } = new List<DeviceWarning>();
+    public virtual ICollection<DeviceWarning> DeviceWarning { get; set; } = new List<DeviceWarning>();
 
     public virtual DeviceEnvironment Environment { get; set; }
 

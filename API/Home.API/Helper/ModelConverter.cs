@@ -163,6 +163,33 @@ namespace Home.API.Helper
             foreach (var item in toRemove)
                 homeContext.DeviceScreen.Remove(item);
 
+            // Check BIOS
+            if (device.BIOS != null)
+            {
+                var bios = updateDevice.DeviceBios.FirstOrDefault();
+                DateTime? releaseDate = device.BIOS.ReleaseDate;
+                if (releaseDate == DateTime.MinValue)
+                    releaseDate = null; 
+
+                if (bios == null)
+                {
+                    updateDevice.DeviceBios.Add(new DeviceBios() 
+                    {
+                        Description = device.BIOS.Description,
+                        Vendor = device.BIOS.Vendor,
+                        ReleaseDate = releaseDate,
+                        Version = device.BIOS.Version,
+                    });
+                }
+                else
+                {
+                    bios.ReleaseDate = releaseDate;
+                    bios.Version = device.BIOS.Version;
+                    bios.Vendor = device.BIOS.Vendor;   
+                    bios.Description = device.BIOS.Description;
+                }
+            }
+
             return updateDevice;
         }
 
@@ -242,6 +269,20 @@ namespace Home.API.Helper
                 // Device changes
                 foreach (var change in device.DeviceChange)
                     result.DevicesChanges.Add(new DeviceChangeEntry() { Timestamp = change.Timestamp, Description = change.Description, Type = (DeviceChangeEntry.DeviceChangeType)change.Type });
+
+                // BIOS
+                if (device.DeviceBios.FirstOrDefault() != null)
+                {
+                    var bios = device.DeviceBios.FirstOrDefault();
+                    result.BIOS = new BIOS()
+                    {
+                        Description = bios.Description,
+                        ReleaseDate = bios.ReleaseDate ?? DateTime.MinValue,
+                        Vendor = bios.Vendor,
+                        Version = bios.Version  
+                    };
+                }
+
 
                 // Usage
                 result.Usage = new Home.Model.DeviceUsage();

@@ -11,5 +11,5 @@ public partial class DeviceType
 
     public string Type { get; set; }
 
-    public virtual ICollection<Device> Device { get; } = new List<Device>();
+    public virtual ICollection<Device> Device { get; set; } = new List<Device>();
 }

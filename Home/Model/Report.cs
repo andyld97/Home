@@ -7,14 +7,16 @@ using System.Text;
 
 namespace Model
 {
-    public class Report
+    public static class Report
     {
         /// <summary>
-        /// Generates a html report for the given device based on templates (can be found in resources)
+        /// Generates an HTML report for the given device based on templates (can be found in resources)
         /// </summary>
         /// <param name="device"></param>
+        /// <param name="dateTimeFormat"></param>
+        /// <param name="dateFormat"></param>
         /// <returns></returns>
-        public static string GenerateHtmlDeviceReport(Device device, string dateTimeFormat)
+        public static string GenerateHtmlDeviceReport(Device device, string dateTimeFormat, string dateFormat)
         {
             string htmlTemplate = GetHtmlTemplate("template");
 
@@ -105,6 +107,20 @@ namespace Model
                 htmlTemplate = htmlTemplate.Replace("{screen}", screenTemplate);
             }
 
+            if (device.BIOS == null)
+                htmlTemplate = htmlTemplate.Replace("{bios}", string.Empty);
+            else
+            {
+                string tmp = GetHtmlTemplate("bios_template");
+
+                tmp = tmp.Replace("{bios1}", device.BIOS.Vendor);
+                tmp = tmp.Replace("{bios2}", device.BIOS.Description);
+                tmp = tmp.Replace("{bios3}", device.BIOS.Version);
+                tmp = tmp.Replace("{bios4}", device.BIOS.ReleaseDate.ToString(dateFormat));
+
+                htmlTemplate = htmlTemplate.Replace("{bios}", tmp);
+            }
+
             // Warnings
             string warningsText = string.Empty;
 
@@ -186,6 +202,11 @@ namespace Model
             htmlTemplate = htmlTemplate.Replace("{strBuiltDate}", Home.Properties.Resources.strReport_BuiltDate);
             htmlTemplate = htmlTemplate.Replace("{strResolution}", Home.Properties.Resources.strReport_Resolution);
             htmlTemplate = htmlTemplate.Replace("{strIsPrimary}", Home.Properties.Resources.strReport_IsPrimary);
+
+            // BIOS
+            htmlTemplate = htmlTemplate.Replace("{strBIOS}", Home.Properties.Resources.strReport_BIOS);
+            htmlTemplate = htmlTemplate.Replace("{strVersion}", Home.Properties.Resources.strReport_Version);
+            htmlTemplate = htmlTemplate.Replace("{strReleaseDate}", Home.Properties.Resources.strReport_ReleaseDate);
 
             return htmlTemplate;
         }

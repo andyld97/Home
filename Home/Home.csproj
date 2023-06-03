@@ -32,6 +32,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="resources\icons\bios.png" />
     <None Remove="resources\icons\change.png" />
     <None Remove="resources\icons\cpu.png" />
     <None Remove="resources\icons\devices\androidtvstick.png" />
@@ -76,6 +77,7 @@
     <None Remove="resources\icons\screen_offline.png" />
     <None Remove="resources\images\default_phone.png" />
     <None Remove="resources\images\logo.png" />
+    <None Remove="resources\report\bios_template.html" />
     <None Remove="resources\report\disk_template.html" />
     <None Remove="resources\report\display_template.html" />
     <None Remove="resources\report\template.html" />
@@ -106,6 +108,7 @@
     <PackageReference Include="WebhookAPI" Version="1.0.2" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="resources\icons\bios.png" />
     <Resource Include="resources\icons\cpu.png" />
     <Resource Include="resources\icons\devices\offline\desktop_linux.png" />
     <Resource Include="resources\icons\devices\offline\desktop_mint.png" />
@@ -212,6 +215,7 @@
     <Resource Include="resources\icons\devices\notebook_windows_xp.png" />
     <Resource Include="resources\icons\devices\desktop_linux.png" />
     <Content Include="resources\icons\devices\desktop_mint.png" />
+    <EmbeddedResource Include="resources\report\bios_template.html" />
     <EmbeddedResource Include="resources\report\disk_template.html" />
     <EmbeddedResource Include="resources\report\display_template.html" />
     <EmbeddedResource Include="resources\report\template.html" />

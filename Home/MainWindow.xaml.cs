@@ -613,7 +613,7 @@ namespace Home
                 {
                     await webViewReport?.EnsureCoreWebView2Async(webView2Environment);
 
-                    webViewReport.NavigateToString(Report.GenerateHtmlDeviceReport(currentDevice, Properties.Resources.strDateTimeFormat));
+                    webViewReport.NavigateToString(Report.GenerateHtmlDeviceReport(currentDevice, Properties.Resources.strDateTimeFormat, Properties.Resources.strDateFormat));
                 }
             }
             else
@@ -890,7 +890,7 @@ namespace Home
             if (currentDevice == null)
                 return;
 
-            var report = Report.GenerateHtmlDeviceReport(currentDevice, Properties.Resources.strDateTimeFormat);
+            var report = Report.GenerateHtmlDeviceReport(currentDevice, Properties.Resources.strDateTimeFormat, Properties.Resources.strDateFormat);
 
             SaveFileDialog sfd = new SaveFileDialog() { Filter = Home.Properties.Resources.strHtmlReportFilter };
             sfd.FileName = $"{currentDevice.Name}.html";
