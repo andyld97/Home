@@ -61,7 +61,16 @@ namespace Home.Service.Windows.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die API Url: ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Allow remote access to the file system ähnelt.
+        /// </summary>
+        public static string strAllowRemoteFileAccess {
+            get {
+                return ResourceManager.GetString("strAllowRemoteFileAccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die API Url ähnelt.
         /// </summary>
         public static string strAPIUrl {
             get {
@@ -198,7 +207,7 @@ namespace Home.Service.Windows.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die OS: ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Operating System: ähnelt.
         /// </summary>
         public static string strOS {
             get {

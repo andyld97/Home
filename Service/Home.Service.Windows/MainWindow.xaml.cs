@@ -100,7 +100,7 @@ namespace Home.Service.Windows
             }
 
             if (App.IsConfigFlagSet)
-                App.StartAspNETApiThread();
+                App.StartAPIThread();
 
             api = new Communication.API(ServiceData.Instance.APIUrl);
             legacyAPI = new LegacyAPI(ServiceData.Instance.APIUrl);
@@ -372,6 +372,7 @@ namespace Home.Service.Windows
             CmbOS.SelectedItem = data.SystemType;
             CmbDeviceType.SelectedItem = data.Type;
             chkEnableScreenshots.IsChecked = data.PostScreenshots;
+            chkEnableFileAccess.IsChecked = data.AllowRemoteFileAccess;
             chkEnableUpdatesOnStartup.IsChecked = ServiceData.Instance.UpdateOnStartup;
             chkEnableUpdateSearch.IsChecked = ServiceData.Instance.UseUpdateTimer;
             NumUpdateHours.Value = ServiceData.Instance.UpdateTimerIntervalHours;
@@ -404,6 +405,7 @@ namespace Home.Service.Windows
                 ServiceData.Instance.UpdateOnStartup = chkEnableUpdatesOnStartup.IsChecked.Value;
                 ServiceData.Instance.UseUpdateTimer = chkEnableUpdateSearch.IsChecked.Value;
                 ServiceData.Instance.UpdateTimerIntervalHours = NumUpdateHours.Value;
+                ServiceData.Instance.AllowRemoteFileAccess = chkEnableFileAccess.IsChecked.Value;
 
                 return true;
             }

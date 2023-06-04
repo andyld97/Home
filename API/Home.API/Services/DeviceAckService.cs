@@ -388,8 +388,10 @@ namespace Home.API.Services
                 var right = requestedDevice.BIOS;
 
                 if (left != right)
-                    await RegisterDeviceChangeAsync(prefix, $"BIOS changed from {left} to {right}", DeviceChangeType.BIOS, currentDevice, now); 
+                    await RegisterDeviceChangeAsync(prefix, $"BIOS changed from {left} to {right}", DeviceChangeType.BIOS, currentDevice, now);
             }
+            else if (currentDevice.DeviceBios.Any() && requestedDevice.BIOS == null)
+                currentDevice.DeviceBios.Clear();
 
             // Screens
             bool screenConfigChanged = false;
