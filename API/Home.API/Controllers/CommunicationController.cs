@@ -401,6 +401,9 @@ namespace Home.API.Controllers
                 foreach (var item in device.DeviceScreen)
                     _context.DeviceScreen.Remove(item);
 
+                foreach (var item in device.DeviceBios)
+                    _context.DeviceBios.Remove(item);
+
                 // ToDo: *** Also remove the screenshot files from the server!
                 foreach (var item in device.DeviceScreenshot)
                     _context.DeviceScreenshot.Remove(item);
