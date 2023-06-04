@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Home.Service.Windows"
-#define MyAppVersion "1.0.5"
+#define MyAppVersion "1.0.7"
 #define MyAppPublisher "Code A Software"
 #define MyAppURL "https://github.com/andyld97/Home"
 #define MyAppExeName "Home.Service.Windows.exe"
@@ -95,6 +95,8 @@ Source: "bin\Release\net7.0-windows\publish\System.ServiceModel.Syndication.dll"
 Source: "bin\Release\net7.0-windows\publish\System.ServiceProcess.ServiceController.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\System.Speech.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\System.Web.Services.Description.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net7.0-windows\publish\System.Text.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net7.0-windows\publish\System.Text.Encodings.Web.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\NumericUpDownLib.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
