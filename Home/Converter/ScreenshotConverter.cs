@@ -19,9 +19,9 @@ namespace Home.Converter
                 var lastExistingScreenshot = d.Screenshots.OrderByDescending(p => p.Timestamp).FirstOrDefault(x => x.ScreenIndex == 0 || x.ScreenIndex == null)?.Filename;
                 if (lastExistingScreenshot != null)
                 {
-                    string path = System.IO.Path.Combine(MainWindow.CACHE_PATH, d.ID, lastExistingScreenshot) + ".png";
+                    string path = System.IO.Path.Combine(HomeConsts.CACHE_PATH, d.ID, lastExistingScreenshot) + ".png";
                     if (!System.IO.File.Exists(path))
-                        Task.Run(async () => await MainWindow.API.DownloadScreenshotToCache(d, MainWindow.CACHE_PATH, lastExistingScreenshot)).Wait();
+                        Task.Run(async () => await MainWindow.API.DownloadScreenshotToCache(d, HomeConsts.CACHE_PATH, lastExistingScreenshot)).Wait();
 
                     return ImageHelper.LoadImage(path, true, d.Type == Device.DeviceType.Smartphone);
                 }

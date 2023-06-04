@@ -10,6 +10,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -41,6 +42,7 @@ namespace Home.Service.Linux
         private static bool enableScreenshots = true;
         private static bool checkForUpdatesOnStart = true;
         private static bool useAutomaticUpdateTimer = false;
+        private static bool enableRemoteFileAccess = true;
         private static int automaticTimerIntervalHours = 24;
 
         #endregion
@@ -58,7 +60,7 @@ namespace Home.Service.Linux
             // Check if mutex is acquired
             if (!AppMutex.WaitOne(TimeSpan.FromSeconds(1), false))
             {
-                Console.WriteLine("Home.Service.Linux is already started!");
+                Trace.WriteLine("Home.Service.Linux is already started!");
                 Environment.Exit(-1);
                 return;
             }
@@ -82,7 +84,10 @@ namespace Home.Service.Linux
                 // Parse settings
                 if (config.ContainsKey("enable_screenshots"))
                     enableScreenshots = config["enable_screenshots"].Value<bool>();
-                
+
+                if (config.ContainsKey("enable_remote_file_access"))
+                    enableRemoteFileAccess = config["enable_remote_file_access"].Value<bool>();
+
                 if (config.ContainsKey("check_for_updates_on_start"))
                     checkForUpdatesOnStart = config["check_for_updates_on_start"].Value<bool>();
 
@@ -100,7 +105,9 @@ namespace Home.Service.Linux
                     var args = Environment.GetCommandLineArgs();
                     CreateHostBuilder(args).Build().Run();
                 }));
-                apiThread.Start();
+
+                if (enableRemoteFileAccess)
+                    apiThread.Start();
 
                 MainAsync(args, configJson);
 
@@ -111,10 +118,10 @@ namespace Home.Service.Linux
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exiting: " + e.ToString());
+                Trace.WriteLine("Exiting: " + e.ToString());
 
                 if (e.InnerException != null)
-                    Console.WriteLine($"Inner Exception: {e.InnerException.ToString()}");
+                    Trace.WriteLine($"Inner Exception: {e.InnerException.ToString()}");
 
                 AppMutex.ReleaseMutex();
                 return;
@@ -175,7 +182,7 @@ namespace Home.Service.Linux
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Failed to save data: {ex.Message}");
+                    Trace.WriteLine($"Failed to save data: {ex.Message}");
                 }
             } 
 
@@ -533,6 +540,22 @@ namespace Home.Service.Linux
 
                 if (vendor != null && product != null)
                     device.Environment.Motherboard = $"{vendor} {product}";
+            }
+            if (childClass == "memory" && childID == "firmware")
+            {
+                string date = child.Value<string?>("date");
+                DateTime value = DateTime.MinValue;
+
+                if (date != null && DateTime.TryParse(date, CultureInfo.InvariantCulture, out value))
+                { }
+
+                device.BIOS = new BIOS()
+                {
+                    Description = child.Value<string?>("description"),
+                    ReleaseDate = value,
+                    Vendor = child.Value<string?>("vendor"),
+                    Version = child.Value<string?>("version"),
+                };
             }
             if (childClass == "memory")
                 device.Environment.TotalRAM = child.Value<long>("size");

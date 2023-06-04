@@ -65,7 +65,7 @@ namespace Home.Model
             get => guid?.ToString();
             set
             {
-                if (guid != null)
+                if (guid != value)
                 {
                     guid = value;
                     OnPropertyChanged(nameof(ID));
@@ -233,9 +233,15 @@ namespace Home.Model
             }
         }
 
+        [JsonProperty("bios")]
+#if !LEGACY
+        [JsonPropertyName("bios")]
+#endif
+        public BIOS BIOS { get; set; }
+
         [JsonProperty("log_entries")]
          #if !LEGACY
-        [System.Text.Json.Serialization.JsonPropertyName("log_entries")]
+        [JsonPropertyName("log_entries")]
         #endif
         public ObservableCollection<LogEntry> LogEntries { get; set; } = new ObservableCollection<LogEntry>();
 
@@ -583,6 +589,17 @@ namespace Home.Model
             DeviceGroup = other.DeviceGroup;
             Location = other.location;
 
+            if (other.BIOS != null)
+            {
+                if (BIOS == null)
+                    BIOS = new BIOS();
+
+                BIOS.Vendor = other.BIOS.Vendor;
+                BIOS.Description = other.BIOS.Description;
+                BIOS.Version = other.BIOS.Version;
+                BIOS.ReleaseDate = other.BIOS.ReleaseDate;
+            }
+
             // Update environment
             Environment.CPUCount = other.Environment.CPUCount;
             Environment.CPUName = other.Environment.CPUName;
@@ -615,7 +632,7 @@ namespace Home.Model
             BatteryInfo = other.BatteryInfo;
 
 #if !LEGACY
-            // Don't update StorageWarnings because it will only be set via api and not via clients - except it is used locally in Home GUI App
+            // Don't update StorageWarnings because it will only be set via API and not via clients - except it is used locally in Home GUI App
             if (isLocal)
             {
                 StorageWarnings = other.StorageWarnings;
@@ -1438,6 +1455,70 @@ namespace Home.Model
         public string Resolution { get; set; }
     }
 
+    public class BIOS
+    {
+        [JsonProperty("vendor")]
+#if !LEGACY
+        [JsonPropertyName("vendor")]
+#endif
+        public string Vendor { get; set; }
+
+        [JsonProperty("version")]
+#if !LEGACY
+        [JsonPropertyName("version")]
+#endif
+        public string Version { get; set; }
+
+        [JsonProperty("description")]
+#if !LEGACY
+        [JsonPropertyName("description")]
+#endif
+        public string Description { get; set; }
+
+        [JsonProperty("release_date")]
+#if !LEGACY
+        [JsonPropertyName("release_date")]
+#endif
+        public DateTime ReleaseDate { get; set; }
+
+#if !LEGACY
+        public string BuildHash()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(Vendor);
+            sb.Append(Version);
+            sb.Append(Description);
+            if (ReleaseDate > DateTime.MinValue)    
+                sb.Append(ReleaseDate.ToString("s"));
+
+            return sb.ToString().BuildSHA1Hash();
+        }
+
+        public static bool operator ==(BIOS b1, BIOS b2)
+        {
+            return b1?.BuildHash() == b2?.BuildHash();
+        }
+
+        public static bool operator !=(BIOS b1, BIOS b2)
+        {
+            return (b1?.BuildHash() != b2?.BuildHash()); 
+        }
+
+#endif
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append(Vendor);
+            sb.Append($" ({Version})");
+            if (ReleaseDate > DateTime.MinValue)
+                sb.AppendLine($"Release-Date: {ReleaseDate.ToShortDateString()}");
+
+            return sb.ToString();
+        }
+    }
+
 
 #if !LEGACY
 
@@ -1461,6 +1542,7 @@ namespace Home.Model
             OS = 4,
             IP = 5,
             DiskDrive = 6,
+            BIOS = 7,
 
             None = 10000
         }

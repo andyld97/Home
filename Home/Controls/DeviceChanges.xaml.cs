@@ -93,13 +93,14 @@ namespace Home.Controls
                 string icon = string.Empty;
                 switch (change)
                 {
-                    case DeviceChangeEntry.DeviceChangeType.CPU: icon = "cpu.png"; break;
-                    case DeviceChangeEntry.DeviceChangeType.RAM: icon = "ram.png"; break;
-                    case DeviceChangeEntry.DeviceChangeType.Motherboard: icon = "motherboard.png"; break;
-                    case DeviceChangeEntry.DeviceChangeType.Graphics: icon = "graphics.png"; break;
-                    case DeviceChangeEntry.DeviceChangeType.OS: icon = "menu/change.png"; break;
-                    case DeviceChangeEntry.DeviceChangeType.IP: icon = "info.png"; break;
-                    case DeviceChangeEntry.DeviceChangeType.DiskDrive: icon = "hdd.png"; break;
+                    case DeviceChangeType.CPU: icon = "cpu.png"; break;
+                    case DeviceChangeType.RAM: icon = "ram.png"; break;
+                    case DeviceChangeType.Motherboard: icon = "motherboard.png"; break;
+                    case DeviceChangeType.Graphics: icon = "graphics.png"; break;
+                    case DeviceChangeType.OS: icon = "menu/change.png"; break;
+                    case DeviceChangeType.IP: icon = "info.png"; break;
+                    case DeviceChangeType.DiskDrive: icon = "hdd.png"; break;
+                    case DeviceChangeType.BIOS: icon = "bios.png"; break;
                 }
 
                 if (!string.IsNullOrEmpty(icon))

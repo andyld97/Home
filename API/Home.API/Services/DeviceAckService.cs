@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Home.Model.DeviceChangeEntry;
 
 namespace Home.API.Services
 {
@@ -71,7 +72,7 @@ namespace Home.API.Services
                     }
 
                     // If there is a change, append it in the log and notify webhook
-                    await DetectAnyDevicesChangesAndLogAsync(currentDevice, requestedDevice, now);
+                    await DetectAndRegisterDeviceChangesAsync(currentDevice, requestedDevice, now);
 
                     isScreenshotRequired = currentDevice.IsScreenshotRequired;
 
@@ -327,10 +328,14 @@ namespace Home.API.Services
             _logger.LogInformation(message);
         }
 
-        private async Task DetectAnyDevicesChangesAndLogAsync(home.Models.Device currentDevice, Home.Model.Device requestedDevice, DateTime now)
+        private async Task DetectAndRegisterDeviceChangesAsync(home.Models.Device currentDevice, Home.Model.Device requestedDevice, DateTime now)
         {
             // Detect any device changes and log them (also log to Webhook)            
             string prefix = $"Device \"{requestedDevice.Name}\"";
+
+            // Check if the device name changed
+            if (currentDevice.Name != requestedDevice.Name)
+                await RegisterDeviceChangeAsync(prefix, $"Name changed from {currentDevice.Name} to {requestedDevice.Name}", DeviceChangeType.None, currentDevice, now);
 
             // Check if a newer client version is used
             if (currentDevice.ServiceClientVersion != requestedDevice.ServiceClientVersion && !string.IsNullOrEmpty(currentDevice.ServiceClientVersion))
@@ -338,7 +343,7 @@ namespace Home.API.Services
 
             // Check if os name changed
             if (currentDevice.OstypeNavigation.Name != requestedDevice.OS.ToString())
-                await RegisterDeviceChangeAsync(prefix, $"OS change from {currentDevice.OstypeNavigation.Name} to {requestedDevice.OS}", DeviceChangeEntry.DeviceChangeType.OS, currentDevice, now);
+                await RegisterDeviceChangeAsync(prefix, $"OS change from {currentDevice.OstypeNavigation.Name} to {requestedDevice.OS}", DeviceChangeType.OS, currentDevice, now);
 
             // Check if os version changed (don't ignore updates in general)
             if (currentDevice.Environment.Osversion != requestedDevice.Environment.OSVersion && !string.IsNullOrEmpty(currentDevice.Environment.Osversion))
@@ -365,7 +370,28 @@ namespace Home.API.Services
 
             // IP Change
             if (currentDevice.Ip.Replace("/24", string.Empty) != requestedDevice.IP.Replace("/24", string.Empty) && !string.IsNullOrEmpty(requestedDevice.IP))
-                await RegisterDeviceChangeAsync(prefix, $"IP change from {currentDevice.Ip} to {requestedDevice.IP}", DeviceChangeEntry.DeviceChangeType.IP, currentDevice, now);
+                await RegisterDeviceChangeAsync(prefix, $"IP change from {currentDevice.Ip} to {requestedDevice.IP}", DeviceChangeType.IP, currentDevice, now);
+
+            // BIOS Change
+            if (currentDevice.DeviceBios.Any() && requestedDevice.BIOS != null)
+            {
+                var dbBios = currentDevice.DeviceBios.FirstOrDefault();
+                // Compare both (currently the database will only hold one BIOS per device, but there can be more at a later point of time)
+                var left = new BIOS()
+                {
+                    Description = dbBios.Description,
+                    ReleaseDate = dbBios.ReleaseDate ?? DateTime.MinValue,
+                    Vendor = dbBios.Vendor,
+                    Version = dbBios.Version,
+                };
+
+                var right = requestedDevice.BIOS;
+
+                if (left != right)
+                    await RegisterDeviceChangeAsync(prefix, $"BIOS changed from {left} to {right}", DeviceChangeType.BIOS, currentDevice, now);
+            }
+            else if (currentDevice.DeviceBios.Any() && requestedDevice.BIOS == null)
+                currentDevice.DeviceBios.Clear();
 
             // Screens
             bool screenConfigChanged = false;

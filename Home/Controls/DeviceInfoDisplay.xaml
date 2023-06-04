@@ -14,6 +14,7 @@
         <home:BatteryInfoConverter x:Key="batteryInfoConverter" />
         <converter:OSNameConverter x:Key="osNameConverter" />
         <converter:OS64BitConverter x:Key="os64BitConverter" />
+        <controls:ServiceVersionToolTipConverter x:Key="serviceVersionToolTipConverter" />
         <controls:ServiceVersionTextColorConverter x:Key="serviceVersionTextColorConverter" />
 
         <Style x:Key="infoBox" TargetType="{x:Type TextBlock}">
@@ -77,7 +78,7 @@
                 <TextBlock Text="{Binding Environment.Vendor, Converter={StaticResource emptyConverter}}" />
                 <TextBlock Text="{Binding Environment.Product, Converter={StaticResource emptyConverter}}" />
                 <TextBlock Text="{Binding Environment.Description, Converter={StaticResource emptyConverter}}"/>
-                <TextBlock x:Name="TextOSName" ToolTip="{Binding ElementName=TextOSName, Path=Text}" Width="685">
+                <TextBlock x:Name="TextOSName" ToolTip="{Binding ElementName=TextOSName, Path=Text}">
                     <Run Text="{Binding ., Converter={StaticResource osNameConverter}}" />
                     <Run Text="(" /><Run Text="{Binding Environment.Is64BitOS, Converter={StaticResource os64BitConverter}}" /><Run Text=")" />
                 </TextBlock>
@@ -93,7 +94,7 @@
                     </TextBlock.Text>
                 </TextBlock>
                 <TextBlock Text="{Binding Location, Converter={StaticResource emptyConverter}}" />
-                <TextBlock Text="{Binding ServiceClientVersion, Converter={StaticResource emptyConverter}}" Foreground="{Binding ServiceClientVersion, Converter={StaticResource serviceVersionTextColorConverter}}" />
+                <TextBlock Text="{Binding ServiceClientVersion, Converter={StaticResource emptyConverter}}" ToolTip="{Binding ServiceClientVersion, Converter={StaticResource serviceVersionToolTipConverter}}" Foreground="{Binding ServiceClientVersion, Converter={StaticResource serviceVersionTextColorConverter}}" />
             </StackPanel>
         </Grid>
 
@@ -133,6 +134,7 @@
                     <Run Text="GB" />
                 </TextBlock>
                 <Fluent:ComboBox x:Name="CmbGraphics" Margin="-8,0,5,0" IsEditable="False" ItemsSource="{Binding Environment.GraphicCards}" SelectedIndex="0" />
+                <TextBlock x:Name="TextGraphics" Visibility="Collapsed" />
                 <TextBlock Text="{Binding BatteryInfo, Converter={StaticResource batteryInfoConverter}}" />
             </StackPanel>
         </Grid>

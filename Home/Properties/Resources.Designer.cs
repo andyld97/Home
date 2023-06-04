@@ -241,6 +241,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die {0} Screenshots ({1}) have been cleaned up! ähnelt.
+        /// </summary>
+        public static string strCleanUpResultMessage {
+            get {
+                return ResourceManager.GetString("strCleanUpResultMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Clear Log ähnelt.
         /// </summary>
         public static string strClearLog {
@@ -250,11 +259,38 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die The device uses an outdated client version! ähnelt.
+        /// </summary>
+        public static string strClientVersionNotUpToDate {
+            get {
+                return ResourceManager.GetString("strClientVersionNotUpToDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die The device uses the latest client version! ähnelt.
+        /// </summary>
+        public static string strClientVersionUpToDate {
+            get {
+                return ResourceManager.GetString("strClientVersionUpToDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Commands ähnelt.
         /// </summary>
         public static string strCommands {
             get {
                 return ResourceManager.GetString("strCommands", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Successfully connected to &quot;{0}&quot;! ähnelt.
+        /// </summary>
+        public static string strConnectedSuccessfullyMessage {
+            get {
+                return ResourceManager.GetString("strConnectedSuccessfullyMessage", resourceCulture);
             }
         }
         
@@ -345,6 +381,78 @@ namespace Home.Properties {
         public static string strDevice {
             get {
                 return ResourceManager.GetString("strDevice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Battery Remaining (%) ähnelt.
+        /// </summary>
+        public static string strDeviceActivityPlot_Battery_Name {
+            get {
+                return ResourceManager.GetString("strDeviceActivityPlot_Battery_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Battery Remaining: {0} % ähnelt.
+        /// </summary>
+        public static string strDeviceActivityPlot_Battery_Tooltip {
+            get {
+                return ResourceManager.GetString("strDeviceActivityPlot_Battery_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die CPU Usage (%) ähnelt.
+        /// </summary>
+        public static string strDeviceActivityPlot_CPU_Name {
+            get {
+                return ResourceManager.GetString("strDeviceActivityPlot_CPU_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die CPU: {0} % ähnelt.
+        /// </summary>
+        public static string strDeviceActivityPlot_CPU_Tooltip {
+            get {
+                return ResourceManager.GetString("strDeviceActivityPlot_CPU_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die DISK Usage (%) ähnelt.
+        /// </summary>
+        public static string strDeviceActivityPlot_DISK_Name {
+            get {
+                return ResourceManager.GetString("strDeviceActivityPlot_DISK_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die DISK: {0} % ähnelt.
+        /// </summary>
+        public static string strDeviceActivityPlot_DISK_Tooltip {
+            get {
+                return ResourceManager.GetString("strDeviceActivityPlot_DISK_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die RAM Usage (%) ähnelt.
+        /// </summary>
+        public static string strDeviceActivityPlot_RAM_Name {
+            get {
+                return ResourceManager.GetString("strDeviceActivityPlot_RAM_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die RAM: {0} % ähnelt.
+        /// </summary>
+        public static string strDeviceActivityPlot_RAM_Tooltip {
+            get {
+                return ResourceManager.GetString("strDeviceActivityPlot_RAM_Tooltip", resourceCulture);
             }
         }
         
@@ -507,6 +615,15 @@ namespace Home.Properties {
         public static string strFailedToClearDeviceLog {
             get {
                 return ResourceManager.GetString("strFailedToClearDeviceLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Failed to connected to &quot;{0}&quot;: {1} ähnelt.
+        /// </summary>
+        public static string strFailedToConnectMessage {
+            get {
+                return ResourceManager.GetString("strFailedToConnectMessage", resourceCulture);
             }
         }
         
@@ -750,6 +867,15 @@ namespace Home.Properties {
         public static string strLocation {
             get {
                 return ResourceManager.GetString("strLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die MAC Address: ähnelt.
+        /// </summary>
+        public static string strMacAddress {
+            get {
+                return ResourceManager.GetString("strMacAddress", resourceCulture);
             }
         }
         
@@ -1042,6 +1168,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die n/a ähnelt.
+        /// </summary>
+        public static string strNA {
+            get {
+                return ResourceManager.GetString("strNA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die No ähnelt.
         /// </summary>
         public static string strNo {
@@ -1168,6 +1303,33 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Protocol ähnelt.
+        /// </summary>
+        public static string strProtocol {
+            get {
+                return ResourceManager.GetString("strProtocol", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Please enter valid values! ähnelt.
+        /// </summary>
+        public static string strProvideValidValues_Message {
+            get {
+                return ResourceManager.GetString("strProvideValidValues_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Invalid values! ähnelt.
+        /// </summary>
+        public static string strProvideValidValues_Title {
+            get {
+                return ResourceManager.GetString("strProvideValidValues_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die RAM: ähnelt.
         /// </summary>
         public static string strRAMDescription {
@@ -1254,6 +1416,15 @@ namespace Home.Properties {
         public static string strReport_BatteryRemaningPercentage {
             get {
                 return ResourceManager.GetString("strReport_BatteryRemaningPercentage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die BIOS ähnelt.
+        /// </summary>
+        public static string strReport_BIOS {
+            get {
+                return ResourceManager.GetString("strReport_BIOS", resourceCulture);
             }
         }
         
@@ -1501,6 +1672,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Release Date ähnelt.
+        /// </summary>
+        public static string strReport_ReleaseDate {
+            get {
+                return ResourceManager.GetString("strReport_ReleaseDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Resolution ähnelt.
         /// </summary>
         public static string strReport_Resolution {
@@ -1681,7 +1861,7 @@ namespace Home.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die App: ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Executable: ähnelt.
         /// </summary>
         public static string strSendCommandDialog_App {
             get {
@@ -1861,7 +2041,16 @@ namespace Home.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Show screenshots ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Show activity ähnelt.
+        /// </summary>
+        public static string strShowActivity {
+            get {
+                return ResourceManager.GetString("strShowActivity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Show screens ähnelt.
         /// </summary>
         public static string strShowScreenshots {
             get {
@@ -1884,6 +2073,15 @@ namespace Home.Properties {
         public static string strShutdownMenu {
             get {
                 return ResourceManager.GetString("strShutdownMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Starting Home.WPF v{0} ... ähnelt.
+        /// </summary>
+        public static string strStartMessage {
+            get {
+                return ResourceManager.GetString("strStartMessage", resourceCulture);
             }
         }
         
@@ -1996,11 +2194,76 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Error while sending the WOL request! ähnelt.
+        /// </summary>
+        public static string strWakeOnLanDialog_FailedToSendWOLRequest {
+            get {
+                return ResourceManager.GetString("strWakeOnLanDialog_FailedToSendWOLRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Please enter a valid MAC address! ähnelt.
+        /// </summary>
+        public static string strWakeOnLanDialog_InvalidMac {
+            get {
+                return ResourceManager.GetString("strWakeOnLanDialog_InvalidMac", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Wake On Lan ähnelt.
+        /// </summary>
+        public static string strWakeOnLanDialog_Title {
+            get {
+                return ResourceManager.GetString("strWakeOnLanDialog_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Wake Up (WOL) ähnelt.
         /// </summary>
         public static string strWakeUp {
             get {
                 return ResourceManager.GetString("strWakeUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Wake Up! ähnelt.
+        /// </summary>
+        public static string strWakeUp_ {
+            get {
+                return ResourceManager.GetString("strWakeUp_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Wake Up Device ähnelt.
+        /// </summary>
+        public static string strWakeUpDevice {
+            get {
+                return ResourceManager.GetString("strWakeUpDevice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die WebView2 Runtime couldn&apos;t be created, make sure WebView2 Runtime is installed!
+        ///
+        ///Download: https://developer.microsoft.com/en-us/microsoft-edge/webview2/ ähnelt.
+        /// </summary>
+        public static string strWebView2RuntimeNotFound_Message {
+            get {
+                return ResourceManager.GetString("strWebView2RuntimeNotFound_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die WebView2 Runtime not found! ähnelt.
+        /// </summary>
+        public static string strWebView2RuntimeNotFound_Title {
+            get {
+                return ResourceManager.GetString("strWebView2RuntimeNotFound_Title", resourceCulture);
             }
         }
         

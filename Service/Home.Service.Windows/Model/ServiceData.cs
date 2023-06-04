@@ -35,7 +35,8 @@ namespace Home.Service.Windows.Model
         private string osName;
         private bool hasLoggedIn = false;
         private bool postScreenshots = true;
-        
+        private bool allowRemoteFileAccess = true;
+
         private bool updateOnStartup = true;
         private bool useUpdateTimer = false;
         private int updateTimerIntervalHours = 24;
@@ -211,6 +212,19 @@ namespace Home.Service.Windows.Model
                 {
                     updateTimerIntervalHours = value;   
                     NotifyPropertyChanged(nameof(UpdateTimerIntervalHours));    
+                }
+            }
+        }
+
+        public bool AllowRemoteFileAccess
+        {
+            get => allowRemoteFileAccess;
+            set
+            {
+                if (allowRemoteFileAccess != value) 
+                {
+                    allowRemoteFileAccess = value;
+                    NotifyPropertyChanged(nameof(AllowRemoteFileAccess));
                 }
             }
         }

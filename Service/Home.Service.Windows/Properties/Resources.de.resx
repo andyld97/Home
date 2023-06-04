@@ -101,7 +101,7 @@
     <value>Geräte Einstellungen</value>
   </data>
   <data name="strAPIUrl" xml:space="preserve">
-    <value>API-Zugang:</value>
+    <value>API-Zugang</value>
   </data>
   <data name="strDeviceGroup" xml:space="preserve">
     <value>Gruppe:</value>
@@ -150,5 +150,8 @@
   </data>
   <data name="strFurtherSettings" xml:space="preserve">
     <value>Weitere Einstellungen</value>
+  </data>
+  <data name="strAllowRemoteFileAccess" xml:space="preserve">
+    <value>Fernzugriff auf das Dateisystem erlauben</value>
   </data>
 </root>

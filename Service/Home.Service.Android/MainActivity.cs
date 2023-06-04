@@ -163,9 +163,7 @@ namespace Home.Service.Android
                 glSurfaceView.Visibility = A.Views.ViewStates.Gone;
             }
 #else
-            /*if (string.IsNullOrEmpty(currentDevice.Environment.Graphics))
-                currentDevice.Environment.Graphics = "Unknown";*/
-                if (currentDevice.Environment.GraphicCards.Count == 0)
+            if (currentDevice.Environment.GraphicCards.Count == 0)
                 currentDevice.Environment.GraphicCards.Add("Unknown");
 #endif
 

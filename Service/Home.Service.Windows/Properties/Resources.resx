@@ -118,10 +118,10 @@
     <value>Device Settings</value>
   </data>
   <data name="strAPIUrl" xml:space="preserve">
-    <value>API Url:</value>
+    <value>API Url</value>
   </data>
   <data name="strOS" xml:space="preserve">
-    <value>OS:</value>
+    <value>Operating System:</value>
   </data>
   <data name="strDeviceType" xml:space="preserve">
     <value>Device Type:</value>
@@ -173,5 +173,8 @@ Set WshShell = Nothing</value>
   </data>
   <data name="strFurtherSettings" xml:space="preserve">
     <value>More settings</value>
+  </data>
+  <data name="strAllowRemoteFileAccess" xml:space="preserve">
+    <value>Allow remote access to the file system</value>
   </data>
 </root>

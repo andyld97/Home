@@ -23,6 +23,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[DeviceBIOS]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[DeviceChange]",
          "ObjectType": 0
       },
@@ -75,7 +79,7 @@
          "ObjectType": 0
       }
    ],
-   "UiHint": "sql1.home",
+   "UiHint": "sql1.home.dbo",
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,

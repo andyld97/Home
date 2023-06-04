@@ -1,4 +1,6 @@
 ﻿using Home.Data;
+using Home.Measure.Windows;
+using Home.Service.Windows.Model;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -25,10 +27,10 @@ namespace Home.Service.Windows
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            /*Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
-            Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en-US");*/
+            Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+            Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en-US");
 
-            if (Environment.GetCommandLineArgs().Length > 0) 
+            if (Environment.GetCommandLineArgs().Length > 0)
                 IsConfigFlagSet = Environment.GetCommandLineArgs().Any(p => p.ToLower().Contains("/config"));
 
             thread = new Thread(new ParameterizedThreadStart((_) =>
@@ -37,14 +39,16 @@ namespace Home.Service.Windows
                 CreateHostBuilder(args).Build().Run();
             }));
 
-            if (!IsConfigFlagSet)
+            if (ServiceData.Instance.AllowRemoteFileAccess && !IsConfigFlagSet)
                 thread.Start();
         }
 
-        public static void StartAspNETApiThread()
+        public static void StartAPIThread()
         {
-            if (IsConfigFlagSet)
-                thread.Start();
+            if (!ServiceData.Instance.AllowRemoteFileAccess) return;
+            if (!IsConfigFlagSet) return;
+
+            thread.Start();
         }
     }
 }

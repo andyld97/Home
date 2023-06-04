@@ -29,5 +29,5 @@ public partial class DeviceScreen
 
     public virtual Device Device { get; set; }
 
-    public virtual ICollection<DeviceScreenshot> DeviceScreenshot { get; } = new List<DeviceScreenshot>();
+    public virtual ICollection<DeviceScreenshot> DeviceScreenshot { get; set; } = new List<DeviceScreenshot>();
 }

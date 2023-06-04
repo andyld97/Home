@@ -36,7 +36,6 @@
         <ListView x:Name="ListViewDevices" Visibility="{Binding ElementName=ExpandList, Path=IsExpanded, Converter={StaticResource Fluent.Ribbon.Converters.BoolToVisibilityConverter}}" ItemsSource="{Binding Devices}" Background="{DynamicResource Fluent.Ribbon.Brushes.White}" BorderThickness="0" Grid.Row="1" SelectionChanged="ListViewDevices_SelectionChanged" PreviewMouseWheel="ListViewDevices_PreviewMouseWheel">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <!-- MinWidth="{Binding ItemWidth, RelativeSource={RelativeSource Self}}" ItemHeight="{Binding (ListView.View).ItemHeight, RelativeSource={RelativeSource AncestorType=ListView}}" -->
                     <WrapPanel Width="{Binding (FrameworkElement.ActualWidth), RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}" ItemWidth="{Binding (ListView.View).ItemWidth, RelativeSource={RelativeSource AncestorType=ListView}}" />
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
@@ -50,14 +49,21 @@
                             </ToolTip>
                         </Grid.ToolTip>
 
-                        <Border Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.IsScreenshotView, Converter={StaticResource screenshotVisiblityConverter}, ConverterParameter=1}" Background="Black" Height="200">
+                        <Border Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.RenderMode, Converter={StaticResource screenshotVisiblityConverter}, ConverterParameter=2}" Background="Black" Height="200">
                             <Grid>
                                 <Image Visibility="Visible" StretchDirection="DownOnly" Source="{Binding ., Converter={StaticResource deviceScreenConverter}}" />
                                 <TextBlock Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}" Text="{Binding Environment.MachineName}" VerticalAlignment="Center" HorizontalAlignment="Center" />
                             </Grid>
                         </Border>
 
-                        <Grid Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.IsScreenshotView, Converter={StaticResource screenshotVisiblityConverter}, ConverterParameter=2}">
+                        <Border Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.RenderMode, Converter={StaticResource screenshotVisiblityConverter}, ConverterParameter=3}" Height="200">
+                            <Grid>
+                                <local:DeviceActivityPlot x:Name="Plot" DataContext="{Binding .}" />
+                                <TextBlock Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}" Text="{Binding Environment.MachineName}" VerticalAlignment="Top" HorizontalAlignment="Center" FontWeight="Bold" />
+                            </Grid>
+                        </Border>
+
+                        <Grid Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.RenderMode, Converter={StaticResource screenshotVisiblityConverter}, ConverterParameter=1}">
                             <Grid.Resources>
                                 <Style TargetType="{x:Type TextBlock}">
                                     <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.Black}" />

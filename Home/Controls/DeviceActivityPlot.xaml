@@ -26,7 +26,7 @@
             </StackPanel.Resources>
 
             <Viewbox Height="20" Margin="0,0,0,0">
-                <Path Data="{StaticResource ActivityGraph}" Fill="AliceBlue" />
+                <Path x:Name="PathCPU" Data="{StaticResource ActivityGraph}" Fill="AliceBlue" />
             </Viewbox>
             <CheckBox x:Name="ChkCPULegend" Content="CPU" Checked="ChkCPULegend_Checked" Unchecked="ChkCPULegend_Checked" />
 

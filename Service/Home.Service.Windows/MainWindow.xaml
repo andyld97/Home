@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" ResizeMode="CanMinimize"
         xmlns:res="clr-namespace:Home.Service.Windows.Properties" xmlns:numericupdownlib="clr-namespace:NumericUpDownLib;assembly=NumericUpDownLib" xmlns:local="clr-namespace:Home.Service.Windows"
-        ShowInTaskbar="False"
+        ShowInTaskbar="False" WindowStartupLocation="CenterScreen" 
         Title="Home Service Client" SizeToContent="Height" Width="400" Loaded="Window_Loaded">
     <Grid>
         <Grid.Resources>
@@ -31,10 +31,16 @@
                 </Style>
             </StackPanel.Resources>
 
-            <TextBlock Text="{x:Static res:Resources.strAPIUrl}" FontWeight="Bold" />
-            <TextBox x:Name="TextAPIUrl" Text="http://192.168.178.38:83" Margin="4,2,6,2" />
-
             <GroupBox Margin="4,5,5,5">
+                <GroupBox.Header>
+                    <TextBlock Text="{x:Static res:Resources.strAPIUrl}" FontWeight="Bold" />
+                </GroupBox.Header>
+                <StackPanel Margin="0,0,0,5">
+                    <TextBox x:Name="TextAPIUrl" Text="http://192.168.178.38:83" Margin="4,2,6,2" />
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Margin="4,1,5,5">
                 <GroupBox.Header>
                     <TextBlock Text="{x:Static res:Resources.strDevice}" FontWeight="Bold" />
                 </GroupBox.Header>
@@ -94,6 +100,8 @@
                 <StackPanel Margin="2">
                     <CheckBox x:Name="chkEnableStartupOnBoot" Content="{x:Static res:Resources.strSetupAutostart}" IsChecked="True" />
                     <CheckBox x:Name="chkEnableScreenshots" Content="{x:Static res:Resources.strEnableScreenshots}" />
+
+                    <CheckBox x:Name="chkEnableFileAccess" Content="{x:Static res:Resources.strAllowRemoteFileAccess}" />
 
                     <CheckBox x:Name="chkEnableUpdatesOnStartup" Content="{x:Static res:Resources.strSearchForUpdatesOnStart}" />
                     <CheckBox x:Name="chkEnableUpdateSearch" Content="{x:Static res:Resources.strEnableAutomaticUpdateSearch}" />

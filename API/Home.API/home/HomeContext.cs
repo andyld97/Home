@@ -18,6 +18,8 @@ public partial class HomeContext : DbContext
 
     public virtual DbSet<DeviceBattery> DeviceBattery { get; set; }
 
+    public virtual DbSet<DeviceBios> DeviceBios { get; set; }
+
     public virtual DbSet<DeviceChange> DeviceChange { get; set; }
 
     public virtual DbSet<DeviceCommand> DeviceCommand { get; set; }
@@ -106,6 +108,25 @@ public partial class HomeContext : DbContext
             entity.HasKey(e => e.BatteryId);
 
             entity.Property(e => e.BatteryId).HasColumnName("BatteryID");
+        });
+
+        modelBuilder.Entity<DeviceBios>(entity =>
+        {
+            entity.ToTable("DeviceBIOS");
+
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.Description).HasMaxLength(255);
+            entity.Property(e => e.DeviceId).HasColumnName("DeviceID");
+            entity.Property(e => e.ReleaseDate).HasColumnType("datetime");
+            entity.Property(e => e.Vendor)
+                .IsRequired()
+                .HasMaxLength(255);
+            entity.Property(e => e.Version).HasMaxLength(255);
+
+            entity.HasOne(d => d.Device).WithMany(p => p.DeviceBios)
+                .HasForeignKey(d => d.DeviceId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_BIOS_Device");
         });
 
         modelBuilder.Entity<DeviceChange>(entity =>

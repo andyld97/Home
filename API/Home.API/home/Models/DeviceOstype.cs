@@ -13,5 +13,5 @@ public partial class DeviceOstype
 
     public string Description { get; set; }
 
-    public virtual ICollection<Device> Device { get; } = new List<Device>();
+    public virtual ICollection<Device> Device { get; set; } = new List<Device>();
 }

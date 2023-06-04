@@ -1,4 +1,4 @@
-#!bin/bash
+#!/bin/bash
 mem=$(cat /proc/meminfo | grep MemTotal|cut -d' ' -f 2-);
 free=$(cat /proc/meminfo | grep MemFree|cut -d' ' -f 2-);
 load=$(top -bn1 | grep load | awk '{printf "%.2f\n", $(NF-2)}');

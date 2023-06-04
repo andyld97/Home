@@ -97,7 +97,13 @@ namespace Home.Service.Legacy
                 }
             };
 
+            // Screens are not supported on this legacy version
             // currentDevice.Screens = GetScreenInformation();
+
+            // Set BIOS info
+            WMI.GetBIOSInfo(out string vendor, out string version, out string description, out DateTime? releaseDate);
+            if (!string.IsNullOrEmpty(vendor) || !string.IsNullOrEmpty(version) || !string.IsNullOrEmpty(description) || releaseDate != null)
+                currentDevice.BIOS = new BIOS() { ReleaseDate = releaseDate ?? DateTime.MinValue, Vendor = vendor, Description = description, Version = version };
 
             // Run tick manually on first_start
             if (ServiceData.Instance.HasLoggedInOnce)

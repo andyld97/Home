@@ -64,6 +64,14 @@ namespace Home.Service.Windows
             CmbOS.SelectedIndex = 0;
 
             LoadSettings();
+
+            // If it is the first start, set simulate the /config flag
+            if (!ServiceData.Instance.HasLoggedInOnce)
+                App.IsConfigFlagSet = true;
+
+            // Hide the window if it is not the first start and not the config flag
+            if (ServiceData.Instance.HasLoggedInOnce && !App.IsConfigFlagSet)
+                Opacity = 0;
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
@@ -74,9 +82,9 @@ namespace Home.Service.Windows
             if (ServiceData.Instance.HasLoggedInOnce && !App.IsConfigFlagSet)
             {
                 // WindowState = WindowState.Minimized;
+                Visibility = Visibility.Hidden;
                 await InitalizeService();
                 isInitalized = true;
-                Visibility = Visibility.Hidden;
             }
         }
 
@@ -92,7 +100,7 @@ namespace Home.Service.Windows
             }
 
             if (App.IsConfigFlagSet)
-                App.StartAspNETApiThread();
+                App.StartAPIThread();
 
             api = new Communication.API(ServiceData.Instance.APIUrl);
             legacyAPI = new LegacyAPI(ServiceData.Instance.APIUrl);
@@ -123,6 +131,11 @@ namespace Home.Service.Windows
                 },
                 Screens = new System.Collections.ObjectModel.ObservableCollection<Screen>(GetScreenInformation()),
             };
+
+            // Set BIOS info
+            WMI.GetBIOSInfo(out string vendor, out string version, out string description, out DateTime? releaseDate);
+            if (!string.IsNullOrEmpty(vendor) || !string.IsNullOrEmpty(version) || !string.IsNullOrEmpty(description) || releaseDate != null)
+                currentDevice.BIOS = new BIOS() { ReleaseDate = releaseDate ?? DateTime.MinValue, Vendor = vendor, Description = description, Version = version };
 
             // Run tick manually on first_start
             if (ServiceData.Instance.HasLoggedInOnce)
@@ -359,6 +372,7 @@ namespace Home.Service.Windows
             CmbOS.SelectedItem = data.SystemType;
             CmbDeviceType.SelectedItem = data.Type;
             chkEnableScreenshots.IsChecked = data.PostScreenshots;
+            chkEnableFileAccess.IsChecked = data.AllowRemoteFileAccess;
             chkEnableUpdatesOnStartup.IsChecked = ServiceData.Instance.UpdateOnStartup;
             chkEnableUpdateSearch.IsChecked = ServiceData.Instance.UseUpdateTimer;
             NumUpdateHours.Value = ServiceData.Instance.UpdateTimerIntervalHours;
@@ -391,6 +405,7 @@ namespace Home.Service.Windows
                 ServiceData.Instance.UpdateOnStartup = chkEnableUpdatesOnStartup.IsChecked.Value;
                 ServiceData.Instance.UseUpdateTimer = chkEnableUpdateSearch.IsChecked.Value;
                 ServiceData.Instance.UpdateTimerIntervalHours = NumUpdateHours.Value;
+                ServiceData.Instance.AllowRemoteFileAccess = chkEnableFileAccess.IsChecked.Value;
 
                 return true;
             }

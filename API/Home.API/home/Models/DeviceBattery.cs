@@ -13,5 +13,5 @@ public partial class DeviceBattery
 
     public double? Percentage { get; set; }
 
-    public virtual ICollection<DeviceEnvironment> DeviceEnvironment { get; } = new List<DeviceEnvironment>();
+    public virtual ICollection<DeviceEnvironment> DeviceEnvironment { get; set; } = new List<DeviceEnvironment>();
 }

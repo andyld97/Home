@@ -219,7 +219,7 @@
     <value>Inactive Devices: {0}</value>
   </data>
   <data name="strShowScreenshots" xml:space="preserve">
-    <value>Show screenshots</value>
+    <value>Show screens</value>
   </data>
   <data name="strFileExplorerName" xml:space="preserve">
     <value>Name</value>
@@ -301,7 +301,7 @@
     <comment>SendCommandDialog.xaml</comment>
   </data>
   <data name="strSendCommandDialog_App" xml:space="preserve">
-    <value>App:</value>
+    <value>Executable:</value>
     
     <comment>SendCommandDialog.xaml</comment>
   </data>
@@ -835,5 +835,98 @@
   </data>
   <data name="strToggleOverview" xml:space="preserve">
     <value>Toggle Overview</value>
+  </data>
+  <data name="strProvideValidValues_Message" xml:space="preserve">
+    <value>Please enter valid values!</value>
+  </data>
+  <data name="strProvideValidValues_Title" xml:space="preserve">
+    <value>Invalid values!</value>
+  </data>
+  <data name="strClientVersionNotUpToDate" xml:space="preserve">
+    <value>The device uses an outdated client version!</value>
+  </data>
+  <data name="strClientVersionUpToDate" xml:space="preserve">
+    <value>The device uses the latest client version!</value>
+  </data>
+  <data name="strDeviceActivityPlot_CPU_Name" xml:space="preserve">
+    <value>CPU Usage (%)</value>
+  </data>
+  <data name="strDeviceActivityPlot_CPU_Tooltip" xml:space="preserve">
+    <value>CPU: {0} %</value>
+    <comment>@Invariant</comment>
+  </data>
+  <data name="strDeviceActivityPlot_RAM_Name" xml:space="preserve">
+    <value>RAM Usage (%)</value>
+  </data>
+  <data name="strDeviceActivityPlot_RAM_Tooltip" xml:space="preserve">
+    <value>RAM: {0} %</value>
+    <comment>@Invariant</comment>
+  </data>
+  <data name="strDeviceActivityPlot_Battery_Name" xml:space="preserve">
+    <value>Battery Remaining (%)</value>
+  </data>
+  <data name="strDeviceActivityPlot_Battery_Tooltip" xml:space="preserve">
+    <value>Battery Remaining: {0} %</value>
+  </data>
+  <data name="strDeviceActivityPlot_DISK_Name" xml:space="preserve">
+    <value>DISK Usage (%)</value>
+  </data>
+  <data name="strDeviceActivityPlot_DISK_Tooltip" xml:space="preserve">
+    <value>DISK: {0} %</value>
+  </data>
+  <data name="strProtocol" xml:space="preserve">
+    <value>Protocol</value>
+  </data>
+  <data name="strCleanUpResultMessage" xml:space="preserve">
+    <value>{0} Screenshots ({1}) have been cleaned up!</value>
+  </data>
+  <data name="strStartMessage" xml:space="preserve">
+    <value>Starting Home.WPF v{0} ...</value>
+  </data>
+  <data name="strFailedToConnectMessage" xml:space="preserve">
+    <value>Failed to connected to "{0}": {1}</value>
+  </data>
+  <data name="strConnectedSuccessfullyMessage" xml:space="preserve">
+    <value>Successfully connected to "{0}"!</value>
+  </data>
+  <data name="strShowActivity" xml:space="preserve">
+    <value>Show activity</value>
+  </data>
+  <data name="strWebView2RuntimeNotFound_Message" xml:space="preserve">
+    <value>WebView2 Runtime couldn't be created, make sure WebView2 Runtime is installed!
+
+Download: https://developer.microsoft.com/en-us/microsoft-edge/webview2/</value>
+  </data>
+  <data name="strWebView2RuntimeNotFound_Title" xml:space="preserve">
+    <value>WebView2 Runtime not found!</value>
+  </data>
+  <data name="strNA" xml:space="preserve">
+    <value>n/a</value>
+    <comment>@Invariant</comment>
+  </data>
+  <data name="strMacAddress" xml:space="preserve">
+    <value>MAC Address:</value>
+  </data>
+  <data name="strWakeUp_" xml:space="preserve">
+    <value>Wake Up!</value>
+  </data>
+  <data name="strWakeOnLanDialog_Title" xml:space="preserve">
+    <value>Wake On Lan</value>
+  </data>
+  <data name="strWakeOnLanDialog_InvalidMac" xml:space="preserve">
+    <value>Please enter a valid MAC address!</value>
+  </data>
+  <data name="strWakeOnLanDialog_FailedToSendWOLRequest" xml:space="preserve">
+    <value>Error while sending the WOL request!</value>
+  </data>
+  <data name="strWakeUpDevice" xml:space="preserve">
+    <value>Wake Up Device</value>
+  </data>
+  <data name="strReport_BIOS" xml:space="preserve">
+    <value>BIOS</value>
+    <comment>@Invariant</comment>
+  </data>
+  <data name="strReport_ReleaseDate" xml:space="preserve">
+    <value>Release Date</value>
   </data>
 </root>

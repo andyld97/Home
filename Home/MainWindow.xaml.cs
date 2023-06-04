@@ -33,20 +33,19 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static Home.Model.DeviceChangeEntry;
 using Home.Data.Events;
 using static SkiaSharp.HarfBuzz.SKShaper;
+using System.IO;
+using Microsoft.Extensions.FileSystemGlobbing.Internal.PathSegments;
+using System.Diagnostics;
+using System.Windows.Interop;
+using System.ComponentModel;
 
 namespace Home
 {
     /// <summary>
     /// Interaktionslogik für MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : RibbonWindow
+    public partial class MainWindow : RibbonWindow, INotifyPropertyChanged
     {
-        /// <summary>
-        /// ToDo: *** Move to a Consts.cs file
-        /// </summary>
-        public static readonly string CACHE_PATH = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Home", "Cache");
-        public static readonly string WEBVIEW_CACHE_PATH = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Home", "WebView2Cache");
-
         public static Client CLIENT = new Client() { IsRealClient = true };
         public static Communication.API API = null;
         public static MainWindow W_INSTANCE = null;
@@ -68,14 +67,14 @@ namespace Home
         {
             try
             {
-                System.IO.Directory.CreateDirectory(CACHE_PATH);
+                System.IO.Directory.CreateDirectory(HomeConsts.CACHE_PATH);
             }
             catch
             { }
 
             try
             {
-                System.IO.Directory.CreateDirectory(WEBVIEW_CACHE_PATH);
+                System.IO.Directory.CreateDirectory(HomeConsts.WEBVIEW_CACHE_PATH);
             }
             catch
             { }
@@ -121,7 +120,97 @@ namespace Home
             // Disable all device depended buttons since there is no device selected at the beginning
             foreach (var element in deviceDependendButtons)
                 (element as UIElement).IsEnabled = false;
+
+            AddProtocolEntry(string.Format(Home.Properties.Resources.strStartMessage, typeof(MainWindow).Assembly.GetName().Version.ToString(3)));
+            Legend.DataContext = this;
         }
+
+        private async Task CleanUpCacheAsync()
+        {
+            var di = new DirectoryInfo(HomeConsts.CACHE_PATH);
+            var now = DateTime.Now;
+
+            List<FileInfo> files = new List<FileInfo>();
+
+            long length = 0;
+
+            foreach (var file in di.EnumerateFiles("*.png", SearchOption.AllDirectories))
+            {
+                // Ignore this file if it's parent directory has only one file to keep old screenshots when there is only one available
+                if (file.Directory?.EnumerateFiles("*.png", SearchOption.TopDirectoryOnly).Count() == 1)
+                    continue;
+
+                // Parse filename as date
+                if (DateTime.TryParseExact(System.IO.Path.GetFileNameWithoutExtension(file.Name), Consts.SCREENSHOT_DATE_FILE_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var date))
+                {
+                    if (date.AddDays(14) > now)
+                        files.Add(file);
+                }
+            }
+
+            length = files.Sum(f => f.Length);
+
+   
+            foreach (var file in files) 
+            {
+                try
+                {
+                    System.IO.File.Delete(file.FullName);   
+                }
+                catch
+                {
+                    // ignore
+                }
+            }
+
+            if (files.Count > 0)
+            {
+                var bytes = ByteUnit.FindUnit(length);
+                AddProtocolEntry(string.Format(Properties.Resources.strCleanUpResultMessage, files.Count, bytes));
+            }
+        }
+
+        #region Protocol
+
+        private Paragraph cuurrentParagraph;
+
+        /// <summary>
+        /// Adds a protocol entry (protocol is only visible on the start page of Home.WPF)
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="isError"></param>
+        /// <param name="isSucess"></param>
+        private void AddProtocolEntry(string message, bool isError = false, bool isSucess = false, bool isWarning = false)
+        {
+            var now = DateTime.Now;
+            string formattedMessage = string.Empty;
+
+            if (cuurrentParagraph == null)
+            {
+                cuurrentParagraph = new Paragraph();
+                TextProtocol.Document.Blocks.Clear();
+                TextProtocol.Document.Blocks.Add(cuurrentParagraph);
+            }
+
+            string level = "Info";
+            if (isError)
+                level = Properties.Resources.strSendMessageDialog_LogLevel_Error;
+            else if (isWarning)
+                level = Properties.Resources.strSendMessageDialog_LogLevel_Warning;
+
+            formattedMessage = $"[{level} @ {now.ToString(Properties.Resources.strDateTimeFormat)}]: {message}";
+            var run = new Run(formattedMessage);
+            if (isError)
+                run.Foreground = new SolidColorBrush(Colors.Red);
+            else if (isSucess)
+                run.Foreground = new SolidColorBrush(Colors.LightGreen);
+            else if (isWarning)
+                run.Foreground = new SolidColorBrush(Colors.DarkOrange);
+
+            cuurrentParagraph.Inlines.Add(run);
+            cuurrentParagraph.Inlines.Add(new LineBreak());
+        }
+        #endregion
 
         private async void App_OnShutdownOrRestart(Device device, bool shutdown, bool wol)
         {
@@ -135,7 +224,7 @@ namespace Home
 
             var result = await API.AquireScreenshotAsync(CLIENT, currentDevice);
             if (!result.Success)
-                MessageBox.Show(result.ErrorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(result.ErrorMessage, Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
         private void ScreenshotViewer_OnResize(bool isLittle)
@@ -163,12 +252,32 @@ namespace Home
         {
             base.OnContentRendered(e);
 
-            webView2Environment = await CoreWebView2Environment.CreateAsync(userDataFolder: WEBVIEW_CACHE_PATH);
-            await webViewReport.EnsureCoreWebView2Async(webView2Environment);
+            try
+            {
+                webView2Environment = await CoreWebView2Environment.CreateAsync(userDataFolder: HomeConsts.WEBVIEW_CACHE_PATH);
+                await webViewReport.EnsureCoreWebView2Async(webView2Environment);
+
+                if (ClientData.Instance.IgnoreWebVie2Error)
+                {
+                    ClientData.Instance.IgnoreWebVie2Error = false;
+                    ClientData.Instance.Save();
+                }
+            }
+            catch (Exception)
+            {
+                if (!ClientData.Instance.IgnoreWebVie2Error)
+                    MessageBox.Show(this, Properties.Resources.strWebView2RuntimeNotFound_Message, Home.Properties.Resources.strWebView2RuntimeNotFound_Title, MessageBoxButton.OK, MessageBoxImage.Error);
+                else
+                    AddProtocolEntry(Properties.Resources.strWebView2RuntimeNotFound_Message, isWarning: true);
+
+                ClientData.Instance.IgnoreWebVie2Error = true;
+                ClientData.Instance.Save();
+            }
         }
 
         private async void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            await CleanUpCacheAsync();
             await Initalize();
         }
 
@@ -179,9 +288,12 @@ namespace Home
                 deviceList = result.Result;
 
             if (result.Success)
+            {
+                AddProtocolEntry(string.Format(Properties.Resources.strConnectedSuccessfullyMessage, Settings.Instance.Host), isSucess: true);
                 RefreshDeviceHolder();
+            }
             else
-                MessageBox.Show(result.ErrorMessage, Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
+                AddProtocolEntry(string.Format(Properties.Resources.strFailedToConnectMessage, Settings.Instance.Host, result.ErrorMessage), true);
 
             updateTimer.Interval = TimeSpan.FromSeconds(5);
             updateTimer.Tick += UpdateTimer_Tick;
@@ -286,6 +398,11 @@ namespace Home
                     MessageBox.Show(string.Format(Home.Properties.Resources.strWOL_MagickPackageSendError, result.ErrorMessage), Properties.Resources.strSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
+        
+        public async Task<Answer<bool>> WakeUpDeviceAsync(string macAddress)
+        {
+            return await API.WakeOnLanAsync(macAddress);
+        }
 
         private void RefreshOverview()
         {
@@ -311,7 +428,7 @@ namespace Home
                     continue;
                 }
 
-                DeviceItemGroup deviceItemGroup = new DeviceItemGroup { GroupName = group.Key, IsScreenshotView = MenuButtonTotalOverviewShowScreenshots.IsChecked.Value };
+                DeviceItemGroup deviceItemGroup = new DeviceItemGroup { GroupName = group.Key, RenderMode = DetermineOverviewMode() };
                 deviceItemGroup.OnGroupSelectionChanged += (string grp) =>
                 {
                     foreach (var currentGroup in PanelOverview.Children.OfType<DeviceItemGroup>().Where(d => d.GroupName != grp))
@@ -331,7 +448,7 @@ namespace Home
                 {
                     GroupName = Properties.Resources.strDeviceLocationNotAssigend,
                     Devices = notAssociatedDevices,
-                    IsScreenshotView = MenuButtonTotalOverviewShowScreenshots.IsChecked.Value
+                    RenderMode = DetermineOverviewMode()
                 };
 
                 PanelOverview.Children.Add(dig);
@@ -492,8 +609,12 @@ namespace Home
                 MenuButtonSendMessage.IsEnabled = true;
                 scrollToEnd = true;
 
-                await webViewReport.EnsureCoreWebView2Async(webView2Environment);
-                webViewReport.NavigateToString(Report.GenerateHtmlDeviceReport(currentDevice, Properties.Resources.strDateTimeFormat));
+                if (webView2Environment != null)
+                {
+                    await webViewReport?.EnsureCoreWebView2Async(webView2Environment);
+
+                    webViewReport.NavigateToString(Report.GenerateHtmlDeviceReport(currentDevice, Properties.Resources.strDateTimeFormat, Properties.Resources.strDateFormat));
+                }
             }
             else
             {
@@ -737,9 +858,14 @@ namespace Home
             Application.Current.Shutdown();
         }
 
-        private void MenuButtonOpenSettings_Click(object sender, RoutedEventArgs e)
+        private async void MenuButtonOpenSettings_Click(object sender, RoutedEventArgs e)
         {
             new SettingsDialog(true).ShowDialog();
+
+            // This is necessary due to possible theming changes (that everything applies)
+            RefreshOverview();
+            RefreshDeviceHolder();
+            await RefreshSelectedItem();
         }
 
         public void UpdateGlowingBrush()
@@ -764,7 +890,7 @@ namespace Home
             if (currentDevice == null)
                 return;
 
-            var report = Report.GenerateHtmlDeviceReport(currentDevice, Properties.Resources.strDateTimeFormat);
+            var report = Report.GenerateHtmlDeviceReport(currentDevice, Properties.Resources.strDateTimeFormat, Properties.Resources.strDateFormat);
 
             SaveFileDialog sfd = new SaveFileDialog() { Filter = Home.Properties.Resources.strHtmlReportFilter };
             sfd.FileName = $"{currentDevice.Name}.html";
@@ -797,35 +923,15 @@ namespace Home
             var result = sfd.ShowDialog();
 
             // Note we can only print if the view is already rendered!
-            if (result.HasValue && result.Value)
+            if (result.HasValue && result.Value && webView2Environment != null)
                 await webViewReport.CoreWebView2.PrintToPdfAsync(sfd.FileName);
 
             // Restore old tab index
             TabDevice.SelectedIndex = oldTabIndex;
-
-            // webViewReport.NavigationStarting += WebViewReport_NavigationStarting;
-            // webViewReport.CoreWebView2.ExecuteScriptAsync("window.print();");            
         }
-
-        /*private void WebViewReport_NavigationStarting(object sender, CoreWebView2NavigationStartingEventArgs e)
-        {
-            webViewReport.CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
-        }
-
-        private void WebViewReport_Initialized(object sender, EventArgs e)
-        {
-       
-        }
-
-        private void CoreWebView2_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
-        {
-            webViewReport.CoreWebView2.PrintToPdfAsync(@"F:\Eigene Dateien\Desktop\test.pdf");
-            webViewReport.CoreWebView2.NavigationCompleted -= CoreWebView2_NavigationCompleted;
-            webViewReport.NavigationStarting -= WebViewReport_NavigationStarting;
-        }*/
-
         #endregion
 
+        #region Wake On LAN (WOL)
         private async void MenuButtonWakeOnLan_Click(object sender, RoutedEventArgs e)
         {
             var result = await API.GetSchedulingRulesAsync();
@@ -835,10 +941,117 @@ namespace Home
                 MessageBox.Show(string.Format(Home.Properties.Resources.strDeviceScheduling_Settings_FailedToRecieveData, result.ErrorMessage), Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
+        private void MenuButtonWakeUp_Click(object sender, RoutedEventArgs e)
+        {
+            new WOLDialog().ShowDialog();
+        }
+        #endregion
+
+        #region Overview
+        private bool ignoreCheckedChangedToggle = false;
+        private bool legendDisplayCPU = true;
+        private bool legendDisplayRAM = true;
+        private bool legendDisplayDISK = true;
+        private bool legendDisplayBattery = true;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public bool LegendDisplayCPU
+        {
+            get => legendDisplayCPU;
+            set
+            {
+                if (legendDisplayCPU != value)
+                {
+                    legendDisplayCPU = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LegendDisplayCPU)));
+                }
+            }
+        }
+
+        public bool LegendDisplayRAM
+        {
+            get => legendDisplayRAM;
+            set
+            {
+                if (legendDisplayRAM != value)
+                {
+                    legendDisplayRAM = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LegendDisplayRAM)));
+                }
+            }
+        }
+
+        public bool LegendDisplayDISK
+        {
+            get => legendDisplayDISK;
+            set
+            {
+                if (legendDisplayDISK != value)
+                {
+                    legendDisplayDISK = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LegendDisplayDISK)));
+                }
+            }
+        }
+
+        public bool LegendDisplayBattery
+        {
+            get => legendDisplayBattery;
+            set
+            {
+                if (legendDisplayBattery != value)
+                {
+                    legendDisplayBattery = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LegendDisplayBattery)));
+                }
+            }
+        }
+
         private void MenuButtonTotalOverviewShowScreenshots_Checked(object sender, RoutedEventArgs e)
         {
+            if (ignoreCheckedChangedToggle) return;
+            if (MenuButtonTotalOverviewShowScreenshots.IsChecked == true)
+            {
+                ignoreCheckedChangedToggle = true;
+                MenuButtonTotalOverviewShowPlot.IsChecked = false;
+                ignoreCheckedChangedToggle = false;
+            }
+
             foreach (var item in PanelOverview.Children.OfType<DeviceItemGroup>())
-                item.IsScreenshotView = MenuButtonTotalOverviewShowScreenshots.IsChecked.Value;
+                item.RenderMode = DetermineOverviewMode();
+        }
+
+        private void MenuButtonTotalOverviewShowPlot_Checked(object sender, RoutedEventArgs e)
+        {
+            if (ignoreCheckedChangedToggle) return;
+            if (MenuButtonTotalOverviewShowPlot.IsChecked == true)
+            {
+                ignoreCheckedChangedToggle = true;
+                MenuButtonTotalOverviewShowScreenshots.IsChecked = false;
+                ignoreCheckedChangedToggle = false;
+            }
+
+            foreach (var item in PanelOverview.Children.OfType<DeviceItemGroup>())
+                item.RenderMode = DetermineOverviewMode();
+        }
+
+        private Mode DetermineOverviewMode()
+        {
+            Mode result;
+            if (MenuButtonTotalOverviewShowScreenshots.IsChecked.Value)
+                result = Mode.Screenshot;
+            else if (MenuButtonTotalOverviewShowPlot.IsChecked.Value)
+                result = Mode.Diagram;
+            else result = Mode.Info;
+
+            // Hide legend when info or screenshot is shown
+            if (result == Mode.Diagram)
+                Legend.Visibility = Visibility.Visible;
+            else
+                Legend.Visibility = Visibility.Collapsed;
+
+            return result;
         }
 
         private void MenuButtonToggleOverivew_Checked(object sender, RoutedEventArgs e)
@@ -847,16 +1060,21 @@ namespace Home
             {
                 GridNetworkOverview.Visibility = Visibility.Visible;
                 GridIndividualOverview.Visibility = Visibility.Hidden;
-                MenuButtonTotalOverviewShowScreenshots.IsEnabled = true;
+                MenuButtonTotalOverviewShowScreenshots.IsEnabled = 
+                MenuButtonTotalOverviewShowPlot.IsEnabled = true;
             }
             else
             {
                 GridIndividualOverview.Visibility = Visibility.Visible;
                 GridNetworkOverview.Visibility = Visibility.Hidden;
-                MenuButtonTotalOverviewShowScreenshots.IsEnabled = false;
-                MenuButtonTotalOverviewShowScreenshots.IsChecked = false;
+                MenuButtonTotalOverviewShowScreenshots.IsEnabled =
+                MenuButtonTotalOverviewShowPlot.IsEnabled = false;
+                MenuButtonTotalOverviewShowScreenshots.IsChecked =
+                MenuButtonTotalOverviewShowPlot.IsChecked = false;
             }
         }
+
+        #endregion
     }
 
     #region Converter
@@ -1000,7 +1218,7 @@ namespace Home
             if (value is Battery b)
                 return $"{b.BatteryLevelInPercent}% ({Home.Properties.Resources.strCharging}: {(b.IsCharging ? Properties.Resources.strYes : Properties.Resources.strNo)})";
 
-            return "n/a";
+            return Properties.Resources.strNA;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
