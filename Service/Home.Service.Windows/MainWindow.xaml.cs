@@ -324,7 +324,7 @@ namespace Home.Service.Windows
             var result = NET.CreateScreenshot(fileName);
 
 #if LEGACY
-            var apiResult = legacyAPI.SendScreenshotAsync(new Screenshot() { ClientID = ServiceData.Instance.ID, Data = Convert.ToBase64String(result) });
+            var apiResult = legacyAPI.SendScreenshotAsync(new Screenshot() { DeviceID = ServiceData.Instance.ID, Data = Convert.ToBase64String(result) });
 #else
             // "full screenshot"
             var apiResult = await api.SendScreenshotAsync(new Screenshot() { DeviceID = ServiceData.Instance.ID, Data = Convert.ToBase64String(result) });
