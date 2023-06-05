@@ -414,7 +414,7 @@ namespace Home.API.Controllers
                 if (device.DeviceUsage != null)
                  _context.DeviceUsage.Remove(device.DeviceUsage);
                 
-                //_context.DeviceEnvironment.Remove(device.Environment);
+                // ToDo: *** _context.DeviceEnvironment.Remove(device.Environment);
                 _context.Device.Remove(device);
 
                 try
