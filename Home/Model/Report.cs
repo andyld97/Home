@@ -90,6 +90,8 @@ namespace Model
                 screenTemplate = $"<h3>{Home.Properties.Resources.strScreens}</h3>";
 
                 string tmp = GetHtmlTemplate("display_template");
+                int count = 0;
+                int screenCount = device.Screens.Count;
                 foreach (var screen in device.Screens)
                 {
                     string subTemplate = tmp;
@@ -101,7 +103,10 @@ namespace Model
                     subTemplate = subTemplate.Replace("{dp4}", screen.Index.ToString());
                     subTemplate = subTemplate.Replace("{dp5}", screen.IsPrimary ? Home.Properties.Resources.strYes : Home.Properties.Resources.strNo);
 
-                    screenTemplate += $"{subTemplate}<hr />";
+                    screenTemplate += $"{subTemplate}";
+                    if (count != screenCount - 1)
+                        screenTemplate += "<div class=\"separator\"></div>";
+                    count++;
                 }
 
                 htmlTemplate = htmlTemplate.Replace("{screen}", screenTemplate);
