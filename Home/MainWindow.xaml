@@ -258,15 +258,17 @@
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
 
-                                            <Grid x:Name="InfoGrid">
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto" />
-                                                    <RowDefinition Height="*" />
-                                                </Grid.RowDefinitions>
+                                            <ScrollViewer x:Name="InfoGrid" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="*" />
+                                                    </Grid.RowDefinitions>
 
-                                                <controls:DeviceInfoDisplay x:Name="DeviceInfoDisplay" />
-                                                <controls:DeviceActivityPlot x:Name="DeviceActivityPlot" Grid.Row="1" />
-                                            </Grid>
+                                                    <controls:DeviceInfoDisplay x:Name="DeviceInfoDisplay" />
+                                                    <controls:DeviceActivityPlot x:Name="DeviceActivityPlot" Grid.Row="1" />
+                                                </Grid>
+                                            </ScrollViewer>
 
                                             <Grid x:Name="ScreeshotViewHolder" Grid.Column="1">
                                                 <controls:ScreenshotViewer x:Name="ScreenshotViewer" Margin="0,-3,-3,-3" />

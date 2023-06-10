@@ -283,7 +283,7 @@ namespace Home.API.Services
             currentDevice.DeviceUsage.Disk = AddUsage(currentDevice.DeviceUsage.Disk, currentDevice.Environment.DiskUsage);
 
             // RAM
-            var ram = currentDevice.Environment.FreeRam.Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+            var ram = currentDevice.Environment.FreeRam.Replace(",", ".").Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
             if (ram != null && double.TryParse(ram, out double res))
                 currentDevice.DeviceUsage.Ram = AddUsage(currentDevice.DeviceUsage.Ram, res);
 
