@@ -258,7 +258,7 @@
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
 
-                                            <ScrollViewer x:Name="InfoGrid" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                            <ScrollViewer x:Name="InfoGrid" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                                                 <Grid>
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition Height="Auto" />

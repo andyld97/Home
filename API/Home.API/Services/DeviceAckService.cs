@@ -284,7 +284,7 @@ namespace Home.API.Services
 
             // RAM
             var ram = currentDevice.Environment.FreeRam.Replace(",", ".").Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
-            if (ram != null && double.TryParse(ram, out double res))
+            if (ram != null && double.TryParse(ram, System.Globalization.CultureInfo.InvariantCulture, out double res))
                 currentDevice.DeviceUsage.Ram = AddUsage(currentDevice.DeviceUsage.Ram, res);
 
             // Battery (if any) and also check for battery warning

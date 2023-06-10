@@ -41,7 +41,7 @@
             <CheckBox x:Name="ChkBatteryLegend" Content="Battery" Checked="ChkBatteryLegend_Checked" Unchecked="ChkBatteryLegend_Checked" />
         </StackPanel>
 
-        <Border DockPanel.Dock="Bottom" Height="180">
+        <Border MinHeight="150">
             <lvc:CartesianChart x:Name="plot" />
         </Border>
     </DockPanel>
