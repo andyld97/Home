@@ -1,4 +1,5 @@
 using Microsoft.Toolkit.Uwp.Notifications;
+using Newtonsoft.Json;
 
 namespace ToastNotification
 {
@@ -10,7 +11,30 @@ namespace ToastNotification
         [STAThread]
         static void Main()
         {
-            ShowMessage("Test", "Test-Message", LogLevel.Error);           
+            // Debug:
+            // MessageBox.Show(Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new Home.Data.Com.Message("Hello World!", "Test-Message", Home.Data.Com.Message.MessageImage.Error)))));
+
+            string[] args = Environment.GetCommandLineArgs();
+            if (args.Length >= 2)
+            {
+                try
+                {
+                    var message = JsonConvert.DeserializeObject<Home.Data.Com.Message>(System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(args[1])));
+                    if (message != null)
+                    {
+                        LogLevel level = LogLevel.Information;
+                        switch (message.Type)
+                        {
+                            case Home.Data.Com.Message.MessageImage.Information: level = LogLevel.Information; break;
+                            case Home.Data.Com.Message.MessageImage.Warning: level = LogLevel.Warning; break;
+                            case Home.Data.Com.Message.MessageImage.Error: level = LogLevel.Error; break;
+                        }
+                        
+                        ShowMessage(message.Content, message.Title, level);
+                    }
+                }
+                catch { }
+            }
         }
 
         public static void ShowMessage(string message, string title, LogLevel level)

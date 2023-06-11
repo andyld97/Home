@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "HomeNotification": {
+      "commandName": "Project",
+      "commandLineArgs": "eyJkZXZpY2VfaWQiOm51bGwsInRpdGxlIjoiVGVzdC1NZXNzYWdlIiwiY29udGVudCI6IkhlbGxvIFdvcmxkISIsInR5cGUiOjJ9"
+    }
+  }
+}
