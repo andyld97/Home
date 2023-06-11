@@ -288,16 +288,35 @@ namespace Home.Service.Windows
 
                 if (ackResult.Result.Result.HasFlag(Data.Com.AckResult.Ack.MessageRecieved))
                 {
-                    // Show message
-                    try
+                    // Detect Windows version, if Windows Version >= 10, Toast
+                    // otherwise old MessageBox
+
+                    if (System.Environment.OSVersion.Version.Major >= 10)
                     {
-                        // Notification is in a different folder, otherwise there are problems with different versions of Newtonsoft.JSON
-                        System.Diagnostics.Process.Start(@"Notification\Notification.exe", Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(ackResult.Result.JsonData)));
+                        // Windows 10 or higher
+                        try
+                        {
+                            // Notification is in a different folder, otherwise there are problems with different versions of Newtonsoft.JSON
+                            System.Diagnostics.Process.Start(@"Toast\HomeNotification.exe", Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(ackResult.Result.JsonData)));
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        Console.WriteLine(ex.Message);
-                    }
+                        // old method
+                        try
+                        {
+                            // Notification is in a different folder, otherwise there are problems with different versions of Newtonsoft.JSON
+                            System.Diagnostics.Process.Start(@"Notification\Notification.exe", Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(ackResult.Result.JsonData)));
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+                    }             
                 }
                 else if (ackResult.Result.Result.HasFlag(AckResult.Ack.CommandRecieved))
                 {

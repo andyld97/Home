@@ -53,9 +53,10 @@ Source: "bin\Release\net7.0-windows\publish\runtimes\*"; DestDir: "{app}\runtime
 Source: "bin\Release\net7.0-windows\publish\tr\*"; DestDir: "{app}\tr"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "bin\Release\net7.0-windows\publish\zh-Hans\*"; DestDir: "{app}\zh-Hans"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "bin\Release\net7.0-windows\publish\zh-Hant\*"; DestDir: "{app}\zh-Hant"; Flags: ignoreversion recursesubdirs createallsubdirs
-; MUST BE COMPILED IN RELEASE BEFORE!
+; OLD NOTIFICATION (MUST BE COMPILED IN RELEASE BEFORE!)
 Source: "..\..\Helper Applications\Notification\bin\Release\*"; DestDir: "{app}\Notification"; Flags: ignoreversion recursesubdirs createallsubdirs
-; MUST BE COMPILED/PUBLISHED IN RELEASE BEFORE!
+; NEW NOTIFICATION MUST BE COMPILED/PUBLISHED IN RELEASE BEFORE!
+Source: "..\..\Helper Applications\HomeNotification\bin\Release\net7.0-windows10.0.17763.0\publish\*"; DestDIr: "{app}\Toast"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\..\Helper Applications\ClientUpdate\bin\Release\net7.0\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "bin\Release\net7.0-windows\publish\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\App.config"; DestDir: "{app}"; Flags: ignoreversion
