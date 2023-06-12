@@ -290,33 +290,26 @@ namespace Home.Service.Windows
                 {
                     // Detect Windows version, if Windows Version >= 10, Toast
                     // otherwise old MessageBox
+                    string encodedMessage = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(ackResult.Result.JsonData));
 
-                    if (System.Environment.OSVersion.Version.Major >= 10)
+                    try
                     {
-                        // Windows 10 or higher
-                        try
+                        if (System.Environment.OSVersion.Version.Major >= 10)
                         {
-                            // Notification is in a different folder, otherwise there are problems with different versions of Newtonsoft.JSON
-                            System.Diagnostics.Process.Start(@"Toast\HomeNotification.exe", Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(ackResult.Result.JsonData)));
+                            // Windows 10 or higher
+                            System.Diagnostics.Process.Start(@"Toast\HomeNotification.exe", encodedMessage);
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            Console.WriteLine(ex.Message);
+                            // old method
+                            // Notification is in a different folder, otherwise there are problems with different versions of Newtonsoft.JSON
+                            System.Diagnostics.Process.Start(@"Notification\Notification.exe", encodedMessage);
                         }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        // old method
-                        try
-                        {
-                            // Notification is in a different folder, otherwise there are problems with different versions of Newtonsoft.JSON
-                            System.Diagnostics.Process.Start(@"Notification\Notification.exe", Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(ackResult.Result.JsonData)));
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine(ex.Message);
-                        }
-                    }             
+                        Console.WriteLine(ex.Message);
+                    }
                 }
                 else if (ackResult.Result.Result.HasFlag(AckResult.Ack.CommandRecieved))
                 {
