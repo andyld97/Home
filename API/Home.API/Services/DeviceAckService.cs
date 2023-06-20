@@ -330,28 +330,36 @@ namespace Home.API.Services
 
         private async Task DetectAndRegisterDeviceChangesAsync(home.Models.Device currentDevice, Home.Model.Device requestedDevice, DateTime now)
         {
+            string f(string v)
+            {
+                if (string.IsNullOrEmpty(v))
+                    return "Unknown";
+
+                return v;
+            }
+
             // Detect any device changes and log them (also log to Webhook)            
             string prefix = $"Device \"{requestedDevice.Name}\"";
 
             // Check if the device name changed
             if (currentDevice.Name != requestedDevice.Name)
-                await RegisterDeviceChangeAsync(prefix, $"Name changed from {currentDevice.Name} to {requestedDevice.Name}", DeviceChangeType.None, currentDevice, now);
+                await RegisterDeviceChangeAsync(prefix, $"Name changed from {f(currentDevice.Name)} to {f(requestedDevice.Name)}", DeviceChangeType.None, currentDevice, now);
 
             // Check if a newer client version is used
             if (currentDevice.ServiceClientVersion != requestedDevice.ServiceClientVersion && !string.IsNullOrEmpty(currentDevice.ServiceClientVersion))
-                await RegisterDeviceChangeAsync(prefix, $"new client version: {requestedDevice.ServiceClientVersion} (Old version: {currentDevice.ServiceClientVersion})", DeviceChangeEntry.DeviceChangeType.None, currentDevice, now);           
+                await RegisterDeviceChangeAsync(prefix, $"new client version: {f(requestedDevice.ServiceClientVersion)} (Old version: {f(currentDevice.ServiceClientVersion)})", DeviceChangeEntry.DeviceChangeType.None, currentDevice, now);           
 
             // Check if os name changed
             if (currentDevice.OstypeNavigation.Name != requestedDevice.OS.ToString())
-                await RegisterDeviceChangeAsync(prefix, $"OS change from {currentDevice.OstypeNavigation.Name} to {requestedDevice.OS}", DeviceChangeType.OS, currentDevice, now);
+                await RegisterDeviceChangeAsync(prefix, $"OS change from {f(currentDevice.OstypeNavigation.Name)} to {f(requestedDevice.OS.ToString())}", DeviceChangeType.OS, currentDevice, now);
 
             // Check if os version changed (don't ignore updates in general)
             if (currentDevice.Environment.Osversion != requestedDevice.Environment.OSVersion && !string.IsNullOrEmpty(currentDevice.Environment.Osversion))
-                await RegisterDeviceChangeAsync(prefix, $"new os version: {requestedDevice.Environment.OSVersion} (Old version: {currentDevice.Environment.Osversion})", DeviceChangeEntry.DeviceChangeType.OS, currentDevice, now);
+                await RegisterDeviceChangeAsync(prefix, $"new os version: {f(requestedDevice.Environment.OSVersion)} (Old version: {f(currentDevice.Environment.Osversion)})", DeviceChangeEntry.DeviceChangeType.OS, currentDevice, now);
 
             // CPU
             if (currentDevice.Environment.Cpuname != requestedDevice.Environment.CPUName && !string.IsNullOrEmpty(requestedDevice.Environment.CPUName))
-                await RegisterDeviceChangeAsync(prefix, $"CPU change. CPU {currentDevice.Environment.Cpuname} got replaced with {requestedDevice.Environment.CPUName}", DeviceChangeEntry.DeviceChangeType.CPU,  currentDevice, now);
+                await RegisterDeviceChangeAsync(prefix, $"CPU change. CPU {f(currentDevice.Environment.Cpuname)} got replaced with {f(requestedDevice.Environment.CPUName)}", DeviceChangeEntry.DeviceChangeType.CPU,  currentDevice, now);
 
             // CPU Count
             if (currentDevice.Environment.Cpucount != requestedDevice.Environment.CPUCount && requestedDevice.Environment.CPUCount > 0)
@@ -359,7 +367,7 @@ namespace Home.API.Services
 
             // Motherboard
             if (currentDevice.Environment.Motherboard != requestedDevice.Environment.Motherboard && !string.IsNullOrEmpty(requestedDevice.Environment.Motherboard))
-                await RegisterDeviceChangeAsync(prefix, $"Motherboard change from {currentDevice.Environment.Motherboard} to {requestedDevice.Environment.Motherboard}", DeviceChangeEntry.DeviceChangeType.Motherboard, currentDevice, now);
+                await RegisterDeviceChangeAsync(prefix, $"Motherboard change from {f(currentDevice.Environment.Motherboard)} to {f(requestedDevice.Environment.Motherboard)}", DeviceChangeEntry.DeviceChangeType.Motherboard, currentDevice, now);
 
             // Graphics
             await NotifyWebhookGraphicsChangeAsync(prefix, currentDevice, requestedDevice, now);
@@ -370,7 +378,7 @@ namespace Home.API.Services
 
             // IP Change
             if (currentDevice.Ip.Replace("/24", string.Empty) != requestedDevice.IP.Replace("/24", string.Empty) && !string.IsNullOrEmpty(requestedDevice.IP))
-                await RegisterDeviceChangeAsync(prefix, $"IP change from {currentDevice.Ip} to {requestedDevice.IP}", DeviceChangeType.IP, currentDevice, now);
+                await RegisterDeviceChangeAsync(prefix, $"IP change from {f(currentDevice.Ip)} to {f(requestedDevice.IP)}", DeviceChangeType.IP, currentDevice, now);
 
             // BIOS Change
             if (currentDevice.DeviceBios.Any() && requestedDevice.BIOS != null)
@@ -388,7 +396,7 @@ namespace Home.API.Services
                 var right = requestedDevice.BIOS;
 
                 if (left != right)
-                    await RegisterDeviceChangeAsync(prefix, $"BIOS changed from {left} to {right}", DeviceChangeType.BIOS, currentDevice, now);
+                    await RegisterDeviceChangeAsync(prefix, $"BIOS changed from {f(left?.ToString())} to {f(right?.ToString())}", DeviceChangeType.BIOS, currentDevice, now);
             }
             else if (currentDevice.DeviceBios.Any() && requestedDevice.BIOS == null)
                 currentDevice.DeviceBios.Clear();

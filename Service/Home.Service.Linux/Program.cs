@@ -70,7 +70,7 @@ namespace Home.Service.Linux
                 // Debug LSHW JSON FILES:
 #if DEBUG
                 var device = new Device();
-                ParseHardwareInfo(System.IO.File.ReadAllText(@"Test\test6.json"), device);
+                ParseHardwareInfo(System.IO.File.ReadAllText(@"Test\test7.json"), device);
                 int debug = 0;
 #endif
 
@@ -533,13 +533,15 @@ namespace Home.Service.Linux
             string childClass = child.Value<string>("class");
             string childID = child.Value<string>("id");
 
-            if (childClass == "bus" && string.IsNullOrEmpty(device.Environment.Motherboard))
+            if (childClass == "bus" && childID == "core" && string.IsNullOrEmpty(device.Environment.Motherboard))
             {
                 string vendor = child.Value<string>("vendor");
                 string product = child.Value<string>("product");
 
-                if (vendor != null && product != null)
+                if (!string.IsNullOrEmpty(vendor) && !string.IsNullOrEmpty(product))
                     device.Environment.Motherboard = $"{vendor} {product}";
+                
+                // otherwise empty => unknown
             }
             if (childClass == "memory" && childID == "firmware")
             {
@@ -681,8 +683,6 @@ namespace Home.Service.Linux
 
             return false;
         }
-
-
         #endregion
     }
 }

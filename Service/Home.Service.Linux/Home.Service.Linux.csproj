@@ -13,6 +13,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Test\test.json" />
+    <Content Remove="Test\test2.json" />
+    <Content Remove="Test\test3.json" />
+    <Content Remove="Test\test4.json" />
+    <Content Remove="Test\test5.json" />
+    <Content Remove="Test\test6.json" />
+    <Content Remove="Test\test7.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Include="..\Home.Service.Windows\Controllers\IOController.cs" Link="Controllers\IOController.cs" />
     <Compile Include="..\Home.Service.Windows\Startup.cs" Link="Startup.cs" />
   </ItemGroup>
@@ -58,6 +68,30 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Test\test.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Test\test2.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Test\test3.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Test\test4.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Test\test5.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Test\test6.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Test\test7.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
