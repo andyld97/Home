@@ -124,6 +124,7 @@ namespace Home.Service.Windows
                     CPUName = WMI.DetermineCPUName(),
                     TotalRAM = Native.DetermineTotalRAM(),
                     OSName = NET.GetOsFriendlyName(ServiceData.Instance.OSName),
+                    MachineName = NET.GetMachineName(),
                     Motherboard = WMI.DetermineMotherboard(),
                     OSVersion = Environment.OSVersion.ToString(),
                     RunningTime = now.Subtract(startTimestamp),

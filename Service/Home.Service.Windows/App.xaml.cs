@@ -18,6 +18,7 @@ namespace Home.Service.Windows
         public static bool IsConfigFlagSet { get; set; } = false;
 
         private static Thread thread;
+        private static bool isApiThreadStarted = false;
 
         public static IHostBuilder CreateHostBuilder(string[] args) => Host.CreateDefaultBuilder(args).ConfigureWebHostDefaults(webBuilder =>
         {
@@ -27,8 +28,8 @@ namespace Home.Service.Windows
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
-            Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en-US");
+            /*Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+            Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en-US");*/
 
             if (Environment.GetCommandLineArgs().Length > 0)
                 IsConfigFlagSet = Environment.GetCommandLineArgs().Any(p => p.ToLower().Contains("/config"));
@@ -39,16 +40,17 @@ namespace Home.Service.Windows
                 CreateHostBuilder(args).Build().Run();
             }));
 
-            if (ServiceData.Instance.AllowRemoteFileAccess && !IsConfigFlagSet)
-                thread.Start();
+            if (!IsConfigFlagSet)
+                StartAPIThread();
         }
 
         public static void StartAPIThread()
         {
             if (!ServiceData.Instance.AllowRemoteFileAccess) return;
-            if (!IsConfigFlagSet) return;
+            if (isApiThreadStarted) return;
 
             thread.Start();
+            isApiThreadStarted = true;  
         }
     }
 }
