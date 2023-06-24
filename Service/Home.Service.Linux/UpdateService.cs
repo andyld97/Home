@@ -15,7 +15,10 @@ namespace Home.Service.Linux
     public static class UpdateService
     {
         private static readonly string VersionUrl = "https://ca-soft.net/home/client-versions.json";
-        private static readonly string UpdateUrl = "https://code-a-software.net/home/content/content.php?product=linux";
+        private static readonly string UpdateUrl = "https://ca-soft.net/home/content/content.php?product=linux";
+        private static readonly string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0";
+
+        private static string LastHash = string.Empty;
 
         public static async Task<bool?> CheckForUpdatesAsync(DateTime lastUpdateCheck)
         {
@@ -38,10 +41,11 @@ namespace Home.Service.Linux
                         string versionsJson = await versions.Content.ReadAsStringAsync();
 
                         var vObj = JObject.Parse(versionsJson);
-                        var clientWindowsVersion = vObj["Home.Service.Linux"];
+                        var clientLinuxVersion = vObj["Home.Service.Linux"];
 
-                        string version = clientWindowsVersion["version"].Value<string>();
-                        decimal dotnetVersion = clientWindowsVersion["dotnetVersion"].Value<decimal>();
+                        string version = clientLinuxVersion["version"].Value<string>();
+                        decimal dotnetVersion = clientLinuxVersion["dotnetVersion"].Value<decimal>();
+                        LastHash = clientLinuxVersion["fileHashSHA256"].Value<string>();
 
                         if (System.Environment.Version.Major != (int)dotnetVersion)
                             return false;
@@ -62,19 +66,70 @@ namespace Home.Service.Linux
             return result;
         }
 
+        private static async Task<bool> DownloadFileAsync(string targetFilePath, string downloadLink)
+        {
+            try
+            {
+                string dirName = System.IO.Path.GetDirectoryName(targetFilePath);
+                if (!System.IO.Directory.Exists(dirName))
+                    System.IO.Directory.CreateDirectory(dirName);
+
+                using (HttpClient client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
+
+                    var stream = await client.GetStreamAsync(downloadLink);
+                    using (FileStream fs = new FileStream(targetFilePath, FileMode.Create))
+                    {
+                        await stream.CopyToAsync(fs);
+                    }
+                }
+
+                // Validate file / compare hash
+                if (!string.IsNullOrEmpty(LastHash))
+                {
+                    // Build sha256-Hash
+                    string fileHashSHA256 = await SHA256Hash.CreateHashFromFileAsync(targetFilePath);
+
+                    if (fileHashSHA256 != LastHash)
+                    {
+                        Console.WriteLine("Invalid hash found!");
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError($"Failed while downloading update: {ex.Message}");
+            }
+
+            return false;
+        }
+
         public static bool UpdateServiceClient(string dotnetPath)
         {
             string directory = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string updateTarPath = System.IO.Path.Combine(directory, "update.tar");
 
-            var psi = new ProcessStartInfo()
+            // Download and verify update
+            bool result = false;
+            Task.Run(async () => result = await DownloadFileAsync(updateTarPath, UpdateUrl));
+
+            if (result)
             {
-                FileName = dotnetPath,
-                WorkingDirectory = directory,
-                Arguments = $"{System.IO.Path.Combine(directory, "ClientUpdate.dll")} \"{UpdateUrl}\" \"{directory}\"",
-            };
+                var psi = new ProcessStartInfo()
+                {
+                    FileName = dotnetPath,
+                    WorkingDirectory = directory,
+                    Arguments = $"{System.IO.Path.Combine(directory, "ClientUpdate.dll")} \"update.tar\" \"{directory}\"",
+                };
 
-            var proc = Process.Start(psi);
-            proc.WaitForExit();
+                var proc = Process.Start(psi);
+                proc.WaitForExit();
+                return true;
+            }
             return false;
         }
     }

@@ -154,7 +154,7 @@ namespace Home.Service.Windows
                     }
                 }
 
-                // Compare hash
+                // Validate file / compare hash
                 if (!string.IsNullOrEmpty(LastHash))
                 {
                     // Build sha256-Hash

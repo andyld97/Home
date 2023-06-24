@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <Compile Include="..\Home.Service.Windows\Controllers\IOController.cs" Link="Controllers\IOController.cs" />
+    <Compile Include="..\Home.Service.Windows\SHA256Hash.cs" Link="SHA256Hash.cs" />
     <Compile Include="..\Home.Service.Windows\Startup.cs" Link="Startup.cs" />
   </ItemGroup>
 

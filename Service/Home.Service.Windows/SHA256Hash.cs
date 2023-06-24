@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Home.Service.Windows
+namespace Home.Service
 {
     public static class SHA256Hash
     {
