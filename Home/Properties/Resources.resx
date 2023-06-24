@@ -929,4 +929,10 @@ Download: https://developer.microsoft.com/en-us/microsoft-edge/webview2/</value>
   <data name="strReport_ReleaseDate" xml:space="preserve">
     <value>Release Date</value>
   </data>
+  <data name="strSearch" xml:space="preserve">
+    <value>Search:</value>
+  </data>
+  <data name="strNoDevicesFound" xml:space="preserve">
+    <value>No devices found!</value>
+  </data>
 </root>

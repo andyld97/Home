@@ -23,10 +23,16 @@
             </Style>
         </StackPanel.Resources>
 
+        <TextBlock Text="{x:Static res:Resources.strSearch}" />
+        <TextBox x:Name="TextSearch" TextChanged="TextSearch_TextChanged" />
         <TextBlock>
             <Run Text="{x:Static res:Resources.strDevice}" /><Run Text=":" />
         </TextBlock>
-        <ComboBox x:Name="CmbDevices" Margin="2,0,0,0" SelectionChanged="CmbDevices_SelectionChanged" Height="64" ItemTemplate="{DynamicResource DeviceComboBoxItemTemplate}" />
+
+        <Grid Height="64">
+            <ComboBox x:Name="CmbDevices" Margin="2,0,2,0" SelectionChanged="CmbDevices_SelectionChanged" ItemTemplate="{DynamicResource DeviceComboBoxItemTemplate}" />
+            <TextBlock x:Name="TextNoDevices" Text="{x:Static res:Resources.strNoDevicesFound}" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" />
+        </Grid>
 
         <TextBlock Text="{x:Static res:Resources.strMacAddress}" />
         <TextBox x:Name="TextMac" />

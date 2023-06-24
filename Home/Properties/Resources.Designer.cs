@@ -1195,6 +1195,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die No devices found! ähnelt.
+        /// </summary>
+        public static string strNoDevicesFound {
+            get {
+                return ResourceManager.GetString("strNoDevicesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die No warnings! ähnelt.
         /// </summary>
         public static string strNoWarnings {
@@ -1857,6 +1866,15 @@ namespace Home.Properties {
         public static string strScreenshotViewer_ViewScreenshot {
             get {
                 return ResourceManager.GetString("strScreenshotViewer_ViewScreenshot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Search: ähnelt.
+        /// </summary>
+        public static string strSearch {
+            get {
+                return ResourceManager.GetString("strSearch", resourceCulture);
             }
         }
         
