@@ -214,6 +214,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die {0}% Battery left ... ähnelt.
+        /// </summary>
+        public static string strBatteryWarning_Message {
+            get {
+                return ResourceManager.GetString("strBatteryWarning_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Bit ähnelt.
         /// </summary>
         public static string strBit {
@@ -2104,6 +2113,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Free space left: {0} ähnelt.
+        /// </summary>
+        public static string strStorageWarning_Message {
+            get {
+                return ResourceManager.GetString("strStorageWarning_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Success! ähnelt.
         /// </summary>
         public static string strSuccess {
@@ -2262,6 +2280,15 @@ namespace Home.Properties {
         public static string strWakeUpDevice {
             get {
                 return ResourceManager.GetString("strWakeUpDevice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Warnings ähnelt.
+        /// </summary>
+        public static string strWarnings {
+            get {
+                return ResourceManager.GetString("strWarnings", resourceCulture);
             }
         }
         

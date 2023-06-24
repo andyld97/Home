@@ -1,4 +1,5 @@
-﻿using Home.Model;
+﻿using Home.Controls.Warnings;
+using Home.Model;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using System;
 using System.Collections.Generic;
@@ -32,8 +33,20 @@ namespace Home.Controls
 
         public void Update(Device device)
         {
-            ViewHolder.Children.Clear();
+            // Update device warnings
+            if (device.BatteryWarning != null || device.StorageWarnings.Any())
+                GrpWarning.Visibility = Visibility.Visible;
+            else
+                GrpWarning.Visibility = Visibility.Collapsed;
 
+            WarningHolder.Children.Clear();
+            foreach (var item in device.StorageWarnings)
+                WarningHolder.Children.Add(new StorageWarningItem(item));
+
+            if (device.BatteryWarning != null)
+                WarningHolder.Children.Add(new BatteryWarningItem(device.BatteryWarning));
+
+            ViewHolder.Children.Clear();
             if (device.DevicesChanges.Count == 0)
                 return;
 

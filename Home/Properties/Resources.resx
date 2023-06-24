@@ -935,4 +935,13 @@ Download: https://developer.microsoft.com/en-us/microsoft-edge/webview2/</value>
   <data name="strNoDevicesFound" xml:space="preserve">
     <value>No devices found!</value>
   </data>
+  <data name="strStorageWarning_Message" xml:space="preserve">
+    <value>Free space left: {0}</value>
+  </data>
+  <data name="strBatteryWarning_Message" xml:space="preserve">
+    <value>{0}% Battery left ...</value>
+  </data>
+  <data name="strWarnings" xml:space="preserve">
+    <value>Warnings</value>
+  </data>
 </root>

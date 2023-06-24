@@ -80,7 +80,7 @@ namespace Model
             htmlTemplate = htmlTemplate.Replace("{h0}", f($"{device.Environment.CPUName} ({Home.Properties.Resources.strCores}: {device.Environment.CPUCount})"));
             htmlTemplate = htmlTemplate.Replace("{h1}", f(device.Environment.Motherboard));
             htmlTemplate = htmlTemplate.Replace("{h2}", f(ByteUnit.FromGB(device.Environment.TotalRAM).ToString()));
-            htmlTemplate = htmlTemplate.Replace("{h3}", f(string.Join(Environment.NewLine, device.Environment.GraphicCards)));
+            htmlTemplate = htmlTemplate.Replace("{h3}", f(string.Join("<br />", device.Environment.GraphicCards)));
 
             if (device.Screens.Count == 0)
                 htmlTemplate = htmlTemplate.Replace("{screen}", string.Empty);

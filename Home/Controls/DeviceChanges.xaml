@@ -26,6 +26,14 @@
     </UserControl.Resources>
 
     <ScrollViewer>
-        <StackPanel x:Name="ViewHolder" />
+        <StackPanel>
+            <GroupBox x:Name="GrpWarning" Header="{x:Static res:Resources.strWarnings}" Margin="2" BorderThickness="0.5" MaxHeight="150">
+                <ScrollViewer>
+                    <StackPanel x:Name="WarningHolder" />
+                </ScrollViewer>
+            </GroupBox>
+
+            <StackPanel x:Name="ViewHolder" />
+        </StackPanel>
     </ScrollViewer>
 </UserControl>

@@ -1,0 +1,33 @@
+﻿using Home.Data.Helper;
+using Home.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+namespace Home.Controls.Warnings
+{
+    /// <summary>
+    /// Interaktionslogik für StorageWarning.xaml
+    /// </summary>
+    public partial class StorageWarningItem : UserControl
+    {
+        public StorageWarningItem(StorageWarning sw)
+        {
+            InitializeComponent();
+            TextName.Text = sw.DiskName;
+            TextSpace.Text = string.Format(Properties.Resources.strStorageWarning_Message, ByteUnit.FindUnit(sw.Value).ToString());
+            TextDatum.Text = sw.WarningOccoured.ToString(Properties.Resources.strDateTimeFormat);
+        }
+    }
+}

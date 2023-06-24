@@ -364,6 +364,11 @@
                                             <StackPanel Orientation="Horizontal" Height="20">
                                                 <Image Source="resources/icons/menu/change.png" Width="16" />
                                                 <TextBlock Margin="5,0,0,0" Text="{x:Static res:Resources.strDeviceChanges}" TextAlignment="Center" />
+
+                                                <StackPanel x:Name="StackNotification" Orientation="Horizontal" Margin="3,0,0,0">
+                                                    <Image Source="resources/icons/warning.png" Height="16" />
+                                                    <TextBlock x:Name="TextWarningsCount" Text="1" />
+                                                </StackPanel>
                                             </StackPanel>
                                         </TabItem.Header>
 

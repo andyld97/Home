@@ -707,6 +707,18 @@ namespace Home
 
             await ScreenshotViewer.UpdateDeviceAsync(currentDevice);
             DeviceInfoDisplay.UpdateDevice(currentDevice);
+
+            int warnings = 0;
+            if (currentDevice.BatteryWarning != null)
+                warnings++;
+
+            warnings += currentDevice.StorageWarnings.Count;
+
+            TextWarningsCount.Text = warnings.ToString();
+            if (warnings > 0)
+                StackNotification.Visibility = Visibility.Visible;
+            else
+                StackNotification.Visibility = Visibility.Collapsed;
         }
 
         #region Menu

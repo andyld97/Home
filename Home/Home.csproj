@@ -75,6 +75,9 @@
     <None Remove="resources\icons\ram.png" />
     <None Remove="resources\icons\screen.png" />
     <None Remove="resources\icons\screen_offline.png" />
+    <None Remove="resources\icons\warning-sm.png" />
+    <None Remove="resources\icons\warnings\battery-warning.png" />
+    <None Remove="resources\icons\warnings\storage-warning.png" />
     <None Remove="resources\images\default_phone.png" />
     <None Remove="resources\images\logo.png" />
     <None Remove="resources\report\bios_template.html" />
@@ -159,6 +162,9 @@
     <Resource Include="resources\icons\live\online.png" />
     <Resource Include="resources\icons\screen.png" />
     <Resource Include="resources\icons\screen_offline.png" />
+    <Resource Include="resources\icons\warning-sm.png" />
+    <Resource Include="resources\icons\warnings\battery-warning.png" />
+    <Resource Include="resources\icons\warnings\storage-warning.png" />
     <Resource Include="resources\images\default_phone.png" />
     <Resource Include="resources\images\logo.png" />
     <Resource Include="resources\images\screenshot_default.png" />
