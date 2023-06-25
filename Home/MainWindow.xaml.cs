@@ -114,7 +114,8 @@ namespace Home
                 MenuButtonDeleteDevice,
                 MenuButtonGenerateReport,
                 MenuPrintReport,
-                MenuButtonClearLog
+                MenuButtonClearLog,
+                MenuButtonClearHardwareChanges
             };
 
             // Disable all device depended buttons since there is no device selected at the beginning
@@ -555,6 +556,11 @@ namespace Home
                             oldDevice.LogEntries.Clear();
                             await RefreshSelectedItem();
                         }
+                        else if (@event.EventDescription == EventQueueItem.EventKind.HardwareChangesCleared)
+                        {
+                            oldDevice.DevicesChanges.Clear();
+                            await RefreshSelectedItem();
+                        }
                         else if (@event.EventDescription == EventQueueItem.EventKind.DeviceDeleted)
                         {
                             var device = deviceList.FirstOrDefault(d => d.ID == @event.DeviceID);
@@ -750,6 +756,18 @@ namespace Home
                 MessageBox.Show(Home.Properties.Resources.strSuccessfullyClearedDeviceLog, Properties.Resources.strSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
             else
                 MessageBox.Show(string.Format(Home.Properties.Resources.strFailedToClearDeviceLog, result.ErrorMessage), Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+        private async void MenuButtonClearHardwareChanges_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentDevice == null)
+                return;
+
+            var result = await API.ClearDeviceHardwareChangesAsync(currentDevice);
+            if (result.Success)
+                MessageBox.Show(Home.Properties.Resources.strSuccessfullyClearedHardwareLog, Properties.Resources.strSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
+            else
+                MessageBox.Show(string.Format(Home.Properties.Resources.strFailedToClearedHardwareLog, result.ErrorMessage), Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
         private void MenuButtonSendMessage_Click(object sender, RoutedEventArgs e)

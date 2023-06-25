@@ -61,6 +61,7 @@
     <None Remove="resources\icons\managment\add.png" />
     <None Remove="resources\icons\managment\remove.png" />
     <None Remove="resources\icons\menu\about.png" />
+    <None Remove="resources\icons\menu\clear_changes.png" />
     <None Remove="resources\icons\menu\command.png" />
     <None Remove="resources\icons\menu\exit.png" />
     <None Remove="resources\icons\menu\html.png" />
@@ -146,6 +147,7 @@
     <Resource Include="resources\icons\explorer\directory.png" />
     <Resource Include="resources\icons\explorer\redo.png" />
     <Resource Include="resources\icons\explorer\undo.png" />
+    <Resource Include="resources\icons\menu\clear_changes.png" />
     <Resource Include="resources\icons\menu\command.png" />
     <Resource Include="resources\icons\menu\exit.png" />
     <Resource Include="resources\icons\menu\html.png" />

@@ -65,6 +65,11 @@ namespace Home.Data.Events
             LogCleared,
 
             /// <summary>
+            /// Denotes that the hardware change log of the event device got cleared
+            /// </summary>
+            HardwareChangesCleared,
+
+            /// <summary>
             /// Denotes that the "live mode" of the event device got changed
             /// </summary>
             LiveModeChanged,

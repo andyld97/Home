@@ -950,4 +950,13 @@ Download: https://developer.microsoft.com/en-us/microsoft-edge/webview2/</value>
   <data name="strDevice_InitalStatusMessage_Warnings" xml:space="preserve">
     <value>({0} Warning(s)!)</value>
   </data>
+  <data name="strClearHwChanges" xml:space="preserve">
+    <value>Clear changes</value>
+  </data>
+  <data name="strSuccessfullyClearedHardwareLog" xml:space="preserve">
+    <value>Successfully cleared the hardware changes of this device!</value>
+  </data>
+  <data name="strFailedToClearedHardwareLog" xml:space="preserve">
+    <value>Failed to clear the hardware changes of this device: {0}</value>
+  </data>
 </root>

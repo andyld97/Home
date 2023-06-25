@@ -259,6 +259,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Clear changes ähnelt.
+        /// </summary>
+        public static string strClearHwChanges {
+            get {
+                return ResourceManager.GetString("strClearHwChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Clear Log ähnelt.
         /// </summary>
         public static string strClearLog {
@@ -642,6 +651,15 @@ namespace Home.Properties {
         public static string strFailedToClearDeviceLog {
             get {
                 return ResourceManager.GetString("strFailedToClearDeviceLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Failed to clear the hardware changes of this device: {0} ähnelt.
+        /// </summary>
+        public static string strFailedToClearedHardwareLog {
+            get {
+                return ResourceManager.GetString("strFailedToClearedHardwareLog", resourceCulture);
             }
         }
         
@@ -2163,6 +2181,15 @@ namespace Home.Properties {
         public static string strSuccessfullyClearedDeviceLog {
             get {
                 return ResourceManager.GetString("strSuccessfullyClearedDeviceLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Successfully cleared the hardware changes of this device! ähnelt.
+        /// </summary>
+        public static string strSuccessfullyClearedHardwareLog {
+            get {
+                return ResourceManager.GetString("strSuccessfullyClearedHardwareLog", resourceCulture);
             }
         }
         

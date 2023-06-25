@@ -285,6 +285,32 @@ namespace Home.API.Controllers
         }
 
         /// <summary>
+        /// Clears the device hardware log of the given device completely
+        /// </summary>
+        /// <param name="deviceID">The selected device</param>
+        /// <returns>Ok on success</returns>
+        [HttpGet("clear_hw_changes/{deviceID}")]
+        public async Task<IActionResult> ClearDeviceHardwareChangesAsync(string deviceID)
+        {
+            if (string.IsNullOrEmpty(deviceID))
+                return BadRequest(AnswerExtensions.Fail("Invalid device data"));
+
+            var device = await _context.Device.Include(d => d.DeviceLog).Where(p => p.Guid == deviceID).FirstOrDefaultAsync();
+            if (device != null)
+            {
+                _logger.LogInformation($"Clearing log of {device.Name} ...");
+
+                device.DeviceChange.Clear();
+                await _context.SaveChangesAsync();
+
+                _clientService.NotifyClientQueues(EventQueueItem.EventKind.HardwareChangesCleared, deviceID);
+                return Ok(AnswerExtensions.Success("ok"));
+            }
+            else
+                return NotFound(AnswerExtensions.Fail("Device not found!"));
+        }
+
+        /// <summary>
         /// Sends a message to the device
         /// </summary>
         /// <param name="message">The message to send</param>

@@ -882,4 +882,13 @@ Herunterladen: https://developer.microsoft.com/en-us/microsoft-edge/webview2/</v
   <data name="strDevice_InitalStatusMessage_Warnings" xml:space="preserve">
     <value>({0} Warnung(en)!)</value>
   </data>
+  <data name="strClearHwChanges" xml:space="preserve">
+    <value>Änderungsliste leeren</value>
+  </data>
+  <data name="strFailedToClearedHardwareLog" xml:space="preserve">
+    <value>Die Hardware-Änderungen dieses Geräts konnten nicht gelöscht werden: {0}</value>
+  </data>
+  <data name="strSuccessfullyClearedHardwareLog" xml:space="preserve">
+    <value>Die Hardware-Änderungen an diesem Gerät wurden erfolgreich gelöscht!</value>
+  </data>
 </root>
