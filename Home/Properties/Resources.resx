@@ -944,4 +944,10 @@ Download: https://developer.microsoft.com/en-us/microsoft-edge/webview2/</value>
   <data name="strWarnings" xml:space="preserve">
     <value>Warnings</value>
   </data>
+  <data name="strDevice_InitalStatusMessage" xml:space="preserve">
+    <value>Status: {0} of {1} device(s) are active!</value>
+  </data>
+  <data name="strDevice_InitalStatusMessage_Warnings" xml:space="preserve">
+    <value>({0} Warning(s)!)</value>
+  </data>
 </root>

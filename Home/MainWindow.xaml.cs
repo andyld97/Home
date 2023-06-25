@@ -290,6 +290,26 @@ namespace Home
             if (result.Success)
             {
                 AddProtocolEntry(string.Format(Properties.Resources.strConnectedSuccessfullyMessage, Settings.Instance.Host), isSucess: true);
+
+                int warnings = 0;
+                foreach (var device in deviceList)
+                    warnings += CountDeviceWarnings(device);
+
+                int allDevices = deviceList.Count();
+                if (allDevices > 0)
+                {
+                    int activeDevices = deviceList.Count(d => d.Status == DeviceStatus.Active);
+
+                    string message = string.Format(Home.Properties.Resources.strDevice_InitalStatusMessage, activeDevices, allDevices);
+                    if (warnings > 0)
+                    {
+                        message += " ";
+                        message += string.Format(Home.Properties.Resources.strDevice_InitalStatusMessage_Warnings, warnings);
+                    }
+
+                    AddProtocolEntry(message);
+                }
+
                 RefreshDeviceHolder();
             }
             else
@@ -708,11 +728,7 @@ namespace Home
             await ScreenshotViewer.UpdateDeviceAsync(currentDevice);
             DeviceInfoDisplay.UpdateDevice(currentDevice);
 
-            int warnings = 0;
-            if (currentDevice.BatteryWarning != null)
-                warnings++;
-
-            warnings += currentDevice.StorageWarnings.Count;
+            int warnings = CountDeviceWarnings(currentDevice);
 
             TextWarningsCount.Text = warnings.ToString();
             if (warnings > 0)
@@ -776,6 +792,17 @@ namespace Home
         }
 
         #endregion
+
+        private int CountDeviceWarnings(Device device)
+        {
+            int warnings = 0;
+            if (device.BatteryWarning != null)
+                warnings++;
+
+            warnings += device.StorageWarnings.Count;
+
+            return warnings;
+        }
 
         private void TabExpander_Collapsed(object sender, RoutedEventArgs e)
         {

@@ -394,6 +394,24 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Status: {0} of {1} device(s) are active! ähnelt.
+        /// </summary>
+        public static string strDevice_InitalStatusMessage {
+            get {
+                return ResourceManager.GetString("strDevice_InitalStatusMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die ({0} Warning(s)!) ähnelt.
+        /// </summary>
+        public static string strDevice_InitalStatusMessage_Warnings {
+            get {
+                return ResourceManager.GetString("strDevice_InitalStatusMessage_Warnings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Battery Remaining (%) ähnelt.
         /// </summary>
         public static string strDeviceActivityPlot_Battery_Name {
