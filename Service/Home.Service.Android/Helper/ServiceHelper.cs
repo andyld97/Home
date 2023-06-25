@@ -22,7 +22,7 @@ namespace Home.Service.Android.Helper
             context.StopService(intent);
         }
 
-        public static bool IsMyServiceRunning(Context context, System.Type cls)
+        public static bool IsServiceRunning(Context context, System.Type cls)
         {
             ActivityManager manager = (ActivityManager)context.GetSystemService(Context.ActivityService);
 

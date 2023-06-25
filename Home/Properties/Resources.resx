@@ -959,4 +959,7 @@ Download: https://developer.microsoft.com/en-us/microsoft-edge/webview2/</value>
   <data name="strFailedToClearedHardwareLog" xml:space="preserve">
     <value>Failed to clear the hardware changes of this device: {0}</value>
   </data>
+  <data name="strDeviceRegister_Success" xml:space="preserve">
+    <value> "The device was registered successfully!</value>
+  </data>
 </root>

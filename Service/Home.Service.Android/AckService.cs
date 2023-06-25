@@ -6,6 +6,7 @@ using AndroidX.Core.App;
 using Home.Model;
 using Home.Service.Android.Helper;
 using System;
+using System.IO;
 using A = Android;
 
 namespace Home.Service.Android
@@ -96,9 +97,35 @@ namespace Home.Service.Android
             // Start timer
             serviceTimer = new System.Threading.Timer(async delegate (object state)
             {
+                bool isConnected = true;
+                string additionalMessage = string.Empty;
+
                 if (!NetworkHelper.IsConnectedToWLAN(this))
+                    isConnected = false;
+                else
                 {
-                    UpdateTextNotification(GetString(Resource.String.strNotConnected), notificationBuilder);
+                    if (!string.IsNullOrEmpty(settings.WlanSSID))
+                    {
+                        string ssid = NetworkHelper.GetWLANSSID(this);
+                        if (!string.IsNullOrEmpty(ssid))
+                        {
+                            if (settings.WlanSSID != ssid)
+                            {
+                                // Other WLAN
+                                isConnected = false;
+                                additionalMessage = GetString(Resource.String.strConnectedToOtherWlan);
+                            }
+                        }
+                    }
+                }
+
+                if (!isConnected)
+                {
+                    string message = GetString(Resource.String.strNotConnected);
+                    if (!string.IsNullOrEmpty(additionalMessage))
+                        message += $" {additionalMessage}";
+
+                    UpdateTextNotification(message, notificationBuilder);
                     return;
                 }
                 else
