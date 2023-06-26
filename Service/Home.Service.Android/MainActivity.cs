@@ -68,9 +68,6 @@ namespace Home.Service.Android
                 }
             }
 
-            string wifiTest = NetworkHelper.GetWLANSSID(this);
-            int debug = 0;
-
             // Check if the device is already registered
             xmlDevicePath = System.IO.Path.Combine(baseDir, "device.xml");
             xmlSettingsPath = System.IO.Path.Combine(baseDir, "settings.xml");
