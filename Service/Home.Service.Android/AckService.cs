@@ -113,7 +113,7 @@ namespace Home.Service.Android
                             {
                                 // Other WLAN
                                 isConnected = false;
-                                additionalMessage = GetString(Resource.String.strConnectedToOtherWlan);
+                                additionalMessage = $"({settings.WlanSSID}"; // GetString(Resource.String.strConnectedToOtherWlan);
                             }
                         }
                     }
