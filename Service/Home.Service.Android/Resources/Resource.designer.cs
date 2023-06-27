@@ -12122,67 +12122,64 @@ namespace Home.Service.Android
 			public const int strConnectedTo = 2131755179;
 			
 			// aapt resource value: 0x7F1000AC
-			public const int strConnectedToOtherWlan = 2131755180;
+			public const int strCurrentWLAN = 2131755180;
 			
 			// aapt resource value: 0x7F1000AD
-			public const int strCurrentWLAN = 2131755181;
-			
-			// aapt resource value: 0x7F1000AE
-			public const int strDeviceNotRegisteredText = 2131755182;
-			
-			// aapt resource value: 0x7F1000B1
-			public const int strDeviceRegisteredText = 2131755185;
-			
-			// aapt resource value: 0x7F1000AF
-			public const int strDeviceRegisterFail = 2131755183;
+			public const int strDeviceNotRegisteredText = 2131755181;
 			
 			// aapt resource value: 0x7F1000B0
-			public const int strDeviceRegisterSuccess = 2131755184;
+			public const int strDeviceRegisteredText = 2131755184;
+			
+			// aapt resource value: 0x7F1000AE
+			public const int strDeviceRegisterFail = 2131755182;
+			
+			// aapt resource value: 0x7F1000AF
+			public const int strDeviceRegisterSuccess = 2131755183;
+			
+			// aapt resource value: 0x7F1000B1
+			public const int strDeviceSpecifications = 2131755185;
 			
 			// aapt resource value: 0x7F1000B2
-			public const int strDeviceSpecifications = 2131755186;
+			public const int strDeviceStatus = 2131755186;
 			
 			// aapt resource value: 0x7F1000B3
-			public const int strDeviceStatus = 2131755187;
+			public const int strDeviceType = 2131755187;
 			
 			// aapt resource value: 0x7F1000B4
-			public const int strDeviceType = 2131755188;
+			public const int strFailedToDetermineWLANSSID = 2131755188;
 			
 			// aapt resource value: 0x7F1000B5
-			public const int strFailedToDetermineWLANSSID = 2131755189;
+			public const int strGroup = 2131755189;
 			
 			// aapt resource value: 0x7F1000B6
-			public const int strGroup = 2131755190;
+			public const int strHost = 2131755190;
 			
 			// aapt resource value: 0x7F1000B7
-			public const int strHost = 2131755191;
+			public const int strLocation = 2131755191;
 			
 			// aapt resource value: 0x7F1000B8
-			public const int strLocation = 2131755192;
+			public const int strNotConnected = 2131755192;
 			
 			// aapt resource value: 0x7F1000B9
-			public const int strNotConnected = 2131755193;
+			public const int strRegisterDevice = 2131755193;
 			
 			// aapt resource value: 0x7F1000BA
-			public const int strRegisterDevice = 2131755194;
+			public const int strServiceActiveText = 2131755194;
 			
 			// aapt resource value: 0x7F1000BB
-			public const int strServiceActiveText = 2131755195;
+			public const int strServiceInActiveText = 2131755195;
 			
 			// aapt resource value: 0x7F1000BC
-			public const int strServiceInActiveText = 2131755196;
+			public const int strShowDeviceSpecs = 2131755196;
 			
 			// aapt resource value: 0x7F1000BD
-			public const int strShowDeviceSpecs = 2131755197;
+			public const int strStartService = 2131755197;
 			
 			// aapt resource value: 0x7F1000BE
-			public const int strStartService = 2131755198;
+			public const int strStopService = 2131755198;
 			
 			// aapt resource value: 0x7F1000BF
-			public const int strStopService = 2131755199;
-			
-			// aapt resource value: 0x7F1000C0
-			public const int strWLANSSIDLabel = 2131755200;
+			public const int strWLANSSIDLabel = 2131755199;
 			
 			static String()
 			{

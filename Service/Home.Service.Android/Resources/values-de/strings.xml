@@ -16,7 +16,6 @@
 	<string name="strDeviceNotRegisteredText">Das Gerät {0} ist nicht registriert!</string>
 	<string name="strConnectedTo">Verbunden mit {0}</string>
 	<string name="strNotConnected">Nicht verbunden</string>
-	<string name="strConnectedToOtherWlan">(anderes WLAN)</string>
 	<string name="strDeviceSpecifications">Geräte Spezifikationen</string>
 	<string name="strDeviceRegisterSuccess">Das Gerät wurde erfolgreich registriert!</string>
 	<string name="strDeviceRegisterFail">Fehler beim Registrieren des Gerätes!</string>

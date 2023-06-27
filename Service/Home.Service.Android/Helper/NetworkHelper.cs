@@ -2,6 +2,8 @@
 using Android.Content;
 using Android.Net;
 using Android.Net.Wifi;
+using System.Collections.Generic;
+using System.Linq;
 using A = Android;
 
 namespace Home.Service.Android.Helper
@@ -39,16 +41,18 @@ namespace Home.Service.Android.Helper
             try
             {
                 ConnectivityManager connManager = (ConnectivityManager)context.GetSystemService(Context.ConnectivityService);
-                NetworkInfo networkInfo = connManager.GetNetworkInfo(ConnectivityType.Wifi);
                 WifiManager wifiManager = (WifiManager)context.ApplicationContext.GetSystemService(Context.WifiService);
-                WifiInfo wifiInfo = wifiManager.ConnectionInfo;
 
-                if (!string.IsNullOrEmpty(wifiInfo.SSID))
+                // WifiInfo wifiInfo = wifiManager.ConnectionInfo;
+                string ssid = wifiManager.ConnectionInfo.SSID;// FindSSIDForWifiInfo(context);
+
+                // if (!string.IsNullOrEmpty(wifiInfo.SSID))
+                if (!string.IsNullOrEmpty(ssid))
                 {
-                    if (wifiInfo.SSID == "<unknown ssid>")
+                    if (ssid == "<unknown ssid>")
                         return null;
 
-                    return wifiInfo.SSID.Replace("\"", string.Empty);
+                    return ssid.Replace("\"", string.Empty);
                 }
             }
             catch
@@ -56,6 +60,17 @@ namespace Home.Service.Android.Helper
 
             return null;
         }
+
+        public static string FindSSIDForWifiInfo(Context context)
+        {
+            ConnectivityManager cm = ConnectivityManager.FromContext(context);
+            Network n = cm.ActiveNetwork;
+            var caps = cm.GetNetworkCapabilities(n);
+            WifiInfo info = (WifiInfo)caps.TransportInfo;
+            string ssid = info.SSID;
+
+            return ssid;
+    }
 
         private static NetworkInfo GetActiveNetworkInfo(Context context)
         {

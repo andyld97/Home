@@ -209,11 +209,13 @@ namespace Home.Service.Android
             if (CheckSelfPermission(A.Manifest.Permission.ReadExternalStorage) == A.Content.PM.Permission.Denied)
                 requestPermissions = true;
 
-            if (!string.IsNullOrEmpty(currentSettings.WlanSSID) && CheckSelfPermission(A.Manifest.Permission.AccessFineLocation) == A.Content.PM.Permission.Denied)
+            if (!string.IsNullOrEmpty(currentSettings.WlanSSID) && 
+                (CheckSelfPermission(A.Manifest.Permission.AccessFineLocation) == A.Content.PM.Permission.Denied)
+                || (CheckSelfPermission(A.Manifest.Permission.AccessBackgroundLocation) == A.Content.PM.Permission.Denied))
                 requestPermissions = true;
 
             if (requestPermissions)
-                RequestPermissions(new string[] { A.Manifest.Permission.ReadExternalStorage, A.Manifest.Permission.WriteExternalStorage, A.Manifest.Permission.AccessFineLocation }, 1000);
+                RequestPermissions(new string[] { A.Manifest.Permission.ReadExternalStorage, A.Manifest.Permission.WriteExternalStorage, A.Manifest.Permission.AccessFineLocation, A.Manifest.Permission.AccessBackgroundLocation }, 1000);
         }
 
         private async void ButtonRegisterDevice_Click(object sender, System.EventArgs e)
