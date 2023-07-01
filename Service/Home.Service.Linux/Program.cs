@@ -44,6 +44,7 @@ namespace Home.Service.Linux
         private static bool useAutomaticUpdateTimer = false;
         private static bool enableRemoteFileAccess = true;
         private static int automaticTimerIntervalHours = 24;
+        private static int xDisplayIndex = 0;
 
         #endregion
 
@@ -96,6 +97,9 @@ namespace Home.Service.Linux
 
                 if (config.ContainsKey("automatic_timer_interval_hours"))
                     automaticTimerIntervalHours = config["automatic_timer_interval_hours"].Value<int>();
+
+                if (config.ContainsKey("x_display_index"))
+                    xDisplayIndex = config["x_display_index"].Value<int>();
 
                 if (checkForUpdatesOnStart && CheckAndExecuteUpdate())
                     return;
@@ -305,17 +309,28 @@ namespace Home.Service.Linux
             if (!enableScreenshots)
                 return;
 
+            string fileName = "screenshot.png";
             Console.WriteLine("Creating a screenshot ...");
 
-            // 1) Create a screenshot (but ensure that this command will be executed as the normal user)
-            Helper.ExecuteSystemCommand("sudo", $"-H -u {NormalUser} bash -c \"sh screenshot.sh\"");
-
-            // 2) Post screenshot to the api
-            if (System.IO.File.Exists("screenshot.png"))
+            // 1) Delete old screenshot if it exists
+            if (System.IO.File.Exists(fileName))
             {
                 try
                 {
-                    byte[] data = await System.IO.File.ReadAllBytesAsync("screenshot.png");
+                    System.IO.File.Delete(fileName);
+                }
+                catch { }
+            }
+
+            // 2) Create a screenshot (but ensure that this command will be executed as the normal user)
+            Helper.ExecuteSystemCommand("sudo", $"-H -u {NormalUser} bash -c \"scrot {fileName}\"", false, new Dictionary<string, string>() { { "DISPLAY", $":{xDisplayIndex}" } });
+
+            // 2) Post screenshot to the api
+            if (System.IO.File.Exists(fileName))
+            {
+                try
+                {
+                    byte[] data = await System.IO.File.ReadAllBytesAsync(fileName);
                     var screenshotResult = await api.SendScreenshotAsync(new Screenshot() { DeviceID = currentDevice.ID, Data = Convert.ToBase64String(data) });
 
                     if (!screenshotResult.Success)
