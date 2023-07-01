@@ -34,6 +34,8 @@ namespace Home.Service.Linux
                 }
                 else
                 {
+                    Console.WriteLine("Checking for updates ...");
+
                     using (HttpClient client = new HttpClient())
                     {
                         var versions = await client.GetAsync(VersionUrl);
@@ -51,9 +53,15 @@ namespace Home.Service.Linux
                             return false;
 
                         if (Version.Parse(version) > Version.Parse(Consts.HomeServiceLinuxClientVersion))
+                        {
+                            Console.WriteLine($"New update found: {version}");
                             result = true;
+                        }
                         else
+                        {
+                            Console.WriteLine("No new update found...");
                             result = false;
+                        }
                     }
                 }
             }
@@ -70,6 +78,7 @@ namespace Home.Service.Linux
         {
             try
             {
+                Console.WriteLine($"Downloading update {downloadLink} ...");
                 string dirName = System.IO.Path.GetDirectoryName(targetFilePath);
                 if (!System.IO.Directory.Exists(dirName))
                     System.IO.Directory.CreateDirectory(dirName);
@@ -93,7 +102,14 @@ namespace Home.Service.Linux
 
                     if (fileHashSHA256 != LastHash)
                     {
-                        Console.WriteLine("Invalid hash found!");
+                        try
+                        {
+                            // Delete corrupt/illegal file
+                            System.IO.File.Delete(targetFilePath);
+                        }
+                        catch  { }
+
+                        Console.WriteLine("Invalid hash found: Deleting file ...");
                         return false;
                     }
                 }
@@ -111,11 +127,12 @@ namespace Home.Service.Linux
         public static bool UpdateServiceClient(string dotnetPath)
         {
             string directory = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string updateTarPath = System.IO.Path.Combine(directory, "update.tar");
+            string updateFileName = "update.tar";
+            string updateTarPath = System.IO.Path.Combine(directory, updateFileName);
 
             // Download and verify update
             bool result = false;
-            Task.Run(async () => result = await DownloadFileAsync(updateTarPath, UpdateUrl));
+            Task.Run(async () => result = await DownloadFileAsync(updateTarPath, UpdateUrl)).Wait();
 
             if (result)
             {
@@ -123,7 +140,7 @@ namespace Home.Service.Linux
                 {
                     FileName = dotnetPath,
                     WorkingDirectory = directory,
-                    Arguments = $"{System.IO.Path.Combine(directory, "ClientUpdate.dll")} \"update.tar\" \"{directory}\"",
+                    Arguments = $"{System.IO.Path.Combine(directory, "ClientUpdate.dll")} \"{updateFileName}\" \"{directory}\"",
                 };
 
                 var proc = Process.Start(psi);

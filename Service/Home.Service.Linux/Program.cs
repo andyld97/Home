@@ -165,7 +165,6 @@ namespace Home.Service.Linux
                 var task = Task.Run(async () => res = await api.RegisterDeviceAsync(currentDevice));
                 task.Wait();
 
-                // var result = Task.Run(async () => await api.RegisterDeviceAsync(currentDevice)).Result;
                 if (res)
                 {
                     config["is_signed_in"] = true;
@@ -247,7 +246,7 @@ namespace Home.Service.Linux
                             case Message.MessageImage.Warning: image = "warning"; break;
                         }
 
-                        // sudo zenity --error --text="Test" --title="hi"
+                        // Usage: sudo zenity --error --text="Test" --title="hi"
                         string shellScript = $"#!bin/bash\nDISPLAY=:0 zenity --{image} --title=\"{message.Title}\" --text=\"{message.Content}\"";
 
 
@@ -269,7 +268,6 @@ namespace Home.Service.Linux
 
                         Console.WriteLine($"Showing message: {shellScript}");
                         Helper.ExecuteSystemCommand("sudo", $"-H -u {NormalUser} bash -c \"sh zenity.sh\"", async: true);
-                        Console.WriteLine("Test");
                     }
                     else if (ackResult.Result.Result.HasFlag(AckResult.Ack.CommandRecieved))
                     {
@@ -325,7 +323,7 @@ namespace Home.Service.Linux
             // 2) Create a screenshot (but ensure that this command will be executed as the normal user)
             Helper.ExecuteSystemCommand("sudo", $"-H -u {NormalUser} bash -c \"scrot {fileName}\"", false, new Dictionary<string, string>() { { "DISPLAY", $":{xDisplayIndex}" } });
 
-            // 2) Post screenshot to the api
+            // 2) Post screenshot to the API
             if (System.IO.File.Exists(fileName))
             {
                 try
@@ -690,10 +688,12 @@ namespace Home.Service.Linux
             {
                 string dotnetPath = config["dotnet_path"].Value<string>();
 
-                UpdateService.UpdateServiceClient(dotnetPath);
-                AppMutex.ReleaseMutex();
-                Environment.Exit(0);
-                return true;
+                if (UpdateService.UpdateServiceClient(dotnetPath))
+                {
+                    AppMutex.ReleaseMutex();
+                    Environment.Exit(0);
+                    return true;
+                }
             }
 
             return false;
