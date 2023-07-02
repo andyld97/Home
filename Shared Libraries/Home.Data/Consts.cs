@@ -13,7 +13,7 @@ namespace Home.Data
 
         public static readonly DateTime ReleaseDate = new DateTime(2023, 7, 2, 11, 34, 0);
 
-        public const string HomeServiceWindowsClientVersion = "1.2.4";
+        public const string HomeServiceWindowsClientVersion = "1.2.5";
 
         public const string HomeServiceLinuxClientVersion = "1.1.4";
 
