@@ -14,6 +14,7 @@
         <local:TypeToBorderConverter x:Key="typeToBorderConverter" />
         <local:ImageConverter x:Key="imageConverter" />
         <local:DeviceToOpacityConverter x:Key="deviceToOpacityConverter" />
+        <local:DeviceWarningColorConverter x:Key="deviceWarningColorConverter" />
     </UserControl.Resources>
 
     <UserControl.Opacity>
@@ -66,12 +67,12 @@
                         </Grid.ColumnDefinitions>
 
                         <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <TextBlock Text="{Binding Environment.MachineName}" Width="170" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" TextTrimming="CharacterEllipsis" />
+                            <TextBlock Text="{Binding Environment.MachineName}" Foreground="{Binding ., Converter={StaticResource deviceWarningColorConverter}}" Width="170" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
                             <TextBlock TextAlignment="Left" Foreground="White">
-                            <Run Text="{Binding IP}" />
+                                <Run Text="{Binding IP}" />
                             </TextBlock>
                             <TextBlock TextAlignment="Left" Foreground="White">
-                            <Run Text="{Binding LastSeen, StringFormat={x:Static res:Resources.strDateTimeFormat}}" />
+                                <Run Text="{Binding LastSeen, StringFormat={x:Static res:Resources.strDateTimeFormat}}" />
                             </TextBlock>
                         </StackPanel>
                     </Grid>

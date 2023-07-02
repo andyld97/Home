@@ -39,7 +39,7 @@ namespace Home.API.Services
 
         /// <summary>
         /// Currently each hour this will be resetted in order to prevent spam. So in the worst case you will get a notification every hour (still better than each time the service runs)
-        /// ACK Errors get LOGGED only ONCE per DEVICE. So if there is a an ack error you have to handle it,
+        /// ACK Errors get LOGGED only ONCE per DEVICE. So if there is a an ACK error you have to handle it,
         /// but mostly such an error don't occur for only one device, but rather for all devices (e.g. if the db connection is lost)
         /// </summary>
         /// <returns>true if the webhook should be notified</returns>
@@ -294,7 +294,6 @@ namespace Home.API.Services
 
             foreach (var shot in screenshotsToRemove)
             {
-                shot.Device = null;
                 homeContext.DeviceScreenshot.Remove(shot);
 
                 string path = System.IO.Path.Combine(Config.SCREENSHOTS_PATH, device.Guid, $"{shot.ScreenshotFileName}.png");
@@ -318,7 +317,6 @@ namespace Home.API.Services
             // If Battery Warning is not empty but the device has no battery, also remove the warning
             if ((batteryWarning != null && device.Environment.Battery == null) || (batteryWarning != null && GeneralHelper.ConvertNullableValue(device.Environment.Battery.Percentage, out int per) && ModelConverter.ConvertBatteryWarning(batteryWarning).CanBeRemoved(per, Program.GlobalConfig.BatteryWarningPercentage)))
             {
-                batteryWarning.Device = null;
                 context.DeviceWarning.Remove(batteryWarning);
                 var logEntry = ModelConverter.CreateLogEntry(device, $"[Battery Warning]: Removed for device {device.Name}!", LogEntry.LogLevel.Information, true);
                 await context.DeviceLog.AddAsync(logEntry);
@@ -359,10 +357,7 @@ namespace Home.API.Services
                 }
 
                 foreach (var warning in toRemove)
-                {
-                    warning.Device = null;
                     context.DeviceWarning.Remove(warning);
-                }
             }
         }
 
@@ -383,7 +378,6 @@ namespace Home.API.Services
                     var entry = entries.FirstOrDefault();
                     if (entry == null)
                         continue;
-                    entry.Device = null;
 
                     homeContext.DeviceLog.Remove(entry);
                     entries.RemoveAt(0);

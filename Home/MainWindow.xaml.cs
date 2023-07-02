@@ -294,7 +294,7 @@ namespace Home
 
                 int warnings = 0;
                 foreach (var device in deviceList)
-                    warnings += CountDeviceWarnings(device);
+                    warnings += device.CountWarnings();
 
                 int allDevices = deviceList.Count();
                 if (allDevices > 0)
@@ -734,7 +734,7 @@ namespace Home
             await ScreenshotViewer.UpdateDeviceAsync(currentDevice);
             DeviceInfoDisplay.UpdateDevice(currentDevice);
 
-            int warnings = CountDeviceWarnings(currentDevice);
+            int warnings = currentDevice.CountWarnings();
 
             TextWarningsCount.Text = warnings.ToString();
             if (warnings > 0)
@@ -810,17 +810,6 @@ namespace Home
         }
 
         #endregion
-
-        private int CountDeviceWarnings(Device device)
-        {
-            int warnings = 0;
-            if (device.BatteryWarning != null)
-                warnings++;
-
-            warnings += device.StorageWarnings.Count;
-
-            return warnings;
-        }
 
         private void TabExpander_Collapsed(object sender, RoutedEventArgs e)
         {
