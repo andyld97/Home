@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Home.Service.Windows"
-#define MyAppVersion "1.0.5"
+#define MyAppVersion "1.0.7"
 #define MyAppPublisher "Code A Software"
 #define MyAppURL "https://github.com/andyld97/Home"
 #define MyAppExeName "Home.Service.Windows.exe"
@@ -53,9 +53,10 @@ Source: "bin\Release\net7.0-windows\publish\runtimes\*"; DestDir: "{app}\runtime
 Source: "bin\Release\net7.0-windows\publish\tr\*"; DestDir: "{app}\tr"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "bin\Release\net7.0-windows\publish\zh-Hans\*"; DestDir: "{app}\zh-Hans"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "bin\Release\net7.0-windows\publish\zh-Hant\*"; DestDir: "{app}\zh-Hant"; Flags: ignoreversion recursesubdirs createallsubdirs
-; MUST BE COMPILED IN RELEASE BEFORE!
+; OLD NOTIFICATION (MUST BE COMPILED IN RELEASE BEFORE!)
 Source: "..\..\Helper Applications\Notification\bin\Release\*"; DestDir: "{app}\Notification"; Flags: ignoreversion recursesubdirs createallsubdirs
-; MUST BE COMPILED/PUBLISHED IN RELEASE BEFORE!
+; NEW NOTIFICATION MUST BE COMPILED/PUBLISHED IN RELEASE BEFORE!
+Source: "..\..\Helper Applications\HomeNotification\bin\Release\net7.0-windows10.0.17763.0\publish\*"; DestDIr: "{app}\Toast"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\..\Helper Applications\ClientUpdate\bin\Release\net7.0\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "bin\Release\net7.0-windows\publish\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\App.config"; DestDir: "{app}"; Flags: ignoreversion
@@ -95,6 +96,8 @@ Source: "bin\Release\net7.0-windows\publish\System.ServiceModel.Syndication.dll"
 Source: "bin\Release\net7.0-windows\publish\System.ServiceProcess.ServiceController.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\System.Speech.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\System.Web.Services.Description.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net7.0-windows\publish\System.Text.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net7.0-windows\publish\System.Text.Encodings.Web.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net7.0-windows\publish\NumericUpDownLib.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 

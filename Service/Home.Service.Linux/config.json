@@ -12,5 +12,6 @@
   "check_for_updates_on_start": true, /* Updates will only work correctly, if Home.Service.Linux is running via systemd-service! */
   "use_automatic_update_timer": false,
   "automatic_timer_interval_hours": 24,
+  "x_display_index": 0,
   "dotnet_path": "/usr/bin/dotnet"
 }

@@ -44,6 +44,7 @@ namespace Home.Service.Linux
         private static bool useAutomaticUpdateTimer = false;
         private static bool enableRemoteFileAccess = true;
         private static int automaticTimerIntervalHours = 24;
+        private static int xDisplayIndex = 0;
 
         #endregion
 
@@ -70,7 +71,7 @@ namespace Home.Service.Linux
                 // Debug LSHW JSON FILES:
 #if DEBUG
                 var device = new Device();
-                ParseHardwareInfo(System.IO.File.ReadAllText(@"Test\test6.json"), device);
+                ParseHardwareInfo(System.IO.File.ReadAllText(@"Test\test7.json"), device);
                 int debug = 0;
 #endif
 
@@ -96,6 +97,9 @@ namespace Home.Service.Linux
 
                 if (config.ContainsKey("automatic_timer_interval_hours"))
                     automaticTimerIntervalHours = config["automatic_timer_interval_hours"].Value<int>();
+
+                if (config.ContainsKey("x_display_index"))
+                    xDisplayIndex = config["x_display_index"].Value<int>();
 
                 if (checkForUpdatesOnStart && CheckAndExecuteUpdate())
                     return;
@@ -161,7 +165,6 @@ namespace Home.Service.Linux
                 var task = Task.Run(async () => res = await api.RegisterDeviceAsync(currentDevice));
                 task.Wait();
 
-                // var result = Task.Run(async () => await api.RegisterDeviceAsync(currentDevice)).Result;
                 if (res)
                 {
                     config["is_signed_in"] = true;
@@ -243,7 +246,7 @@ namespace Home.Service.Linux
                             case Message.MessageImage.Warning: image = "warning"; break;
                         }
 
-                        // sudo zenity --error --text="Test" --title="hi"
+                        // Usage: sudo zenity --error --text="Test" --title="hi"
                         string shellScript = $"#!bin/bash\nDISPLAY=:0 zenity --{image} --title=\"{message.Title}\" --text=\"{message.Content}\"";
 
 
@@ -265,7 +268,6 @@ namespace Home.Service.Linux
 
                         Console.WriteLine($"Showing message: {shellScript}");
                         Helper.ExecuteSystemCommand("sudo", $"-H -u {NormalUser} bash -c \"sh zenity.sh\"", async: true);
-                        Console.WriteLine("Test");
                     }
                     else if (ackResult.Result.Result.HasFlag(AckResult.Ack.CommandRecieved))
                     {
@@ -305,17 +307,28 @@ namespace Home.Service.Linux
             if (!enableScreenshots)
                 return;
 
+            string fileName = "screenshot.png";
             Console.WriteLine("Creating a screenshot ...");
 
-            // 1) Create a screenshot (but ensure that this command will be executed as the normal user)
-            Helper.ExecuteSystemCommand("sudo", $"-H -u {NormalUser} bash -c \"sh screenshot.sh\"");
-
-            // 2) Post screenshot to the api
-            if (System.IO.File.Exists("screenshot.png"))
+            // 1) Delete old screenshot if it exists
+            if (System.IO.File.Exists(fileName))
             {
                 try
                 {
-                    byte[] data = await System.IO.File.ReadAllBytesAsync("screenshot.png");
+                    System.IO.File.Delete(fileName);
+                }
+                catch { }
+            }
+
+            // 2) Create a screenshot (but ensure that this command will be executed as the normal user)
+            Helper.ExecuteSystemCommand("sudo", $"-H -u {NormalUser} bash -c \"scrot {fileName}\"", false, new Dictionary<string, string>() { { "DISPLAY", $":{xDisplayIndex}" } });
+
+            // 2) Post screenshot to the API
+            if (System.IO.File.Exists(fileName))
+            {
+                try
+                {
+                    byte[] data = await System.IO.File.ReadAllBytesAsync(fileName);
                     var screenshotResult = await api.SendScreenshotAsync(new Screenshot() { DeviceID = currentDevice.ID, Data = Convert.ToBase64String(data) });
 
                     if (!screenshotResult.Success)
@@ -533,13 +546,15 @@ namespace Home.Service.Linux
             string childClass = child.Value<string>("class");
             string childID = child.Value<string>("id");
 
-            if (childClass == "bus" && string.IsNullOrEmpty(device.Environment.Motherboard))
+            if (childClass == "bus" && childID == "core" && string.IsNullOrEmpty(device.Environment.Motherboard))
             {
                 string vendor = child.Value<string>("vendor");
                 string product = child.Value<string>("product");
 
-                if (vendor != null && product != null)
+                if (!string.IsNullOrEmpty(vendor) && !string.IsNullOrEmpty(product))
                     device.Environment.Motherboard = $"{vendor} {product}";
+                
+                // otherwise empty => unknown
             }
             if (childClass == "memory" && childID == "firmware")
             {
@@ -673,16 +688,16 @@ namespace Home.Service.Linux
             {
                 string dotnetPath = config["dotnet_path"].Value<string>();
 
-                UpdateService.UpdateServiceClient(dotnetPath);
-                AppMutex.ReleaseMutex();
-                Environment.Exit(0);
-                return true;
+                if (UpdateService.UpdateServiceClient(dotnetPath))
+                {
+                    AppMutex.ReleaseMutex();
+                    Environment.Exit(0);
+                    return true;
+                }
             }
 
             return false;
         }
-
-
         #endregion
     }
 }

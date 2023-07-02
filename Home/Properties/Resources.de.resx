@@ -861,4 +861,34 @@ Herunterladen: https://developer.microsoft.com/en-us/microsoft-edge/webview2/</v
   <data name="strReport_ReleaseDate" xml:space="preserve">
     <value>Erscheinungsdatum</value>
   </data>
+  <data name="strNoDevicesFound" xml:space="preserve">
+    <value>Keine Geräte gefunden!</value>
+  </data>
+  <data name="strSearch" xml:space="preserve">
+    <value>Suche:</value>
+  </data>
+  <data name="strStorageWarning_Message" xml:space="preserve">
+    <value>Freier Speicherplatz: {0}</value>
+  </data>
+  <data name="strBatteryWarning_Message" xml:space="preserve">
+    <value>{0}% Akku verbleibend ...</value>
+  </data>
+  <data name="strWarnings" xml:space="preserve">
+    <value>Warnungen</value>
+  </data>
+  <data name="strDevice_InitalStatusMessage" xml:space="preserve">
+    <value>Status: {0} von {1} Geräten sind aktiv!</value>
+  </data>
+  <data name="strDevice_InitalStatusMessage_Warnings" xml:space="preserve">
+    <value>({0} Warnung(en))</value>
+  </data>
+  <data name="strClearHwChanges" xml:space="preserve">
+    <value>Änderungsliste leeren</value>
+  </data>
+  <data name="strFailedToClearedHardwareLog" xml:space="preserve">
+    <value>Die Hardware-Änderungen dieses Geräts konnten nicht gelöscht werden: {0}</value>
+  </data>
+  <data name="strSuccessfullyClearedHardwareLog" xml:space="preserve">
+    <value>Die Hardware-Änderungen an diesem Gerät wurden erfolgreich gelöscht!</value>
+  </data>
 </root>

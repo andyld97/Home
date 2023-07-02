@@ -61,6 +61,7 @@
     <None Remove="resources\icons\managment\add.png" />
     <None Remove="resources\icons\managment\remove.png" />
     <None Remove="resources\icons\menu\about.png" />
+    <None Remove="resources\icons\menu\clear_changes.png" />
     <None Remove="resources\icons\menu\command.png" />
     <None Remove="resources\icons\menu\exit.png" />
     <None Remove="resources\icons\menu\html.png" />
@@ -75,6 +76,9 @@
     <None Remove="resources\icons\ram.png" />
     <None Remove="resources\icons\screen.png" />
     <None Remove="resources\icons\screen_offline.png" />
+    <None Remove="resources\icons\warning-sm.png" />
+    <None Remove="resources\icons\warnings\battery-warning.png" />
+    <None Remove="resources\icons\warnings\storage-warning.png" />
     <None Remove="resources\images\default_phone.png" />
     <None Remove="resources\images\logo.png" />
     <None Remove="resources\report\bios_template.html" />
@@ -104,7 +108,7 @@
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.421302">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.1" />
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.4" />
     <PackageReference Include="WebhookAPI" Version="1.0.2" />
   </ItemGroup>
   <ItemGroup>
@@ -143,6 +147,7 @@
     <Resource Include="resources\icons\explorer\directory.png" />
     <Resource Include="resources\icons\explorer\redo.png" />
     <Resource Include="resources\icons\explorer\undo.png" />
+    <Resource Include="resources\icons\menu\clear_changes.png" />
     <Resource Include="resources\icons\menu\command.png" />
     <Resource Include="resources\icons\menu\exit.png" />
     <Resource Include="resources\icons\menu\html.png" />
@@ -159,6 +164,9 @@
     <Resource Include="resources\icons\live\online.png" />
     <Resource Include="resources\icons\screen.png" />
     <Resource Include="resources\icons\screen_offline.png" />
+    <Resource Include="resources\icons\warning-sm.png" />
+    <Resource Include="resources\icons\warnings\battery-warning.png" />
+    <Resource Include="resources\icons\warnings\storage-warning.png" />
     <Resource Include="resources\images\default_phone.png" />
     <Resource Include="resources\images\logo.png" />
     <Resource Include="resources\images\screenshot_default.png" />

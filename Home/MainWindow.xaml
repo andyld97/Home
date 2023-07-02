@@ -52,6 +52,7 @@
 
                 <Fluent:RibbonGroupBox Header="{x:Static res:Resources.strOperations}">
                     <Fluent:Button x:Name="MenuButtonClearLog" Click="MenuButtonClearLog_Click" Header="{x:Static res:Resources.strClearLog}" LargeIcon="/resources/icons/menu/clear_log.png" />
+                    <Fluent:Button x:Name="MenuButtonClearHardwareChanges" Click="MenuButtonClearHardwareChanges_Click" Header="{x:Static res:Resources.strClearHwChanges}" LargeIcon="resources/icons/menu/clear_changes.png" />
                     <Fluent:Button x:Name="MenuButtonDeleteDevice" Click="MenuButtonDeleteDevice_Click" Header="{x:Static res:Resources.strDeleteDevice}" LargeIcon="/resources/icons/menu/add.png" />
                     <Fluent:Button Visibility="Collapsed" Header="{x:Static res:Resources.strRemoteShell}" LargeIcon="/resources/icons/menu/shell.png" IsEnabled="False" />
                     <Fluent:Button Visibility="Collapsed" Header="{x:Static res:Resources.strRemoteConnection}" LargeIcon="/resources/icons/menu/rdp.png" IsEnabled="False" />
@@ -258,15 +259,17 @@
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
 
-                                            <Grid x:Name="InfoGrid">
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto" />
-                                                    <RowDefinition Height="*" />
-                                                </Grid.RowDefinitions>
+                                            <ScrollViewer x:Name="InfoGrid" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="*" />
+                                                    </Grid.RowDefinitions>
 
-                                                <controls:DeviceInfoDisplay x:Name="DeviceInfoDisplay" />
-                                                <controls:DeviceActivityPlot x:Name="DeviceActivityPlot" Grid.Row="1" />
-                                            </Grid>
+                                                    <controls:DeviceInfoDisplay x:Name="DeviceInfoDisplay" />
+                                                    <controls:DeviceActivityPlot x:Name="DeviceActivityPlot" Grid.Row="1" />
+                                                </Grid>
+                                            </ScrollViewer>
 
                                             <Grid x:Name="ScreeshotViewHolder" Grid.Column="1">
                                                 <controls:ScreenshotViewer x:Name="ScreenshotViewer" Margin="0,-3,-3,-3" />
@@ -362,6 +365,11 @@
                                             <StackPanel Orientation="Horizontal" Height="20">
                                                 <Image Source="resources/icons/menu/change.png" Width="16" />
                                                 <TextBlock Margin="5,0,0,0" Text="{x:Static res:Resources.strDeviceChanges}" TextAlignment="Center" />
+
+                                                <StackPanel x:Name="StackNotification" Orientation="Horizontal" Margin="3,0,0,0">
+                                                    <Image Source="resources/icons/warning.png" Height="16" />
+                                                    <TextBlock x:Name="TextWarningsCount" Text="1" />
+                                                </StackPanel>
                                             </StackPanel>
                                         </TabItem.Header>
 

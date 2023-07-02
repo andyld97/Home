@@ -13,13 +13,31 @@ namespace Home.Controls.Dialogs
         public WOLDialog()
         {
             InitializeComponent();
+            RefreshDevices();
+        }
 
+        private void RefreshDevices(string search = "")
+        {
             var devices = MainWindow.W_INSTANCE.GetDevices();
             devices = devices.Where(p => p.OS.IsWindows(true) || p.OS.IsLinux()).ToList();
+
+            // Apply search text (if any)
+            if (!string.IsNullOrEmpty(search))
+                devices = devices.Where(d => d.Name.ToLower().Contains(search.ToLower()));
+
             CmbDevices.ItemsSource = devices;
 
             if (devices.Any())
+            {
                 CmbDevices.SelectedIndex = 0;
+                CmbDevices.Visibility = Visibility.Visible;
+                TextNoDevices.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                CmbDevices.Visibility = Visibility.Collapsed;
+                TextNoDevices.Visibility = Visibility.Visible;
+            }
         }
 
         private void CmbDevices_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -41,6 +59,11 @@ namespace Home.Controls.Dialogs
                 DialogResult = true;
             else
                MessageBox.Show(Properties.Resources.strWakeOnLanDialog_FailedToSendWOLRequest, Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+        private void TextSearch_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            RefreshDevices(TextSearch.Text);
         }
     }
 }

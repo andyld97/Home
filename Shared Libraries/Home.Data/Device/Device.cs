@@ -18,6 +18,7 @@ using System.Xml.Serialization;
 using JsonIgnoreAttribute = Newtonsoft.Json.JsonIgnoreAttribute;
 using System.Text;
 using System.Linq;
+using System.Diagnostics.SymbolStore;
 
 namespace Home.Model
 {
@@ -608,7 +609,9 @@ namespace Home.Model
             Environment.DiskUsage = other.Environment.DiskUsage;
             Environment.DomainName = other.Environment.DomainName;
             Environment.FreeRAM = other.Environment.FreeRAM;
+#pragma warning disable CS0612 // Typ oder Element ist veraltet
             Environment.Graphics = other.Environment.Graphics;
+#pragma warning restore CS0612 // Typ oder Element ist veraltet
             Environment.Is64BitOS = other.Environment.Is64BitOS;
             Environment.MachineName = other.Environment.MachineName;
             Environment.Motherboard = other.Environment.Motherboard;
@@ -643,8 +646,10 @@ namespace Home.Model
             if (IP.EndsWith("/24"))
                 IP = IP.Replace("/24", string.Empty);
 
+#pragma warning disable CS0612 // Typ oder Element ist veraltet
             if (Environment.GraphicCards.Count == 0 && !string.IsNullOrEmpty(other.Environment.Graphics))
                 Environment.GraphicCards.Add(other.Environment.Graphics);
+#pragma warning restore CS0612 // Typ oder Element ist veraltet
 
 #if !LEGACY
             DevicesChanges.Clear();
@@ -1071,7 +1076,9 @@ namespace Home.Model
         public override string ToString()
         {
             string rn = Environment.NewLine;
+#pragma warning disable CS0612 // Typ oder Element ist veraltet
             string graphics = GraphicCards.Count == 0 ? Graphics : string.Join(Environment.NewLine, GraphicCards.Count);
+#pragma warning restore CS0612 // Typ oder Element ist veraltet
             string cpuName = CPUName;
 
             if (cpuName.Contains(Environment.NewLine))
@@ -1504,6 +1511,19 @@ namespace Home.Model
             return (b1?.BuildHash() != b2?.BuildHash()); 
         }
 
+        public override int GetHashCode()
+        {
+            return BuildHash().GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is BIOS b2)
+                return this == b2;
+
+            return false;
+        }
+
 #endif
 
         public override string ToString()
@@ -1554,7 +1574,7 @@ namespace Home.Model
         /// The timestamp when this warning firstly occurred
         /// </summary>
         [JsonPropertyName("warning_occoured")]
-        public DateTime WarningOccoured { get; set; }
+        public DateTime WarningOccurred { get; set; }
 
         [XmlIgnore]
         [JsonPropertyName("text")]
@@ -1579,7 +1599,7 @@ namespace Home.Model
         public LogEntry ConvertToLogEntry(string deviceName)
         {
             string message = $"[{Name} Warning]: Created for {deviceName} - \"{Text}\"";
-            return new LogEntry(WarningOccoured, message, LogEntry.LogLevel.Warning, true);
+            return new LogEntry(WarningOccurred, message, LogEntry.LogLevel.Warning, true);
         }
     }
 
@@ -1630,7 +1650,7 @@ namespace Home.Model
         {
             StorageWarning storageWarning = new StorageWarning();
             storageWarning.StorageID = storageID;
-            storageWarning.WarningOccoured = DateTime.Now;
+            storageWarning.WarningOccurred = DateTime.Now;
             storageWarning.Value = value;
             storageWarning.DiskName = diskName;
 
@@ -1673,7 +1693,7 @@ namespace Home.Model
         public static BatteryWarning Create(int value)
         {
             BatteryWarning batteryWarning = new BatteryWarning();
-            batteryWarning.WarningOccoured = DateTime.Now;
+            batteryWarning.WarningOccurred = DateTime.Now;
             batteryWarning.Value = value;
 
             return batteryWarning;

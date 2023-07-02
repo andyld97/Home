@@ -79,8 +79,8 @@ namespace Model
             // Hardware
             htmlTemplate = htmlTemplate.Replace("{h0}", f($"{device.Environment.CPUName} ({Home.Properties.Resources.strCores}: {device.Environment.CPUCount})"));
             htmlTemplate = htmlTemplate.Replace("{h1}", f(device.Environment.Motherboard));
-            htmlTemplate = htmlTemplate.Replace("{h2}", f(ByteUnit.FromGB(Convert.ToUInt64(device.Environment.TotalRAM)).ToString()));
-            htmlTemplate = htmlTemplate.Replace("{h3}", f(string.Join(Environment.NewLine, device.Environment.GraphicCards)));
+            htmlTemplate = htmlTemplate.Replace("{h2}", f(ByteUnit.FromGB(device.Environment.TotalRAM).ToString()));
+            htmlTemplate = htmlTemplate.Replace("{h3}", f(string.Join("<br />", device.Environment.GraphicCards)));
 
             if (device.Screens.Count == 0)
                 htmlTemplate = htmlTemplate.Replace("{screen}", string.Empty);
@@ -90,6 +90,8 @@ namespace Model
                 screenTemplate = $"<h3>{Home.Properties.Resources.strScreens}</h3>";
 
                 string tmp = GetHtmlTemplate("display_template");
+                int count = 0;
+                int screenCount = device.Screens.Count;
                 foreach (var screen in device.Screens)
                 {
                     string subTemplate = tmp;
@@ -101,7 +103,10 @@ namespace Model
                     subTemplate = subTemplate.Replace("{dp4}", screen.Index.ToString());
                     subTemplate = subTemplate.Replace("{dp5}", screen.IsPrimary ? Home.Properties.Resources.strYes : Home.Properties.Resources.strNo);
 
-                    screenTemplate += $"{subTemplate}<hr />";
+                    screenTemplate += $"{subTemplate}";
+                    if (count != screenCount - 1)
+                        screenTemplate += "<div class=\"separator\"></div>";
+                    count++;
                 }
 
                 htmlTemplate = htmlTemplate.Replace("{screen}", screenTemplate);
@@ -243,7 +248,7 @@ namespace Model
             string htmlTemplate = GetHtmlTemplate("warning_template");
             htmlTemplate = htmlTemplate.Replace("{w0}", f(warning.GetType().Name));
             htmlTemplate = htmlTemplate.Replace("{w1}", f(warning.Text));
-            htmlTemplate = htmlTemplate.Replace("{w2}", f(warning.WarningOccoured.ToString()));
+            htmlTemplate = htmlTemplate.Replace("{w2}", f(warning.WarningOccurred.ToString()));
 
             return htmlTemplate;
         }

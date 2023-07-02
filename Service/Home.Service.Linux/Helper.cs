@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
@@ -8,12 +9,20 @@ namespace Home.Service.Linux
 {
     public static class Helper
     {
-        public static string ExecuteSystemCommand(string command, string parameter, bool async = false)
+        public static string ExecuteSystemCommand(string command, string parameter, bool async = false, Dictionary<string, string> env = null)
         {
             StringBuilder sb = new StringBuilder();
             try
             {
-                Process proc = new Process { StartInfo = new ProcessStartInfo(command, parameter) { RedirectStandardOutput = !async } };
+                var info = new ProcessStartInfo(command, parameter) { RedirectStandardOutput = !async };
+
+                if (env != null)
+                {
+                    foreach (var item in env.Keys)
+                        info.EnvironmentVariables.Add(item, env[item]);
+                }
+
+                Process proc = new Process { StartInfo =  info };
                 proc.Start();
 
                 while (!proc.StandardOutput.EndOfStream && !async)

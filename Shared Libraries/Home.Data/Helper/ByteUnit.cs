@@ -147,6 +147,16 @@ namespace Home.Data.Helper
         }
 
         /// <summary>
+        /// Returns a ByteUnit instance in Gigabytes
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
+        public static ByteUnit FromGB(double bytes)
+        {
+            return new ByteUnit(bytes, Unit.GB);
+        }
+
+        /// <summary>
         /// Returns a ByteUnit instance in Terabytes
         /// </summary>
         /// <param name="bytes"></param>

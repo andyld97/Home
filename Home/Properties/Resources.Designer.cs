@@ -214,6 +214,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die {0}% Battery left ... ähnelt.
+        /// </summary>
+        public static string strBatteryWarning_Message {
+            get {
+                return ResourceManager.GetString("strBatteryWarning_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Bit ähnelt.
         /// </summary>
         public static string strBit {
@@ -246,6 +255,15 @@ namespace Home.Properties {
         public static string strCleanUpResultMessage {
             get {
                 return ResourceManager.GetString("strCleanUpResultMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Clear changes ähnelt.
+        /// </summary>
+        public static string strClearHwChanges {
+            get {
+                return ResourceManager.GetString("strClearHwChanges", resourceCulture);
             }
         }
         
@@ -381,6 +399,24 @@ namespace Home.Properties {
         public static string strDevice {
             get {
                 return ResourceManager.GetString("strDevice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Status: {0} of {1} device(s) are active! ähnelt.
+        /// </summary>
+        public static string strDevice_InitalStatusMessage {
+            get {
+                return ResourceManager.GetString("strDevice_InitalStatusMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die ({0} Warning(s)) ähnelt.
+        /// </summary>
+        public static string strDevice_InitalStatusMessage_Warnings {
+            get {
+                return ResourceManager.GetString("strDevice_InitalStatusMessage_Warnings", resourceCulture);
             }
         }
         
@@ -615,6 +651,15 @@ namespace Home.Properties {
         public static string strFailedToClearDeviceLog {
             get {
                 return ResourceManager.GetString("strFailedToClearDeviceLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Failed to clear the hardware changes of this device: {0} ähnelt.
+        /// </summary>
+        public static string strFailedToClearedHardwareLog {
+            get {
+                return ResourceManager.GetString("strFailedToClearedHardwareLog", resourceCulture);
             }
         }
         
@@ -1191,6 +1236,15 @@ namespace Home.Properties {
         public static string strNoDeviceSelected {
             get {
                 return ResourceManager.GetString("strNoDeviceSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die No devices found! ähnelt.
+        /// </summary>
+        public static string strNoDevicesFound {
+            get {
+                return ResourceManager.GetString("strNoDevicesFound", resourceCulture);
             }
         }
         
@@ -1861,6 +1915,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Search: ähnelt.
+        /// </summary>
+        public static string strSearch {
+            get {
+                return ResourceManager.GetString("strSearch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Executable: ähnelt.
         /// </summary>
         public static string strSendCommandDialog_App {
@@ -2086,6 +2149,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Free space left: {0} ähnelt.
+        /// </summary>
+        public static string strStorageWarning_Message {
+            get {
+                return ResourceManager.GetString("strStorageWarning_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Success! ähnelt.
         /// </summary>
         public static string strSuccess {
@@ -2109,6 +2181,15 @@ namespace Home.Properties {
         public static string strSuccessfullyClearedDeviceLog {
             get {
                 return ResourceManager.GetString("strSuccessfullyClearedDeviceLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Successfully cleared the hardware changes of this device! ähnelt.
+        /// </summary>
+        public static string strSuccessfullyClearedHardwareLog {
+            get {
+                return ResourceManager.GetString("strSuccessfullyClearedHardwareLog", resourceCulture);
             }
         }
         
@@ -2244,6 +2325,15 @@ namespace Home.Properties {
         public static string strWakeUpDevice {
             get {
                 return ResourceManager.GetString("strWakeUpDevice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Warnings ähnelt.
+        /// </summary>
+        public static string strWarnings {
+            get {
+                return ResourceManager.GetString("strWarnings", resourceCulture);
             }
         }
         

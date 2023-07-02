@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -239,7 +240,7 @@ namespace Home.API.Controllers
         /// <param name="fileName">The screenshot filename</param>
         /// <returns>Ok on success</returns>
         [HttpGet("recieve_screenshot/{deviceId}/{fileName}")]
-        public async Task<IActionResult> RecieveScreenshot(string deviceId, string fileName)
+        public async Task<IActionResult> ReceiveScreenshot(string deviceId, string fileName)
         {
             if (string.IsNullOrEmpty(deviceId))
                 return BadRequest(AnswerExtensions.Fail("Invalid device data"));
@@ -277,6 +278,32 @@ namespace Home.API.Controllers
                 await _context.SaveChangesAsync();                
                 
                 _clientService.NotifyClientQueues(EventQueueItem.EventKind.LogCleared, deviceID);
+                return Ok(AnswerExtensions.Success("ok"));
+            }
+            else
+                return NotFound(AnswerExtensions.Fail("Device not found!"));
+        }
+
+        /// <summary>
+        /// Clears the device hardware log of the given device completely
+        /// </summary>
+        /// <param name="deviceID">The selected device</param>
+        /// <returns>Ok on success</returns>
+        [HttpGet("clear_hw_changes/{deviceID}")]
+        public async Task<IActionResult> ClearDeviceHardwareChangesAsync(string deviceID)
+        {
+            if (string.IsNullOrEmpty(deviceID))
+                return BadRequest(AnswerExtensions.Fail("Invalid device data"));
+
+            var device = await _context.Device.Include(d => d.DeviceLog).Where(p => p.Guid == deviceID).FirstOrDefaultAsync();
+            if (device != null)
+            {
+                _logger.LogInformation($"Clearing log of {device.Name} ...");
+
+                device.DeviceChange.Clear();
+                await _context.SaveChangesAsync();
+
+                _clientService.NotifyClientQueues(EventQueueItem.EventKind.HardwareChangesCleared, deviceID);
                 return Ok(AnswerExtensions.Success("ok"));
             }
             else
@@ -401,7 +428,9 @@ namespace Home.API.Controllers
                 foreach (var item in device.DeviceScreen)
                     _context.DeviceScreen.Remove(item);
 
-                // ToDo: *** Also remove the screenshot files from the server!
+                foreach (var item in device.DeviceBios)
+                    _context.DeviceBios.Remove(item);
+
                 foreach (var item in device.DeviceScreenshot)
                     _context.DeviceScreenshot.Remove(item);
 
@@ -410,15 +439,53 @@ namespace Home.API.Controllers
 
                 if (device.DeviceUsage != null)
                  _context.DeviceUsage.Remove(device.DeviceUsage);
-                
-                //_context.DeviceEnvironment.Remove(device.Environment);
+
                 _context.Device.Remove(device);
+                _context.DeviceEnvironment.Remove(device.Environment);
+
+                // Delete screenshots
+                int count = 0;
+                var screenshotsFolder = new System.IO.DirectoryInfo(System.IO.Path.Combine(Config.SCREENSHOTS_PATH, device.Guid));
+                if (screenshotsFolder.Exists)
+                {
+                    List<FileInfo> filesToDelete = new List<FileInfo>();
+                    foreach (var screenshot in screenshotsFolder.EnumerateFiles("*.png"))
+                        filesToDelete.Add(screenshot);
+
+                    count = filesToDelete.Count;
+                    if (filesToDelete.Count > 0)
+                    {
+                        foreach (var file in filesToDelete)
+                        {
+                            try
+                            {
+                                file.Delete();
+                            }
+                            catch
+                            {
+                                // ignore
+                            }
+                        }
+                    }
+
+                    try
+                    {
+                        screenshotsFolder.Delete();
+                    }
+                    catch
+                    {
+                        // ignore
+                    }
+
+                    // Clean up list
+                    filesToDelete.Clear();
+                }
 
                 try
                 {
                     _clientService.NotifyClientQueues(EventQueueItem.EventKind.DeviceDeleted, device.Guid);
                     await _context.SaveChangesAsync();
-                    await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Success, $"Device \"{deviceName}\" removed!", "Communication");
+                    await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Success, $"Device \"{deviceName}\" removed! (Deleted {count} screenshots!)", "Communication");
                 }
                 catch (Exception ex)
                 {

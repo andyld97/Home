@@ -17,6 +17,11 @@
 	<string name="strConnectedTo">Verbunden mit {0}</string>
 	<string name="strNotConnected">Nicht verbunden</string>
 	<string name="strDeviceSpecifications">Geräte Spezifikationen</string>
+	<string name="strDeviceRegisterSuccess">Das Gerät wurde erfolgreich registriert!</string>
+	<string name="strDeviceRegisterFail">Fehler beim Registrieren des Gerätes!</string>
+	<string name="strFailedToDetermineWLANSSID">SSID konnte nicht ermittelt werden. App-Berechtigungen prüfen (Standort) ...</string>
+	<string name="strWLANSSIDLabel">"WLAN SSID (optional):</string>
+	<string name="strCurrentWLAN">Aktives WLAN verwenden</string>
 	<string-array name="device_type">
 		<item>Smartphone</item>
 		<item>SmartTV</item>

@@ -1,11 +1,15 @@
 ﻿using Android.App;
 using Android.Content;
+using Android.Net;
+using Android.Net.Wifi;
 using Android.OS;
 using Android.Runtime;
 using AndroidX.Core.App;
 using Home.Model;
 using Home.Service.Android.Helper;
 using System;
+using System.IO;
+using static Android.Net.ConnectivityManager;
 using A = Android;
 
 namespace Home.Service.Android
@@ -83,10 +87,10 @@ namespace Home.Service.Android
             }
 
             // Create notification
-            string textConntected = string.Format(GetString(Resource.String.strConnectedTo), settings.Host);
+            string ssid = NetworkHelper.GetWLANSSID(this);
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
                     .SetContentTitle("Home.Service.Android")
-                    .SetContentText(textConntected)
+                    .SetContentText(GetNotificationText(ssid))
                     .SetSmallIcon(Resource.Drawable.settings)
                     .SetContentIntent(pendingIntent);
 
@@ -96,13 +100,26 @@ namespace Home.Service.Android
             // Start timer
             serviceTimer = new System.Threading.Timer(async delegate (object state)
             {
+                bool isConnected = true;
+                string additionalMessage = string.Empty;
+                string ssid = NetworkHelper.GetWLANSSID(this);
+
                 if (!NetworkHelper.IsConnectedToWLAN(this))
+                    isConnected = false;
+                else
                 {
-                    UpdateTextNotification(GetString(Resource.String.strNotConnected), notificationBuilder);
+                    if (!string.IsNullOrEmpty(settings.WlanSSID) && !string.IsNullOrEmpty(ssid) && settings.WlanSSID != ssid)
+                        isConnected = false;
+                }
+
+                string message = GetNotificationText(ssid);
+                if (!isConnected)
+                {           
+                    UpdateTextNotification(message, notificationBuilder);
                     return;
                 }
                 else
-                    UpdateTextNotification(textConntected, notificationBuilder);
+                    UpdateTextNotification(message, notificationBuilder);
 
                 // Refresh device information (preparing ack ...)
                 currentDevice.RefreshDevice(ApplicationContext.ContentResolver, ApplicationContext);
@@ -113,6 +130,44 @@ namespace Home.Service.Android
             }, null, 0, (int)TimeSpan.FromSeconds(30).TotalMilliseconds);
 
             return StartCommandResult.Sticky;
+        }
+
+        private string GetNotificationText(string ssid)
+        {
+            string additionalMessage = string.Empty;
+            bool isConnected = true;
+
+            if (!NetworkHelper.IsConnectedToWLAN(this))
+            {
+                isConnected = false;
+                return GetString(Resource.String.strNotConnected);
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(settings.WlanSSID))
+                {
+                    if (!string.IsNullOrEmpty(ssid))
+                    {
+                        if (settings.WlanSSID != ssid)
+                        {
+                            // Other WLAN
+                            isConnected = false;
+                            additionalMessage = $"({ssid})";
+                        }
+                    }
+                }
+            }
+
+            if (!isConnected)
+            {
+                string message = GetString(Resource.String.strNotConnected);
+                if (!string.IsNullOrEmpty(additionalMessage))
+                    message += $" {additionalMessage}";
+
+                return message; 
+            }
+            else
+               return string.Format(GetString(Resource.String.strConnectedTo), settings.Host);
         }
 
         private void UpdateTextNotification(string text, NotificationCompat.Builder builder)

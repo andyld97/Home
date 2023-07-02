@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Home.Model;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -24,6 +25,22 @@ namespace Home.Helper
                 // ignore 
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Counts all warnings of the given device
+        /// </summary>
+        /// <param name="device">The given device</param>
+        /// <returns></returns>
+        public static int CountWarnings(this Device device)
+        {
+            int warnings = 0;
+            if (device.BatteryWarning != null)
+                warnings++;
+
+            warnings += device.StorageWarnings.Count;
+
+            return warnings;
         }
     }
 }

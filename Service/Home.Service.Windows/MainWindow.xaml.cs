@@ -124,6 +124,7 @@ namespace Home.Service.Windows
                     CPUName = WMI.DetermineCPUName(),
                     TotalRAM = Native.DetermineTotalRAM(),
                     OSName = NET.GetOsFriendlyName(ServiceData.Instance.OSName),
+                    MachineName = NET.GetMachineName(),
                     Motherboard = WMI.DetermineMotherboard(),
                     OSVersion = Environment.OSVersion.ToString(),
                     RunningTime = now.Subtract(startTimestamp),
@@ -288,11 +289,23 @@ namespace Home.Service.Windows
 
                 if (ackResult.Result.Result.HasFlag(Data.Com.AckResult.Ack.MessageRecieved))
                 {
-                    // Show message
+                    // Detect Windows version, if Windows Version >= 10, Toast
+                    // otherwise old MessageBox
+                    string encodedMessage = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(ackResult.Result.JsonData));
+
                     try
                     {
-                        // Notification is in a different folder, otherwise there are problems with different versions of Newtonsoft.JSON
-                        System.Diagnostics.Process.Start(@"Notification\Notification.exe", Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(ackResult.Result.JsonData)));
+                        if (System.Environment.OSVersion.Version.Major >= 10)
+                        {
+                            // Windows 10 or higher
+                            System.Diagnostics.Process.Start(@"Toast\HomeNotification.exe", encodedMessage);
+                        }
+                        else
+                        {
+                            // old method
+                            // Notification is in a different folder, otherwise there are problems with different versions of Newtonsoft.JSON
+                            System.Diagnostics.Process.Start(@"Notification\Notification.exe", encodedMessage);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -324,7 +337,7 @@ namespace Home.Service.Windows
             var result = NET.CreateScreenshot(fileName);
 
 #if LEGACY
-            var apiResult = legacyAPI.SendScreenshotAsync(new Screenshot() { ClientID = ServiceData.Instance.ID, Data = Convert.ToBase64String(result) });
+            var apiResult = legacyAPI.SendScreenshotAsync(new Screenshot() { DeviceID = ServiceData.Instance.ID, Data = Convert.ToBase64String(result) });
 #else
             // "full screenshot"
             var apiResult = await api.SendScreenshotAsync(new Screenshot() { DeviceID = ServiceData.Instance.ID, Data = Convert.ToBase64String(result) });

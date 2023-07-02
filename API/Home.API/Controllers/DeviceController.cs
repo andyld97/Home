@@ -98,7 +98,7 @@ namespace Home.API.Controllers
                 }
                 catch (Exception ex)
                 {
-                    string message = $"Failed to register device: {ex.Message}";
+                    string message = $"Failed to register device: {ex.ToString()}";
                     _logger.LogError(message);
                     Program.WebHookLogging.Enqueue((WebhookAPI.Webhook.LogLevel.Error, message));
                     return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);

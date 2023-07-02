@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using Android.Content;
 using AlertDialog = AndroidX.AppCompat.App.AlertDialog;
+using Android.Runtime;
 
 namespace Home.Service.Android
 {
@@ -19,11 +20,13 @@ namespace Home.Service.Android
         private Button btnShowInfos;
         private Button buttonRegisterDevice;
         private Button buttonToggleService;
+        private Button btnCurrent;
         private System.Timers.Timer serviceCheckingTimer;
 
         private EditText textHost;
         private EditText textLocation;
         private EditText textGroup;
+        private EditText textWLANSSID;
         private Spinner spinnerDeviceType;
         private LinearLayout layoutRegisterDevice;
 
@@ -106,7 +109,6 @@ namespace Home.Service.Android
             else
                 currentDevice = new Device();
 
-
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
 
@@ -114,7 +116,10 @@ namespace Home.Service.Android
             textHost = FindViewById<EditText>(Resource.Id.textHost);
             textLocation = FindViewById<EditText>(Resource.Id.textLocation);
             textGroup = FindViewById<EditText>(Resource.Id.textGroup);
-            spinnerDeviceType = FindViewById<Spinner>(Resource.Id.spinnerDeviceType);            
+            textWLANSSID = FindViewById<EditText>(Resource.Id.textWLANSSID);
+            spinnerDeviceType = FindViewById<Spinner>(Resource.Id.spinnerDeviceType);
+            btnCurrent = FindViewById<Button>(Resource.Id.btnCurrent);
+            btnCurrent.Click += BtnCurrent_Click;
 
             // LEDs
             ledIsServiceRunning = FindViewById<ImageView>(Resource.Id.ledIsServiceRunning);
@@ -133,13 +138,14 @@ namespace Home.Service.Android
             btnShowInfos.Click += BtnShowInfos_Click;
             buttonToggleService.Click += ButtonToggleService_Click;
 
-            CheckPermissioms();
+            CheckPermissions();
 
             if (isDeviceRegistered)
             {
                 textHost.Text = currentSettings.Host;
                 textLocation.Text = currentDevice.Location;
                 textGroup.Text = currentDevice.DeviceGroup;
+                textWLANSSID.Text = currentSettings.WlanSSID;
 
                 foreach (var item in spinnerAssoc)
                     if (item.Value == currentDevice.Type)
@@ -180,10 +186,36 @@ namespace Home.Service.Android
             serviceCheckingTimer.Start();
         }
 
-        private void CheckPermissioms()
+        private void BtnCurrent_Click(object sender, EventArgs e)
         {
-            if (CheckSelfPermission(A.Manifest.Permission.WriteExternalStorage) == A.Content.PM.Permission.Denied || CheckSelfPermission(A.Manifest.Permission.ReadExternalStorage) == A.Content.PM.Permission.Denied)
-                RequestPermissions(new string[] { A.Manifest.Permission.ReadExternalStorage, A.Manifest.Permission.WriteExternalStorage }, 1000);
+            CheckPermissions();
+
+            var ssid = NetworkHelper.GetWLANSSID(this);
+
+            if (string.IsNullOrEmpty(ssid))
+                Toast.MakeText(this, GetString(Resource.String.strFailedToDetermineWLANSSID), ToastLength.Short).Show();
+            else
+                textWLANSSID.Text = ssid;
+        }
+
+        private void CheckPermissions()
+        {
+            // Storage for file access, Fine Location for WiFi SSID
+            bool requestPermissions = false;
+
+            if (CheckSelfPermission(A.Manifest.Permission.WriteExternalStorage) == A.Content.PM.Permission.Denied)
+                requestPermissions = true;
+
+            if (CheckSelfPermission(A.Manifest.Permission.ReadExternalStorage) == A.Content.PM.Permission.Denied)
+                requestPermissions = true;
+
+            if (!string.IsNullOrEmpty(currentSettings.WlanSSID) && 
+                (CheckSelfPermission(A.Manifest.Permission.AccessFineLocation) == A.Content.PM.Permission.Denied)
+                || (CheckSelfPermission(A.Manifest.Permission.AccessBackgroundLocation) == A.Content.PM.Permission.Denied))
+                requestPermissions = true;
+
+            if (requestPermissions)
+                RequestPermissions(new string[] { A.Manifest.Permission.ReadExternalStorage, A.Manifest.Permission.WriteExternalStorage, A.Manifest.Permission.AccessFineLocation, A.Manifest.Permission.AccessBackgroundLocation }, 1000);
         }
 
         private async void ButtonRegisterDevice_Click(object sender, System.EventArgs e)
@@ -193,10 +225,12 @@ namespace Home.Service.Android
             // Assign further properties
             string location = textLocation.Text;
             string group = textGroup.Text;
+            string wlanSSID = textWLANSSID.Text;
 
             currentDevice.DeviceGroup = group;
             currentDevice.Location = location;
             currentDevice.Type = spinnerAssoc[(int)spinnerDeviceType.SelectedItemId];
+            currentSettings.WlanSSID = wlanSSID;
             Home.Communication.API api = new Home.Communication.API(host);
 
             var registerResult = await api.RegisterDeviceAsync(currentDevice);
@@ -223,10 +257,10 @@ namespace Home.Service.Android
             
                 ServiceHelper.StartAckService(this);
                 RefreshServiceStatus();
-                Toast.MakeText(this, $"The device was registered successfully!", ToastLength.Short).Show();
+                Toast.MakeText(this, GetString(Resource.String.strDeviceRegisterSuccess), ToastLength.Short).Show();
             }
             else
-                Toast.MakeText(this, $"Failed to register device!", ToastLength.Short).Show();
+                Toast.MakeText(this, GetString(Resource.String.strDeviceRegisterFail), ToastLength.Short).Show();
         }
 
         private void BtnShowInfos_Click(object sender, System.EventArgs e)
@@ -256,12 +290,12 @@ namespace Home.Service.Android
 
         private void RefreshServiceStatus()
         {
-            bool isServiceRunning = ServiceHelper.IsMyServiceRunning(this, typeof(AckService));
+            bool isServiceRunning = ServiceHelper.IsServiceRunning(this, typeof(AckService));
             bool isDeviceRegistered = currentSettings.IsDeviceRegistered;
             
             SetGuiState(!isDeviceRegistered);
 
-            // Assign leds
+            // Assign LEDs
             ledIsDeviceRegistered.SetImageResource(isDeviceRegistered ? Resource.Drawable.led_on : Resource.Drawable.led_off);
             ledIsServiceRunning.SetImageResource(isServiceRunning ? Resource.Drawable.led_on : Resource.Drawable.led_off);
 
@@ -274,7 +308,7 @@ namespace Home.Service.Android
 
         private void ButtonToggleService_Click(object sender, System.EventArgs e)
         {
-            bool isServiceRunning = ServiceHelper.IsMyServiceRunning(this, typeof(AckService));
+            bool isServiceRunning = ServiceHelper.IsServiceRunning(this, typeof(AckService));
 
             if (!isServiceRunning)
                 ServiceHelper.StartAckService(this);

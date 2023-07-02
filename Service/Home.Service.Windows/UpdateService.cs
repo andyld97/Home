@@ -18,9 +18,11 @@ namespace Home.Service.Windows
     public class UpdateService
     {
         private static readonly string VersionUrl = "https://ca-soft.net/home/client-versions.json";
-        private static readonly string DownloadLink = "https://code-a-software.net/home/content/content.php?product=windows";
+        private static readonly string DownloadLink = "https://ca-soft.net/home/content/content.php?product=windows";
         private static readonly string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0";
         private static readonly string LocalSetupFileName = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Home", "hc-setup.zip");
+
+        private static string LastHash = string.Empty;
 
         public static async Task<bool?> CheckForUpdatesAsync()
         {
@@ -34,7 +36,7 @@ namespace Home.Service.Windows
                     result = null;
                 }
                 else
-                { 
+                {
                     using (HttpClient client = new HttpClient())
                     {
                         var versions = await client.GetAsync(VersionUrl);
@@ -46,6 +48,7 @@ namespace Home.Service.Windows
 
                         string version = clientWindowsVersion["version"].Value<string>();
                         decimal dotnetVersion = clientWindowsVersion["dotnetVersion"].Value<decimal>();
+                        LastHash = clientWindowsVersion["fileHashSHA256"].Value<string>();
 
                         if (System.Environment.Version.Major != (int)dotnetVersion)
                             return false;
@@ -74,7 +77,7 @@ namespace Home.Service.Windows
                             result = false;
                         }
                     }
-            }
+                }
             }
             catch (Exception ex)
             {
@@ -88,7 +91,7 @@ namespace Home.Service.Windows
 
         public static async Task<bool> UpdateServiceClient()
         {        
-            if (await DownloadFileAsync(LocalSetupFileName, DownloadLink))
+            if (await DownloadFileAsync(LocalSetupFileName, DownloadLink)) 
             {
                 var now = DateTime.Now;
                 string currentServiceExecutable = System.Reflection.Assembly.GetExecutingAssembly().Location;
@@ -150,6 +153,28 @@ namespace Home.Service.Windows
                         await stream.CopyToAsync(fs);
                     }
                 }
+
+                // Validate file / compare hash
+                if (!string.IsNullOrEmpty(LastHash))
+                {
+                    // Build sha256-Hash
+                    string fileHashSHA256 = await SHA256Hash.CreateHashFromFileAsync(targetFilePath);
+                    
+                    if (fileHashSHA256 != LastHash)
+                    {
+                        Console.WriteLine("Invalid hash found!");
+
+                        try
+                        {
+                            // Delete corrupt/illegal file
+                            System.IO.File.Delete(targetFilePath);
+                        }
+                        catch { }
+                      
+                        return false;
+                    }
+                }
+
                 return true;
             }
             catch (Exception ex)

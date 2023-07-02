@@ -1,0 +1,530 @@
+{
+  "id" : "andys-bahntafel",
+  "class" : "system",
+  "claimed" : true,
+  "description" : "Computer",
+  "product" : "Raspberry Pi 4 Model B Rev 1.2",
+  "serial" : "10000000d82efbce",
+  "width" : 32,
+  "capabilities" : {
+    "smp" : "Symmetric Multi-Processing",
+    "cp15_barrier" : true,
+    "setend" : true,
+    "swp" : true,
+    "tagged_addr_disabled" : true
+  },
+  "children" : [    {
+      "id" : "core",
+      "class" : "bus",
+      "claimed" : true,
+      "description" : "Motherboard",
+      "physid" : "0",
+      "children" : [        {
+          "id" : "cpu:0",
+          "class" : "processor",
+          "claimed" : true,
+          "description" : "CPU",
+          "product" : "cpu",
+          "physid" : "1",
+          "businfo" : "cpu@0",
+          "units" : "Hz",
+          "size" : 1500000000,
+          "capacity" : 1500000000,
+          "capabilities" : {
+            "fp" : "Floating point instructions",
+            "asimd" : "Advanced SIMD",
+            "evtstrm" : "Event stream",
+            "crc32" : "CRC extension",
+            "cpuid" : true,
+            "cpufreq" : "CPU Frequency scaling"
+          },
+          "children" : [            {
+              "id" : "cache",
+              "class" : "memory",
+              "claimed" : true,
+              "description" : "L1 Cache",
+              "physid" : "0",
+              "units" : "bytes",
+              "size" : 32768
+            }]
+        },
+        {
+          "id" : "cpu:1",
+          "class" : "processor",
+          "claimed" : true,
+          "description" : "CPU",
+          "product" : "cpu",
+          "physid" : "2",
+          "businfo" : "cpu@1",
+          "units" : "Hz",
+          "size" : 1500000000,
+          "capacity" : 1500000000,
+          "capabilities" : {
+            "fp" : "Floating point instructions",
+            "asimd" : "Advanced SIMD",
+            "evtstrm" : "Event stream",
+            "crc32" : "CRC extension",
+            "cpuid" : true,
+            "cpufreq" : "CPU Frequency scaling"
+          },
+          "children" : [            {
+              "id" : "cache",
+              "class" : "memory",
+              "claimed" : true,
+              "description" : "L1 Cache",
+              "physid" : "0",
+              "units" : "bytes",
+              "size" : 32768
+            }]
+        },
+        {
+          "id" : "cpu:2",
+          "class" : "processor",
+          "claimed" : true,
+          "description" : "CPU",
+          "product" : "cpu",
+          "physid" : "3",
+          "businfo" : "cpu@2",
+          "units" : "Hz",
+          "size" : 1500000000,
+          "capacity" : 1500000000,
+          "capabilities" : {
+            "fp" : "Floating point instructions",
+            "asimd" : "Advanced SIMD",
+            "evtstrm" : "Event stream",
+            "crc32" : "CRC extension",
+            "cpuid" : true,
+            "cpufreq" : "CPU Frequency scaling"
+          },
+          "children" : [            {
+              "id" : "cache",
+              "class" : "memory",
+              "claimed" : true,
+              "description" : "L1 Cache",
+              "physid" : "0",
+              "units" : "bytes",
+              "size" : 32768
+            }]
+        },
+        {
+          "id" : "cpu:3",
+          "class" : "processor",
+          "claimed" : true,
+          "description" : "CPU",
+          "product" : "cpu",
+          "physid" : "4",
+          "businfo" : "cpu@3",
+          "units" : "Hz",
+          "size" : 1500000000,
+          "capacity" : 1500000000,
+          "capabilities" : {
+            "fp" : "Floating point instructions",
+            "asimd" : "Advanced SIMD",
+            "evtstrm" : "Event stream",
+            "crc32" : "CRC extension",
+            "cpuid" : true,
+            "cpufreq" : "CPU Frequency scaling"
+          },
+          "children" : [            {
+              "id" : "cache",
+              "class" : "memory",
+              "claimed" : true,
+              "description" : "L1 Cache",
+              "physid" : "0",
+              "units" : "bytes",
+              "size" : 32768
+            }]
+        },
+        {
+          "id" : "cpu:4",
+          "class" : "processor",
+          "disabled" : true,
+          "claimed" : true,
+          "description" : "CPU",
+          "product" : "l2-cache0",
+          "physid" : "5",
+          "businfo" : "cpu@4"
+        },
+        {
+          "id" : "memory",
+          "class" : "memory",
+          "claimed" : true,
+          "description" : "System memory",
+          "physid" : "6",
+          "units" : "bytes",
+          "size" : 3978645504
+        },
+        {
+          "id" : "pci",
+          "class" : "bridge",
+          "claimed" : true,
+          "handle" : "PCIBUS:0000:01",
+          "description" : "PCI bridge",
+          "product" : "BCM2711 PCIe Bridge",
+          "vendor" : "Broadcom Inc. and subsidiaries",
+          "physid" : "0",
+          "businfo" : "pci@0000:00:00.0",
+          "version" : "10",
+          "width" : 32,
+          "clock" : 33000000,
+          "capabilities" : {
+            "pci" : true,
+            "pm" : "Power Management",
+            "pciexpress" : "PCI Express",
+            "normal_decode" : true,
+            "bus_master" : "bus mastering",
+            "cap_list" : "PCI capabilities listing"
+          },
+          "children" : [            {
+              "id" : "usb",
+              "class" : "bus",
+              "claimed" : true,
+              "handle" : "PCI:0000:01:00.0",
+              "description" : "USB controller",
+              "product" : "VL805 USB 3.0 Host Controller",
+              "vendor" : "VIA Technologies, Inc.",
+              "physid" : "0",
+              "businfo" : "pci@0000:01:00.0",
+              "version" : "01",
+              "width" : 64,
+              "clock" : 33000000,
+              "configuration" : {
+                "driver" : "xhci_hcd",
+                "latency" : "0"
+              },
+              "capabilities" : {
+                "pm" : "Power Management",
+                "msi" : "Message Signalled Interrupts",
+                "pciexpress" : "PCI Express",
+                "xhci" : true,
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              },
+              "children" : [                {
+                  "id" : "usbhost:0",
+                  "class" : "bus",
+                  "claimed" : true,
+                  "handle" : "USB:1:1",
+                  "product" : "xHCI Host Controller",
+                  "vendor" : "Linux 6.1.21-v8+ xhci-hcd",
+                  "physid" : "0",
+                  "businfo" : "usb@1",
+                  "logicalname" : "usb1",
+                  "version" : "6.01",
+                  "configuration" : {
+                    "driver" : "hub",
+                    "slots" : "1",
+                    "speed" : "480Mbit/s"
+                  },
+                  "capabilities" : {
+                    "usb-2.00" : "USB 2.0"
+                  },
+                  "children" : [                    {
+                      "id" : "usb",
+                      "class" : "bus",
+                      "claimed" : true,
+                      "handle" : "USB:1:2",
+                      "description" : "USB hub",
+                      "product" : "USB2.0 Hub",
+                      "vendor" : "VIA Labs, Inc.",
+                      "physid" : "1",
+                      "businfo" : "usb@1:1",
+                      "version" : "4.21",
+                      "configuration" : {
+                        "driver" : "hub",
+                        "maxpower" : "100mA",
+                        "slots" : "4",
+                        "speed" : "480Mbit/s"
+                      },
+                      "capabilities" : {
+                        "usb-2.10" : true
+                      }
+                    }]
+                },
+                {
+                  "id" : "usbhost:1",
+                  "class" : "bus",
+                  "claimed" : true,
+                  "handle" : "USB:2:1",
+                  "product" : "xHCI Host Controller",
+                  "vendor" : "Linux 6.1.21-v8+ xhci-hcd",
+                  "physid" : "1",
+                  "businfo" : "usb@2",
+                  "logicalname" : "usb2",
+                  "version" : "6.01",
+                  "configuration" : {
+                    "driver" : "hub",
+                    "slots" : "4",
+                    "speed" : "5000Mbit/s"
+                  },
+                  "capabilities" : {
+                    "usb-3.00" : true
+                  }
+                }]
+            }]
+        }]
+    },
+    {
+      "id" : "mmc0",
+      "class" : "bus",
+      "claimed" : true,
+      "description" : "MMC Host",
+      "physid" : "1",
+      "logicalname" : "mmc0",
+      "children" : [        {
+          "id" : "device",
+          "class" : "disk",
+          "claimed" : true,
+          "description" : "SD Card",
+          "product" : "Y032V",
+          "vendor" : "Unknown (1)",
+          "physid" : "5048",
+          "logicalname" : "/dev/mmcblk0",
+          "version" : "1.3",
+          "date" : "02/2020",
+          "serial" : "3671423814",
+          "units" : "bytes",
+          "size" : 31046238208,
+          "configuration" : {
+            "logicalsectorsize" : "512",
+            "sectorsize" : "512",
+            "signature" : "4604549b"
+          },
+          "capabilities" : {
+            "sd" : true,
+            "partitioned" : "Partitioned disk",
+            "partitioned:dos" : "MS-DOS partition table"
+          },
+          "children" : [            {
+              "id" : "volume:0",
+              "class" : "volume",
+              "claimed" : true,
+              "description" : "Windows FAT volume",
+              "vendor" : "mkfs.fat",
+              "physid" : "1",
+              "logicalname" : ["/dev/mmcblk0p1", "/boot"],
+              "dev" : "179:1",
+              "version" : "FAT32",
+              "serial" : "f462-d399",
+              "size" : 268419072,
+              "capacity" : 268435456,
+              "configuration" : {
+                "FATs" : "2",
+                "filesystem" : "fat",
+                "label" : "bootfs",
+                "mount.fstype" : "vfat",
+                "mount.options" : "rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,errors=remount-ro",
+                "state" : "mounted"
+              },
+              "capabilities" : {
+                "primary" : "Primary partition",
+                "fat" : "Windows FAT volume",
+                "initialized" : "initialized volume"
+              }
+            },
+            {
+              "id" : "volume:1",
+              "class" : "volume",
+              "claimed" : true,
+              "description" : "EXT4 volume",
+              "vendor" : "Linux",
+              "physid" : "2",
+              "logicalname" : "/dev/mmcblk0p2",
+              "dev" : "179:2",
+              "version" : "1.0",
+              "serial" : "4e83f684-f415-4ed1-99cb-f7413924ef28",
+              "size" : 30773608448,
+              "capacity" : 30773608448,
+              "configuration" : {
+                "created" : "2023-02-21 02:32:54",
+                "filesystem" : "ext4",
+                "label" : "rootfs",
+                "lastmountpoint" : "/",
+                "modified" : "2023-02-21 02:34:10",
+                "mounted" : "2023-06-09 10:17:01",
+                "state" : "clean"
+              },
+              "capabilities" : {
+                "primary" : "Primary partition",
+                "journaled" : true,
+                "extended_attributes" : "Extended Attributes",
+                "large_files" : "4GB+ files",
+                "dir_nlink" : "directories with 65000+ subdirs",
+                "recover" : "needs recovery",
+                "extents" : "extent-based allocation",
+                "ext4" : true,
+                "ext2" : "EXT2/EXT3 volume",
+                "initialized" : "initialized volume"
+              }
+            }]
+        }]
+    },
+    {
+      "id" : "mmc1",
+      "class" : "bus",
+      "claimed" : true,
+      "description" : "MMC Host",
+      "physid" : "2",
+      "logicalname" : "mmc1",
+      "children" : [        {
+          "id" : "device",
+          "class" : "generic",
+          "claimed" : true,
+          "description" : "SDIO Device",
+          "physid" : "1",
+          "businfo" : "mmc@1:0001",
+          "serial" : "0",
+          "capabilities" : {
+            "sdio" : true
+          },
+          "children" : [            {
+              "id" : "interface:0",
+              "class" : "network",
+              "claimed" : true,
+              "description" : "Wireless interface",
+              "product" : "43430",
+              "vendor" : "Broadcom",
+              "physid" : "1",
+              "businfo" : "mmc@1:0001:1",
+              "logicalname" : ["mmc1:0001:1", "wlan0"],
+              "serial" : "dc:a6:32:bc:ea:31",
+              "configuration" : {
+                "broadcast" : "yes",
+                "driver" : "brcmfmac",
+                "driverversion" : "7.45.241",
+                "firmware" : "01-703fd60",
+                "ip" : "192.168.178.122",
+                "multicast" : "yes",
+                "wireless" : "IEEE 802.11"
+              },
+              "capabilities" : {
+                "ethernet" : true,
+                "physical" : "Physical interface",
+                "wireless" : "Wireless-LAN"
+              }
+            },
+            {
+              "id" : "interface:1",
+              "class" : "generic",
+              "claimed" : true,
+              "product" : "43430",
+              "vendor" : "Broadcom",
+              "physid" : "2",
+              "businfo" : "mmc@1:0001:2",
+              "logicalname" : "mmc1:0001:2"
+            },
+            {
+              "id" : "bt",
+              "class" : "communication",
+              "claimed" : true,
+              "description" : "BlueTooth interface",
+              "product" : "43430",
+              "vendor" : "Broadcom",
+              "physid" : "3",
+              "businfo" : "mmc@1:0001:3",
+              "logicalname" : "mmc1:0001:3",
+              "configuration" : {
+                "wireless" : "BlueTooth"
+              },
+              "capabilities" : {
+                "wireless" : true,
+                "bluetooth" : true
+              }
+            }]
+        }]
+    },
+    {
+      "id" : "sound:0",
+      "class" : "multimedia",
+      "claimed" : true,
+      "description" : "Headphones",
+      "physid" : "3",
+      "logicalname" : ["card0", "/dev/snd/controlC0", "/dev/snd/pcmC0D0p"]
+    },
+    {
+      "id" : "sound:1",
+      "class" : "multimedia",
+      "claimed" : true,
+      "description" : "vc4hdmi0",
+      "physid" : "4",
+      "logicalname" : ["card1", "/dev/snd/controlC1", "/dev/snd/pcmC1D0p"]
+    },
+    {
+      "id" : "sound:2",
+      "class" : "multimedia",
+      "claimed" : true,
+      "description" : "vc4hdmi1",
+      "physid" : "5",
+      "logicalname" : ["card2", "/dev/snd/controlC2", "/dev/snd/pcmC2D0p"]
+    },
+    {
+      "id" : "graphics",
+      "class" : "display",
+      "claimed" : true,
+      "product" : "vc4drmfb",
+      "physid" : "6",
+      "logicalname" : "/dev/fb0",
+      "configuration" : {
+        "depth" : "16",
+        "resolution" : "1680,1050"
+      },
+      "capabilities" : {
+        "fb" : "framebuffer"
+      }
+    },
+    {
+      "id" : "input:0",
+      "class" : "input",
+      "claimed" : true,
+      "product" : "vc4-hdmi-0",
+      "physid" : "7",
+      "logicalname" : ["input0", "/dev/input/event0"],
+      "capabilities" : {
+        "cec" : "CEC"
+      }
+    },
+    {
+      "id" : "input:1",
+      "class" : "input",
+      "claimed" : true,
+      "product" : "vc4-hdmi-1",
+      "physid" : "8",
+      "logicalname" : ["input1", "/dev/input/event1"],
+      "capabilities" : {
+        "cec" : "CEC"
+      }
+    },
+    {
+      "id" : "network",
+      "class" : "network",
+      "claimed" : true,
+      "description" : "Ethernet interface",
+      "physid" : "9",
+      "logicalname" : "eth0",
+      "serial" : "dc:a6:32:bc:ea:30",
+      "units" : "bit/s",
+      "capacity" : 1000000000,
+      "configuration" : {
+        "autonegotiation" : "on",
+        "broadcast" : "yes",
+        "driver" : "bcmgenet",
+        "driverversion" : "6.1.21-v8+",
+        "link" : "no",
+        "multicast" : "yes",
+        "port" : "twisted pair"
+      },
+      "capabilities" : {
+        "ethernet" : true,
+        "physical" : "Physical interface",
+        "tp" : "twisted pair",
+        "mii" : "Media Independent Interface",
+        "10bt" : "10Mbit/s",
+        "10bt-fd" : "10Mbit/s (full duplex)",
+        "100bt" : "100Mbit/s",
+        "100bt-fd" : "100Mbit/s (full duplex)",
+        "1000bt" : "1Gbit/s",
+        "1000bt-fd" : "1Gbit/s (full duplex)",
+        "autonegotiation" : "Auto-negotiation"
+      }
+    }]
+}
