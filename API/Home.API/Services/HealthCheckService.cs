@@ -115,7 +115,7 @@ namespace Home.API.Services
 
                     await Parallel.ForEachAsync(devices, parallelOptions, async (device, token) =>
                     {
-                        await RunHealthCheckAsync(context, device, token, now);
+                        await RunHealthCheckAsync(context, device, now, token);
                     });
                 }
                 catch (Exception ex)
@@ -145,7 +145,7 @@ namespace Home.API.Services
 
                 try
                 {
-                    await context.SaveChangesAsync();
+                    await context.SaveChangesAsync(stoppingToken);
                 }
                 catch (Exception ex)
                 {
@@ -163,7 +163,7 @@ namespace Home.API.Services
 
         #region Health Service Tasks
 
-        private async Task RunHealthCheckAsync(HomeContext context, Device device, CancellationToken token, DateTime now)
+        private async Task RunHealthCheckAsync(HomeContext context, Device device, DateTime now, CancellationToken token)
         {
             try
             {

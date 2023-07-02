@@ -450,14 +450,14 @@ namespace Home.API.Helper
             return new BatteryWarning()
             {
                 Value = (int)deviceWarning.CriticalValue,
-                WarningOccoured = deviceWarning.Timestamp,
+                WarningOccurred = deviceWarning.Timestamp,
             };
         }
 
         public static StorageWarning ConvertStorageWarning(home.Models.DeviceWarning deviceWarning)
         {
             var storageWarning = new StorageWarning();
-            storageWarning.WarningOccoured = deviceWarning.Timestamp;
+            storageWarning.WarningOccurred = deviceWarning.Timestamp;
             storageWarning.Value = (ulong)deviceWarning.CriticalValue;
 
             if (!string.IsNullOrEmpty(deviceWarning.AdditionalInfo) && deviceWarning.AdditionalInfo.Contains(Consts.StatsSeperator))

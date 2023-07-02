@@ -248,7 +248,7 @@ namespace Model
             string htmlTemplate = GetHtmlTemplate("warning_template");
             htmlTemplate = htmlTemplate.Replace("{w0}", f(warning.GetType().Name));
             htmlTemplate = htmlTemplate.Replace("{w1}", f(warning.Text));
-            htmlTemplate = htmlTemplate.Replace("{w2}", f(warning.WarningOccoured.ToString()));
+            htmlTemplate = htmlTemplate.Replace("{w2}", f(warning.WarningOccurred.ToString()));
 
             return htmlTemplate;
         }

@@ -14,7 +14,7 @@ namespace Home.Controls.Warnings
             InitializeComponent();
             TextName.Text = sw.DiskName ?? Home.Properties.Resources.strUnkown;
             TextSpace.Text = string.Format(Properties.Resources.strStorageWarning_Message, ByteUnit.FindUnit(sw.Value).ToString());
-            TextDatum.Text = sw.WarningOccoured.ToString(Properties.Resources.strDateTimeFormat);
+            TextDatum.Text = sw.WarningOccurred.ToString(Properties.Resources.strDateTimeFormat);
         }
     }
 }

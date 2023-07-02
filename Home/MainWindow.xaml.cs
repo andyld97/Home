@@ -279,10 +279,10 @@ namespace Home
         private async void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
         {
             await CleanUpCacheAsync();
-            await Initalize();
+            await Initialize();
         }
 
-        public async Task Initalize()
+        public async Task Initialize()
         {
             var result = await API.LoginAsync(CLIENT);
             if (result.Result != null)
