@@ -412,7 +412,7 @@ namespace Home.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die ({0} Warning(s)!) ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die ({0} Warning(s)) ähnelt.
         /// </summary>
         public static string strDevice_InitalStatusMessage_Warnings {
             get {
@@ -561,15 +561,6 @@ namespace Home.Properties {
         public static string strDeviceOnlineTime {
             get {
                 return ResourceManager.GetString("strDeviceOnlineTime", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die  &quot;The device was registered successfully! ähnelt.
-        /// </summary>
-        public static string strDeviceRegister_Success {
-            get {
-                return ResourceManager.GetString("strDeviceRegister_Success", resourceCulture);
             }
         }
         
