@@ -338,7 +338,7 @@ namespace Home.API.Helper
             }
             catch (Exception ex)
             {
-                Program.WebHookLogging.Enqueue((Webhook.LogLevel.Error, $"Failed to convert device: {ex.Message}"));
+                Program.WebHookLogging.Enqueue((Webhook.LogLevel.Error, $"Failed to convert device: {ex.Message}", device.Name));
                 throw;
             }
         }
@@ -483,7 +483,7 @@ namespace Home.API.Helper
             var now = DateTime.Now;
 
             if (notifyWebHook && Program.GlobalConfig.UseWebHook)
-                Program.WebHookLogging.Enqueue((ConvertLogLevelForWebhook(level), message));
+                Program.WebHookLogging.Enqueue((ConvertLogLevelForWebhook(level), message, device.Name));
 
             return new DeviceLog()
             {
@@ -497,7 +497,7 @@ namespace Home.API.Helper
         public static DeviceLog ConvertLogEntry(home.Models.Device device, LogEntry logEntry)
         {
             if (logEntry.NotifyWebHook && Program.GlobalConfig.UseWebHook)
-                Program.WebHookLogging.Enqueue((ConvertLogLevelForWebhook(logEntry.Level), logEntry.Message));
+                Program.WebHookLogging.Enqueue((ConvertLogLevelForWebhook(logEntry.Level), logEntry.Message, device.Name));
 
             return new DeviceLog()
             {

@@ -100,7 +100,7 @@ namespace Home.API.Controllers
                 {
                     string message = $"Failed to register device: {ex.ToString()}";
                     _logger.LogError(message);
-                    Program.WebHookLogging.Enqueue((WebhookAPI.Webhook.LogLevel.Error, message));
+                    Program.WebHookLogging.Enqueue((WebhookAPI.Webhook.LogLevel.Error, message, device.Name));
                     return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
                 }
             }

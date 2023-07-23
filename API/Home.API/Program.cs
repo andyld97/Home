@@ -30,7 +30,7 @@ namespace Home.API
         public readonly static List<Client> Clients = new List<Client>();
         public readonly static Dictionary<Client, List<string>> LiveModeAssoc = new Dictionary<Client, List<string>>();
         public readonly static Dictionary<string, bool> AckErrorSentAssoc = new Dictionary<string, bool>();
-        public static ConcurrentQueue<(Webhook.LogLevel level, string)> WebHookLogging = new ConcurrentQueue<(Webhook.LogLevel level, string)>();
+        public static ConcurrentQueue<(Webhook.LogLevel level, string message, string scope)> WebHookLogging = new ConcurrentQueue<(Webhook.LogLevel level, string message, string scope)>();
         public static Webhook WebHook;
 
         public static Config GlobalConfig;

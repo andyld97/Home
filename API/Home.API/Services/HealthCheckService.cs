@@ -136,8 +136,8 @@ namespace Home.API.Services
                     // Send log messages
                     while (!Program.WebHookLogging.IsEmpty)
                     {
-                        if (Program.WebHookLogging.TryDequeue(out (Webhook.LogLevel, string) value))
-                            await Program.WebHook.PostWebHookAsync(value.Item1, value.Item2, "Message Queue");
+                        if (Program.WebHookLogging.TryDequeue(out (Webhook.LogLevel, string, string) value))
+                            await Program.WebHook.PostWebHookAsync(value.Item1, value.Item2, value.Item3);
                         else
                             break;
                     }

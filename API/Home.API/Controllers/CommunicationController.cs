@@ -485,11 +485,11 @@ namespace Home.API.Controllers
                 {
                     _clientService.NotifyClientQueues(EventQueueItem.EventKind.DeviceDeleted, device.Guid);
                     await _context.SaveChangesAsync();
-                    await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Success, $"Device \"{deviceName}\" removed! (Deleted {count} screenshots!)", "Communication");
+                    await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Success, $"Device \"{deviceName}\" removed! (Deleted {count} screenshots!)", device.Name);
                 }
                 catch (Exception ex)
                 {
-                    await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, $"Failed to remove \"{deviceName}\": {ex}", "Communication");
+                    await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, $"Failed to remove \"{deviceName}\": {ex}", device.Name);
                 }
                 return Ok(AnswerExtensions.Success("ok"));
             }

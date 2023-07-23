@@ -174,7 +174,7 @@ namespace Home.API.Services
 
                 // Send a notification once
                 if (send && Program.GlobalConfig.UseWebHook)
-                    await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, $"ACK-ERROR [{requestedDevice.Name}] OCCURED: {ex.ToString()}", "DeviceAckService");
+                    await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, $"ACK-ERROR [{requestedDevice.Name}] OCCURED: {ex}", requestedDevice.Name);
 
                 return DeviceAckServiceResult.BuildFailure(ex.ToString());
             }
