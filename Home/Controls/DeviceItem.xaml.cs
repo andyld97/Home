@@ -87,7 +87,7 @@ namespace Home.Controls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is Device d)
-                return ImageHelper.LoadImage(d.GetImage(d.DetermineDeviceImage()));
+                return ImageHelper.LoadImage(d.GetImage());
 
             return null;
         }

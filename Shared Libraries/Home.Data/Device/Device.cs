@@ -490,8 +490,11 @@ namespace Home.Model
             return $"{image}.png";
         }
 
-        public System.IO.Stream GetImage(string image)
+        public System.IO.Stream GetImage(string image = "")
         {
+            if (string.IsNullOrEmpty(image))
+                image = DetermineDeviceImage();
+
             image = image.Replace("/", ".");
             return typeof(Device).Assembly.GetManifestResourceStream($"Home.Data.resources.icons.devices.{image}");
         }
