@@ -19,6 +19,7 @@ using JsonIgnoreAttribute = Newtonsoft.Json.JsonIgnoreAttribute;
 using System.Text;
 using System.Linq;
 using System.Diagnostics.SymbolStore;
+using System.Reflection;
 
 namespace Home.Model
 {
@@ -487,6 +488,12 @@ namespace Home.Model
                 image = $"offline/{image}";
 
             return $"{image}.png";
+        }
+
+        public System.IO.Stream GetImage(string image)
+        {
+            image = image.Replace("/", ".");
+            return typeof(Device).Assembly.GetManifestResourceStream($"Home.Data.resources.icons.devices.{image}");
         }
 
         public static List<Device> GenerateSampleDevices()

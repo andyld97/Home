@@ -87,10 +87,7 @@ namespace Home.Controls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is Device d)
-            {
-                string path = $"pack://application:,,,/Home;Component/resources/icons/devices/{d.DetermineDeviceImage()}";
-                return ImageHelper.LoadImage(path, false, d.Type == Device.DeviceType.Smartphone);
-            }
+                return ImageHelper.LoadImage(d.GetImage(d.DetermineDeviceImage()));
 
             return null;
         }
