@@ -260,7 +260,7 @@ namespace Home.API.Services
             // Consider multiple screens screenshot handling!!!
             // One screenshot must be remained either for a general screenshot or per each screen         
             var nonAssociatedScreenshots = device.DeviceScreenshot.Where(p => p.ScreenId == null).ToList();
-            var assoicatedScreenshots = device.DeviceScreenshot.Where(p => p.ScreenId != null).GroupBy(p => p.ScreenId);
+            var associatedScreenshots = device.DeviceScreenshot.Where(p => p.ScreenId != null).GroupBy(p => p.ScreenId);
 
             // 1. Add all "general" screenshots except one (if there is only one, just leave it)
             if (nonAssociatedScreenshots.Count > 1)
@@ -276,9 +276,9 @@ namespace Home.API.Services
             }
 
             // 2. Add all screenshots per screen except one (if there is only one, just leave it)
-            if (assoicatedScreenshots.Count() > 1)
+            if (associatedScreenshots.Count() > 1)
             {
-                foreach (var shot in assoicatedScreenshots) // group
+                foreach (var shot in associatedScreenshots) // group
                 {
                     var shots = shot.ToList();
                     foreach (var item in shots.Take(shots.Count - 1))

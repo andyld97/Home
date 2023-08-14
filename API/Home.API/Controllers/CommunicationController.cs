@@ -298,7 +298,7 @@ namespace Home.API.Controllers
             var device = await _context.Device.Include(d => d.DeviceLog).Where(p => p.Guid == deviceID).FirstOrDefaultAsync();
             if (device != null)
             {
-                _logger.LogInformation($"Clearing log of {device.Name} ...");
+                _logger.LogInformation($"Clearing hardware changes of {device.Name} ...");
 
                 device.DeviceChange.Clear();
                 await _context.SaveChangesAsync();

@@ -37,12 +37,11 @@ namespace Home.API.Helper
             updateDevice.Ostype = (int)device.OS;
             updateDevice.ServiceClientVersion = device.ServiceClientVersion;
             updateDevice.Location = device.Location;
-            updateDevice.IsScreenshotRequired = device.IsScreenshotRequired;
             updateDevice.Ip = device.IP;
             updateDevice.MacAddress = device.MacAddress;
             updateDevice.Status = (status == DeviceStatus.Active);  // nullable, when Inactive?
             updateDevice.LastSeen = device.LastSeen;
-            updateDevice.IsScreenshotRequired = device.IsScreenshotRequired;
+            // updateDevice.IsScreenshotRequired = device.IsScreenshotRequired; // This isn't to be updated, because the ack device don't know about the screenshot status
 
             if (device.LastSeen == DateTime.MinValue)
                 updateDevice.LastSeen = (DateTime)System.Data.SqlTypes.SqlDateTime.MinValue;

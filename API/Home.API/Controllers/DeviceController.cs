@@ -86,6 +86,7 @@ namespace Home.API.Controllers
                     device.IsScreenshotRequired = true;
 
                     var dbDevice = ModelConverter.ConvertDevice(_context, _logger, device);
+                    dbDevice.IsScreenshotRequired = true;
                     await _context.Device.AddAsync(dbDevice);
                     await _context.DeviceChange.AddAsync(new DeviceChange() { Timestamp = now, Device = dbDevice, Description = $"Device \"{dbDevice.Name}\" added to the system initially!" });
                     await _context.SaveChangesAsync();
