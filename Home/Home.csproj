@@ -73,7 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Fluent.Ribbon">
-      <Version>10.0.2</Version>
+      <Version>10.0.3</Version>
     </PackageReference>
     <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF">
 	    <Version>2.0.0-beta.710</Version>
@@ -88,7 +88,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.4" />
-    <PackageReference Include="WebhookAPI" Version="1.0.2" />
+    <PackageReference Include="WebhookAPI" Version="1.0.4" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="resources\icons\bios.png" />
