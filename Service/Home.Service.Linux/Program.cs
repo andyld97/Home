@@ -101,6 +101,9 @@ namespace Home.Service.Linux
                 if (config.ContainsKey("x_display_index"))
                     xDisplayIndex = config["x_display_index"].Value<int>();
 
+                if (config.ContainsKey("ip"))
+                    currentDevice.IP = config["ip"].Value<string>();
+
                 if (checkForUpdatesOnStart && CheckAndExecuteUpdate())
                     return;
 
@@ -498,7 +501,7 @@ namespace Home.Service.Linux
 
             // If nothing was found return "/"- as a disk drive!
             if (device.DiskDrives.Count == 0)
-                device.DiskDrives.Add(new DiskDrive() { VolumeName = "/", DriveName = "/", DriveID = "linux_default_storage", PhysicalName = "linux_default_storage" });
+                device.DiskDrives.Add(new DiskDrive() { VolumeName = "/", DriveName = "/", DriveID = "linux_default_storage", PhysicalName = "linux_default_storage", MediaType = device.Name }); ;
 
             // Get df / try to fill missing values
             string result = Helper.ExecuteSystemCommand("df", "-H");
@@ -578,9 +581,10 @@ namespace Home.Service.Linux
                 device.Environment.CPUName = child.Value<string>("product");
             if (childClass == "display")
                 device.Environment.GraphicCards = new System.Collections.ObjectModel.ObservableCollection<string> { child.Value<string>("product") };
-            else if (childClass == "network" && string.IsNullOrEmpty(device.IP))
+            else if (childClass == "network")
             { 
-                device.IP = child.Value<JObject>("configuration").Value<string>("ip");
+                if (string.IsNullOrEmpty(device.IP))
+                    device.IP = child.Value<JObject>("configuration").Value<string>("ip");
                 device.MacAddress = child.Value<string>("serial").ToUpper();
             }
             else if (childClass == "disk" || childClass == "volume")

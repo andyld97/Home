@@ -7,6 +7,7 @@
   "os": 1, /* Android = 0 | Linux = 1 | LinuxMint = 2 | LinuxUbuntu = 3 | Windows = 4-9 | Unix = 10 | Other = 11 */
   "type": 0, /* SingleBoardDevice = 0 | MiniPC = 1 | Notebook = 2 | Desktop = 3 | Server = 4 */
   "is_signed_in": false, /* should be false on first start! */
+  "ip": null, /* Can be set if IP cannot be read */
   "enable_screenshots": true,
   "enable_remote_file_access": true,
   "check_for_updates_on_start": true, /* Updates will only work correctly, if Home.Service.Linux is running via systemd-service! */
