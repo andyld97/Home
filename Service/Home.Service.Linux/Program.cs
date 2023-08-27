@@ -3,6 +3,7 @@ using Home.Data.Com;
 using Home.Data.Helper;
 using Home.Model;
 using Home.Service.Windows;
+using Microsoft.AspNetCore.Connections.Features;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
@@ -59,7 +60,7 @@ namespace Home.Service.Linux
         public static void Main(string[] args)
         {
             // Check if mutex is acquired
-            if (!AppMutex.WaitOne(TimeSpan.FromSeconds(1), false))
+            if (false && !AppMutex.WaitOne(TimeSpan.FromSeconds(1), false))
             {
                 Trace.WriteLine("Home.Service.Linux is already started!");
                 Environment.Exit(-1);
@@ -71,7 +72,7 @@ namespace Home.Service.Linux
                 // Debug LSHW JSON FILES:
 #if DEBUG
                 var device = new Device();
-                ParseHardwareInfo(System.IO.File.ReadAllText(@"Test\test7.json"), device);
+                ParseHardwareInfo(System.IO.File.ReadAllText(@"Test\test8.json"), device);
                 int debug = 0;
 #endif
 
@@ -103,6 +104,9 @@ namespace Home.Service.Linux
 
                 if (config.ContainsKey("ip"))
                     currentDevice.IP = config["ip"].Value<string>();
+
+                if (config.ContainsKey("mac"))
+                    currentDevice.MacAddress = config["mac"].Value<string>();
 
                 if (checkForUpdatesOnStart && CheckAndExecuteUpdate())
                     return;
@@ -584,23 +588,25 @@ namespace Home.Service.Linux
             else if (childClass == "network")
             { 
                 if (string.IsNullOrEmpty(device.IP))
-                    device.IP = child.Value<JObject>("configuration").Value<string>("ip");
-                device.MacAddress = child.Value<string>("serial").ToUpper();
+                    device.IP = child.Value<JObject>("configuration")?.Value<string>("ip");
+
+                if (string.IsNullOrEmpty(device.MacAddress))
+                    device.MacAddress = child.Value<string>("serial")?.ToUpper();
             }
             else if (childClass == "disk" || childClass == "volume")
             {
                 string product = child.Value<string>("product");
                 string description = child.Value<string>("description");
 
-                var childs = child.Value<JArray>("children");
+                var children = child.Value<JArray>("children");
 
                 // Volumes contain the infos directly, so simulate the children array!
                 if (childClass == "volume")
-                    childs = new JArray() { child };
+                    children = new JArray() { child };
 
-                if (childs != null)
+                if (children != null)
                 {
-                    foreach (var volume in childs)
+                    foreach (var volume in children)
                     {
                         JObject volumeConfig = volume.Value<JObject>("configuration");
                         string fs = volumeConfig?.Value<string>("filesystem") ?? string.Empty;
