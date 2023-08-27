@@ -60,7 +60,7 @@ namespace Home.Service.Linux
         public static void Main(string[] args)
         {
             // Check if mutex is acquired
-            if (false && !AppMutex.WaitOne(TimeSpan.FromSeconds(1), false))
+            if (!AppMutex.WaitOne(TimeSpan.FromSeconds(1), false))
             {
                 Trace.WriteLine("Home.Service.Linux is already started!");
                 Environment.Exit(-1);
