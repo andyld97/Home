@@ -989,7 +989,7 @@ namespace Home
 
         private void MenuButtonWakeUp_Click(object sender, RoutedEventArgs e)
         {
-            new WOLDialog().ShowDialog();
+            new WOLDialog(currentDevice?.ID ?? string.Empty).ShowDialog();
         }
         #endregion
 

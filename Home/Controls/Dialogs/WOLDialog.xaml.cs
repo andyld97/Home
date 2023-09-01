@@ -10,26 +10,30 @@ namespace Home.Controls.Dialogs
     /// </summary>
     public partial class WOLDialog : Window
     {
-        public WOLDialog()
+        public WOLDialog(string deviceID = "")
         {
             InitializeComponent();
-            RefreshDevices();
+            RefreshDevices(string.Empty, deviceID);
         }
 
-        private void RefreshDevices(string search = "")
+        private void RefreshDevices(string search = "", string deviceID = "")
         {
             var devices = MainWindow.W_INSTANCE.GetDevices();
             devices = devices.Where(p => p.OS.IsWindows(true) || p.OS.IsLinux()).ToList();
 
             // Apply search text (if any)
             if (!string.IsNullOrEmpty(search))
-                devices = devices.Where(d => d.Name.ToLower().Contains(search.ToLower()));
+                devices = devices.Where(d => d.Name.ToLower().Contains(search.ToLower())); 
 
             CmbDevices.ItemsSource = devices;
 
             if (devices.Any())
             {
                 CmbDevices.SelectedIndex = 0;
+
+                if (!string.IsNullOrEmpty(deviceID) && devices.Any(d => d.ID == deviceID))
+                    CmbDevices.SelectedItem = devices.FirstOrDefault(p => p.ID ==  deviceID);
+
                 CmbDevices.Visibility = Visibility.Visible;
                 TextNoDevices.Visibility = Visibility.Collapsed;
             }
