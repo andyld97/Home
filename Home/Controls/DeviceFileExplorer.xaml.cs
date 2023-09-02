@@ -15,6 +15,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using Units;
 
 namespace Home.Controls
 {
@@ -249,7 +250,7 @@ namespace Home.Controls
 
                 if (selectedItem is RemoteFile rf)
                 {
-                    if (ByteUnit.FromB((ulong)rf.Length) <= ByteUnit.FromMB(10))
+                    if (ByteUnit.FromB((long)rf.Length) <= ByteUnit.FromMB(10))
                     {
                         string ext = System.IO.Path.GetExtension(rf.Path).ToLower();
 
