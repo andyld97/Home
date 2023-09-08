@@ -216,6 +216,9 @@ namespace Home
 
         private async void App_OnShutdownOrRestart(Device device, bool shutdown, bool wol)
         {
+            if (device.Status != DeviceStatus.Active)
+                return;
+
             await ShutdownOrRestartAsync(device, shutdown, wol);
         }
 
@@ -797,11 +800,17 @@ namespace Home
 
         private async void MenuButtonShutdown_Click(object sender, RoutedEventArgs e)
         {
+            if (currentDevice.Status != DeviceStatus.Active)
+                return;
+
             await ShutdownOrRestartAsync(currentDevice, true, false);
         }
 
         private async void MenuButtonReboot_Click(object sender, RoutedEventArgs e)
         {
+            if (currentDevice.Status != DeviceStatus.Active)
+                return;
+
             await ShutdownOrRestartAsync(currentDevice, false, false);
         }
 

@@ -226,6 +226,11 @@ namespace Home.API.Services
                     _logger.LogWarning($"Skipping executing of shutdown command: {device.Name} is an Android device and doesn't supports this command!");
                     return;
                 }
+                else if (!device.Status)
+                {
+                    _logger.LogWarning($"Skipping executing of shutdown command: {device.Name} is not active!");
+                    return;
+                }
                 else if (type.IsLinux() || type == Home.Model.Device.OSType.Unix || type == Home.Model.Device.OSType.Other)
                 {
                     string executable = "shutdown";
