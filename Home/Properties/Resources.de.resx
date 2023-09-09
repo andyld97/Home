@@ -891,4 +891,10 @@ Herunterladen: https://developer.microsoft.com/en-us/microsoft-edge/webview2/</v
   <data name="strSuccessfullyClearedHardwareLog" xml:space="preserve">
     <value>Die Hardware-Änderungen an diesem Gerät wurden erfolgreich gelöscht!</value>
   </data>
+  <data name="strTimeFormat" xml:space="preserve">
+    <value>HH:mm</value>
+  </data>
+  <data name="strTime" xml:space="preserve">
+    <value>Zeit:</value>
+  </data>
 </root>

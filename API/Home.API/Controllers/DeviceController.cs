@@ -194,14 +194,14 @@ namespace Home.API.Controllers
                     {
                         ds.Screen = screen;
 
-                        var logEntry = ModelConverter.CreateLogEntry(deviceFound, $"Received screenshot from this device [{screen.DeviceName}]!", LogEntry.LogLevel.Information);
+                        var logEntry = ModelConverter.CreateLogEntry(deviceFound, $"Received screenshot from {screen.DeviceName}!", LogEntry.LogLevel.Information);
                         await _context.DeviceLog.AddAsync(logEntry);
                         _logger.LogInformation($"Received screenshot from {deviceFound.Environment.MachineName} [{screen.DeviceName}]");
                     }
                 }
                 else
                 {
-                    var logEntry = ModelConverter.CreateLogEntry(deviceFound, "Received screenshot from this device!", LogEntry.LogLevel.Information);
+                    var logEntry = ModelConverter.CreateLogEntry(deviceFound, "Received screenshot!", LogEntry.LogLevel.Information);
                     await _context.DeviceLog.AddAsync(logEntry);
                     _logger.LogInformation($"Received screenshot from {deviceFound.Environment.MachineName}");
                 }

@@ -50,8 +50,7 @@ namespace Home.Controls
             if (device.DevicesChanges.Count == 0)
                 return;
 
-            var changes = device.DevicesChanges.OrderByDescending(p => p.Timestamp).GroupBy(p => p.Timestamp);
-
+            var changes = device.DevicesChanges.OrderByDescending(p => p.Timestamp).GroupBy(p => p.Timestamp.Date);
             foreach (var change in changes)
             {
                 // Fix for android devices where you don't really get the CPU name, but all features of the CPU,
@@ -64,7 +63,7 @@ namespace Home.Controls
 
                 ViewHolder.Children.Add(new TextBlock() 
                 {
-                    Text = $"{change.Key.ToString(Properties.Resources.strDateTimeFormat)}:",
+                    Text = $"{change.Key.ToString(Properties.Resources.strDateFormat)}:",
                     Margin = new Thickness(5),
                     FontSize = 18,
                     FontWeight = FontWeights.Bold,

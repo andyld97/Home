@@ -2212,6 +2212,24 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Time: ähnelt.
+        /// </summary>
+        public static string strTime {
+            get {
+                return ResourceManager.GetString("strTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die hh:mm ähnelt.
+        /// </summary>
+        public static string strTimeFormat {
+            get {
+                return ResourceManager.GetString("strTimeFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die to ähnelt.
         /// </summary>
         public static string strTo {

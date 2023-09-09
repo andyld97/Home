@@ -18,7 +18,10 @@
                 <Image Margin="2" VerticalAlignment="Top" Source="{Binding Type, Converter={StaticResource deviceChangeImageConverter}}" Width="48" />
 
                 <StackPanel Grid.Column="1" Margin="3,3">
-                    <TextBlock Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}" Text="{Binding Timestamp, StringFormat={x:Static res:Resources.strDateTimeFormat}}" FontWeight="Bold" />
+                    <TextBlock Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}" FontWeight="Bold">
+                        <Run Text="{x:Static res:Resources.strTime}" />
+                        <Run Text="{Binding Timestamp, StringFormat={x:Static res:Resources.strTimeFormat}}" />
+                    </TextBlock>
                     <TextBlock Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}" Text="{Binding Description}" />
                 </StackPanel>
             </Grid>
