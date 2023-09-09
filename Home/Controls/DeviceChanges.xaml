@@ -9,7 +9,7 @@
     <UserControl.Resources>
         <local:DeviceChangeImageConverter x:Key="deviceChangeImageConverter" />
         <DataTemplate x:Key="DeviceChangeTemplate">
-            <Grid>
+            <Grid ToolTip="{Binding Description}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
@@ -18,8 +18,8 @@
                 <Image Margin="2" VerticalAlignment="Top" Source="{Binding Type, Converter={StaticResource deviceChangeImageConverter}}" Width="48" />
 
                 <StackPanel Grid.Column="1" Margin="3,3">
-                    <TextBlock Text="{Binding Timestamp, StringFormat={x:Static res:Resources.strDateTimeFormat}}" FontWeight="Bold" />
-                    <TextBlock Text="{Binding Description}" />
+                    <TextBlock Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}" Text="{Binding Timestamp, StringFormat={x:Static res:Resources.strDateTimeFormat}}" FontWeight="Bold" />
+                    <TextBlock Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}" Text="{Binding Description}" />
                 </StackPanel>
             </Grid>
         </DataTemplate>
