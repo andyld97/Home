@@ -174,7 +174,7 @@ namespace Home.API.Services
 
                 // Send a notification once
                 if (send && Program.GlobalConfig.UseWebHook)
-                    await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, $"ACK-ERROR [{requestedDevice.Name}] OCCURED: {ex.ToString()}", "DeviceAckService");
+                    await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, $"ACK-ERROR [{requestedDevice.Name}] OCCURED: {ex}", requestedDevice.Name);
 
                 return DeviceAckServiceResult.BuildFailure(ex.ToString());
             }
@@ -377,8 +377,8 @@ namespace Home.API.Services
                 await RegisterDeviceChangeAsync(prefix, $"RAM change from {currentDevice.Environment.TotalRam} GB to {requestedDevice.Environment.TotalRAM} GB", DeviceChangeEntry.DeviceChangeType.RAM, currentDevice, now);
 
             // IP Change
-            if (currentDevice.Ip.Replace("/24", string.Empty) != requestedDevice.IP.Replace("/24", string.Empty) && !string.IsNullOrEmpty(requestedDevice.IP))
-                await RegisterDeviceChangeAsync(prefix, $"IP change from {f(currentDevice.Ip)} to {f(requestedDevice.IP)}", DeviceChangeType.IP, currentDevice, now);
+            if (currentDevice.Ip?.Replace("/24", string.Empty) != requestedDevice.IP?.Replace("/24", string.Empty) && !string.IsNullOrEmpty(requestedDevice.IP))
+                await RegisterDeviceChangeAsync(prefix, $"IP change from {f(currentDevice.Ip ?? string.Empty)} to {f(requestedDevice.IP ?? string.Empty)}", DeviceChangeType.IP, currentDevice, now);
 
             // BIOS Change
             if (currentDevice.DeviceBios.Any() && requestedDevice.BIOS != null)

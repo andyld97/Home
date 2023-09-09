@@ -250,7 +250,7 @@ namespace Home.Controls.Dialogs
             {
                 BitmapImage bitmapImage = new BitmapImage();
                 bitmapImage.BeginInit();
-                bitmapImage.UriSource = new Uri($"pack://application:,,,/Home;Component/resources/icons/devices/{d.DetermineDeviceImage()}");
+                bitmapImage.StreamSource = d.GetImage();
                 bitmapImage.EndInit();
 
                 return bitmapImage;

@@ -37,12 +37,11 @@ namespace Home.API.Helper
             updateDevice.Ostype = (int)device.OS;
             updateDevice.ServiceClientVersion = device.ServiceClientVersion;
             updateDevice.Location = device.Location;
-            updateDevice.IsScreenshotRequired = device.IsScreenshotRequired;
             updateDevice.Ip = device.IP;
             updateDevice.MacAddress = device.MacAddress;
             updateDevice.Status = (status == DeviceStatus.Active);  // nullable, when Inactive?
             updateDevice.LastSeen = device.LastSeen;
-            updateDevice.IsScreenshotRequired = device.IsScreenshotRequired;
+            // updateDevice.IsScreenshotRequired = device.IsScreenshotRequired; // This isn't to be updated, because the ack device don't know about the screenshot status
 
             if (device.LastSeen == DateTime.MinValue)
                 updateDevice.LastSeen = (DateTime)System.Data.SqlTypes.SqlDateTime.MinValue;
@@ -338,7 +337,7 @@ namespace Home.API.Helper
             }
             catch (Exception ex)
             {
-                Program.WebHookLogging.Enqueue((Webhook.LogLevel.Error, $"Failed to convert device: {ex.Message}"));
+                Program.WebHookLogging.Enqueue((Webhook.LogLevel.Error, $"Failed to convert device: {ex.Message}", device.Name));
                 throw;
             }
         }
@@ -483,7 +482,7 @@ namespace Home.API.Helper
             var now = DateTime.Now;
 
             if (notifyWebHook && Program.GlobalConfig.UseWebHook)
-                Program.WebHookLogging.Enqueue((ConvertLogLevelForWebhook(level), message));
+                Program.WebHookLogging.Enqueue((ConvertLogLevelForWebhook(level), message, device.Name));
 
             return new DeviceLog()
             {
@@ -497,7 +496,7 @@ namespace Home.API.Helper
         public static DeviceLog ConvertLogEntry(home.Models.Device device, LogEntry logEntry)
         {
             if (logEntry.NotifyWebHook && Program.GlobalConfig.UseWebHook)
-                Program.WebHookLogging.Enqueue((ConvertLogLevelForWebhook(logEntry.Level), logEntry.Message));
+                Program.WebHookLogging.Enqueue((ConvertLogLevelForWebhook(logEntry.Level), logEntry.Message, device.Name));
 
             return new DeviceLog()
             {

@@ -136,8 +136,8 @@ namespace Home.API.Services
                     // Send log messages
                     while (!Program.WebHookLogging.IsEmpty)
                     {
-                        if (Program.WebHookLogging.TryDequeue(out (Webhook.LogLevel, string) value))
-                            await Program.WebHook.PostWebHookAsync(value.Item1, value.Item2, "Message Queue");
+                        if (Program.WebHookLogging.TryDequeue(out (Webhook.LogLevel, string, string) value))
+                            await Program.WebHook.PostWebHookAsync(value.Item1, value.Item2, value.Item3);
                         else
                             break;
                     }
@@ -241,10 +241,10 @@ namespace Home.API.Services
             }
 
             // Check age of this screenshot
-            if (shot.Timestamp.Add(Program.GlobalConfig.AquireNewScreenshot) < now)
+            if (shot.Timestamp.Add(Program.GlobalConfig.AcquireNewScreenshot) < now)
             {
                 device.IsScreenshotRequired = true;
-                var logEntry = ModelConverter.CreateLogEntry(device, $"Last screenshot was older than {Program.GlobalConfig.AquireNewScreenshot.TotalHours}h. Acquiring a new screenshot ...", LogEntry.LogLevel.Information);
+                var logEntry = ModelConverter.CreateLogEntry(device, $"Last screenshot was older than {Program.GlobalConfig.AcquireNewScreenshot.TotalHours}h. Acquiring a new screenshot ...", LogEntry.LogLevel.Information);
                 await context.DeviceLog.AddAsync(logEntry);
                 _clientService.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
             }
@@ -260,7 +260,7 @@ namespace Home.API.Services
             // Consider multiple screens screenshot handling!!!
             // One screenshot must be remained either for a general screenshot or per each screen         
             var nonAssociatedScreenshots = device.DeviceScreenshot.Where(p => p.ScreenId == null).ToList();
-            var assoicatedScreenshots = device.DeviceScreenshot.Where(p => p.ScreenId != null).GroupBy(p => p.ScreenId);
+            var associatedScreenshots = device.DeviceScreenshot.Where(p => p.ScreenId != null).GroupBy(p => p.ScreenId);
 
             // 1. Add all "general" screenshots except one (if there is only one, just leave it)
             if (nonAssociatedScreenshots.Count > 1)
@@ -276,9 +276,9 @@ namespace Home.API.Services
             }
 
             // 2. Add all screenshots per screen except one (if there is only one, just leave it)
-            if (assoicatedScreenshots.Count() > 1)
+            if (associatedScreenshots.Count() > 1)
             {
-                foreach (var shot in assoicatedScreenshots) // group
+                foreach (var shot in associatedScreenshots) // group
                 {
                     var shots = shot.ToList();
                     foreach (var item in shots.Take(shots.Count - 1))

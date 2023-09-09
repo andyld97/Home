@@ -86,6 +86,7 @@ namespace Home.API.Controllers
                     device.IsScreenshotRequired = true;
 
                     var dbDevice = ModelConverter.ConvertDevice(_context, _logger, device);
+                    dbDevice.IsScreenshotRequired = true;
                     await _context.Device.AddAsync(dbDevice);
                     await _context.DeviceChange.AddAsync(new DeviceChange() { Timestamp = now, Device = dbDevice, Description = $"Device \"{dbDevice.Name}\" added to the system initially!" });
                     await _context.SaveChangesAsync();
@@ -100,7 +101,7 @@ namespace Home.API.Controllers
                 {
                     string message = $"Failed to register device: {ex.ToString()}";
                     _logger.LogError(message);
-                    Program.WebHookLogging.Enqueue((WebhookAPI.Webhook.LogLevel.Error, message));
+                    Program.WebHookLogging.Enqueue((WebhookAPI.Webhook.LogLevel.Error, message, device.Name));
                     return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
                 }
             }
@@ -193,14 +194,14 @@ namespace Home.API.Controllers
                     {
                         ds.Screen = screen;
 
-                        var logEntry = ModelConverter.CreateLogEntry(deviceFound, $"Received screenshot from this device [{screen.DeviceName}]!", LogEntry.LogLevel.Information);
+                        var logEntry = ModelConverter.CreateLogEntry(deviceFound, $"Received screenshot from {screen.DeviceName}!", LogEntry.LogLevel.Information);
                         await _context.DeviceLog.AddAsync(logEntry);
                         _logger.LogInformation($"Received screenshot from {deviceFound.Environment.MachineName} [{screen.DeviceName}]");
                     }
                 }
                 else
                 {
-                    var logEntry = ModelConverter.CreateLogEntry(deviceFound, "Received screenshot from this device!", LogEntry.LogLevel.Information);
+                    var logEntry = ModelConverter.CreateLogEntry(deviceFound, "Received screenshot!", LogEntry.LogLevel.Information);
                     await _context.DeviceLog.AddAsync(logEntry);
                     _logger.LogInformation($"Received screenshot from {deviceFound.Environment.MachineName}");
                 }

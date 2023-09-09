@@ -10,7 +10,7 @@
     <Grid>
         <Grid.Resources>
             <local:DeviceImageConverter x:Key="localDeviceImageConverter" />
-            <local:ScreenshotVisibiltyConverter x:Key="screenshotVisiblityConverter" />
+            <local:ScreenshotVisibilityConverter x:Key="screenshotVisiblityConverter" />
             <converter:OSNameConverter x:Key="osNameConverter" />
             <converter:OS64BitConverter x:Key="os64BitConverter" />
             <BooleanToVisibilityConverter x:Key="Fluent.Ribbon.Converters.BoolToVisibilityConverter" />

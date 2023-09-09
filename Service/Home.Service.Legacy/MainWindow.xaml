@@ -14,7 +14,7 @@
                 <StackPanel.Resources>
                     <Style TargetType="{x:Type TextBlock}">
                         <Setter Property="Margin" Value="2" />
-                        <Setter Property="Padding" Value="0" />
+                        <Setter Property="Padding" Value="2" />
                     </Style>
                     <Style TargetType="{x:Type ComboBox}">
                         <Setter Property="Margin" Value="1" />
@@ -52,7 +52,8 @@
                 <TextBlock Text="{x:Static res:Resources.strDeviceGroup}" />
                 <TextBox x:Name="TextGroup" />
 
-                <Button x:Name="ButtonInitalize" Click="ButtonInitalize_Click" HorizontalAlignment="Left" Content="{x:Static res:Resources.strInitalize}" Margin="3" Padding="3" Width="200" />            </StackPanel>
+                <Button x:Name="ButtonInitalize" Click="ButtonInitalize_Click" Content="{x:Static res:Resources.strInitalize}" Margin="3,5" Padding="3" FontWeight="Bold" HorizontalAlignment="Right" Width="200" />     
+            </StackPanel>
         </Expander>
     </Grid>
 </Window>

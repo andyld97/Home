@@ -50,11 +50,10 @@ namespace Home.Controls
             if (device.DevicesChanges.Count == 0)
                 return;
 
-            var changes = device.DevicesChanges.OrderByDescending(p => p.Timestamp).GroupBy(p => p.Timestamp);
-
+            var changes = device.DevicesChanges.OrderByDescending(p => p.Timestamp).GroupBy(p => p.Timestamp.Date);
             foreach (var change in changes)
             {
-                // Fix for android devices where you don't really get the cpu name, but all features of the CPU,
+                // Fix for android devices where you don't really get the CPU name, but all features of the CPU,
                 // see https://github.com/andyld97/Home/issues/13
                 foreach (var item in change)
                 {
@@ -64,12 +63,15 @@ namespace Home.Controls
 
                 ViewHolder.Children.Add(new TextBlock() 
                 {
-                    Text = $"{change.Key.ToString(Properties.Resources.strDateTimeFormat)}:",
+                    Text = $"{change.Key.ToString(Properties.Resources.strDateFormat)}:",
                     Margin = new Thickness(5),
                     FontSize = 18,
                     FontWeight = FontWeights.Bold,
                 });
+
                 ListBox listBox = new ListBox();
+                listBox.IsHitTestVisible = false;
+                listBox.Background = new SolidColorBrush(Colors.Transparent);
                 listBox.PreviewMouseWheel += ListBox_PreviewMouseWheel;
                 listBox.ItemTemplate = FindResource("DeviceChangeTemplate") as DataTemplate;
 

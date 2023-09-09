@@ -121,7 +121,7 @@ namespace Home.API.Controllers
 
                     // Check if we can set the device to false (if true),
                     // because if this device is also used by another client, we cannot set it to false then.
-                    foreach (var partictularDevice in devices)
+                    foreach (var particularDevice in devices)
                     {
                         bool found = false;
 
@@ -131,7 +131,7 @@ namespace Home.API.Controllers
                             if (item.ID == cl.ID)
                                 continue;
 
-                            if (Program.LiveModeAssoc[item].Contains(partictularDevice.Guid))
+                            if (Program.LiveModeAssoc[item].Contains(particularDevice.Guid))
                             {
                                 found = true;
                                 break;
@@ -141,9 +141,9 @@ namespace Home.API.Controllers
                         if (!found)
                         {
                             // Fully materialize device here
-                            _clientService.NotifyClientQueues(EventQueueItem.EventKind.LiveModeChanged, (await _context.GetDeviceByIdAsync(partictularDevice.Guid)));
-                            partictularDevice.IsLive = false;
-                            var logEntry = ModelConverter.CreateLogEntry(partictularDevice, $"Device \"{partictularDevice.Name}\" status changed to normal, because one or multiple clients (those that have acquired live view) have logged off!", LogEntry.LogLevel.Information, false);
+                            _clientService.NotifyClientQueues(EventQueueItem.EventKind.LiveModeChanged, (await _context.GetDeviceByIdAsync(particularDevice.Guid)));
+                            particularDevice.IsLive = false;
+                            var logEntry = ModelConverter.CreateLogEntry(particularDevice, $"Device \"{particularDevice.Name}\" status changed to normal, because one or multiple clients (those that have acquired live view) have logged off!", LogEntry.LogLevel.Information, false);
                             await _context.DeviceLog.AddAsync(logEntry);
                         }
                     }
@@ -298,7 +298,7 @@ namespace Home.API.Controllers
             var device = await _context.Device.Include(d => d.DeviceLog).Where(p => p.Guid == deviceID).FirstOrDefaultAsync();
             if (device != null)
             {
-                _logger.LogInformation($"Clearing log of {device.Name} ...");
+                _logger.LogInformation($"Clearing hardware changes of {device.Name} ...");
 
                 device.DeviceChange.Clear();
                 await _context.SaveChangesAsync();
@@ -485,11 +485,11 @@ namespace Home.API.Controllers
                 {
                     _clientService.NotifyClientQueues(EventQueueItem.EventKind.DeviceDeleted, device.Guid);
                     await _context.SaveChangesAsync();
-                    await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Success, $"Device \"{deviceName}\" removed! (Deleted {count} screenshots!)", "Communication");
+                    await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Success, $"Device \"{deviceName}\" removed! (Deleted {count} screenshots!)", device.Name);
                 }
                 catch (Exception ex)
                 {
-                    await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, $"Failed to remove \"{deviceName}\": {ex}", "Communication");
+                    await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, $"Failed to remove \"{deviceName}\": {ex}", device.Name);
                 }
                 return Ok(AnswerExtensions.Success("ok"));
             }
@@ -503,7 +503,7 @@ namespace Home.API.Controllers
         /// <param name="command">The command</param>
         /// <returns>Ok on success</returns>
         [HttpPost("send_command")]
-        public async Task<IActionResult> SendCommnadAsync([FromBody] Command command)
+        public async Task<IActionResult> SendCommandAsync([FromBody] Command command)
         {
             if (command == null)
                 return BadRequest(AnswerExtensions.Fail("Invalid device data!"));
@@ -513,6 +513,9 @@ namespace Home.API.Controllers
 
             if (device == null)
                 return BadRequest(AnswerExtensions.Fail("Device doesn't exists!"));
+
+            if (!device.Status)
+                return BadRequest(AnswerExtensions.Fail("Device is offline, you cannot send commands!"));
 
             device.DeviceCommand.Add(new home.Models.DeviceCommand() { Executable = command.Executable, IsExceuted = false, Parameter = command.Parameter, Timestamp = DateTime.Now });
             await _context.DeviceLog.AddAsync(ModelConverter.CreateLogEntry(device, $"Received command: {command}", LogEntry.LogLevel.Information, false));

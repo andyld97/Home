@@ -40,7 +40,7 @@ namespace Home.Controls
         public delegate void resizeHandler(bool isSmall);
         public event resizeHandler OnResize;
 
-        public event EventHandler OnScreenShotAquired;
+        public event EventHandler OnScreenShotAcquired;
         public event PropertyChangedEventHandler PropertyChanged;
 
         public Device LastSelectedDevice
@@ -356,7 +356,7 @@ namespace Home.Controls
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 AnimateButton(sender);
-                OnScreenShotAquired?.Invoke(sender, EventArgs.Empty);
+                OnScreenShotAcquired?.Invoke(sender, EventArgs.Empty);
             }
         }
 

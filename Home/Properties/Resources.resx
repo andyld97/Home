@@ -959,4 +959,11 @@ Download: https://developer.microsoft.com/en-us/microsoft-edge/webview2/</value>
   <data name="strFailedToClearedHardwareLog" xml:space="preserve">
     <value>Failed to clear the hardware changes of this device: {0}</value>
   </data>
+  <data name="strTimeFormat" xml:space="preserve">
+    <value>hh:mm</value>
+    <comment>*</comment>
+  </data>
+  <data name="strTime" xml:space="preserve">
+    <value>Time:</value>
+  </data>
 </root>

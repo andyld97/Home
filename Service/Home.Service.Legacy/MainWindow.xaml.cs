@@ -24,7 +24,7 @@ namespace Home.Service.Legacy
 
         private Device currentDevice = null;
         private readonly DispatcherTimer ackTimer = new DispatcherTimer();
-        private bool isInitalized = false;
+        private bool isInitialized = false;
         private bool isSendingAck = false;
         private API api = new API(ServiceData.Instance.APIUrl);
         private readonly object _lock = new object();
@@ -51,8 +51,8 @@ namespace Home.Service.Legacy
                 Visibility = Visibility.Hidden;
                 ExpanderSettings.IsExpanded = false;
                 ExpanderSettings.IsEnabled = false;
-                isInitalized = true;
-                InitalizeService();
+                isInitialized = true;
+                InitializeService();
             }
         }
 
@@ -67,12 +67,13 @@ namespace Home.Service.Legacy
             // MessageBox.Show("Debug");
         }
 
-        private void InitalizeService()
+        private void InitializeService()
         {            
             api = new API(ServiceData.Instance.APIUrl);
             var address = NET.DetermineIPAddress();
 
             var now = DateTime.Now;
+
             currentDevice = new Device()
             {
                 ID = ServiceData.Instance.ID,
@@ -82,6 +83,7 @@ namespace Home.Service.Legacy
                 Location = ServiceData.Instance.Location,
                 Name = NET.GetMachineName(),
                 OS = ServiceData.Instance.SystemType,
+                ServiceClientVersion = $"vLegacy{typeof(MainWindow).Assembly.GetName().Version.ToString(3)}",
                 Type = ServiceData.Instance.Type,
                 DiskDrives = new System.Collections.ObjectModel.ObservableCollection<DiskDrive>(JsonConvert.DeserializeObject<List<DiskDrive>>(WMI.DetermineDiskDrives())),
                 Environment = new DeviceEnvironment()
@@ -98,22 +100,21 @@ namespace Home.Service.Legacy
                 }
             };
 
-            // Screens are not supported on this legacy version
-            // currentDevice.Screens = GetScreenInformation();
-
             // Set BIOS info
             WMI.GetBIOSInfo(out string vendor, out string version, out string description, out DateTime? releaseDate);
             if (!string.IsNullOrEmpty(vendor) || !string.IsNullOrEmpty(version) || !string.IsNullOrEmpty(description) || releaseDate != null)
                 currentDevice.BIOS = new BIOS() { ReleaseDate = releaseDate ?? DateTime.MinValue, Vendor = vendor, Description = description, Version = version };
 
+            UpdateDevice();
+
             // Run tick manually on first_start
             if (ServiceData.Instance.HasLoggedInOnce)
-                isInitalized = true;
+                isInitialized = true;
 
-            if (!isInitalized)
-                isInitalized = api.RegisterDeviceAsync(currentDevice);
+            if (!isInitialized)
+                isInitialized = api.RegisterDeviceAsync(currentDevice);
 
-            if (isInitalized)
+            if (isInitialized)
                 SendAck();
 
             if (!ServiceData.Instance.HasLoggedInOnce)
@@ -134,10 +135,10 @@ namespace Home.Service.Legacy
                     isSendingAck = false;
             }
 
-            if (!isInitalized)
+            if (!isInitialized)
             {
                 // Initialize
-                isInitalized = api.RegisterDeviceAsync(currentDevice);
+                isInitialized = api.RegisterDeviceAsync(currentDevice);
             }
             else
             {
@@ -152,7 +153,7 @@ namespace Home.Service.Legacy
             }
         }
 
-        private void SendAck()
+        private void UpdateDevice()
         {
             var now = DateTime.Now;
             var address = NET.DetermineIPAddress();
@@ -181,6 +182,11 @@ namespace Home.Service.Legacy
             bool batteryResult = Home.Measure.Windows.NET.DetermineBatteryInfo(out int batteryPercentage, out bool isCharging);
             if (batteryResult)
                 currentDevice.BatteryInfo = new Battery() { BatteryLevelInPercent = batteryPercentage, IsCharging = isCharging };
+        }
+
+        private void SendAck()
+        {
+            UpdateDevice();
 
             // Send ack
             var ackResult = api.SendAckAsync(currentDevice);
@@ -276,7 +282,7 @@ namespace Home.Service.Legacy
                 ServiceData.Instance.Location = location;
                 ServiceData.Instance.DeviceGroup = deviceGroup;
 
-                InitalizeService();
+                InitializeService();
                 // WindowState = WindowState.Minimized;
                 Visibility = Visibility.Hidden;
             }

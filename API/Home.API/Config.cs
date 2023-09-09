@@ -12,7 +12,7 @@ namespace Home.API
         public static readonly string SCREENSHOTS_PATH = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "screenshots");
 
         /// <summary>
-        /// The complete url where this api is hosted (port inclusive, see default value) <br />
+        /// The complete url where this API is hosted (port inclusive, see default value) <br />
         /// Can be set to http://0.0.0.0:5250 for using without reverse proxy!
         /// </summary>
         [JsonPropertyName("host")]
@@ -62,8 +62,8 @@ namespace Home.API
         /// <summary>
         /// How many time must elapse to create a new screenshot
         /// </summary>
-        [JsonPropertyName("aquire_new_screenshot")]
-        public TimeSpan AquireNewScreenshot { get; set; } = TimeSpan.FromHours(12);
+        [JsonPropertyName("acquire_new_screenshot")]
+        public TimeSpan AcquireNewScreenshot { get; set; } = TimeSpan.FromHours(12);
 
         /// <summary>
         /// Describes after how many hours/days an old screenshot gets deleted

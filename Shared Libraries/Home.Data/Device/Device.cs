@@ -19,6 +19,10 @@ using JsonIgnoreAttribute = Newtonsoft.Json.JsonIgnoreAttribute;
 using System.Text;
 using System.Linq;
 using System.Diagnostics.SymbolStore;
+using System.Reflection;
+#if !LEGACY
+using Units;
+#endif
 
 namespace Home.Model
 {
@@ -487,6 +491,15 @@ namespace Home.Model
                 image = $"offline/{image}";
 
             return $"{image}.png";
+        }
+
+        public System.IO.Stream GetImage(string image = "")
+        {
+            if (string.IsNullOrEmpty(image))
+                image = DetermineDeviceImage();
+
+            image = image.Replace("/", ".");
+            return typeof(Device).Assembly.GetManifestResourceStream($"Home.Data.resources.icons.devices.{image}");
         }
 
         public static List<Device> GenerateSampleDevices()
@@ -1273,8 +1286,8 @@ namespace Home.Model
             if (percentageFree == 0.0)
                 return FreeSpace == 0.0;
 
-            var total = ByteUnit.FromB(TotalSpace);
-            var free = ByteUnit.FromB(FreeSpace);
+            var total = ByteUnit.FromB((long)TotalSpace);
+            var free = ByteUnit.FromB((long)FreeSpace);
 
             return free.Length <= (total.Length * (percentageFree / 100.0));
         }

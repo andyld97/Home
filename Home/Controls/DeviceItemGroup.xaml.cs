@@ -132,7 +132,7 @@ namespace Home.Controls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is Device d)
-                return ImageHelper.LoadImage($"pack://application:,,,/Home;Component/resources/icons/devices/{d.DetermineDeviceImage()}", false, d.Type == Device.DeviceType.Smartphone);
+                return ImageHelper.LoadImage(d.GetImage());
 
             return null;
         }
@@ -143,7 +143,7 @@ namespace Home.Controls
         }    
     }
 
-    public class ScreenshotVisibiltyConverter : IValueConverter
+    public class ScreenshotVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
