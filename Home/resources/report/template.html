@@ -57,9 +57,9 @@
     </style>
 </head>
 
-<body>
-    <h2>{name}</h2>
-    <h3>OEM Info</h3>
+<body style="background-color: white;">
+    <h1>{name}</h1>
+    <h2>OEM Info</h2>
 
     <table>
         <tr>
@@ -116,7 +116,7 @@
         </tr>
     </table>
 
-    <h3>{strOS}</h3>
+    <h2>{strOS}</h2>
     <table>
         <tr>
             <th class="column">{property}</th>
@@ -141,7 +141,7 @@
     </table>
 
 
-    <h3>{strHardware}</h3>
+    <h2>{strHardware}</h2>
 
     <table>
         <tr>
@@ -171,7 +171,7 @@
 
     {screen}
 
-    <h3>{strBattery}</h3>
+    <h2>{strBattery}</h2>
     <table>
         <tr>
             <th class="column">{property}</th>
@@ -191,13 +191,13 @@
         </tr>
     </table>
 
-    <h3>{strDisks}</h3>
+    <h2>{strDisks}</h2>
     {disks}
 
-    <h3>{strWarnings}</h3>
+    <h2>{strWarnings}</h2>
     {warnings}
 
-    <h3>{strDeviceLog}</h3>
+    <h2>{strDeviceLog}</h2>
     <textarea readonly>{log}</textarea>
 </body>
 </html>
