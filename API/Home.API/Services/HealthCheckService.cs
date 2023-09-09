@@ -241,10 +241,10 @@ namespace Home.API.Services
             }
 
             // Check age of this screenshot
-            if (shot.Timestamp.Add(Program.GlobalConfig.AquireNewScreenshot) < now)
+            if (shot.Timestamp.Add(Program.GlobalConfig.AcquireNewScreenshot) < now)
             {
                 device.IsScreenshotRequired = true;
-                var logEntry = ModelConverter.CreateLogEntry(device, $"Last screenshot was older than {Program.GlobalConfig.AquireNewScreenshot.TotalHours}h. Acquiring a new screenshot ...", LogEntry.LogLevel.Information);
+                var logEntry = ModelConverter.CreateLogEntry(device, $"Last screenshot was older than {Program.GlobalConfig.AcquireNewScreenshot.TotalHours}h. Acquiring a new screenshot ...", LogEntry.LogLevel.Information);
                 await context.DeviceLog.AddAsync(logEntry);
                 _clientService.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
             }
