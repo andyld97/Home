@@ -42,15 +42,15 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <StackPanel Background="Transparent">
+                <StackPanel Background="Transparent" Margin="2">
                     <StackPanel.Resources>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="0,8,5,0" />
                         </Style>
                     </StackPanel.Resources>
 
-                    <TextBlock Margin="0,2,5,0" Text="{x:Static res:Resources.strSettings_Host}" FontWeight="Bold" />
-                    <TextBox x:Name="TextHost" TextChanged="TextHost_TextChanged" Margin="1" Padding="1" />
+                    <TextBlock Margin="0,2,5,0" Padding="2" Text="{x:Static res:Resources.strSettings_Host}" FontWeight="Bold" />
+                    <TextBox x:Name="TextHost" TextChanged="TextHost_TextChanged" Margin="1" Padding="3" />
 
                     <TextBlock Margin="2" Foreground="Orange" FontWeight="Bold" TextWrapping="Wrap" Text="{x:Static res:Resources.strSettings_AttentionText}" />
                     <Button x:Name="ButtonTestConnection" Click="ButtonTestConnection_Click" Margin="2" Width="150" HorizontalAlignment="Left" Content="{x:Static res:Resources.strSettings_CheckConnection}" FontWeight="Bold" />
@@ -75,11 +75,11 @@
                         </Fluent:ComboBox.ItemTemplate>
                     </Fluent:ComboBox>
 
-                    <CheckBox x:Name="CheckBoxThemeIsColorful" Content="{x:Static res:Resources.strIsColorfulTheme}" Checked="CheckBoxThemeIsColorful_Checked" Unchecked="CheckBoxThemeIsColorful_Unchecked" Margin="0,5,0,0" />
+                    <CheckBox x:Name="CheckBoxThemeIsColorful" Content="{x:Static res:Resources.strIsColorfulTheme}" Checked="CheckBoxThemeIsColorful_Checked" Unchecked="CheckBoxThemeIsColorful_Unchecked" Margin="0,8,0,0" />
                     <CheckBox x:Name="CheckBoxActivateGlowingBrush" Checked="CheckBoxActivateGlowingBrush_Checked" Unchecked="CheckBoxActivateGlowingBrush_Checked" Content="{x:Static res:Resources.strSettingsActivateGlowingEffect}" Margin="0,5,0,0" />
                 </StackPanel>
 
-                <Button x:Name="ButtonForceExit" Click="ButtonForceExit_Click" Content="{x:Static res:Resources.strSettings_ForceExit}" Grid.Row="1" FontWeight="Bold" HorizontalAlignment="Right" Width="100" Margin="2" Padding="3" />
+                <Button x:Name="ButtonForceExit" Click="ButtonForceExit_Click" Content="{x:Static res:Resources.strSettings_ForceExit}" Grid.Row="1" FontWeight="Bold" HorizontalAlignment="Right" Width="100" Margin="2,2,0,2" Padding="3" />
             </Grid>
         </TabItem>
     </TabControl>

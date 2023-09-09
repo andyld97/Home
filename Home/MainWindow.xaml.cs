@@ -925,7 +925,10 @@ namespace Home
             else
                 GlowColor = null;
 
-            NonActiveBorderBrush = new SolidColorBrush(GlowColor.Value);
+            if (GlowColor == null)
+                NonActiveBorderBrush = null;
+            else
+                NonActiveBorderBrush = new SolidColorBrush(GlowColor.Value);
         }
 
         private void MenuButtonOpenAbout_Click(object sender, RoutedEventArgs e)
