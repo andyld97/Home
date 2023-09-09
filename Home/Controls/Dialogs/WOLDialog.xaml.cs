@@ -58,7 +58,7 @@ namespace Home.Controls.Dialogs
                 return;
             }
 
-            var result = await MainWindow.W_INSTANCE.WakeUpDeviceAsync(TextMac.Text);
+            var result = await MainWindow.API.WakeOnLanAsync(TextMac.Text);
             if (result.Success)
                 DialogResult = true;
             else

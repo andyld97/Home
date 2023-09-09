@@ -104,7 +104,7 @@ namespace Home
 
             Closing += MainWindow_Closing;
             ScreenshotViewer.OnResize += ScreenshotViewer_OnResize;
-            ScreenshotViewer.OnScreenShotAquired += ScreenshotViewer_OnScreenShotAquired;
+            ScreenshotViewer.OnScreenShotAcquired += ScreenshotViewer_OnScreenShotAcquired;
             App.OnShutdownOrRestart += App_OnShutdownOrRestart;
 
             deviceDependendButtons = new Fluent.IRibbonControl[]
@@ -216,13 +216,13 @@ namespace Home
 
         private async void App_OnShutdownOrRestart(Device device, bool shutdown, bool wol)
         {
-            if (device.Status != DeviceStatus.Active)
+            if (!wol && device.Status != DeviceStatus.Active)
                 return;
 
             await ShutdownOrRestartAsync(device, shutdown, wol);
         }
 
-        private async void ScreenshotViewer_OnScreenShotAquired(object sender, EventArgs e)
+        private async void ScreenshotViewer_OnScreenShotAcquired(object sender, EventArgs e)
         {
             if (currentDevice == null)
                 return;
@@ -422,11 +422,6 @@ namespace Home
                 else
                     MessageBox.Show(string.Format(Home.Properties.Resources.strWOL_MagickPackageSendError, result.ErrorMessage), Properties.Resources.strSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
             }
-        }
-        
-        public async Task<Answer<bool>> WakeUpDeviceAsync(string macAddress)
-        {
-            return await API.WakeOnLanAsync(macAddress);
         }
 
         private void RefreshOverview()
@@ -642,7 +637,6 @@ namespace Home
                 if (webView2Environment != null)
                 {
                     await webViewReport?.EnsureCoreWebView2Async(webView2Environment);
-
                     webViewReport.NavigateToString(Report.GenerateHtmlDeviceReport(currentDevice, Properties.Resources.strDateTimeFormat, Properties.Resources.strDateFormat));
                 }
             }
