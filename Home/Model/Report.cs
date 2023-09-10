@@ -88,7 +88,7 @@ namespace Model
             else
             {
                 string screenTemplate = string.Empty;
-                screenTemplate = $"<h3>{Home.Properties.Resources.strScreens}</h3>";
+                screenTemplate = $"<h2>{Home.Properties.Resources.strScreens}</h2>";
 
                 string tmp = GetHtmlTemplate("display_template");
                 int count = 0;
