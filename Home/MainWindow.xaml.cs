@@ -39,6 +39,7 @@ using System.Diagnostics;
 using System.Windows.Interop;
 using System.ComponentModel;
 using Units;
+using static Home.Controls.DeviceItemGroup;
 
 namespace Home
 {
@@ -470,6 +471,12 @@ namespace Home
                     Devices = notAssociatedDevices,
                     RenderMode = DetermineOverviewMode()
                 };
+
+                dig.OnGroupSelectionChanged += (string grp) =>
+                 {
+                     foreach (var currentGroup in PanelOverview.Children.OfType<DeviceItemGroup>().Where(d => d.GroupName != grp))
+                         currentGroup.ClearSelection();
+                 };
 
                 PanelOverview.Children.Add(dig);
             }

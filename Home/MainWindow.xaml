@@ -405,7 +405,7 @@
                                                     <TextBlock Margin="5,0,0,0" Text="Remote Shell" TextAlignment="Center" VerticalAlignment="Center"/>
                                                 </StackPanel>
                                             </TabItem.Header>
-                                            <TextBox AcceptsReturn="True" Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}" Background="Transparent" TextWrapping="Wrap" />
+                                            <TextBox IsReadOnly="True" AcceptsReturn="True" Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}" Background="Transparent" TextWrapping="Wrap" />
                                         </TabItem>
                                     </TabControl>
                                 </Grid>
