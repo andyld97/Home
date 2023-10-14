@@ -384,6 +384,7 @@ namespace Home.API.Services
             if (currentDevice.DeviceBios.Any() && requestedDevice.BIOS != null)
             {
                 var dbBios = currentDevice.DeviceBios.FirstOrDefault();
+
                 // Compare both (currently the database will only hold one BIOS per device, but there can be more at a later point of time)
                 var left = new BIOS()
                 {
@@ -396,7 +397,7 @@ namespace Home.API.Services
                 var right = requestedDevice.BIOS;
 
                 if (left != right)
-                    await RegisterDeviceChangeAsync(prefix, $"BIOS changed from {f(left?.ToString())} to {f(right?.ToString())}", DeviceChangeType.BIOS, currentDevice, now);
+                    await RegisterDeviceChangeAsync(prefix, $"BIOS changed from \"{f(left?.ToString())}\" to \"{f(right?.ToString())}\"", DeviceChangeType.BIOS, currentDevice, now);
             }
             else if (currentDevice.DeviceBios.Any() && requestedDevice.BIOS == null)
                 currentDevice.DeviceBios.Clear();

@@ -1546,7 +1546,10 @@ namespace Home.Model
             sb.Append(Vendor);
             sb.Append($" ({Version})");
             if (ReleaseDate > DateTime.MinValue)
-                sb.AppendLine($"Release-Date: {ReleaseDate.ToShortDateString()}");
+            {
+                sb.Append(Environment.NewLine);
+                sb.Append($"Release-Date: {ReleaseDate.ToShortDateString()}");
+            }
 
             return sb.ToString();
         }
