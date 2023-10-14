@@ -47,7 +47,7 @@ namespace Home.Service.Legacy
                         return true;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // ToDo: Log
             }
@@ -85,7 +85,7 @@ namespace Home.Service.Legacy
                         return true;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // ToDo: Log
             }

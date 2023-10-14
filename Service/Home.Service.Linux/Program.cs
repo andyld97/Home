@@ -138,7 +138,9 @@ namespace Home.Service.Linux
                 return;
             }
 
+#pragma warning disable CS0162 // Unerreichbarer Code wurde entdeckt.
             AppMutex.ReleaseMutex();
+#pragma warning restore CS0162 // Unerreichbarer Code wurde entdeckt.
         }
 
         public static void MainAsync(string[] args, string configJson)
@@ -440,10 +442,10 @@ namespace Home.Service.Linux
             if (string.IsNullOrEmpty(json))
                 return false;
 
-            // Check if json is valid
+            // Check if JSON is valid
             if (!Helper.IsValidJson(json))
             {
-                Console.WriteLine("Ensure that the newest lswh version is installed (https://packages.debian.org/jessie/utils/lshw). Because it seems that you're using a version with produces invalid json!");
+                Console.WriteLine("Ensure that the newest lshw version is installed (https://packages.debian.org/jessie/utils/lshw). Because it seems that you're using a version with produces invalid json!");
                 Environment.Exit(-1);
             }
 
@@ -451,7 +453,7 @@ namespace Home.Service.Linux
 
             try
             {
-                JToken item = null;
+                JToken? item = null;
 
                 if (json.StartsWith("["))
                 {
@@ -499,7 +501,7 @@ namespace Home.Service.Linux
             }
             catch (Exception ex)
             {
-                Console.Write($"Failed to parse hwinfo: {ex}");
+                Console.Write($"Failed to parse hw-info: {ex}");
                 return false;
             }
 
@@ -525,7 +527,7 @@ namespace Home.Service.Linux
 
                     if (lines.Any(l => l.StartsWith(volumeName) || l.EndsWith(volumeName)))
                     {
-                        string line = lines.Where(l => l.StartsWith(volumeName) || l.EndsWith(volumeName)).FirstOrDefault();
+                        string line = lines.FirstOrDefault(l => l.StartsWith(volumeName) || l.EndsWith(volumeName));
 
                         string[] lineValues = line.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 

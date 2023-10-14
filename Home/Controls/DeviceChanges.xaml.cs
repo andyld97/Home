@@ -57,7 +57,7 @@ namespace Home.Controls
                 // see https://github.com/andyld97/Home/issues/13
                 foreach (var item in change)
                 {
-                    if (item.Type == DeviceChangeType.CPU && item.Description.Contains(Environment.NewLine) ||item.Description.Contains("\n"))
+                    if (item.Type == DeviceChangeType.CPU && (item.Description.Contains(Environment.NewLine) || item.Description.Contains("\n")))
                         item.Description = item.Description.Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
                 }
 

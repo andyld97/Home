@@ -128,7 +128,7 @@ namespace Home
             Legend.DataContext = this;
         }
 
-        private async Task CleanUpCacheAsync()
+        private Task CleanUpCacheAsync()
         {
             var di = new DirectoryInfo(HomeConsts.CACHE_PATH);
             var now = DateTime.Now;
@@ -152,7 +152,6 @@ namespace Home
             }
 
             length = files.Sum(f => f.Length);
-
    
             foreach (var file in files) 
             {
@@ -171,6 +170,8 @@ namespace Home
                 var bytes = ByteUnit.FindUnit(length);
                 AddProtocolEntry(string.Format(Properties.Resources.strCleanUpResultMessage, files.Count, bytes));
             }
+
+            return Task.CompletedTask;
         }
 
         #region Protocol
@@ -301,7 +302,7 @@ namespace Home
                 foreach (var device in deviceList)
                     warnings += device.CountWarnings();
 
-                int allDevices = deviceList.Count();
+                int allDevices = deviceList.Count;
                 if (allDevices > 0)
                 {
                     int activeDevices = deviceList.Count(d => d.Status == DeviceStatus.Active);
