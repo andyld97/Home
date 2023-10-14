@@ -1519,7 +1519,7 @@ namespace Home.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Devices Log ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Device Log ähnelt.
         /// </summary>
         public static string strReport_DeviceLog {
             get {

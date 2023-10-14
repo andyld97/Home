@@ -388,7 +388,7 @@
     <value>Warnings</value>
   </data>
   <data name="strReport_DeviceLog" xml:space="preserve">
-    <value>Devices Log</value>
+    <value>Device Log</value>
   </data>
   <data name="strReport_Disk" xml:space="preserve">
     <value>Disk</value>
