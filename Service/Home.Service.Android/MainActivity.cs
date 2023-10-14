@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using Android.Content;
 using AlertDialog = AndroidX.AppCompat.App.AlertDialog;
 using Android.Runtime;
+using System.Runtime.InteropServices;
 
 namespace Home.Service.Android
 {
@@ -270,6 +271,15 @@ namespace Home.Service.Android
 
             // Show dialog instead off a toast message
             string info = currentDevice.ToString();
+            
+            var wlanSSID = NetworkHelper.GetWLANSSID(this);
+            
+            if (!string.IsNullOrEmpty(wlanSSID))           
+                info += $"{System.Environment.NewLine}WLAN-SSID: {wlanSSID}";         
+            
+            info += System.Environment.NewLine;            
+            info += $"Client-Version: vAndroid{typeof(MainActivity).Assembly.GetName().Version.ToString(3)}";
+
             AlertDialog.Builder alertDiag = new AlertDialog.Builder(this);
             alertDiag.SetTitle(GetString(Resource.String.strDeviceSpecifications));
             alertDiag.SetMessage(info);
@@ -301,7 +311,10 @@ namespace Home.Service.Android
 
             // Assign texts
             textRegister.Text = (isDeviceRegistered ? string.Format(GetString(Resource.String.strDeviceRegisteredText), currentDevice.Name) : string.Format(GetString(Resource.String.strDeviceNotRegisteredText), currentDevice.Name));
-            textService.Text = (isServiceRunning ? GetString(Resource.String.strServiceActiveText) : GetString(Resource.String.strServiceInActiveText));
+            
+            string serviceText = (isServiceRunning ? GetString(Resource.String.strServiceActiveText) : GetString(Resource.String.strServiceInActiveText));
+            serviceText = serviceText.Replace("{0}", $"v{typeof(MainActivity).Assembly.GetName().Version.ToString(3)}");
+            textService.Text = serviceText;
 
             buttonToggleService.Text = (isServiceRunning ? GetString(Resource.String.strStopService) : GetString(Resource.String.strStartService));
         }
