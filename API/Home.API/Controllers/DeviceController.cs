@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -57,6 +58,22 @@ namespace Home.API.Controllers
                 devicesList.Add(ModelConverter.ConvertDevice(device));
 
             return Ok(devicesList);
+        }
+
+        [HttpGet("info")]
+        public async Task<IActionResult> GetInfoAsync()
+        {
+            var devices = await DeviceHelper.GetAllDevicesAsync(_context, true);
+            int devicesOnline = devices.Where(p => p.Status).Count();
+            int devicesOffline = devices.Where(p => !p.Status).Count();
+            int warnings = devices.Sum(p => p.DeviceWarning.Count);
+
+            JObject result = new JObject();
+            result["online"] = devicesOnline;
+            result["offline"] = devicesOffline;
+            result["warnings"] = warnings;
+
+            return Content(result.ToString(Formatting.None), "application/json");
         }
 
         /// <summary>
