@@ -432,7 +432,9 @@ namespace Home.Service.Windows
                     {
                         var id = TextGUID.Text;
                         ServiceData.Instance.ID = id;
+                        ServiceData.Instance.HasLoggedInOnce = true;
                         currentDevice.ID = id;
+                        isInitalized = true;
                     }
                 }
 

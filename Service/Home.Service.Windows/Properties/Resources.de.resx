@@ -157,10 +157,10 @@
   <data name="strIDLabel" xml:space="preserve">
     <value>ID (Guid):</value>
   </data>
-  <data name="strEditID" xml:space="preserve">
-    <value>ID bearbeiten (nicht empfohlen)</value>
-  </data>
   <data name="strDeviceNotYetRegistered" xml:space="preserve">
     <value>&lt;Noch nicht registriert&gt;</value>
+  </data>
+  <data name="strEditID" xml:space="preserve">
+    <value>ID vom vorherigen Gerät verwenden (Migration)</value>
   </data>
 </root>

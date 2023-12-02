@@ -181,7 +181,7 @@ Set WshShell = Nothing</value>
     <value>ID (Guid):</value>
   </data>
   <data name="strEditID" xml:space="preserve">
-    <value>Edit ID (not recommended)</value>
+    <value>Use ID from previous device (migration)</value>
   </data>
   <data name="strDeviceNotYetRegistered" xml:space="preserve">
     <value>&lt;Not yet registered&gt;</value>

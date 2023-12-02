@@ -124,7 +124,7 @@ namespace Home.Service.Windows.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Edit ID (not recommended) ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Use ID from previous device (migration) ähnelt.
         /// </summary>
         public static string strEditID {
             get {
