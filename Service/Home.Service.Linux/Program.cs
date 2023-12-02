@@ -170,18 +170,18 @@ namespace Home.Service.Linux
                 Console.WriteLine($"Using guid: {id} ...");
 
                 // Sign in
-                bool res = false;
+                (bool, string) res = (false, string.Empty);
                 var task = Task.Run(async () => res = await api.RegisterDeviceAsync(currentDevice));
                 task.Wait();
 
-                if (res)
+                if (res.Item1)
                 {
                     config["is_signed_in"] = true;
                     isSignedIn = true;
                 }
                 else
                 {
-                    Console.WriteLine("Failed to register device ... Exiting ...");
+                    Console.WriteLine($"Failed to register device: {res.Item2} ... Exiting ...");
                     AppMutex.ReleaseMutex();
                     Environment.Exit(-1);
                     return;

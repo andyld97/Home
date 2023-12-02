@@ -22,6 +22,7 @@ using System.Runtime.Intrinsics.X86;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Media;
 using System.Windows.Threading;
 using static Home.Model.Device;
 
@@ -148,7 +149,7 @@ namespace Home.Service.Windows
                 isInitalized = legacyAPI.RegisterDeviceAsync(currentDevice);
 #else
             if (!isInitalized)
-                isInitalized = await api.RegisterDeviceAsync(currentDevice);
+                isInitalized = (await api.RegisterDeviceAsync(currentDevice)).Item1;
 #endif
 
             if (isInitalized)
@@ -169,7 +170,7 @@ namespace Home.Service.Windows
             }
         }
 
-        private List<Screen> GetScreenInformation()
+        private static List<Screen> GetScreenInformation()
         {
             List<Screen> screens = new List<Screen>();
 
@@ -209,7 +210,9 @@ namespace Home.Service.Windows
 #if LEGACY
                 isInitalized = legacyAPI.RegisterDeviceAsync(currentDevice);
 #else
-                isInitalized = await api.RegisterDeviceAsync(currentDevice);
+                isInitalized = (await api.RegisterDeviceAsync(currentDevice)).Item1;
+
+                // LOG
 #endif
             }
             else
@@ -250,7 +253,7 @@ namespace Home.Service.Windows
             currentDevice.IP = address.IpAddress;
             currentDevice.MacAddress = address.MacAddress;
             currentDevice.DiskDrives = new System.Collections.ObjectModel.ObservableCollection<DiskDrive>(JsonConvert.DeserializeObject<List<DiskDrive>>(WMI.DetermineDiskDrives()));
-            currentDevice.Environment.RunningTime = now.Subtract(startTimestamp); // Environment.TickCount?
+            currentDevice.Environment.RunningTime = now.Subtract(startTimestamp);
             currentDevice.Environment.OSVersion = Environment.OSVersion.ToString();
             currentDevice.Environment.CPUCount = Environment.ProcessorCount;
             currentDevice.Environment.TotalRAM = Native.DetermineTotalRAM();
@@ -391,6 +394,8 @@ namespace Home.Service.Windows
             chkEnableUpdateSearch.IsChecked = ServiceData.Instance.UseUpdateTimer;
             NumUpdateHours.Value = ServiceData.Instance.UpdateTimerIntervalHours;
 
+            RefreshID();
+
             if (System.IO.File.Exists(homeVbsAutostartFilePath))
                 chkEnableStartupOnBoot.Visibility = Visibility.Collapsed;
 
@@ -420,6 +425,16 @@ namespace Home.Service.Windows
                 ServiceData.Instance.UseUpdateTimer = chkEnableUpdateSearch.IsChecked.Value;
                 ServiceData.Instance.UpdateTimerIntervalHours = NumUpdateHours.Value;
                 ServiceData.Instance.AllowRemoteFileAccess = chkEnableFileAccess.IsChecked.Value;
+
+                if (ChkEditId.IsChecked.Value == true)
+                {
+                    if (ServiceData.Instance.ID != currentDevice.ID)
+                    {
+                        var id = TextGUID.Text;
+                        ServiceData.Instance.ID = id;
+                        currentDevice.ID = id;
+                    }
+                }
 
                 return true;
             }
@@ -461,6 +476,31 @@ namespace Home.Service.Windows
                 MessageBox.Show(Home.Service.Windows.Properties.Resources.strInvalidDataSet, Home.Service.Windows.Properties.Resources.strError, MessageBoxButton.OK, MessageBoxImage.Error);
         }
         #endregion
+
+        private void ChkEditId_Checked(object sender, RoutedEventArgs e)
+        {
+            if (TextGUID.Text == Properties.Resources.strDeviceNotYetRegistered)
+                TextGUID.Clear();
+
+            TextGUID.Background = null;
+            TextGUID.IsReadOnly = false;    
+        }
+
+        private void ChkEditId_Unchecked(object sender, RoutedEventArgs e)
+        {
+            TextGUID.IsReadOnly = true;
+            TextGUID.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F0F0F0"));
+            RefreshID();
+        }
+
+        private void RefreshID()
+        {
+            var data = Model.ServiceData.Instance;
+            if (string.IsNullOrEmpty(data.ID))
+                TextGUID.Text = Properties.Resources.strDeviceNotYetRegistered;
+            else
+                TextGUID.Text = data.ID;
+        }
     }
 
     #region Converter

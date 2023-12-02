@@ -2,7 +2,7 @@
   "profiles": {
     "Home.Service.Windows": {
       "commandName": "Project",
-      "commandLineArgs": "/confi",
+      "commandLineArgs": "/config",
       "jsWebView2Debugging": false,
       "remoteDebugEnabled": false,
       "authenticationMode": "Windows",

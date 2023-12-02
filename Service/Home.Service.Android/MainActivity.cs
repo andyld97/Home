@@ -235,7 +235,7 @@ namespace Home.Service.Android
             Home.Communication.API api = new Home.Communication.API(host);
 
             var registerResult = await api.RegisterDeviceAsync(currentDevice);
-            if (registerResult)
+            if (registerResult.Item1)
             {
                 currentSettings.Host = host;
                 currentSettings.IsDeviceRegistered = true;
@@ -261,7 +261,7 @@ namespace Home.Service.Android
                 Toast.MakeText(this, GetString(Resource.String.strDeviceRegisterSuccess), ToastLength.Short).Show();
             }
             else
-                Toast.MakeText(this, GetString(Resource.String.strDeviceRegisterFail), ToastLength.Short).Show();
+                Toast.MakeText(this,$"{GetString(Resource.String.strDeviceRegisterFail)} ({registerResult.Item2})", ToastLength.Short).Show();
         }
 
         private void BtnShowInfos_Click(object sender, System.EventArgs e)

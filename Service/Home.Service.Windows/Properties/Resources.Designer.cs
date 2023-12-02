@@ -97,6 +97,15 @@ namespace Home.Service.Windows.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die &lt;Not yet registered&gt; ähnelt.
+        /// </summary>
+        public static string strDeviceNotYetRegistered {
+            get {
+                return ResourceManager.GetString("strDeviceNotYetRegistered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Device Settings ähnelt.
         /// </summary>
         public static string strDeviceSettings {
@@ -111,6 +120,15 @@ namespace Home.Service.Windows.Properties {
         public static string strDeviceType {
             get {
                 return ResourceManager.GetString("strDeviceType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Edit ID (not recommended) ähnelt.
+        /// </summary>
+        public static string strEditID {
+            get {
+                return ResourceManager.GetString("strEditID", resourceCulture);
             }
         }
         
@@ -176,6 +194,15 @@ namespace Home.Service.Windows.Properties {
         public static string strHours {
             get {
                 return ResourceManager.GetString("strHours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die ID (Guid): ähnelt.
+        /// </summary>
+        public static string strIDLabel {
+            get {
+                return ResourceManager.GetString("strIDLabel", resourceCulture);
             }
         }
         

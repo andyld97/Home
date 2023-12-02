@@ -45,7 +45,11 @@
                     <TextBlock Text="{x:Static res:Resources.strDevice}" FontWeight="Bold" />
                 </GroupBox.Header>
                 <StackPanel>
-                    <Grid>
+                    <TextBlock Text="{x:Static res:Resources.strIDLabel}" />
+                    <TextBox x:Name="TextGUID" Background="#F0F0F0" IsReadOnly="True" />
+                    <CheckBox x:Name="ChkEditId" Checked="ChkEditId_Checked" Unchecked="ChkEditId_Unchecked" Margin="3,5,0,0" Content="{x:Static res:Resources.strEditID}" />
+
+                    <Grid Margin="0,5,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />

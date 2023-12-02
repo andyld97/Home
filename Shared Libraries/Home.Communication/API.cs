@@ -119,7 +119,7 @@ namespace Home.Communication
             }
         }
 
-        public async Task<bool> RegisterDeviceAsync(Device device)
+        public async Task<(bool, string)> RegisterDeviceAsync(Device device)
         {
             try
             {
@@ -131,18 +131,16 @@ namespace Home.Communication
                 {
                     var answer = System.Text.Json.JsonSerializer.Deserialize<Answer<object>>(content);
                     if (answer != null && answer.Status == "ok")
-                        return true;
+                        return (true, string.Empty);
                     else
-                        return false;
+                        throw new Exception(answer?.ErrorMessage);
                 }
                 else
-                    return false;
+                    return (false, string.Empty);
             }
             catch (Exception ex)
-            {
-                // LOG
-                Console.WriteLine(ex.Message);
-                return false;
+            {                
+                return (false, ex.Message);
             }
         }
 
