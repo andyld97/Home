@@ -819,7 +819,7 @@
     <value>Error downloading the file:</value>
   </data>
   <data name="strFailedToDownloadFolder" xml:space="preserve">
-    <value>Error while retrieving the folder:</value>
+    <value>Error while retrieving the folder (Make sure file access is allowed for the device):</value>
   </data>
   <data name="strSuccessfullyAppliedChanges" xml:space="preserve">
     <value>The changes have been successfully applied!</value>

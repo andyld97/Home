@@ -761,7 +761,7 @@
     <value>Fehler beim Herunterladen der Datei:</value>
   </data>
   <data name="strFailedToDownloadFolder" xml:space="preserve">
-    <value>Fehler beim Abrufen des Ordners:</value>
+    <value>Fehler beim Abrufen des Ordners (Stellen Sie sicher, dass der Dateizugriff für dieses Gerät erlaubt ist):</value>
   </data>
   <data name="strPreview" xml:space="preserve">
     <value>Vorschau:</value>
