@@ -131,6 +131,7 @@ namespace Home.Service.Windows
                     StartTimestamp = startTimestamp
                 },
                 Screens = new System.Collections.ObjectModel.ObservableCollection<Screen>(GetScreenInformation()),
+                ServiceClientVersion = $"vWindows{typeof(MainWindow).Assembly.GetName().Version.ToString(3)}"
             };
 
             // Set BIOS info
