@@ -57,7 +57,7 @@
                 android:id="@+id/textHost"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="http://192.168.178.38:83" />
+                android:text="http://192.168.10.10:83" />
 
             <TextView
                 android:layout_width="wrap_content"
