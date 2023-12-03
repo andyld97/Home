@@ -8,6 +8,8 @@
              mc:Ignorable="d" d:DesignHeight="500" d:DesignWidth="500" >
     <UserControl.Resources>
         <local:DeviceChangeImageConverter x:Key="deviceChangeImageConverter" />
+        <local:MaxWidthConverter x:Key="maxWidthConverter" />
+        
         <DataTemplate x:Key="DeviceChangeTemplate">
             <Grid ToolTip="{Binding Description}">
                 <Grid.ColumnDefinitions>
@@ -17,13 +19,18 @@
 
                 <Image Margin="2" VerticalAlignment="Top" Source="{Binding Type, Converter={StaticResource deviceChangeImageConverter}}" Width="48" />
 
-                <StackPanel Grid.Column="1" Margin="3,3">
+                <Grid Grid.Column="1" Margin="3,3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    
                     <TextBlock Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}" FontWeight="Bold">
                         <Run Text="{x:Static res:Resources.strTime}" />
                         <Run Text="{Binding Timestamp, StringFormat={x:Static res:Resources.strTimeFormat}}" />
                     </TextBlock>
-                    <TextBlock Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}" Text="{Binding Description}" />
-                </StackPanel>
+                    <TextBlock Grid.Row="1" MaxWidth="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}, Path=ActualWidth, Converter={StaticResource maxWidthConverter}, ConverterParameter=50.0}" Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}" Text="{Binding Description}" TextWrapping="Wrap" />
+                </Grid>
             </Grid>
         </DataTemplate>
     </UserControl.Resources>

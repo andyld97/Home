@@ -355,7 +355,7 @@ namespace Home.API.Services
 
             // Check if os version changed (don't ignore updates in general)
             if (currentDevice.Environment.Osversion != requestedDevice.Environment.OSVersion && !string.IsNullOrEmpty(currentDevice.Environment.Osversion))
-                await RegisterDeviceChangeAsync(prefix, $"new os version: {f(requestedDevice.Environment.OSVersion)} (Old version: {f(currentDevice.Environment.Osversion)})", DeviceChangeEntry.DeviceChangeType.OS, currentDevice, now);
+                await RegisterDeviceChangeAsync(prefix, $"new os version: {f(requestedDevice.Environment.OSName)} ({f(requestedDevice.Environment.OSVersion)}) (Old version: {f(currentDevice.Environment.Osname)} ({f(currentDevice.Environment.Osversion)}))", DeviceChangeEntry.DeviceChangeType.OS, currentDevice, now);
 
             // CPU
             if (currentDevice.Environment.Cpuname != requestedDevice.Environment.CPUName && !string.IsNullOrEmpty(requestedDevice.Environment.CPUName))
