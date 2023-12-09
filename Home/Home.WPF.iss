@@ -101,8 +101,6 @@ Source: "bin\Release\net8.0-windows\publish\System.ServiceModel.Syndication.dll"
 Source: "bin\Release\net8.0-windows\publish\System.ServiceProcess.ServiceController.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net8.0-windows\publish\System.Speech.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net8.0-windows\publish\System.Web.Services.Description.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net8.0-windows\publish\System.Text.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net8.0-windows\publish\System.Text.Encodings.Web.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net8.0-windows\publish\WebhookAPI.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net8.0-windows\publish\ByteUnit.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
