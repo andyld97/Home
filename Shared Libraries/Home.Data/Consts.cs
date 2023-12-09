@@ -11,7 +11,7 @@ namespace Home.Data
         public static readonly string[] HTML_EXTENSIONS = new string[] { ".html", ".htm" };
         public static readonly string[] IMG_EXTENSIONS = new string[] { ".jpg", ".jpeg", ".jpe", ".jif", ".jfif", ".jfi", ".png", ".gif", ".tiff", ".tif", ".bmp", ".jp2", ".j2k", ".jpf", ".jpx", ".jpm", ".mj2", ".heif", ".heic" };
 
-        public static readonly DateTime ReleaseDate = new DateTime(2023, 9, 9, 14, 46, 0);
+        public static readonly DateTime ReleaseDate = new DateTime(2023, 12, 9, 11, 14, 0);
 
         public const string HomeServiceWindowsClientVersion = "1.2.7";
 
