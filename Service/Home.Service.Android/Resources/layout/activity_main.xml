@@ -57,6 +57,8 @@
                 android:id="@+id/textHost"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="text"
+                android:maxLines="1"
                 android:text="http://192.168.10.10:83" />
 
             <TextView
@@ -66,6 +68,8 @@
 
             <EditText
                 android:id="@+id/textLocation"
+                android:inputType="text"
+                android:maxLines="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -75,6 +79,8 @@
                 android:text="@string/strGroup" />
 
             <EditText
+                android:inputType="text"
+                android:maxLines="1"
                 android:id="@+id/textGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -91,6 +97,8 @@
 
                 <EditText
                     android:id="@+id/textWLANSSID"
+                    android:inputType="text"
+                    android:maxLines="1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
