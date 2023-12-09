@@ -57,7 +57,7 @@ namespace Home.Controls
                 // see https://github.com/andyld97/Home/issues/13
                 foreach (var item in change)
                 {
-                    if (item.Type == DeviceChangeType.CPU && item.Description.Contains(Environment.NewLine) ||item.Description.Contains("\n"))
+                    if (item.Type == DeviceChangeType.CPU && (item.Description.Contains(Environment.NewLine) || item.Description.Contains("\n")))
                         item.Description = item.Description.Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
                 }
 
@@ -96,6 +96,22 @@ namespace Home.Controls
     }
 
     #region Converter
+
+    public class MaxWidthConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is double d1 && double.TryParse(parameter?.ToString(), out double d2))
+                return d1 - d2;
+
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
     public class DeviceChangeImageConverter : IValueConverter
     {

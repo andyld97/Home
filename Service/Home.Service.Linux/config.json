@@ -1,7 +1,7 @@
 ﻿{
   "id": null, /* Will be set automatically */
   "user": "server", /* Should not be root, but can be like pi */
-  "api": "http://192.168.178.38:83",
+  "api": "http://192.168.10.10:83",
   "location": null,
   "device_group": null,
   "os": 1, /* Android = 0 | Linux = 1 | LinuxMint = 2 | LinuxUbuntu = 3 | Windows = 4-9 | Unix = 10 | Other = 11 */

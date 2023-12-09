@@ -10,8 +10,8 @@
 	<string name="strDeviceStatus">Device Status:</string>
 	<string name="strStartService">Start service</string>
 	<string name="strStopService">Stop service</string>
-	<string name="strServiceActiveText">Home.Service.Android is active!</string>
-	<string name="strServiceInActiveText">Home.Service.Android is not active!</string>
+	<string name="strServiceActiveText">Home.Service.Android {0} is active!</string>
+	<string name="strServiceInActiveText">Home.Service.Android {0} is not active!</string>
 	<string name="strDeviceRegisteredText">The Device {0} is registered!</string>
 	<string name="strDeviceNotRegisteredText">The Device {0} is not registered!</string>
 	<string name="strConnectedTo">Connected to {0}</string>

@@ -11,6 +11,7 @@
         <Grid.Resources>
             <local:DeviceImageConverter x:Key="localDeviceImageConverter" />
             <local:ScreenshotVisibilityConverter x:Key="screenshotVisiblityConverter" />
+            <local:BackgroundColorConverter x:Key="backgroundColor" />
             <converter:OSNameConverter x:Key="osNameConverter" />
             <converter:OS64BitConverter x:Key="os64BitConverter" />
             <BooleanToVisibilityConverter x:Key="Fluent.Ribbon.Converters.BoolToVisibilityConverter" />
@@ -32,7 +33,6 @@
             <Border Margin="26,0,0,0" BorderBrush="{DynamicResource Fluent.Ribbon.Brushes.Black}" BorderThickness="0 0 0 1" />
         </StackPanel>
 
-
         <ListView x:Name="ListViewDevices" Visibility="{Binding ElementName=ExpandList, Path=IsExpanded, Converter={StaticResource Fluent.Ribbon.Converters.BoolToVisibilityConverter}}" ItemsSource="{Binding Devices}" Background="{DynamicResource Fluent.Ribbon.Brushes.White}" BorderThickness="0" Grid.Row="1" SelectionChanged="ListViewDevices_SelectionChanged" PreviewMouseWheel="ListViewDevices_PreviewMouseWheel">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -49,7 +49,7 @@
                             </ToolTip>
                         </Grid.ToolTip>
 
-                        <Border Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.RenderMode, Converter={StaticResource screenshotVisiblityConverter}, ConverterParameter=2}" Background="Black" Height="200">
+                        <Border Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.RenderMode, Converter={StaticResource screenshotVisiblityConverter}, ConverterParameter=2}" Background="{Binding ., Converter={StaticResource backgroundColor}}" Height="200">
                             <Grid>
                                 <Image Visibility="Visible" StretchDirection="DownOnly" Source="{Binding ., Converter={StaticResource deviceScreenConverter}}" />
                                 <TextBlock Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}" Text="{Binding Environment.MachineName}" VerticalAlignment="Center" HorizontalAlignment="Center" />

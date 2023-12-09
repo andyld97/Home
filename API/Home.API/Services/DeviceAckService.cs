@@ -227,7 +227,7 @@ namespace Home.API.Services
 
                 // Add storage warning
                 // But ensure that the warning is only once per device and will be added again if dismissed by the user
-                if (dds.Any())
+                if (dds.Count != 0)
                 {
                     foreach (var disk in dds)
                     {
@@ -349,13 +349,23 @@ namespace Home.API.Services
             if (currentDevice.ServiceClientVersion != requestedDevice.ServiceClientVersion && !string.IsNullOrEmpty(currentDevice.ServiceClientVersion))
                 await RegisterDeviceChangeAsync(prefix, $"new client version: {f(requestedDevice.ServiceClientVersion)} (Old version: {f(currentDevice.ServiceClientVersion)})", DeviceChangeEntry.DeviceChangeType.None, currentDevice, now);           
 
-            // Check if os name changed
+            // Check if OS-name changed
             if (currentDevice.OstypeNavigation.Name != requestedDevice.OS.ToString())
                 await RegisterDeviceChangeAsync(prefix, $"OS change from {f(currentDevice.OstypeNavigation.Name)} to {f(requestedDevice.OS.ToString())}", DeviceChangeType.OS, currentDevice, now);
 
-            // Check if os version changed (don't ignore updates in general)
+            // Check if OS-version changed (don't ignore updates in general)
             if (currentDevice.Environment.Osversion != requestedDevice.Environment.OSVersion && !string.IsNullOrEmpty(currentDevice.Environment.Osversion))
-                await RegisterDeviceChangeAsync(prefix, $"new os version: {f(requestedDevice.Environment.OSVersion)} (Old version: {f(currentDevice.Environment.Osversion)})", DeviceChangeEntry.DeviceChangeType.OS, currentDevice, now);
+            {
+                string lOSName = requestedDevice.Environment.OSName;
+                string rOSName = currentDevice.Environment.Osname;
+
+                if (Enum.TryParse<Home.Model.Device.OSType>(requestedDevice.Environment.OSName, true, out Model.Device.OSType lType))
+                    lOSName = ModelConverter.GetDescription(lType);
+                if (Enum.TryParse<Home.Model.Device.OSType>(currentDevice.Environment.Osname, true, out Model.Device.OSType rType))
+                    rOSName = ModelConverter.GetDescription(rType);              
+
+                await RegisterDeviceChangeAsync(prefix, $"new os version: {f(lOSName)} ({f(requestedDevice.Environment.OSVersion)}) (Old version: {f(rOSName)} ({f(currentDevice.Environment.Osversion)}))", DeviceChangeEntry.DeviceChangeType.OS, currentDevice, now);
+            }
 
             // CPU
             if (currentDevice.Environment.Cpuname != requestedDevice.Environment.CPUName && !string.IsNullOrEmpty(requestedDevice.Environment.CPUName))
@@ -384,6 +394,7 @@ namespace Home.API.Services
             if (currentDevice.DeviceBios.Any() && requestedDevice.BIOS != null)
             {
                 var dbBios = currentDevice.DeviceBios.FirstOrDefault();
+
                 // Compare both (currently the database will only hold one BIOS per device, but there can be more at a later point of time)
                 var left = new BIOS()
                 {
@@ -396,7 +407,7 @@ namespace Home.API.Services
                 var right = requestedDevice.BIOS;
 
                 if (left != right)
-                    await RegisterDeviceChangeAsync(prefix, $"BIOS changed from {f(left?.ToString())} to {f(right?.ToString())}", DeviceChangeType.BIOS, currentDevice, now);
+                    await RegisterDeviceChangeAsync(prefix, $"BIOS changed from \"{f(left?.ToString())}\" to \"{f(right?.ToString())}\"", DeviceChangeType.BIOS, currentDevice, now);
             }
             else if (currentDevice.DeviceBios.Any() && requestedDevice.BIOS == null)
                 currentDevice.DeviceBios.Clear();

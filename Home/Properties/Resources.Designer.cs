@@ -682,7 +682,7 @@ namespace Home.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Error while retrieving the folder: ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Error while retrieving the folder (Make sure file access is allowed for the device): ähnelt.
         /// </summary>
         public static string strFailedToDownloadFolder {
             get {
@@ -1519,7 +1519,7 @@ namespace Home.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Devices Log ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Device Log ähnelt.
         /// </summary>
         public static string strReport_DeviceLog {
             get {

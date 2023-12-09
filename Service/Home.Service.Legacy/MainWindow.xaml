@@ -26,7 +26,7 @@
                 </StackPanel.Resources>
 
                 <TextBlock Text="{x:Static res:Resources.strAPIUrl}" />
-                <TextBox x:Name="TextAPIUrl" Text="http://192.168.178.38:83" />
+                <TextBox x:Name="TextAPIUrl" Text="http://192.168.10.10:83" />
 
                 <TextBlock Text="{x:Static res:Resources.strOS}" />
                 <ComboBox x:Name="CmbOS" SelectedIndex="0">

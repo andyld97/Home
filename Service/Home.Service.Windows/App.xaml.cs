@@ -32,7 +32,7 @@ namespace Home.Service.Windows
             Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en-US");*/
 
             if (Environment.GetCommandLineArgs().Length > 0)
-                IsConfigFlagSet = Environment.GetCommandLineArgs().Any(p => p.ToLower().Contains("/config"));
+                IsConfigFlagSet = Environment.GetCommandLineArgs().Any(p => p.Contains("/config", StringComparison.CurrentCultureIgnoreCase));
 
             thread = new Thread(new ParameterizedThreadStart((_) =>
             {
