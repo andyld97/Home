@@ -69,7 +69,7 @@ namespace Home.API
             }
 
             // Initialize webhook
-            WebHook = new Webhook(GlobalConfig.WebHookUrl, "Home");
+            WebHook = new Webhook(GlobalConfig.WebHookUrl, "Home", true);
 
             CreateHostBuilder(args).Build().Run();
         }
