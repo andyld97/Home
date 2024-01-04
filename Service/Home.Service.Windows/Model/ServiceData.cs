@@ -43,7 +43,7 @@ namespace Home.Service.Windows.Model
 
         private OSType osType;
         private DeviceType deviceType;
-        private string apiURL = "http://192.168.178.38:83";
+        private string apiURL = "http://192.168.10.10:83";
         private DateTime lastUpdateCheck = DateTime.MinValue;
         public event PropertyChangedEventHandler PropertyChanged;
 

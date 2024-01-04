@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Home": {
+      "commandName": "Project",
+      "commandLineArgs": "/config /lang=en"
+    }
+  }
+}

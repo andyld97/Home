@@ -283,7 +283,7 @@ namespace Home.API.Services
             currentDevice.DeviceUsage.Disk = AddUsage(currentDevice.DeviceUsage.Disk, currentDevice.Environment.DiskUsage);
 
             // RAM
-            var ram = currentDevice.Environment.FreeRam.Replace(",", ".").Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+            var ram = currentDevice.Environment.FreeRam?.Replace(",", ".").Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
             if (ram != null && double.TryParse(ram, System.Globalization.CultureInfo.InvariantCulture, out double res))
                 currentDevice.DeviceUsage.Ram = AddUsage(currentDevice.DeviceUsage.Ram, res);
 
@@ -295,7 +295,7 @@ namespace Home.API.Services
             }
         }
 
-        private string AddUsage(string data, double? usage)
+        private static string AddUsage(string data, double? usage)
         {
             if (usage == null)
                 return data;
