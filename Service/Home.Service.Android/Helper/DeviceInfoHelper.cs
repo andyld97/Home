@@ -13,6 +13,7 @@ using Exception = Java.Lang.Exception;
 using A = Android;
 using Android.Net.Wifi;
 using System.Net.Mail;
+using Units;
 
 namespace Home.Service.Android.Helper
 {
@@ -107,11 +108,12 @@ namespace Home.Service.Android.Helper
             string[] entries = result.Split(System.Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
             if (entries.Length >= 2)
             {
-                // MemTotal:        1530632 kB
-                // MemFree:         351580 kB
+                // MemTotal:       21530632 kB
+                // MemFree:          351580 kB
+                // MemAvailable:    1121215 kB
                 // ...
                 string memTotal = entries[0].ToLower().Replace("memtotal:", string.Empty).Trim();
-                string memFree = entries[1].ToLower().Replace("memfree:", string.Empty).Trim();
+                string memFree = entries[2].ToLower().Replace("memavailable:", string.Empty).Trim();
 
                 double freeRam = ParseMemoryEntryInGB(memFree);
                 device.Environment.TotalRAM = ParseMemoryEntryInGB(memTotal);
@@ -131,32 +133,15 @@ namespace Home.Service.Android.Helper
         /// <returns></returns>
         public static double ParseMemoryEntryInGB(string value)
         {
-            // Supported units: b, kb, mb, gb, tb
             string[] entries = value.Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
             if (entries.Length == 2)
             {
                 long lValue = long.Parse(entries[0]);
-
-                int unit = 0;
                 string unitValue = entries[1].Trim().ToLower();
-                if (unitValue == "b")
-                    unit = 1;
-                else if (unitValue == "kb")
-                    unit = 2;
-                else if (unitValue == "mb")
-                    unit = 3;
-                else if (unitValue == "gb")
-                    unit = 4;
-                else if (unitValue == "tb")
-                    unit = 5;
-
-                // Target unit is gb (4)
-                int diff = 4 - unit;
-                if (diff > 0)
-                    return System.Math.Round(lValue / System.Math.Pow(1024.0, diff), 2);
-                else
-                    return System.Math.Round(lValue * System.Math.Pow(1024.0, diff), 2);
+                
+                var res = ByteUnit.Parse($"{lValue}{unitValue}");
+                return System.Math.Round(res.To(Unit.GB).Length, 2);
             }
 
             return -1;
@@ -256,10 +241,10 @@ namespace Home.Service.Android.Helper
 
             string ipV4 = ipAdresses.Where(i => i.Contains(".")).FirstOrDefault();
             if (!string.IsNullOrEmpty(ipV4))
-                return ipV4;
+                return ipV4?.Replace("/24", string.Empty);
 
             if (ipAdresses.Count > 0)
-                return ipAdresses.FirstOrDefault();
+                return ipAdresses.FirstOrDefault()?.Replace("/24", string.Empty);
 
             return string.Empty;
         }
