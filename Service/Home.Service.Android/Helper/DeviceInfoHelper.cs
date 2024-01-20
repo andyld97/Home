@@ -283,7 +283,7 @@ namespace Home.Service.Android.Helper
 
             var dd = new DiskDrive() { VolumeName = "/", DriveName = "/", DriveID = "android_default_storage", PhysicalName = "android_default_storage" };
             ReadDF(dd);
-            dd.MediaType = currentDevice.Name; // ensure that disks can be added which are having the same amount of space (same GUID)
+            dd.MediaType = $"{currentDevice.Name} {A.OS.Build.GetSerial()}"; // ensure that disks can be added which are having the same amount of space (same GUID) (name is not enough, since you can have device with duplicate names!)
             currentDevice.DiskDrives = new System.Collections.ObjectModel.ObservableCollection<DiskDrive>() { dd };
         }
     }
