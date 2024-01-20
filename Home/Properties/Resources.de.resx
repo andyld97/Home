@@ -897,4 +897,7 @@ Herunterladen: https://developer.microsoft.com/en-us/microsoft-edge/webview2/</v
   <data name="strTime" xml:space="preserve">
     <value>Zeit:</value>
   </data>
+  <data name="strSeconds" xml:space="preserve">
+    <value>Sekunden</value>
+  </data>
 </root>

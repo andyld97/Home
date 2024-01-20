@@ -1924,6 +1924,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Seconds ähnelt.
+        /// </summary>
+        public static string strSeconds {
+            get {
+                return ResourceManager.GetString("strSeconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Executable: ähnelt.
         /// </summary>
         public static string strSendCommandDialog_App {

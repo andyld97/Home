@@ -12,6 +12,7 @@
     <UserControl.Resources>
         <home:EmptyConverter x:Key="emptyConverter" />
         <home:BatteryInfoConverter x:Key="batteryInfoConverter" />
+        <controls:TimeToStringConverter x:Key="timeToStringConverter" />
         <converter:OSNameConverter x:Key="osNameConverter" />
         <converter:OS64BitConverter x:Key="os64BitConverter" />
         <controls:ServiceVersionToolTipConverter x:Key="serviceVersionToolTipConverter" />
@@ -84,7 +85,7 @@
                 </TextBlock>
                 <TextBlock Text="{Binding Environment.OSVersion}" ToolTip="{Binding Environment.OSVersion}" />
                 <TextBlock x:Name="TextStartTime" Text="{Binding Environment.StartTimestamp, StringFormat={x:Static res:Resources.strDateTimeFormat}}" ToolTip="{Binding ElementName=TextStartTime, Path=Text}" />
-                <TextBlock x:Name="TextRunningTime" ToolTip="{Binding ElementName=TextRunningTime, Path=Text}">
+                <TextBlock x:Name="TextRunningTime" ToolTip="{Binding Environment.RunningTime, Converter={StaticResource timeToStringConverter}}">
                     <TextBlock.Text>
                         <MultiBinding StringFormat="{}{0:00}:{1:00}:{2:00;00}">
                             <Binding Path="Environment.RunningTime.Days" />
