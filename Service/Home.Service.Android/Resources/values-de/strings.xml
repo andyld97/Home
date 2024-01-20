@@ -31,6 +31,10 @@
 	<string name="strAbout">Über</string>
 	<string name="strAboutContent">Home.Service.Android {0}\n\nCopyright © 2021-2024 Code A Software</string>
 	<string name="strCheckPermissions">Berechtigungen prüfen (wiederholbar)</string>
+	<string name="strSetIdDescription">Die Geräte-ID kann nur geändert werden, wenn das Gerät noch nicht registriert ist. Das ist nur dann sinnvoll, wenn Sie die ID eines vorherigen Gerätes verwenden wollen, um sich als dieses Gerät auszugeben. Das Gerät wird dann nicht mehr registriert, sondern sendet ACKs sobald der Service gestartet ist!</string>
+	<string name="strSetIdCaption">Geräte-ID:</string>
+	<string name="strSetIdTitle">Geräte ID ändern</string>
+	<string name="strNotSet">Noch nicht vergeben</string>
 	<string-array name="device_type">
 		<item>Smartphone</item>
 		<item>SmartTV</item>

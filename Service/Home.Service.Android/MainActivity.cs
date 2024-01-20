@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using AndroidX.Core.App;
 using Android.Views;
 using Android.Text;
+using Java.Util.Zip;
 
 namespace Home.Service.Android
 {
@@ -26,6 +27,7 @@ namespace Home.Service.Android
         private Button buttonRegisterDevice;
         private Button buttonToggleService;
         private ImageButton btnCurrent;
+        private ImageButton buttonSetID;
         private Button btnEditSettings;
         private Button buttonCheckPermissions;
         private System.Timers.Timer serviceCheckingTimer;
@@ -145,8 +147,7 @@ namespace Home.Service.Android
             
             spinnerDeviceType = FindViewById<Spinner>(Resource.Id.spinnerDeviceType);
             btnEditSettings = FindViewById<Button>(Resource.Id.buttonEditSettings);
-            btnCurrent = FindViewById<ImageButton>(Resource.Id.btnCurrent);
-            btnCurrent.Click += BtnCurrent_Click;
+            btnCurrent = FindViewById<ImageButton>(Resource.Id.btnCurrent);    
 
             // LEDs
             ledIsServiceRunning = FindViewById<ImageView>(Resource.Id.ledIsServiceRunning);
@@ -157,6 +158,7 @@ namespace Home.Service.Android
             buttonRegisterDevice = FindViewById<Button>(Resource.Id.buttonRegisterDevice);
             buttonToggleService = FindViewById<Button>(Resource.Id.buttonToggleService);
             buttonCheckPermissions = FindViewById<Button>(Resource.Id.buttonCheckPermissions);
+            buttonSetID = FindViewById<ImageButton>(Resource.Id.buttonSetID);
 
             textRegister = FindViewById<TextView>(Resource.Id.textRegister);
             textService = FindViewById<TextView>(Resource.Id.textService);
@@ -166,6 +168,8 @@ namespace Home.Service.Android
             buttonToggleService.Click += ButtonToggleService_Click;
             btnEditSettings.Click += BtnEditSettings_Click;
             buttonCheckPermissions.Click += ButtonCheckPermissions_Click;
+            buttonSetID.Click += ButtonSetID_Click;
+            btnCurrent.Click += BtnCurrent_Click;
 
             if (isDeviceRegistered)
             {
@@ -181,7 +185,10 @@ namespace Home.Service.Android
                         spinnerDeviceType.SetSelection(item.Key);
             }
             else
+            {
                 btnEditSettings.Visibility = A.Views.ViewStates.Gone;
+                textDeviceID.TextFormatted = Html.FromHtml($"ID: <b>{GetString(Resource.String.strNotSet)}</b>", FromHtmlOptions.ModeCompact);
+            }
 
             textGroup.NextFocusDownId = Resource.Id.spinnerDeviceType;
 
@@ -191,7 +198,11 @@ namespace Home.Service.Android
             {
                 GLSurfaceView glSurfaceView = FindViewById<GLSurfaceView>(Resource.Id.surface);
                 Renderer renderer = new Renderer();
-                renderer.OnInfosReceived += delegate (string vendor, string renderer) { currentDevice.Environment.GraphicCards = new System.Collections.ObjectModel.ObservableCollection<string> { $"{vendor} {renderer}" }; };
+                renderer.OnInfosReceived += delegate (string vendor, string renderer)
+                {
+                    currentDevice.Environment.GraphicCards = new System.Collections.ObjectModel.ObservableCollection<string> { $"{vendor} {renderer}" };
+                    RunOnUiThread(() => glSurfaceView.Visibility = ViewStates.Gone);
+                };
                 glSurfaceView.SetRenderer(renderer);
             }
             else
@@ -220,6 +231,38 @@ namespace Home.Service.Android
             serviceCheckingTimer = new System.Timers.Timer() { Interval = TimeSpan.FromSeconds(10).TotalMilliseconds };
             serviceCheckingTimer.Elapsed += ServiceCheckingTimer_Elapsed;
             serviceCheckingTimer.Start();   
+        }
+
+        private void ButtonSetID_Click(object sender, EventArgs e)
+        {
+            if (currentSettings.IsDeviceRegistered)
+                return;
+
+            Dialog diag = null;
+
+            AlertDialog.Builder alertDiag = new AlertDialog.Builder(this);
+            var view = this.LayoutInflater.Inflate(Resource.Layout.dialog_set_id, null);
+            var editTextDeviceID = view.FindViewById<EditText>(Resource.Id.editTextDeviceID);
+            alertDiag.SetView(view);
+            alertDiag.SetTitle(GetString(Resource.String.strSetIdTitle));
+            alertDiag.SetPositiveButton("OK", (senderAlert, args) => 
+            {
+                string id = editTextDeviceID.Text;
+
+                if (!string.IsNullOrEmpty(id))
+                { 
+                    currentDevice.ID = id;
+                    textDeviceID.Text = currentDevice.ID.ToString();
+                    currentSettings.IsDeviceRegistered = true;
+                    isInEditMode = true;
+                    SetEditMode();
+                    RefreshServiceStatus();
+                }
+
+                diag.Dismiss();              
+            });
+            diag = alertDiag.Create();
+            diag.Show();
         }
 
         private void ButtonCheckPermissions_Click(object sender, EventArgs e)
@@ -323,12 +366,17 @@ namespace Home.Service.Android
                     RefreshServiceStatus();
                     layoutRegisterDevice.Visibility = A.Views.ViewStates.Visible;
                     layoutRegisterDevice.RequestLayout();
-                    btnEditSettings.Text = GetString(Resource.String.strSave);
-                    btnCurrent.Enabled = true;
-                    buttonRegisterDevice.Enabled = false;
-                    buttonToggleService.Enabled = false;
+                    SetEditMode();
                 }
             });
+        }
+
+        private void SetEditMode()
+        {
+            btnEditSettings.Text = GetString(Resource.String.strSave);
+            btnCurrent.Enabled = true;
+            buttonRegisterDevice.Enabled = false;
+            buttonToggleService.Enabled = false;
         }
 
         private void BtnCurrent_Click(object sender, EventArgs e)
@@ -472,9 +520,15 @@ namespace Home.Service.Android
             bool arePermissionGranted = CheckPermissions(true);
 
             if (isDeviceRegistered)
+            {
+                buttonSetID.Visibility = ViewStates.Gone;
                 btnEditSettings.Visibility = A.Views.ViewStates.Visible;
+            }
             else
+            {
                 btnEditSettings.Visibility = A.Views.ViewStates.Gone;
+                buttonSetID.Visibility = ViewStates.Visible;
+            }
 
             if (CheckPermissions(true))
                 buttonCheckPermissions.Visibility = ViewStates.Gone;

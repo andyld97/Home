@@ -6,6 +6,7 @@ using Home.Data.Com;
 using Home.Data.Events;
 using Home.Model;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -111,14 +112,7 @@ namespace Home.API.Services
                     _clientService.NotifyClientQueues(EventQueueItem.EventKind.ACK, currentDevice);
                 }
                 else
-                {
-                    // Temporary fix if data is empty again :(
-                    requestedDevice.LastSeen = now;
-                    await _context.Device.AddAsync(ModelConverter.ConvertDevice(_context, _logger, requestedDevice));
-                    await _context.SaveChangesAsync();
-
-                    _clientService.NotifyClientQueues(EventQueueItem.EventKind.NewDeviceConnected, requestedDevice);
-                }
+                    return new DeviceAckServiceResult() { ErrorMessage = "Device is not yet registered!", StatusCode = StatusCodes.Status400BadRequest, Success = false }; ;
 
                 if (result)
                 {

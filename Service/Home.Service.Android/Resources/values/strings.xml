@@ -31,6 +31,10 @@
 	<string name="strAbout">About</string>
 	<string name="strAboutContent">Home.Service.Android {0}\n\nCopyright © 2021-2024 Code A Software</string>
 	<string name="strCheckPermissions">Check permissions (repeatable)</string>
+	<string name="strSetIdDescription">The device ID can only be changed if the device is not yet registered. This only makes sense if you want to use the ID of a previous device to pretend to be this device. The device will not be registered but will send ACKs as soon as the service is started!</string>
+	<string name="strSetIdCaption">Device-ID:</string>
+	<string name="strSetIdTitle">Change Device-ID</string>
+	<string name="strNotSet">Not yet set</string>
 	<string-array name="strDeviceType">
 		<item>Smartphone</item>
 		<item>SmartTV</item>

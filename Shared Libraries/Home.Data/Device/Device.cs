@@ -1090,7 +1090,7 @@ namespace Home.Model
         {
             string rn = Environment.NewLine;
 #pragma warning disable CS0612 // Typ oder Element ist veraltet
-            string graphics = GraphicCards.Count == 0 ? Graphics : string.Join(Environment.NewLine, GraphicCards.Count);
+            string graphics = GraphicCards.Count == 0 ? Graphics : string.Join(Environment.NewLine, GraphicCards);
 #pragma warning restore CS0612 // Typ oder Element ist veraltet
             string cpuName = CPUName;
 
