@@ -22,6 +22,14 @@
 	<string name="strFailedToDetermineWLANSSID">SSID konnte nicht ermittelt werden. App-Berechtigungen prüfen (Standort) ...</string>
 	<string name="strWLANSSIDLabel">"WLAN SSID (optional):</string>
 	<string name="strCurrentWLAN">Aktives WLAN verwenden</string>
+	<string name="strPermissionsGranted">Alle Berechtigungen wurden erteilt!</string>
+	<string name="strPermissionsDenied">Berechtigungen wurden nicht erteilt!</string>
+	<string name="strEditSettings">Einstellungen bearbeiten</string>
+	<string name="strSettingsApplied">Die Einstellungen wurden erfolgreich übernommen!</string>
+	<string name="strPermissionsExplanation">Alle Berechtigungen müssen erteilt werden, damit der Service gestartet werden kann!</string>
+	<string name="strSave">Speichern</string>
+	<string name="strAbout">Über</string>
+	<string name="strAboutContent">Home.Service.Android {0}\n\nCopyright © 2021-2024 Code A Software</string>
 	<string-array name="device_type">
 		<item>Smartphone</item>
 		<item>SmartTV</item>

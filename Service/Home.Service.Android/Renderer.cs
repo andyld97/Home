@@ -5,8 +5,8 @@ namespace Home.Service.Android
 {
     public class Renderer : Java.Lang.Object, GLSurfaceView.IRenderer
     {
-        public delegate void onInfosRecieved(string renderer, string vendor);
-        public event onInfosRecieved OnInfosRecieved;
+        public delegate void onInfosReceived(string renderer, string vendor);
+        public event onInfosReceived OnInfosReceived;
 
         public void OnDrawFrame(IGL10 gl)
         {
@@ -23,7 +23,7 @@ namespace Home.Service.Android
             string renderer = GLES20.GlGetString(GLES20.GlRenderer);
             string vendor = GLES20.GlGetString(GLES20.GlVendor);
 
-            OnInfosRecieved?.Invoke(renderer, vendor);
+            OnInfosReceived?.Invoke(renderer, vendor);
         }
     }
 }

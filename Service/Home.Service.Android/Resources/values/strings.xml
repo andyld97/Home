@@ -22,6 +22,14 @@
 	<string name="strFailedToDetermineWLANSSID">Failed to determine SSID. Check app permissions (location) ...</string>
 	<string name="strWLANSSIDLabel">"WLAN SSID (optional):</string>
 	<string name="strCurrentWLAN">Use Active WLAN</string>
+	<string name="strPermissionsGranted">All permissions are granted!</string>
+	<string name="strPermissionsDenied">Permissions have not been granted</string>
+	<string name="strEditSettings">Edit settings</string>
+	<string name="strSettingsApplied">The settings have been applied successfully!</string>
+	<string name="strPermissionsExplanation">All permissions must be granted so that the service can be started!</string>
+	<string name="strSave">Save</string>
+	<string name="strAbout">About</string>
+	<string name="strAboutContent">Home.Service.Android {0}\n\nCopyright © 2021-2024 Code A Software</string>
 	<string-array name="strDeviceType">
 		<item>Smartphone</item>
 		<item>SmartTV</item>
