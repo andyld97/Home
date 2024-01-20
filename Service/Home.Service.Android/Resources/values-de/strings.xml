@@ -29,7 +29,8 @@
 	<string name="strPermissionsExplanation">Alle Berechtigungen müssen erteilt werden, damit der Service gestartet werden kann!</string>
 	<string name="strSave">Speichern</string>
 	<string name="strAbout">Über</string>
-	<string name="strAboutContent">Home.Service.Android {0}\n\nCopyright © 2021-2024 Code A Software</string>
+	<string name="strAboutContent">Home.Service.Android {0}\n\nCopyright © 2021-2024 Code A Software</string>s
+	<string name="strCheckPermissions">Berechtigungen prüfen (wiederholbar)</string>
 	<string-array name="device_type">
 		<item>Smartphone</item>
 		<item>SmartTV</item>

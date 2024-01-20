@@ -27,6 +27,7 @@ namespace Home.Service.Android
         private Button buttonToggleService;
         private ImageButton btnCurrent;
         private Button btnEditSettings;
+        private Button buttonCheckPermissions;
         private System.Timers.Timer serviceCheckingTimer;
 
         private TextView textDeviceID;
@@ -62,6 +63,14 @@ namespace Home.Service.Android
             { 2, Device.DeviceType.SetTopBox },
             { 3, Device.DeviceType.Tablet },
             { 4, Device.DeviceType.AndroidTVStick },
+        };
+
+        private List<string> permissions = new List<string>()
+        {
+            A.Manifest.Permission.WriteExternalStorage,
+            A.Manifest.Permission.ReadExternalStorage,
+            A.Manifest.Permission.AccessFineLocation,
+            A.Manifest.Permission.AccessBackgroundLocation,
         };
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -147,6 +156,7 @@ namespace Home.Service.Android
             // Buttons
             buttonRegisterDevice = FindViewById<Button>(Resource.Id.buttonRegisterDevice);
             buttonToggleService = FindViewById<Button>(Resource.Id.buttonToggleService);
+            buttonCheckPermissions = FindViewById<Button>(Resource.Id.buttonCheckPermissions);
 
             textRegister = FindViewById<TextView>(Resource.Id.textRegister);
             textService = FindViewById<TextView>(Resource.Id.textService);
@@ -155,6 +165,7 @@ namespace Home.Service.Android
             buttonRegisterDevice.Click += ButtonRegisterDevice_Click;
             buttonToggleService.Click += ButtonToggleService_Click;
             btnEditSettings.Click += BtnEditSettings_Click;
+            buttonCheckPermissions.Click += ButtonCheckPermissions_Click;
 
             if (isDeviceRegistered)
             {
@@ -202,11 +213,25 @@ namespace Home.Service.Android
 
                 RefreshServiceStatus();
             }
+            else
+                RefreshServiceStatus();
 
             // Initialize serviceCheckingTimer
             serviceCheckingTimer = new System.Timers.Timer() { Interval = TimeSpan.FromSeconds(10).TotalMilliseconds };
             serviceCheckingTimer.Elapsed += ServiceCheckingTimer_Elapsed;
             serviceCheckingTimer.Start();   
+        }
+
+        private void ButtonCheckPermissions_Click(object sender, EventArgs e)
+        {
+            CheckPermissions();
+            RefreshServiceStatus();
+        }
+
+        protected override void OnResume()
+        {
+            base.OnResume();
+            RefreshServiceStatus();
         }
 
         #region Menu
@@ -320,23 +345,49 @@ namespace Home.Service.Android
 
         private bool CheckPermissions(bool onlyCheck = false)
         {
-            // Storage for file access, Fine Location for WiFi SSID
+            // Storage for file access; Fine Location for WiFi SSID
+
+            // https://stackoverflow.com/a/69672683/6237448:
+            // TL;DR: BACKGROUND_LOCATION permission must be asked for separately since API 30
+            // User has to click multiple times on the button and grant all permissions in order to run the service.
+            // Android Permission System really sucks :(
+
             bool requestPermissions = false;
+            bool isStoragePermission = false;
+            string permission_ = string.Empty;
 
-            if (CheckSelfPermission(A.Manifest.Permission.WriteExternalStorage) == A.Content.PM.Permission.Denied)
-                requestPermissions = true;
+            int requestCode = 1000;
+            int index = 1;
+            foreach (var permission in permissions) 
+            {
+                if (CheckSelfPermission(permission) == A.Content.PM.Permission.Denied)
+                {
+                    permission_ = permission;   
+                    if (permission == A.Manifest.Permission.WriteExternalStorage || permission == A.Manifest.Permission.ReadExternalStorage)
+                        isStoragePermission = true;
 
-            if (CheckSelfPermission(A.Manifest.Permission.ReadExternalStorage) == A.Content.PM.Permission.Denied)
-                requestPermissions = true;
-
-            if ((CheckSelfPermission(A.Manifest.Permission.AccessFineLocation) == A.Content.PM.Permission.Denied) || (CheckSelfPermission(A.Manifest.Permission.AccessBackgroundLocation) == A.Content.PM.Permission.Denied))
-                requestPermissions = true;
+                    requestPermissions = true;
+                    requestCode += index;
+                    break;
+                }
+                index++;
+            }
 
             if (requestPermissions && !onlyCheck)
-                ActivityCompat.RequestPermissions(this, new string[] { A.Manifest.Permission.ReadExternalStorage, A.Manifest.Permission.WriteExternalStorage, A.Manifest.Permission.AccessFineLocation, A.Manifest.Permission.AccessBackgroundLocation }, 1000);
+            {
+                if (A.OS.Build.VERSION.SdkInt < BuildVersionCodes.R)
+                    ActivityCompat.RequestPermissions(this, permissions.ToArray(), requestCode);
+                else
+                {
+                    if (isStoragePermission)
+                        ActivityCompat.RequestPermissions(this, new string[] { A.Manifest.Permission.ReadExternalStorage, A.Manifest.Permission.WriteExternalStorage }, requestCode);
+                    else
+                        ActivityCompat.RequestPermissions(this, new string[] { permission_ }, requestCode);
+                }
+            }
 
             return (!requestPermissions);
-        }
+        }        
 
         private async Task ApplySettings(bool register)
         {
@@ -424,6 +475,11 @@ namespace Home.Service.Android
                 btnEditSettings.Visibility = A.Views.ViewStates.Visible;
             else
                 btnEditSettings.Visibility = A.Views.ViewStates.Gone;
+
+            if (CheckPermissions(true))
+                buttonCheckPermissions.Visibility = ViewStates.Gone;
+            else
+                buttonCheckPermissions.Visibility = ViewStates.Visible;
 
             SetGuiState(!isDeviceRegistered);
 

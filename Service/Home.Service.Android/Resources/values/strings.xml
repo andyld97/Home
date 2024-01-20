@@ -30,6 +30,7 @@
 	<string name="strSave">Save</string>
 	<string name="strAbout">About</string>
 	<string name="strAboutContent">Home.Service.Android {0}\n\nCopyright © 2021-2024 Code A Software</string>
+	<string name="strCheckPermissions">Check permissions (repeatable)</string>
 	<string-array name="strDeviceType">
 		<item>Smartphone</item>
 		<item>SmartTV</item>
