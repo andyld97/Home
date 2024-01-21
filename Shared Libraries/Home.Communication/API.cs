@@ -9,7 +9,9 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using static Home.Model.Device;
 
@@ -37,6 +39,7 @@ namespace Home.Communication
         public static readonly string CLEAR_HW_CHANGES = "clear_hw_changes";
         public static readonly string SEND_MESSAGE = "send_message";
         public static readonly string SEND_COMMAND = "send_command";
+        public static readonly string BROADCAST_SHUTDOWN = "broadcast_shutdown";
         public static readonly string STATUS = "status";
         public static readonly string DELETE = "delete";
         public static readonly string TEST = "test";
@@ -491,6 +494,32 @@ namespace Home.Communication
             {
                 // LOG
                 return AnswerExtensions.Fail<string>(ex.Message);
+            }
+        }
+
+        public async Task<Answer<bool>> BroadcastShutdownAsync(Client client, string code, string reason)
+        {
+            HttpStatusCode? statusCode = null;
+            try
+            {
+                string url = GenerateEpUrl(Endpoint.Communication, BROADCAST_SHUTDOWN);
+                var result = await httpClient.GetAsync($"{url}?code={UrlEncoder.Default.Encode(code)}&reason={UrlEncoder.Default.Encode(reason)}");
+                statusCode = result.StatusCode;
+                result.EnsureSuccessStatusCode();
+
+                return AnswerExtensions.Success(true);
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+                switch (statusCode)
+                {
+                    case HttpStatusCode.NotFound: message = "No devices found to shutdown!"; break;
+                    case HttpStatusCode.Unauthorized: message = "Wrong code used!"; break;
+                    case HttpStatusCode.Forbidden: message = "API config does not allow broadcast shutdown!"; break;
+                }
+
+                return AnswerExtensions.Fail<bool>(message);                
             }
         }
 

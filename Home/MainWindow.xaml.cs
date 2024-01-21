@@ -821,6 +821,11 @@ namespace Home
             await ShutdownOrRestartAsync(currentDevice, false, true);
         }
 
+        private void MenuButtonSendBrodcastshutdown_Click(object sender, RoutedEventArgs e)
+        {
+            new BroadcastShutdownDialog().ShowDialog();
+        }
+
         #endregion
 
         private void TabExpander_Collapsed(object sender, RoutedEventArgs e)
@@ -1136,6 +1141,7 @@ namespace Home
         }
 
         #endregion
+
     }
 
     #region Converter

@@ -231,25 +231,10 @@ namespace Home.API.Services
                     _logger.LogWarning($"Skipping executing of shutdown command: {device.Name} is not active!");
                     return;
                 }
-                else if (type.IsLinux() || type == Home.Model.Device.OSType.Unix || type == Home.Model.Device.OSType.Other)
+                else
                 {
-                    string executable = "shutdown";
-                    string parameter = "-h now";
-
-                    if (restart)
-                    {
-                        executable = "reboot";
-                        parameter = string.Empty;
-                    }
-
-                    await ExecuteCommandAsync(_context, deviceId, executable, parameter);
-                }
-                else if (type.IsWindows(true))
-                {
-                    string executable = "shutdown.exe";
-                    string parameter = $"/{(restart ? "r" : "s")} /f /t 00";
-
-                    await ExecuteCommandAsync(_context, deviceId, executable, parameter);
+                    var command = Home.API.Helper.GeneralHelper.GetShutdownCommand(restart, type);
+                    await ExecuteCommandAsync(_context, deviceId, command.Item1, command.Item2);
                 }
             }
             catch (Exception ex)

@@ -39,6 +39,7 @@
     <None Remove="resources\icons\managment\add.png" />
     <None Remove="resources\icons\managment\remove.png" />
     <None Remove="resources\icons\menu\about.png" />
+    <None Remove="resources\icons\menu\broadcast_shutdown.png" />
     <None Remove="resources\icons\menu\clear_changes.png" />
     <None Remove="resources\icons\menu\command.png" />
     <None Remove="resources\icons\menu\delete.png" />
@@ -96,6 +97,7 @@
     <Resource Include="resources\icons\graphics.png" />
     <Resource Include="resources\icons\managment\add.png" />
     <Resource Include="resources\icons\managment\remove.png" />
+    <Resource Include="resources\icons\menu\broadcast_shutdown.png" />
     <Resource Include="resources\icons\menu\change.png" />
     <Resource Include="resources\icons\explorer\html_file.png" />
     <Resource Include="resources\icons\explorer\image_file.png" />
