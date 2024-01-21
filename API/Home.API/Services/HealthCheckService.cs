@@ -329,14 +329,16 @@ namespace Home.API.Services
                 List<DeviceWarning> toRemove = new List<DeviceWarning>();
                 foreach (var warning in storageWarnings)
                 {
+                    string reason = string.Empty;
+                    bool remove = false;
+
                     var associatedDisk = device.DeviceDiskDrive.FirstOrDefault(d => d.Guid == warning.Item1.StorageID);
                     if (associatedDisk == null)
-                        continue;
-
-                    bool remove = false;
+                        remove = true;
+                
                     try
                     {
-                        if (warning.Item1.CanBeRemoved(ModelConverter.ConvertDisk(associatedDisk), Program.GlobalConfig.StorageWarningPercentage))
+                        if (!remove && warning.Item1.CanBeRemoved(ModelConverter.ConvertDisk(associatedDisk), Program.GlobalConfig.StorageWarningPercentage))
                             remove = true;
                     }
                     catch (ArgumentException)
@@ -348,9 +350,15 @@ namespace Home.API.Services
 
                     if (remove)
                     {
+                        string message = string.Empty;
+                        if (associatedDisk != null)
+                            message = $"[Storage Warning]: Removed for device \"{device.Name}\" DISK \"{associatedDisk.DriveName}\"";
+                        else
+                            message = $"[Storage Warning]: Removed for device \"{device.Name}\", DISK was removed!";
+
                         // Add log entry
-                        toRemove.Add(warning.p);                                               
-                        var logEntry = ModelConverter.CreateLogEntry(device, $"[Storage Warning]: Removed for device \"{device.Name}\" DISK \"{associatedDisk.DriveName}\"", LogEntry.LogLevel.Information, true);
+                        toRemove.Add(warning.p);
+                        var logEntry = ModelConverter.CreateLogEntry(device, message, LogEntry.LogLevel.Information, true);
                         await context.DeviceLog.AddAsync(logEntry);
                         _clientService.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
                     }
