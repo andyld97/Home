@@ -269,17 +269,16 @@ namespace Home.API.Services
         private async Task UpdateDeviceUsageAsync(home.Models.Device currentDevice, Home.Model.Device requestedDevice)
         {
             // USAGE
-            // CPU & DISK
             if (currentDevice.DeviceUsage == null)
                 currentDevice.DeviceUsage = new home.Models.DeviceUsage();
 
+            // CPU & DISK
             currentDevice.DeviceUsage.Cpu = AddUsage(currentDevice.DeviceUsage.Cpu, currentDevice.Environment.Cpuusage);
             currentDevice.DeviceUsage.Disk = AddUsage(currentDevice.DeviceUsage.Disk, currentDevice.Environment.DiskUsage);
 
             // RAM
-            var ram = currentDevice.Environment.FreeRam?.Replace(",", ".").Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
-            if (ram != null && double.TryParse(ram, System.Globalization.CultureInfo.InvariantCulture, out double res))
-                currentDevice.DeviceUsage.Ram = AddUsage(currentDevice.DeviceUsage.Ram, res);
+            if (currentDevice.Environment.TotalRam != null && currentDevice.Environment.AvailableRam != null)
+                currentDevice.DeviceUsage.Ram = AddUsage(currentDevice.DeviceUsage.Ram, Math.Max(currentDevice.Environment.TotalRam.Value - currentDevice.Environment.AvailableRam.Value, 0));
 
             // Battery (if any) and also check for battery warning
             if (currentDevice.Environment.Battery != null)

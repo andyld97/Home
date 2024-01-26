@@ -29,8 +29,6 @@ public partial class DeviceEnvironment
 
     public double? TotalRam { get; set; }
 
-    public string FreeRam { get; set; }
-
     public double? AvailableRam { get; set; }
 
     public double? DiskUsage { get; set; }

@@ -231,10 +231,6 @@ public partial class HomeContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .UseCollation("Latin1_General_CI_AS");
-            entity.Property(e => e.FreeRam)
-                .UseCollation("Latin1_General_CI_AS")
-                .HasColumnType("text")
-                .HasColumnName("FreeRAM");
             entity.Property(e => e.Is64BitOs).HasColumnName("Is64BitOS");
             entity.Property(e => e.MachineName)
                 .IsRequired()
