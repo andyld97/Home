@@ -58,7 +58,6 @@ namespace Home.Communication
             { 
                 string url = GenerateEpUrl(Endpoint.Communication, LOGIN);
                 var result = await httpClient.PostAsync(url, new StringContent(JsonConvert.SerializeObject(client), System.Text.Encoding.UTF8, "application/json"));
-
                 var content = await result.Content.ReadAsStringAsync();
                 if (!string.IsNullOrEmpty(content))
                 {

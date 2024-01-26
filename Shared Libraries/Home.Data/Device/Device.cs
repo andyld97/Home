@@ -621,7 +621,7 @@ namespace Home.Model
             Environment.Description = other.Environment.Description;
             Environment.DiskUsage = other.Environment.DiskUsage;
             Environment.DomainName = other.Environment.DomainName;
-            Environment.FreeRAM = other.Environment.FreeRAM;
+            Environment.AvailableRAM = other.Environment.AvailableRAM;
 #pragma warning disable CS0612 // Typ oder Element ist veraltet
             Environment.Graphics = other.Environment.Graphics;
 #pragma warning restore CS0612 // Typ oder Element ist veraltet
@@ -735,7 +735,7 @@ namespace Home.Model
         private string motherboard;
         private string graphics;
         private double totalRAM;
-        private string freeRAM;
+        private double availableRAM = 0;
         
         private string machineName;
         private string userName;
@@ -939,19 +939,46 @@ namespace Home.Model
             }
         }
 
+        [JsonProperty("available_ram")]
+#if !LEGACY
+        [System.Text.Json.Serialization.JsonPropertyName("available_ram")]
+#endif
+        public double AvailableRAM
+        {
+            get => availableRAM;
+            set
+            {
+                if (value != availableRAM)
+                {
+                    availableRAM = value;
+                    OnPropertyChanged(nameof(availableRAM));
+                }
+            }
+        }
+
         [JsonProperty("free_ram")]
 #if !LEGACY
         [System.Text.Json.Serialization.JsonPropertyName("free_ram")]
 #endif
+        [Obsolete("Use AvailableRAM instead!")]
         public string FreeRAM
         {
-            get => freeRAM;
+            get => AvailableRAM.ToString();
             set
             {
-                if (value != freeRAM)
+                if (!string.IsNullOrEmpty(value))
                 {
-                    freeRAM = value;
-                    OnPropertyChanged(nameof(FreeRAM));
+                    // Example: 4.21 GB used (53 %)
+                    var index = value.IndexOf("GB");
+                    try
+                    {
+                        if (index != -1 && double.TryParse(value.Substring(0, index), out double parsed))
+                            AvailableRAM = Math.Max(TotalRAM - parsed, 0);
+                    }
+                    catch
+                    {
+                        // ignore
+                    }
                 }
             }
         }
@@ -1097,7 +1124,7 @@ namespace Home.Model
             if (cpuName.Contains(Environment.NewLine))
                 cpuName = cpuName.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
 
-            return $"OS: {OSName}{rn}OS-VER: {OSVersion}{rn}CPU: {cpuName}{rn}CPU-COUNT: {CPUCount}{rn}Motherboard: {Motherboard}{rn}Graphics: {graphics}{rn}RAM: {TotalRAM} GB{rn}FREE: {FreeRAM}{rn}Running-Time: {XmlRunningTime}";
+            return $"OS: {OSName}{rn}OS-VER: {OSVersion}{rn}CPU: {cpuName}{rn}CPU-COUNT: {CPUCount}{rn}Motherboard: {Motherboard}{rn}Graphics: {graphics}{rn}RAM: {TotalRAM} GB{rn}AVAIL: {AvailableRAM}GB{rn}Running-Time: {XmlRunningTime}";
         }
 
         public void OnPropertyChanged(string propertyName) // Cannot use [CallerMemberName] due to compatibility issues

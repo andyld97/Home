@@ -257,7 +257,7 @@ namespace Home.Service.Windows
             currentDevice.Environment.OSVersion = Environment.OSVersion.ToString();
             currentDevice.Environment.CPUCount = Environment.ProcessorCount;
             currentDevice.Environment.TotalRAM = Native.DetermineTotalRAM();
-            currentDevice.Environment.FreeRAM = Performance.DetermineFreeRAM();
+            currentDevice.Environment.AvailableRAM = Performance.DetermineAvailableRAM();
             currentDevice.Environment.CPUUsage = Performance.GetCPUUsage();
             currentDevice.Environment.DiskUsage = Performance.GetDiskUsage();
             currentDevice.Environment.Is64BitOS = Environment.Is64BitOperatingSystem;

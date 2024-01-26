@@ -100,7 +100,7 @@ namespace Home.Service.Android.Helper
 
         public static void ReadAndAssignMemoryInfo(Device device)
         {
-            string result = ExecuteProcess(new[] { "/system/bin/cat", "/proc/meminfo" }); 
+            string result = ExecuteProcess(new[] { "/system/bin/cat", "/proc/meminfo" });
 
             if (string.IsNullOrEmpty(result))
                 return;
@@ -113,38 +113,11 @@ namespace Home.Service.Android.Helper
                 // MemAvailable:    1121215 kB
                 // ...
                 string memTotal = entries[0].ToLower().Replace("memtotal:", string.Empty).Trim();
-                string memFree = entries[2].ToLower().Replace("memavailable:", string.Empty).Trim();
+                string memAvail = entries[2].ToLower().Replace("memavailable:", string.Empty).Trim();
 
-                double freeRam = ParseMemoryEntryInGB(memFree);
-                device.Environment.TotalRAM = ParseMemoryEntryInGB(memTotal);
-
-                double totalGB = device.Environment.TotalRAM;
-                double usedGB = totalGB - freeRam;
-                int percentage = (int)System.Math.Round((usedGB / totalGB) * 100);
-
-                device.Environment.FreeRAM = $"{System.Math.Round(usedGB, 2)} GB used ({percentage} %)";
+                device.Environment.TotalRAM = GeneralHelper.ParseMemoryEntryInGB(memTotal);
+                device.Environment.AvailableRAM = GeneralHelper.ParseMemoryEntryInGB(memAvail);
             }
-        }
-
-        /// <summary>
-        /// Takes e.g. 324234 Kb and converts it to GB
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static double ParseMemoryEntryInGB(string value)
-        {
-            string[] entries = value.Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-
-            if (entries.Length == 2)
-            {
-                long lValue = long.Parse(entries[0]);
-                string unitValue = entries[1].Trim().ToLower();
-                
-                var res = ByteUnit.Parse($"{lValue}{unitValue}");
-                return System.Math.Round(res.To(Unit.GB).Length, 2);
-            }
-
-            return -1;
         }
 
         /// <summary>

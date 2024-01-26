@@ -31,6 +31,8 @@ public partial class DeviceEnvironment
 
     public string FreeRam { get; set; }
 
+    public double? AvailableRam { get; set; }
+
     public double? DiskUsage { get; set; }
 
     public bool Is64BitOs { get; set; }

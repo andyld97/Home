@@ -57,7 +57,7 @@ namespace Home.API.Helper
             updateDevice.Environment.DiskUsage = device.Environment.DiskUsage;
             updateDevice.Environment.DomainName = device.Environment.DomainName;
             updateDevice.Environment.MachineName = device.Environment.MachineName;
-            updateDevice.Environment.FreeRam = device.Environment.FreeRAM;
+            updateDevice.Environment.AvailableRam = device.Environment.AvailableRAM;
             updateDevice.Environment.TotalRam = device.Environment.TotalRAM;
             updateDevice.Environment.Is64BitOs = device.Environment.Is64BitOS;
             updateDevice.Environment.Motherboard = device.Environment.Motherboard;
@@ -232,7 +232,7 @@ namespace Home.API.Helper
                     Description = device.Environment.Description,
                     DiskUsage = device.Environment.DiskUsage.Value,
                     DomainName = device.Environment.DomainName,
-                    FreeRAM = device.Environment.FreeRam,
+                    AvailableRAM = device.Environment.AvailableRam ?? 0,
                     Is64BitOS = device.Environment.Is64BitOs,
                     Motherboard = device.Environment.Motherboard,
                     OSName = device.Environment.Osname,
@@ -282,7 +282,6 @@ namespace Home.API.Helper
                         Version = bios.Version  
                     };
                 }
-
 
                 // Usage
                 result.Usage = new Home.Model.DeviceUsage();
