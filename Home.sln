@@ -52,7 +52,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "screenshots", "screenshots", "{05E800C3-AC14-414E-9523-14ABC121588F}"
 	ProjectSection(SolutionItems) = preProject
 		Assets\screenshots\home.png = Assets\screenshots\home.png
-		Assets\screenshots\Home.Service.Android.jpg = Assets\screenshots\Home.Service.Android.jpg
 		Assets\screenshots\Home.Service.Android.png = Assets\screenshots\Home.Service.Android.png
 		Assets\screenshots\Home.Service.Windows.png = Assets\screenshots\Home.Service.Windows.png
 		Assets\screenshots\overview.png = Assets\screenshots\overview.png
