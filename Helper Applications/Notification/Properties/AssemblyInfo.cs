@@ -12,7 +12,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Notification")]
-[assembly: AssemblyCopyright("Copyright ©  2021-2022")]
+[assembly: AssemblyCopyright("Copyright ©  2021-2024")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

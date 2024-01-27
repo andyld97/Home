@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Home.Service.Windows"
-#define MyAppVersion "1.2.7"
+#define MyAppVersion "1.2.8"
 #define MyAppPublisher "Code A Software"
 #define MyAppURL "https://github.com/andyld97/Home"
 #define MyAppExeName "Home.Service.Windows.exe"
