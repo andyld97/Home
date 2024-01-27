@@ -13,6 +13,7 @@ using Exception = Java.Lang.Exception;
 using A = Android;
 using Android.Net.Wifi;
 using System.Net.Mail;
+using Units;
 
 namespace Home.Service.Android.Helper
 {
@@ -99,7 +100,7 @@ namespace Home.Service.Android.Helper
 
         public static void ReadAndAssignMemoryInfo(Device device)
         {
-            string result = ExecuteProcess(new[] { "/system/bin/cat", "/proc/meminfo" }); 
+            string result = ExecuteProcess(new[] { "/system/bin/cat", "/proc/meminfo" });
 
             if (string.IsNullOrEmpty(result))
                 return;
@@ -107,59 +108,16 @@ namespace Home.Service.Android.Helper
             string[] entries = result.Split(System.Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
             if (entries.Length >= 2)
             {
-                // MemTotal:        1530632 kB
-                // MemFree:         351580 kB
+                // MemTotal:       21530632 kB
+                // MemFree:          351580 kB
+                // MemAvailable:    1121215 kB
                 // ...
                 string memTotal = entries[0].ToLower().Replace("memtotal:", string.Empty).Trim();
-                string memFree = entries[1].ToLower().Replace("memfree:", string.Empty).Trim();
+                string memAvail = entries[2].ToLower().Replace("memavailable:", string.Empty).Trim();
 
-                double freeRam = ParseMemoryEntryInGB(memFree);
-                device.Environment.TotalRAM = ParseMemoryEntryInGB(memTotal);
-
-                double totalGB = device.Environment.TotalRAM;
-                double usedGB = totalGB - freeRam;
-                int percentage = (int)System.Math.Round((usedGB / totalGB) * 100);
-
-                device.Environment.FreeRAM = $"{System.Math.Round(usedGB, 2)} GB used ({percentage} %)";
+                device.Environment.TotalRAM = GeneralHelper.ParseMemoryEntryInGB(memTotal);
+                device.Environment.AvailableRAM = GeneralHelper.ParseMemoryEntryInGB(memAvail);
             }
-        }
-
-        /// <summary>
-        /// Takes e.g. 324234 Kb and converts it to GB
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static double ParseMemoryEntryInGB(string value)
-        {
-            // Supported units: b, kb, mb, gb, tb
-            string[] entries = value.Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-
-            if (entries.Length == 2)
-            {
-                long lValue = long.Parse(entries[0]);
-
-                int unit = 0;
-                string unitValue = entries[1].Trim().ToLower();
-                if (unitValue == "b")
-                    unit = 1;
-                else if (unitValue == "kb")
-                    unit = 2;
-                else if (unitValue == "mb")
-                    unit = 3;
-                else if (unitValue == "gb")
-                    unit = 4;
-                else if (unitValue == "tb")
-                    unit = 5;
-
-                // Target unit is gb (4)
-                int diff = 4 - unit;
-                if (diff > 0)
-                    return System.Math.Round(lValue / System.Math.Pow(1024.0, diff), 2);
-                else
-                    return System.Math.Round(lValue * System.Math.Pow(1024.0, diff), 2);
-            }
-
-            return -1;
         }
 
         /// <summary>
@@ -256,10 +214,10 @@ namespace Home.Service.Android.Helper
 
             string ipV4 = ipAdresses.Where(i => i.Contains(".")).FirstOrDefault();
             if (!string.IsNullOrEmpty(ipV4))
-                return ipV4;
+                return ipV4?.Replace("/24", string.Empty);
 
             if (ipAdresses.Count > 0)
-                return ipAdresses.FirstOrDefault();
+                return ipAdresses.FirstOrDefault()?.Replace("/24", string.Empty);
 
             return string.Empty;
         }
@@ -298,7 +256,7 @@ namespace Home.Service.Android.Helper
 
             var dd = new DiskDrive() { VolumeName = "/", DriveName = "/", DriveID = "android_default_storage", PhysicalName = "android_default_storage" };
             ReadDF(dd);
-            dd.MediaType = currentDevice.Name; // ensure that disks can be added which are having the same amount of space (same GUID)
+            dd.MediaType = $"{currentDevice.Name} {A.OS.Build.GetSerial()}"; // ensure that disks can be added which are having the same amount of space (same GUID) (name is not enough, since you can have device with duplicate names!)
             currentDevice.DiskDrives = new System.Collections.ObjectModel.ObservableCollection<DiskDrive>() { dd };
         }
     }

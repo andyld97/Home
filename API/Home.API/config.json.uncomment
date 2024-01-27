@@ -1,12 +1,21 @@
 ﻿{
   "host": "http://localhost:5250",
+  "connection_string": "Server=YOUR_PC\\SQLEXPRESS,1433;User Id=user;password=set_your_password;Database=home;Trusted_Connection=False;MultipleActiveResultSets=true",
   "use_webhook": false,
   "webhook_url": null,
   "health_check_timer_interval": "00:01:00",
   "remove_inactive_gui_clients": "00:10:00",
   "remove_inactive_clients": "00:03:00",
-  "aquire_new_screenshot": "12:00:00",
+  "acquire_new_screenshot": "12:00:00",
   "remove_old_screenshots": "1.00:00:00",
   "storage_warning_percentage": 10,
-  "battery_warning_percentage": 10
+  "battery_warning_percentage": 10,
+  "web_hook_date_time_format": "dd.MM.yyyy HH:mm",
+  "detect_screen_changes_as_a_device_change": false,
+  "wake_on_lan_port": 9,
+  "broadcast_shutdown_config": {
+    "is_active": false,
+    "security_code": null,
+    "entries": []
+  }
 }

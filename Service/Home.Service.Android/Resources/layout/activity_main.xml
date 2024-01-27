@@ -18,20 +18,11 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/buttonShowInfos"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAllCaps="false"
-                android:layout_margin="2dp"
-                android:text="@string/strShowDeviceSpecs" />
-
             <android.opengl.GLSurfaceView
                 android:id="@+id/surface"
                 android:layout_margin="5dp"
                 android:layout_width="20dp"
                 android:layout_height="20dp" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -41,12 +32,38 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/textCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:textSize="23dp"
                 android:layout_marginBottom="10dp"
                 android:text="@string/strRegisterDevice" />
+
+            <LinearLayout
+                android:gravity="bottom"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/textDeviceID"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="5dp"
+                    android:textSize="16sp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="ID:" />
+
+                <ImageButton
+                    android:id="@+id/buttonSetID"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:textAllCaps="false"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/edit" />
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -57,27 +74,53 @@
                 android:id="@+id/textHost"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="text"
+                android:maxLines="1"
                 android:text="http://192.168.10.10:83" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/strLocation" />
-
-            <EditText
-                android:id="@+id/textLocation"
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/strGroup" />
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-            <EditText
-                android:id="@+id/textGroup"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/strLocation" />
+
+                    <EditText
+                        android:id="@+id/textLocation"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/strGroup" />
+
+                    <EditText
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:id="@+id/textGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+            </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
@@ -87,19 +130,25 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:gravity="bottom"
+                android:orientation="horizontal">
 
                 <EditText
                     android:id="@+id/textWLANSSID"
-                    android:layout_width="match_parent"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"/>
 
-                <Button
+                <ImageButton
                     android:id="@+id/btnCurrent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:textAllCaps="false"
-                    android:text="@string/strCurrentWLAN" />
+                    android:scaleType="fitCenter"
+                    android:layout_marginBottom="2dp"
+                    android:src="@drawable/wlan"/>
             </LinearLayout>
 
             <TextView
@@ -120,7 +169,6 @@
                 android:textAllCaps="false"
                 android:layout_margin="2dp"
                 android:text="@string/strRegisterDevice" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -163,6 +211,27 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
+                    android:id="@+id/ledPermissionGranted"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/led_on" />
+
+                <TextView
+                    android:id="@+id/textPermissions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="@string/strPermissionsGranted"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
                     android:id="@+id/ledIsServiceRunning"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
@@ -175,16 +244,37 @@
                     android:layout_marginLeft="5dp"
                     android:textStyle="bold"
                     android:text="@string/strServiceActiveText" />
+            </LinearLayout>
 
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/buttonEditSettings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="false"
+                    android:layout_margin="5dp"
+                    android:text="@string/strEditSettings" />
+
+                <Button
+                    android:id="@+id/buttonToggleService"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="false"
+                    android:layout_margin="5dp"
+                    android:text="@string/strStartService" />
             </LinearLayout>
 
             <Button
-                android:id="@+id/buttonToggleService"
+                android:id="@+id/buttonCheckPermissions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAllCaps="false"
-                android:layout_margin="5dp"
-                android:text="@string/strStartService" />
+                android:layout_marginStart="5dp"
+                android:text="@string/strCheckPermissions" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

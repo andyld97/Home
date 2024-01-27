@@ -100,5 +100,32 @@ namespace Home.API
         /// </summary>
         [JsonPropertyName("wake_on_lan_port")]
         public int WakeOnLanPort { get; set; } = 9;
+
+        /// <summary>
+        /// Configuration if and how a broadcast shutdown will be executed
+        /// </summary>
+        [JsonPropertyName("broadcast_shutdown_config")]
+        public BroadcastShutdownConfig BroadcastShutdownConfig { get; set; } = new BroadcastShutdownConfig();
+    }
+
+    public class BroadcastShutdownConfig
+    {
+        /// <summary>
+        /// Can be used to enable/disable broadcast shutdown generally
+        /// </summary>
+        [JsonPropertyName("is_active")]
+        public bool IsActive { get; set; } = false;
+
+        /// <summary>
+        /// A secret code for admins to prevent other users to trigger a broadcast shutdown
+        /// </summary>
+        [JsonPropertyName("security_code")]
+        public string SecurityCode { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Can be a device name, a device id or a group name (e.g. Servers). If empty or null all devices will be shutdown!
+        /// </summary>
+        [JsonPropertyName("entries")]
+        public string[] Entries { get; set; }
     }
 }

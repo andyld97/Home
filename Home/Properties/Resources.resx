@@ -966,4 +966,26 @@ Download: https://developer.microsoft.com/en-us/microsoft-edge/webview2/</value>
   <data name="strTime" xml:space="preserve">
     <value>Time:</value>
   </data>
+  <data name="strSeconds" xml:space="preserve">
+    <value>Seconds</value>
+  </data>
+  <data name="strBroadcastShutdown" xml:space="preserve">
+    <value>Broadcast Shutdown</value>
+    <comment>@Invariant</comment>
+  </data>
+  <data name="strBroadcastShutdown_Code" xml:space="preserve">
+    <value>Code:</value>
+  </data>
+  <data name="strBroadcastShutdown_Reason" xml:space="preserve">
+    <value>Reason:</value>
+  </data>
+  <data name="strBroadcastShutdown_ValidPassword" xml:space="preserve">
+    <value>Please enter a valid password!</value>
+  </data>
+  <data name="strBroadcastShutdown_ValidReason" xml:space="preserve">
+    <value>Please enter a valid reason!</value>
+  </data>
+  <data name="strBroadcastShutdown_SuccessMessage" xml:space="preserve">
+    <value>Broadcast shutdown sent successfully!</value>
+  </data>
 </root>

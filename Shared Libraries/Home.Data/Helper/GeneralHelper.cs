@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
+using Units;
 using static Home.Model.Device;
 
 namespace Home.Data.Helper
@@ -114,6 +115,27 @@ namespace Home.Data.Helper
                 return (ulong)Math.Round(entryValue * Math.Pow(1024, factor));
 
             return 0;
+        }
+
+        /// <summary>
+        /// Takes e.g. 324234 Kb and converts it to GB
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static double ParseMemoryEntryInGB(string value)
+        {
+            string[] entries = value.Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
+            if (entries.Length == 2)
+            {
+                long lValue = long.Parse(entries[0]);
+                string unitValue = entries[1].Trim().ToLower();
+
+                var res = ByteUnit.Parse($"{lValue}{unitValue}");
+                return System.Math.Round(res.To(Unit.GB).Length, 2);
+            }
+
+            return -1;
         }
     }
 }

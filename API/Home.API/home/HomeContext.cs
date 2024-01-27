@@ -214,9 +214,10 @@ public partial class HomeContext : DbContext
             entity.HasKey(e => e.DeviceId);
 
             entity.Property(e => e.DeviceId).HasColumnName("DeviceID");
+            entity.Property(e => e.AvailableRam).HasColumnName("AvailableRAM");
             entity.Property(e => e.BatteryId).HasColumnName("BatteryID");
             entity.Property(e => e.Cpucount)
-                .HasDefaultValueSql("((1))")
+                .HasDefaultValue((short)1)
                 .HasColumnName("CPUCount");
             entity.Property(e => e.Cpuname)
                 .UseCollation("Latin1_General_CI_AS")
@@ -230,10 +231,6 @@ public partial class HomeContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .UseCollation("Latin1_General_CI_AS");
-            entity.Property(e => e.FreeRam)
-                .UseCollation("Latin1_General_CI_AS")
-                .HasColumnType("text")
-                .HasColumnName("FreeRAM");
             entity.Property(e => e.Is64BitOs).HasColumnName("Is64BitOS");
             entity.Property(e => e.MachineName)
                 .IsRequired()

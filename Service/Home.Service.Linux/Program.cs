@@ -72,6 +72,8 @@ namespace Home.Service.Linux
                 // Debug LSHW JSON FILES:
 #if DEBUG
                 var device = new Device();
+                string test = "16338464 kB\r\n15475208 kB\r\n0.00";
+                ReadMemoryAndCPULoad(test);
                 ParseHardwareInfo(System.IO.File.ReadAllText(@"Test\test8.json"), device);
                 int debug = 0;
 #endif
@@ -369,7 +371,7 @@ namespace Home.Service.Linux
             if (!result)
                 throw new Exception("No hardware info provided ... Exiting ...");
 
-            ReadMemoryAndCPULoad();
+            ReadMemoryAndCPULoad(Helper.ExecuteSystemCommand("sh", "hw.sh"));
             ReadDiskUsage();
         }
 
@@ -397,37 +399,22 @@ namespace Home.Service.Linux
             currentDevice.Environment.DiskUsage = Math.Round((usageSum / (double)amountOfDevices), 2);           
         }
 
-        public static void ReadMemoryAndCPULoad()
+        public static void ReadMemoryAndCPULoad(string ramInfo)
         {
-            // execute "free" proc
-            string ramInfo = Helper.ExecuteSystemCommand("sh", "hw.sh");
-
             if (!string.IsNullOrEmpty(ramInfo))
             {
                 string[] entries = ramInfo.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 
                 // entries[0] := TOTAL
-                // entries[1] := FREE
+                // entries[1] := AVAIL
+                // entries[2] := CPU
 
-                string kbTotal = entries[0].ToLower().Replace("kb", string.Empty).Trim();
-                string kbFree = entries[1].ToLower().Replace("kb", string.Empty).Trim();
+                string memTotal = entries[0].Trim();
+                string memAvail = entries[1].Trim();
                 string cpuUsage = entries[2].Trim();
 
-                if (ulong.TryParse(kbTotal, out ulong total) && ulong.TryParse(kbFree, out ulong free))
-                {
-                    currentDevice.Environment.TotalRAM = Math.Round((total / 1024.0 / 1024.0), 2);
-
-                    // 3GB used (75 %)
-                    double totalInBytes = total * 1024.0;
-                    double freeInBytes = free * 1024.0;
-
-                    double used = totalInBytes - freeInBytes;
-
-                    double percentage = Math.Round((used / totalInBytes) * 100);
-                    double usedInGB = Math.Round(used / Math.Pow(1024, 3));
-
-                    currentDevice.Environment.FreeRAM = $"{usedInGB} GB used ({percentage} %)";
-                }
+                currentDevice.Environment.TotalRAM = GeneralHelper.ParseMemoryEntryInGB(memTotal);
+                currentDevice.Environment.AvailableRAM = GeneralHelper.ParseMemoryEntryInGB(memAvail);
 
                 if (double.TryParse(cpuUsage, out double usage))
                     currentDevice.Environment.CPUUsage = usage;

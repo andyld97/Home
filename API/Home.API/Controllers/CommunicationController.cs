@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic;
 using System;
@@ -19,6 +20,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Device = Home.API.home.Models.Device;
+using static Home.Data.Helper.GeneralHelper;
 
 namespace Home.API.Controllers
 {
@@ -150,7 +152,7 @@ namespace Home.API.Controllers
 
                     await _context.SaveChangesAsync();
                     Program.LiveModeAssoc.Remove(cl);
-                }                
+                }
 
                 _logger.LogInformation($"Client {client} has just logged off!");
             }
@@ -246,7 +248,7 @@ namespace Home.API.Controllers
                 return BadRequest(AnswerExtensions.Fail("Invalid device data"));
 
             try
-            {                
+            {
                 string screenshotFilePath = System.IO.Path.Combine(Config.SCREENSHOTS_PATH, deviceId, $"{fileName}.png");
                 var data = await System.IO.File.ReadAllBytesAsync(screenshotFilePath);
 
@@ -275,8 +277,8 @@ namespace Home.API.Controllers
                 _logger.LogInformation($"Clearing log of {device.Name} ...");
 
                 device.DeviceLog.Clear();
-                await _context.SaveChangesAsync();                
-                
+                await _context.SaveChangesAsync();
+
                 _clientService.NotifyClientQueues(EventQueueItem.EventKind.LogCleared, deviceID);
                 return Ok(AnswerExtensions.Success("ok"));
             }
@@ -323,10 +325,10 @@ namespace Home.API.Controllers
 
             var device = await _context.GetDeviceByIdAsync(message.DeviceID);
             if (device == null)
-                return BadRequest(AnswerExtensions.Fail("Device doesn't exists!"));                
+                return BadRequest(AnswerExtensions.Fail("Device doesn't exists!"));
 
             device.DeviceMessage.Add(new home.Models.DeviceMessage() { Content = message.Content, Title = message.Title, Type = (short)message.Type, Timestamp = DateTime.Now, IsRecieved = false });
-            
+
             LogEntry.LogLevel level = LogEntry.LogLevel.Information;
             switch (message.Type)
             {
@@ -361,7 +363,7 @@ namespace Home.API.Controllers
 
             if (!device.Status)
                 return BadRequest(AnswerExtensions.Fail("Cannot set live status if device is offline!"));
-            
+
             if (device.Ostype == (int)Model.Device.OSType.Android)
                 return BadRequest(AnswerExtensions.Fail("Cannot set live status if device is an Android device!"));
 
@@ -384,7 +386,7 @@ namespace Home.API.Controllers
 
             device.IsLive = live;
             var logEntry = ModelConverter.CreateLogEntry(device, $"Device \"{device.Name}\" status changed to {(live ? "live" : "normal")} by client {client.Name}!", LogEntry.LogLevel.Information, false);
-                        
+
             await _context.DeviceLog.AddAsync(logEntry);
             await _context.SaveChangesAsync();
 
@@ -438,7 +440,7 @@ namespace Home.API.Controllers
                     _context.DeviceWarning.Remove(item);
 
                 if (device.DeviceUsage != null)
-                 _context.DeviceUsage.Remove(device.DeviceUsage);
+                    _context.DeviceUsage.Remove(device.DeviceUsage);
 
                 _context.Device.Remove(device);
                 _context.DeviceEnvironment.Remove(device.Environment);
@@ -522,9 +524,90 @@ namespace Home.API.Controllers
 
             await _context.SaveChangesAsync();
             _logger.LogInformation($"Sent command to {device.Name}: {command}");
-            _clientService.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);          
-            
+            _clientService.NotifyClientQueues(EventQueueItem.EventKind.LogEntriesRecieved, device);
+
             return Ok(AnswerExtensions.Success("ok"));
+        }
+
+        /// <summary>
+        /// Shuts down all devices specified via config
+        /// </summary>
+        /// <param name="code">The security code to prevent unauthorized user from calling this api method</param>
+        /// <param name="reason">The reason why this shutdown was executed; e.g. test or usv</param>
+        /// <returns>Ok on success</returns>
+        [HttpGet("broadcast_shutdown")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> SendBroadcastShutdownAsync(string code, string reason)
+        {
+            var now = DateTime.Now;
+
+            if (Program.GlobalConfig.BroadcastShutdownConfig == null || !Program.GlobalConfig.BroadcastShutdownConfig.IsActive)
+                return StatusCode(StatusCodes.Status403Forbidden);
+
+            if (Program.GlobalConfig.BroadcastShutdownConfig.SecurityCode != code)
+                return StatusCode(StatusCodes.Status401Unauthorized);
+
+            var entries = Program.GlobalConfig.BroadcastShutdownConfig.Entries;
+            var devices = await _context.GetAllDevicesAsync(false);            
+
+            if (entries != null && entries.Length > 0)
+            {
+                List<Device> tmp = new List<Device>();
+
+                foreach (var entry in entries) 
+                {
+                    var d = devices.FirstOrDefault(d => d.DeviceGroup == entry || d.Guid == entry || d.Name == entry);
+                    if (d != null)
+                        tmp.Add(d);                    
+                }
+
+                devices = tmp;
+            }
+
+            if (devices.Count > 0)
+            {
+                int count = 0;
+                _logger.LogInformation($"Executing Broadcast Shutdown due to {reason}!");
+
+                foreach (var device in devices)
+                {
+                    var type = ModelConverter.ConvertDevice(device).OS;
+                    if (type.IsAndroid())
+                    {
+                        _logger.LogWarning($"[Broadcast Shutdown]: Skiing executing of shutdown command {device.Name} is an Android device and doesn't supports this command!");
+                        continue;
+                    }
+                    else if (!device.Status)
+                    {
+                        _logger.LogWarning($"[Broadcast Shutdown]: Skipping executing of shutdown command: {device.Name} is not active!");
+                        continue;
+                    }
+                    else
+                    {
+                        string message = $"[Broadcast Shutdown]: Shutdown device {device.Name} ...";
+                        _logger.LogInformation(message);
+
+                        // Shutdown the device via command!
+                        var command = Home.API.Helper.GeneralHelper.GetShutdownCommand(false, type);
+                        device.DeviceCommand.Add(new DeviceCommand() { Executable = command.Item1, Parameter = command.Item2, Timestamp = now });
+                        device.DeviceLog.Add(new DeviceLog() { Blob = message, LogLevel = (int)LogLevel.Information, Timestamp = now });
+                        count++;
+                    }
+                }
+
+                if (count > 0)
+                {
+                    _logger.LogInformation($"[Broadcast Shutdown]: Shutdown {count} devices!");
+                    await _context.SaveChangesAsync();
+                }
+
+                return Ok();
+            }
+            else
+                return StatusCode(StatusCodes.Status404NotFound);
         }
 
         #region Update Device Scheduling Rules

@@ -232,6 +232,60 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Broadcast Shutdown ähnelt.
+        /// </summary>
+        public static string strBroadcastShutdown {
+            get {
+                return ResourceManager.GetString("strBroadcastShutdown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Code: ähnelt.
+        /// </summary>
+        public static string strBroadcastShutdown_Code {
+            get {
+                return ResourceManager.GetString("strBroadcastShutdown_Code", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Reason: ähnelt.
+        /// </summary>
+        public static string strBroadcastShutdown_Reason {
+            get {
+                return ResourceManager.GetString("strBroadcastShutdown_Reason", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Broadcast shutdown sent successfully! ähnelt.
+        /// </summary>
+        public static string strBroadcastShutdown_SuccessMessage {
+            get {
+                return ResourceManager.GetString("strBroadcastShutdown_SuccessMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Please enter a valid password! ähnelt.
+        /// </summary>
+        public static string strBroadcastShutdown_ValidPassword {
+            get {
+                return ResourceManager.GetString("strBroadcastShutdown_ValidPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Please enter a valid reason! ähnelt.
+        /// </summary>
+        public static string strBroadcastShutdown_ValidReason {
+            get {
+                return ResourceManager.GetString("strBroadcastShutdown_ValidReason", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Cancel ähnelt.
         /// </summary>
         public static string strCancel {
@@ -1920,6 +1974,15 @@ namespace Home.Properties {
         public static string strSearch {
             get {
                 return ResourceManager.GetString("strSearch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Seconds ähnelt.
+        /// </summary>
+        public static string strSeconds {
+            get {
+                return ResourceManager.GetString("strSeconds", resourceCulture);
             }
         }
         

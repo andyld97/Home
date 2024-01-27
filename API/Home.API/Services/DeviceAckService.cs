@@ -6,6 +6,7 @@ using Home.Data.Com;
 using Home.Data.Events;
 using Home.Model;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -111,14 +112,7 @@ namespace Home.API.Services
                     _clientService.NotifyClientQueues(EventQueueItem.EventKind.ACK, currentDevice);
                 }
                 else
-                {
-                    // Temporary fix if data is empty again :(
-                    requestedDevice.LastSeen = now;
-                    await _context.Device.AddAsync(ModelConverter.ConvertDevice(_context, _logger, requestedDevice));
-                    await _context.SaveChangesAsync();
-
-                    _clientService.NotifyClientQueues(EventQueueItem.EventKind.NewDeviceConnected, requestedDevice);
-                }
+                    return new DeviceAckServiceResult() { ErrorMessage = "Device is not yet registered!", StatusCode = StatusCodes.Status400BadRequest, Success = false }; ;
 
                 if (result)
                 {
@@ -275,17 +269,16 @@ namespace Home.API.Services
         private async Task UpdateDeviceUsageAsync(home.Models.Device currentDevice, Home.Model.Device requestedDevice)
         {
             // USAGE
-            // CPU & DISK
             if (currentDevice.DeviceUsage == null)
                 currentDevice.DeviceUsage = new home.Models.DeviceUsage();
 
+            // CPU & DISK
             currentDevice.DeviceUsage.Cpu = AddUsage(currentDevice.DeviceUsage.Cpu, currentDevice.Environment.Cpuusage);
             currentDevice.DeviceUsage.Disk = AddUsage(currentDevice.DeviceUsage.Disk, currentDevice.Environment.DiskUsage);
 
             // RAM
-            var ram = currentDevice.Environment.FreeRam.Replace(",", ".").Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
-            if (ram != null && double.TryParse(ram, System.Globalization.CultureInfo.InvariantCulture, out double res))
-                currentDevice.DeviceUsage.Ram = AddUsage(currentDevice.DeviceUsage.Ram, res);
+            if (currentDevice.Environment.TotalRam != null && currentDevice.Environment.AvailableRam != null)
+                currentDevice.DeviceUsage.Ram = AddUsage(currentDevice.DeviceUsage.Ram, Math.Max(currentDevice.Environment.TotalRam.Value - currentDevice.Environment.AvailableRam.Value, 0));
 
             // Battery (if any) and also check for battery warning
             if (currentDevice.Environment.Battery != null)
@@ -295,7 +288,7 @@ namespace Home.API.Services
             }
         }
 
-        private string AddUsage(string data, double? usage)
+        private static string AddUsage(string data, double? usage)
         {
             if (usage == null)
                 return data;

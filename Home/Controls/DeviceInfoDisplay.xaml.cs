@@ -56,6 +56,36 @@ namespace Home.Controls
     }
 
     #region Converter
+
+    public class TimeToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is TimeSpan ts)
+            {
+                string result = string.Empty;
+
+                if (ts.Days > 0)
+                    result += $"{ts.Days} {Properties.Resources.strDays} ";
+                if (ts.Hours > 0)
+                    result += $"{ts.Hours} {Properties.Resources.strHours} ";
+                if (ts.Minutes > 0)
+                    result += $"{ts.Minutes} {Properties.Resources.strMinutes} ";
+                if (ts.Seconds > 0)
+                    result += $"{ts.Seconds} {Properties.Resources.strSeconds} ";
+
+                return result;
+            }
+
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class ServiceVersionTextColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

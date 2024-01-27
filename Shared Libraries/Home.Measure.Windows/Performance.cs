@@ -10,8 +10,6 @@ namespace Home.Measure.Windows
      * 
      * https://stackoverflow.com/a/41841500/6237448
      * 
-     * 
-     * 
      *  
      PerformanceCounter("Processor", "% Processor Time", "_Total");
      PerformanceCounter("Processor", "% Privileged Time", "_Total");
@@ -36,7 +34,7 @@ namespace Home.Measure.Windows
      PerformanceCounter("System", "Context Switches/sec", null);
      PerformanceCounter("System", "System Calls/sec", null);
      PerformanceCounter("System", "Processor Queue Length", null);
- */
+    */
 
     /// <summary>
     /// Capsules all methods available by Performance Counter
@@ -90,18 +88,12 @@ namespace Home.Measure.Windows
             return 0;
         }
 
-        public static string DetermineFreeRAM()
+        public static double DetermineAvailableRAM()
         {
             if (ramCounter == null)
-                return string.Empty;
+                return default;
 
-            double freeGB = ramCounter.NextValue() / 1024.0;
-            double totalGB = Native.DetermineTotalRAM();
-            double usedGB = totalGB - freeGB;
-
-            int percentage = (int)Math.Round((usedGB / totalGB) * 100);
-
-            return $"{Math.Round(usedGB, 2)} GB used ({percentage} %)";
+            return Math.Round(ramCounter.NextValue() / 1024.0, 2);
         }
     }
 }
