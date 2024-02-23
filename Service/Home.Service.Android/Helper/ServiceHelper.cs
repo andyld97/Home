@@ -9,7 +9,8 @@ namespace Home.Service.Android.Helper
     {
         public static void StartAckService(Context context)
         {
-            var intent = new A.Content.Intent(context, typeof(AckService));
+            var intent = new A.Content.Intent(context, typeof(AckService));          
+
             if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
                 context.StartForegroundService(intent);
             else

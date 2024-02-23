@@ -17,7 +17,7 @@ namespace Home.Service.Android
     /// <summary>
     /// Taken from https://androidwave.com/foreground-service-android-example/
     /// </summary>
-    [Service(DirectBootAware = true, Enabled = true, Exported = true, Name = "Home.Service.Android.AckService")]
+    [Service(DirectBootAware = true, Enabled = true, Exported = true, Name = "Home.Service.Android.AckService", ForegroundServiceType = A.Content.PM.ForegroundService.TypeSpecialUse)]
     public class AckService : A.App.Service
     {
         public static readonly string CHANNEL_ID = "ForegroundAckServiceChannel";
@@ -95,7 +95,12 @@ namespace Home.Service.Android
                     .SetContentIntent(pendingIntent);
 
             var notification = notificationBuilder.Build();
-            StartForeground(1, notification);
+
+            // https://stackoverflow.com/a/77530440/6237448
+            if (A.OS.Build.VERSION.SdkInt > BuildVersionCodes.Tiramisu)
+                StartForeground(1, notification, A.Content.PM.ForegroundService.TypeSpecialUse);
+            else
+                StartForeground(1, notification);
 
             // Start timer
             serviceTimer = new System.Threading.Timer(async delegate (object state)

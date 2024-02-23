@@ -1,9 +1,6 @@
-﻿using Android.App;
-using Android.Content;
+﻿using Android.Content;
 using Android.Net;
 using Android.Net.Wifi;
-using System.Collections.Generic;
-using System.Linq;
 using A = Android;
 
 namespace Home.Service.Android.Helper

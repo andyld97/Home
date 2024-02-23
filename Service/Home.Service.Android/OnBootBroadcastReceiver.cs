@@ -1,5 +1,4 @@
 ﻿using Android;
-using Android.App;
 using Android.Content;
 using Home.Service.Android.Helper;
 

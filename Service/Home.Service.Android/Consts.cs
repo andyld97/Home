@@ -1,6 +1,7 @@
 ﻿namespace Home.Service.Android
 {
-    internal class Consts
+    public class Consts
     {
+
     }
 }
