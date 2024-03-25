@@ -249,7 +249,7 @@
   <data name="strFolder" xml:space="preserve">
     <value>Verzeichnis</value>
   </data>
-  <data name="strUnkown" xml:space="preserve">
+  <data name="strUnknown" xml:space="preserve">
     <value>Unbekannt</value>
   </data>
   <data name="strToggleTheme" xml:space="preserve">

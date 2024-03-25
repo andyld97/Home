@@ -13,7 +13,7 @@ namespace Home.Controls.Warnings
         public StorageWarningItem(StorageWarning sw)
         {
             InitializeComponent();
-            TextName.Text = sw.DiskName ?? Home.Properties.Resources.strUnkown;
+            TextName.Text = sw.DiskName ?? Home.Properties.Resources.strUnknown;
             TextSpace.Text = string.Format(Properties.Resources.strStorageWarning_Message, ByteUnit.FindUnit(sw.Value).ToString());
             TextDatum.Text = sw.WarningOccurred.ToString(Properties.Resources.strDateTimeFormat);
         }

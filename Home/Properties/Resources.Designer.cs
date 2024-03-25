@@ -2331,9 +2331,9 @@ namespace Home.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Unknown ähnelt.
         /// </summary>
-        public static string strUnkown {
+        public static string strUnknown {
             get {
-                return ResourceManager.GetString("strUnkown", resourceCulture);
+                return ResourceManager.GetString("strUnknown", resourceCulture);
             }
         }
         

@@ -17,6 +17,11 @@ namespace Home.Service.Windows
         [STAThread]
         public static void Main(string[] args)
         {
+#if DEBUG
+            Home.Measure.Windows.WMI.DetermineGraphicsCardNames();
+            int debug = 0x0b;
+#endif
+
             // Check if mutex is acquired
             if (!AppMutex.WaitOne(TimeSpan.FromSeconds(1), false))
                 Environment.Exit(-1);

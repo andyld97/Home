@@ -47,7 +47,7 @@ namespace Home.Controls
                 CmbGraphics.Visibility = Visibility.Collapsed;
                 string graphics = currentDevice.Environment.GraphicCards.FirstOrDefault();
                 if (string.IsNullOrEmpty(graphics))
-                    graphics = Home.Properties.Resources.strUnkown;
+                    graphics = Home.Properties.Resources.strUnknown;
                 TextGraphics.Text = graphics;
                 TextGraphics.ToolTip = graphics;
                 TextGraphics.Visibility = Visibility.Visible;

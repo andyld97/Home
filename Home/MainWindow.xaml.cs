@@ -1194,25 +1194,6 @@ namespace Home
         }
     }
 
-    public class ByteToGBConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is ulong bytes)
-            {
-                double result = bytes / (double)Math.Pow(1024, 3);
-                return Math.Round(result, 2);
-            }
-
-            return 0;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     public class SpaceToProgressBarConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -1258,12 +1239,28 @@ namespace Home
         }
     }
 
+    public class ByteToGBConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is ulong bytes)
+                return ByteUnit.FromB(bytes).To(Unit.GB).Length;
+
+            return 0;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class EmptyConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (string.IsNullOrEmpty(value?.ToString()))
-                return Properties.Resources.strUnkown;
+                return Properties.Resources.strUnknown;
             string[] newLine = new string[] { System.Environment.NewLine, "\r", "\n", "\r\n" };
 
             if (value is string str && newLine.Any(n => str.Contains(n)))
