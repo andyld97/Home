@@ -487,7 +487,7 @@ namespace Home.Model
                 case DeviceType.SingleBoardDevice: { image = "pi"; } break;
             }
 
-            if ((Status == DeviceStatus.Offline) && (Type == DeviceType.Notebook || Type == DeviceType.Desktop || Type == DeviceType.Smartphone || Type == DeviceType.Tablet))
+            if ((Status == DeviceStatus.Offline) && (Type == DeviceType.Notebook || Type == DeviceType.Desktop || Type == DeviceType.Smartphone || Type == DeviceType.Tablet || Type == DeviceType.MiniPC))
                 image = $"offline/{image}";
 
             return $"{image}.png";
