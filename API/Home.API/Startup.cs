@@ -9,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.PlatformAbstractions;
 using System;
 using System.Diagnostics.Tracing;
 using System.IO;
@@ -31,7 +30,7 @@ namespace Home.API
         {
             get
             {
-                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+                var basePath = AppContext.BaseDirectory;
                 var fileName = $"{typeof(Startup).GetTypeInfo().Assembly.GetName().Name}.xml";
                 return Path.Combine(basePath, fileName);
             }
