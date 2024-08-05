@@ -70,7 +70,9 @@ namespace Home.API.Controllers
 
             JObject result = new JObject();
             result["online"] = devicesOnline;
+            result["online_devices"] = new JArray(devices.Where(p => p.Status).Select(p => p.Name).ToList());
             result["offline"] = devicesOffline;
+            result["offline_devices"] = new JArray(devices.Where(p => !p.Status).Select(p => p.Name).ToList());
             result["warnings"] = warnings;
 
             return Content(result.ToString(Formatting.None), "application/json");

@@ -668,7 +668,7 @@ namespace Home.API.Controllers
         public IActionResult ConnectionTest()
         {
             // Also ensure that the db connection is working (test)
-            var dummy = _context.Device.Where(d => d.Name == "test").FirstOrDefault();  
+            var dummy = _context.Device.FirstOrDefault(d => d.Name == "test");  
             return Ok();
         }
     }
