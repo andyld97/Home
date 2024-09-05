@@ -14,6 +14,7 @@ using System.Diagnostics.Tracing;
 using System.IO;
 using System.Reflection;
 using System.Xml.Serialization;
+using WebhookAPI;
 
 namespace Home.API
 {
@@ -58,6 +59,7 @@ namespace Home.API
             services.AddTransient<IDeviceAckService, DeviceAckService>();
             services.AddTransient<IClientService, ClientService>();
             services.AddSingleton<IWOLService, WOLService>();
+            services.AddWebHookService(new WebhookOptions() { Url = Program.GlobalConfig.WebHookUrl, Application = "Home", Retry = true });
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(options => 

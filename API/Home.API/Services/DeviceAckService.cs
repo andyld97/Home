@@ -27,12 +27,14 @@ namespace Home.API.Services
         private readonly ILogger<DeviceAckService> _logger;
         private readonly IClientService _clientService;
         private readonly HomeContext _context;
+        private readonly WebhookAPI.Webhook _webhookService;
 
-        public DeviceAckService(ILogger<DeviceAckService> logger, IClientService clientService, HomeContext context)
+        public DeviceAckService(ILogger<DeviceAckService> logger, IClientService clientService, HomeContext context, WebhookAPI.Webhook webhookService)
         {
             _logger = logger;
             _clientService = clientService;
             _context = context;
+            _webhookService = webhookService;
         }
 
         public async Task<DeviceAckServiceResult> ProcessDeviceAckAsync(Home.Model.Device requestedDevice)
@@ -168,7 +170,7 @@ namespace Home.API.Services
 
                 // Send a notification once
                 if (send && Program.GlobalConfig.UseWebHook)
-                    await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, $"ACK-ERROR [{requestedDevice.Name}] OCCURED: {ex}", requestedDevice.Name);
+                    await _webhookService.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, $"ACK-ERROR [{requestedDevice.Name}] OCCURED: {ex}", requestedDevice.Name);
 
                 return DeviceAckServiceResult.BuildFailure(ex.ToString());
             }

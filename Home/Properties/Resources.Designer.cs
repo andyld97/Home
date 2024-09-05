@@ -241,6 +241,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Shut down all Devices ähnelt.
+        /// </summary>
+        public static string strBroadcastShutdown_AllDevices {
+            get {
+                return ResourceManager.GetString("strBroadcastShutdown_AllDevices", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Code: ähnelt.
         /// </summary>
         public static string strBroadcastShutdown_Code {

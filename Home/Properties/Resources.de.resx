@@ -915,4 +915,7 @@ Herunterladen: https://developer.microsoft.com/en-us/microsoft-edge/webview2/</v
   <data name="strBroadcastShutdown_SuccessMessage" xml:space="preserve">
     <value>Broadcast Shutdown erfolgreich gesendet!</value>
   </data>
+  <data name="strBroadcastShutdown_AllDevices" xml:space="preserve">
+    <value>Alle Geräte herunterfahren</value>
+  </data>
 </root>

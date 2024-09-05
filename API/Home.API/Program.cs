@@ -30,7 +30,6 @@ namespace Home.API
         public readonly static Dictionary<Client, List<string>> LiveModeAssoc = [];
         public readonly static Dictionary<string, bool> AckErrorSentAssoc = [];
         public static ConcurrentQueue<(Webhook.LogLevel level, string message, string scope)> WebHookLogging = new ConcurrentQueue<(Webhook.LogLevel level, string message, string scope)>();
-        public static Webhook WebHook;
 
         public static Config GlobalConfig;
         public static string DeviceSchedulingRulesPath;
@@ -58,7 +57,7 @@ namespace Home.API
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Failed to read logfile: {ex.Message}");
+                    _logger.LogError($"Failed to read config file: {ex.Message}");
                 }
             }
             else
@@ -66,9 +65,6 @@ namespace Home.API
                 _logger.LogInformation("No config file found ...");
                 GlobalConfig = new Config();
             }
-
-            // Initialize webhook
-            WebHook = new Webhook(GlobalConfig.WebHookUrl, "Home", true);
 
             CreateHostBuilder(args).Build().Run();
         }
