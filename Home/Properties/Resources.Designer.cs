@@ -1987,6 +1987,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Search ... ähnelt.
+        /// </summary>
+        public static string strSearch_Watermark {
+            get {
+                return ResourceManager.GetString("strSearch_Watermark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Seconds ähnelt.
         /// </summary>
         public static string strSeconds {

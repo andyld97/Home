@@ -40,6 +40,7 @@ using System.Windows.Interop;
 using System.ComponentModel;
 using Units;
 using static Home.Controls.DeviceItemGroup;
+using System.Diagnostics.Eventing.Reader;
 
 namespace Home
 {
@@ -264,20 +265,20 @@ namespace Home
                 webView2Environment = await CoreWebView2Environment.CreateAsync(userDataFolder: HomeConsts.WEBVIEW_CACHE_PATH);
                 await webViewReport.EnsureCoreWebView2Async(webView2Environment);
 
-                if (ClientData.Instance.IgnoreWebVie2Error)
+                if (ClientData.Instance.IgnoreWebView2Error)
                 {
-                    ClientData.Instance.IgnoreWebVie2Error = false;
+                    ClientData.Instance.IgnoreWebView2Error = false;
                     ClientData.Instance.Save();
                 }
             }
             catch (Exception)
             {
-                if (!ClientData.Instance.IgnoreWebVie2Error)
+                if (!ClientData.Instance.IgnoreWebView2Error)
                     MessageBox.Show(this, Properties.Resources.strWebView2RuntimeNotFound_Message, Home.Properties.Resources.strWebView2RuntimeNotFound_Title, MessageBoxButton.OK, MessageBoxImage.Error);
                 else
                     AddProtocolEntry(Properties.Resources.strWebView2RuntimeNotFound_Message, isWarning: true);
 
-                ClientData.Instance.IgnoreWebVie2Error = true;
+                ClientData.Instance.IgnoreWebView2Error = true;
                 ClientData.Instance.Save();
             }
         }
@@ -327,19 +328,58 @@ namespace Home
             updateTimer.Start();
         }
 
-        private void RefreshDeviceHolder()
+        private void RefreshDeviceHolder(bool refreshOverview = true)
         {
+            TextSearch.IsEnabled = false;
             ignoreSelectionChanged = true;
+            string search = TextSearch.Text;
             DeviceHolderAll.Items.Clear();
             DeviceHolderOffline.Items.Clear();
             DeviceHolderActive.Items.Clear();
-            deviceItems.Clear();
+            deviceItems.Clear();            
 
             foreach (var device in deviceList.OrderBy(p => p.Name).ThenBy(p => p.Status))
             {
                 DeviceItem di = new DeviceItem() { DataContext = device };
                 deviceItems.Add(di);
-                DeviceHolderAll.Items.Add(di);
+
+                // Search (only for all-device group)
+                if (string.IsNullOrEmpty(search))
+                    DeviceHolderAll.Items.Add(di);
+                else
+                {
+                    bool add = false;
+
+                    bool ContainsIgnoreCase(string source, string question) => !string.IsNullOrEmpty(source) && source.Contains(question, StringComparison.CurrentCultureIgnoreCase);
+
+                    bool CheckDeviceForPatterns(Device device, List<string> patterns)
+                    {
+                        return patterns.Any(pattern =>
+                            ContainsIgnoreCase(device.Name, pattern) ||
+                            ContainsIgnoreCase(device.DeviceGroup, pattern) ||
+                            ContainsIgnoreCase(device.Location, pattern) ||
+                            ContainsIgnoreCase(device.Environment.Description, pattern) ||
+                            ContainsIgnoreCase(device.Environment.Product, pattern) ||
+                            ContainsIgnoreCase(device.Environment.OSVersion, pattern) ||
+                            ContainsIgnoreCase(device.Environment.Motherboard, pattern) ||
+                            device.Environment.GraphicCards.Any(g => ContainsIgnoreCase(g, pattern)) ||
+                            ContainsIgnoreCase(device.Environment.UserName, pattern) ||
+                            ContainsIgnoreCase(device.Environment.DomainName, pattern)
+                        );
+                    }
+
+                    string[] searchTerms = search.Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
+                    if (searchTerms.Length > 1)
+                        add = searchTerms.All(term => CheckDeviceForPatterns(device, [term]));
+
+                    // If nothing found or it's only one word, try the whole search text
+                    if (!add)
+                        add = CheckDeviceForPatterns(device, [search]);
+
+                    if (add)
+                        DeviceHolderAll.Items.Add(di);
+                }
 
                 if (device.Status == DeviceStatus.Active)
                 {
@@ -378,7 +418,11 @@ namespace Home
             
             RefreshSelection();
             ignoreSelectionChanged = false;
-            RefreshOverview();
+
+            if (refreshOverview)
+                RefreshOverview();
+
+            TextSearch.IsEnabled = true;
         }
 
         private async Task ShutdownOrRestartAsync(Device d, bool shutdown, bool wol)
@@ -1137,6 +1181,40 @@ namespace Home
                 MenuButtonTotalOverviewShowPlot.IsEnabled = false;
                 MenuButtonTotalOverviewShowScreenshots.IsChecked =
                 MenuButtonTotalOverviewShowPlot.IsChecked = false;
+            }
+        }
+
+        #endregion
+
+        #region Search
+
+        private DispatcherTimer searchDelayTimer = null;
+        private DateTime lastType = DateTime.MinValue;
+
+        private void TextSearch_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            LabelSearch.Visibility = (string.IsNullOrEmpty(TextSearch.Text) ? Visibility.Visible : Visibility.Collapsed);
+
+            if (searchDelayTimer == null)
+            {
+                searchDelayTimer = new DispatcherTimer();
+                searchDelayTimer.Interval = TimeSpan.FromSeconds(0.5);
+                searchDelayTimer.Tick += SearchDelayTimer_Tick;
+            }
+
+            if (!searchDelayTimer.IsEnabled)
+                searchDelayTimer.Start();
+            lastType = DateTime.Now;
+        }
+
+        private void SearchDelayTimer_Tick(object sender, EventArgs e)
+        {
+            if (Math.Abs(lastType.Subtract(DateTime.Now).TotalSeconds) >= 1)
+            {
+                searchDelayTimer.Stop();
+
+                // Apply search (using refresh)         
+                RefreshDeviceHolder(false);
             }
         }
 

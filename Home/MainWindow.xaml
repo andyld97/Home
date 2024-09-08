@@ -202,7 +202,22 @@
                                             <TextBlock x:Name="TextAllDevices" Text="Alle Geräte" TextAlignment="Center" />
                                         </Border>
                                     </TabItem.Header>
-                                    <ListBox x:Name="DeviceHolderAll" ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" Background="{DynamicResource Fluent.Ribbon.Brushes.White}" BorderThickness="0" SelectionChanged="DeviceHolder_SelectionChanged" Grid.Row="1" />
+
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+
+                                        <Grid>
+                                            <TextBox x:Name="TextSearch" TextChanged="TextSearch_TextChanged" Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}" Background="{DynamicResource Fluent.Ribbon.Brushes.White}" Margin="2" Padding="3" />
+                                            <TextBlock x:Name="LabelSearch" Text="{x:Static res:Resources.strSearch_Watermark}" Margin="8,5,0,0" Foreground="Gray" />
+                                        </Grid>
+                                        
+                                        <ListBox x:Name="DeviceHolderAll" ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" Background="{DynamicResource Fluent.Ribbon.Brushes.White}" BorderThickness="0" SelectionChanged="DeviceHolder_SelectionChanged" Grid.Row="1" />
+                                        
+                                    </Grid>
+                                    
                                 </TabItem>
                             </TabControl>
                         </Border>
