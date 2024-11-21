@@ -133,8 +133,8 @@ namespace Home.Service.Android.Helper
                 Battery battery = new Battery();
                 battery.IsCharging = bm.IsCharging;
 
-                var status = (A.OS.BatteryHealth)bm.GetIntProperty((int)A.OS.BatteryProperty.Status);            
-                battery.BatteryLevelInPercent =  bm.GetIntProperty((int)A.OS.BatteryProperty.Capacity);
+                var status = (A.OS.BatteryHealth)bm.GetIntProperty((int)A.OS.BatteryProperty.Status);
+                battery.BatteryLevelInPercent = bm.GetIntProperty((int)A.OS.BatteryProperty.Capacity);
 
                 if (battery.BatteryLevelInPercent == int.MinValue || battery.BatteryLevelInPercent == int.MaxValue || status == BatteryHealth.Unknown)
                     return null;
@@ -147,13 +147,25 @@ namespace Home.Service.Android.Helper
             }            
         }
 
+        /// <summary>
+        /// https://stackoverflow.com/questions/7071281/get-android-device-name/66651458#66651458 (modified)
+        /// </summary>
+        /// <param name="cr"></param>
+        /// <returns></returns>
         public static string GetDeviceName(ContentResolver cr)
         {
-            string userDeviceName = Global.GetString(cr, "device_name");
-            if (userDeviceName == null)
-                userDeviceName = Secure.GetString(cr, "bluetooth_name");
+            try
+            {
+                string userDeviceName = Global.GetString(cr, "device_name");
+                if (userDeviceName == null)
+                    userDeviceName = Secure.GetString(cr, "bluetooth_name");
 
-            return userDeviceName;
+                return userDeviceName;
+            }
+            catch
+            {
+                return System.Environment.MachineName; // probably localhost
+            }
         }
 
         public static int GetNumberOfCores()
