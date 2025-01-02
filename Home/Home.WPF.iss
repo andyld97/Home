@@ -55,6 +55,7 @@ Source: "bin\Release\net9.0-windows\publish\zh-Hant\*"; DestDir: "{app}\zh-Hant"
 Source: "bin\Release\net9.0-windows\publish\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net9.0-windows\publish\ControlzEx.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net9.0-windows\publish\Fluent.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net9.0-windows\publish\sni.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net9.0-windows\publish\HarfBuzzSharp.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net9.0-windows\publish\Home.Communication.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net9.0-windows\publish\Home.Communication.pdb"; DestDir: "{app}"; Flags: ignoreversion
@@ -79,6 +80,8 @@ Source: "bin\Release\net9.0-windows\publish\SkiaSharp.dll"; DestDir: "{app}"; Fl
 Source: "bin\Release\net9.0-windows\publish\SkiaSharp.HarfBuzz.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net9.0-windows\publish\SkiaSharp.Views.Desktop.Common.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net9.0-windows\publish\SkiaSharp.Views.WPF.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net9.0-windows\publish\libHarfBuzzSharp.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net9.0-windows\publish\libSkiaSharp.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net9.0-windows\publish\System.ComponentModel.Composition.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net9.0-windows\publish\System.ComponentModel.Composition.Registration.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net9.0-windows\publish\System.Data.Odbc.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -103,6 +106,7 @@ Source: "bin\Release\net9.0-windows\publish\System.Speech.dll"; DestDir: "{app}"
 Source: "bin\Release\net9.0-windows\publish\System.Web.Services.Description.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net9.0-windows\publish\WebhookAPI.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin\Release\net9.0-windows\publish\ByteUnit.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net9.0-windows\publish\WebView2Loader.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags ignoreversion" on any shared system files
 
 [Icons]
