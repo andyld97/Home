@@ -9,12 +9,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.PlatformAbstractions;
 using System;
 using System.Diagnostics.Tracing;
 using System.IO;
 using System.Reflection;
 using System.Xml.Serialization;
+using WebhookAPI;
 
 namespace Home.API
 {
@@ -31,7 +31,7 @@ namespace Home.API
         {
             get
             {
-                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+                var basePath = AppContext.BaseDirectory;
                 var fileName = $"{typeof(Startup).GetTypeInfo().Assembly.GetName().Name}.xml";
                 return Path.Combine(basePath, fileName);
             }
@@ -40,7 +40,8 @@ namespace Home.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<HomeContext>(options => { 
+            services.AddDbContext<HomeContext>(options => 
+            { 
                 options.UseSqlServer(Program.GlobalConfig.ConnectionString, options =>
                 {
                     options.EnableRetryOnFailure();
@@ -58,6 +59,7 @@ namespace Home.API
             services.AddTransient<IDeviceAckService, DeviceAckService>();
             services.AddTransient<IClientService, ClientService>();
             services.AddSingleton<IWOLService, WOLService>();
+            services.AddWebHookService(new WebhookOptions() { Url = Program.GlobalConfig.WebHookUrl, Application = "Home", Retry = true });
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(options => 

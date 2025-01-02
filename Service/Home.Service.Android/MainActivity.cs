@@ -1,23 +1,13 @@
-﻿using Android.App;
 using Android.OS;
-using AndroidX.AppCompat.App;
-using Android.Widget;
 using Android.Opengl;
 using Home.Service.Android.Helper;
 using Home.Model;
 using A = Android;
-using System;
-using System.Collections.Generic;
-using Android.Content;
 using AlertDialog = AndroidX.AppCompat.App.AlertDialog;
-using Android.Runtime;
-using System.Runtime.InteropServices;
-using Android.Provider;
-using System.Threading.Tasks;
-using AndroidX.Core.App;
 using Android.Views;
 using Android.Text;
-using Java.Util.Zip;
+using AndroidX.AppCompat.App;
+using AndroidX.Core.App;
 
 namespace Home.Service.Android
 {
@@ -133,6 +123,9 @@ namespace Home.Service.Android
             else
                 currentDevice = new Device();
 
+            if (A.OS.Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu)
+                permissions.Add(A.Manifest.Permission.PostNotifications);
+
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
 
@@ -144,10 +137,10 @@ namespace Home.Service.Android
             textWLANSSID = FindViewById<EditText>(Resource.Id.textWLANSSID);
             textPermissions = FindViewById<TextView>(Resource.Id.textPermissions);
             textCaption = FindViewById<TextView>(Resource.Id.textCaption);
-            
+
             spinnerDeviceType = FindViewById<Spinner>(Resource.Id.spinnerDeviceType);
             btnEditSettings = FindViewById<Button>(Resource.Id.buttonEditSettings);
-            btnCurrent = FindViewById<ImageButton>(Resource.Id.btnCurrent);    
+            btnCurrent = FindViewById<ImageButton>(Resource.Id.btnCurrent);
 
             // LEDs
             ledIsServiceRunning = FindViewById<ImageView>(Resource.Id.ledIsServiceRunning);
@@ -230,7 +223,7 @@ namespace Home.Service.Android
             // Initialize serviceCheckingTimer
             serviceCheckingTimer = new System.Timers.Timer() { Interval = TimeSpan.FromSeconds(10).TotalMilliseconds };
             serviceCheckingTimer.Elapsed += ServiceCheckingTimer_Elapsed;
-            serviceCheckingTimer.Start();   
+            serviceCheckingTimer.Start();
         }
 
         private void ButtonSetID_Click(object sender, EventArgs e)
@@ -245,12 +238,12 @@ namespace Home.Service.Android
             var editTextDeviceID = view.FindViewById<EditText>(Resource.Id.editTextDeviceID);
             alertDiag.SetView(view);
             alertDiag.SetTitle(GetString(Resource.String.strSetIdTitle));
-            alertDiag.SetPositiveButton("OK", (senderAlert, args) => 
+            alertDiag.SetPositiveButton("OK", (senderAlert, args) =>
             {
                 string id = editTextDeviceID.Text;
 
                 if (!string.IsNullOrEmpty(id))
-                { 
+                {
                     currentDevice.ID = id;
                     textDeviceID.Text = currentDevice.ID.ToString();
                     currentSettings.IsDeviceRegistered = true;
@@ -259,7 +252,7 @@ namespace Home.Service.Android
                     RefreshServiceStatus();
                 }
 
-                diag.Dismiss();              
+                diag.Dismiss();
             });
             diag = alertDiag.Create();
             diag.Show();
@@ -406,11 +399,11 @@ namespace Home.Service.Android
 
             int requestCode = 1000;
             int index = 1;
-            foreach (var permission in permissions) 
+            foreach (var permission in permissions)
             {
                 if (CheckSelfPermission(permission) == A.Content.PM.Permission.Denied)
                 {
-                    permission_ = permission;   
+                    permission_ = permission;
                     if (permission == A.Manifest.Permission.WriteExternalStorage || permission == A.Manifest.Permission.ReadExternalStorage)
                         isStoragePermission = true;
 
@@ -435,7 +428,7 @@ namespace Home.Service.Android
             }
 
             return (!requestPermissions);
-        }        
+        }
 
         private async Task ApplySettings(bool register)
         {
@@ -480,7 +473,7 @@ namespace Home.Service.Android
                 catch
                 { }
 
-                success = true;                
+                success = true;
             }
             else
                 Toast.MakeText(this, $"{GetString(Resource.String.strDeviceRegisterFail)} ({registerResult.Item2})", ToastLength.Short).Show();
@@ -492,8 +485,8 @@ namespace Home.Service.Android
 
                 if (register)
                     Toast.MakeText(this, GetString(Resource.String.strDeviceRegisterSuccess), ToastLength.Short).Show();
-                else 
-                    Toast.MakeText(this, GetString(Resource.String.strSettingsApplied), ToastLength.Short).Show(); 
+                else
+                    Toast.MakeText(this, GetString(Resource.String.strSettingsApplied), ToastLength.Short).Show();
             }
         }
 
@@ -562,8 +555,8 @@ namespace Home.Service.Android
 
             if (!isServiceRunning)
                 ServiceHelper.StartAckService(this);
-            else 
-                ServiceHelper.StopAckService(this); 
+            else
+                ServiceHelper.StopAckService(this);
 
             RefreshServiceStatus();
         }

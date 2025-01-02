@@ -6,7 +6,6 @@ using Home.Data.Com;
 using Home.Data.Events;
 using Home.Model;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -27,12 +26,14 @@ namespace Home.API.Services
         private readonly ILogger<DeviceAckService> _logger;
         private readonly IClientService _clientService;
         private readonly HomeContext _context;
+        private readonly WebhookAPI.Webhook _webhookService;
 
-        public DeviceAckService(ILogger<DeviceAckService> logger, IClientService clientService, HomeContext context)
+        public DeviceAckService(ILogger<DeviceAckService> logger, IClientService clientService, HomeContext context, WebhookAPI.Webhook webhookService)
         {
             _logger = logger;
             _clientService = clientService;
             _context = context;
+            _webhookService = webhookService;
         }
 
         public async Task<DeviceAckServiceResult> ProcessDeviceAckAsync(Home.Model.Device requestedDevice)
@@ -168,7 +169,7 @@ namespace Home.API.Services
 
                 // Send a notification once
                 if (send && Program.GlobalConfig.UseWebHook)
-                    await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, $"ACK-ERROR [{requestedDevice.Name}] OCCURED: {ex}", requestedDevice.Name);
+                    await _webhookService.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, $"ACK-ERROR [{requestedDevice.Name}] OCCURED: {ex}", requestedDevice.Name);
 
                 return DeviceAckServiceResult.BuildFailure(ex.ToString());
             }
@@ -336,7 +337,7 @@ namespace Home.API.Services
 
             // Check if the device name changed
             if (currentDevice.Name != requestedDevice.Name)
-                await RegisterDeviceChangeAsync(prefix, $"Name changed from {f(currentDevice.Name)} to {f(requestedDevice.Name)}", DeviceChangeType.None, currentDevice, now);
+                await RegisterDeviceChangeAsync(prefix, $"name change from {f(currentDevice.Name)} to {f(requestedDevice.Name)}", DeviceChangeType.None, currentDevice, now);
 
             // Check if a newer client version is used
             if (currentDevice.ServiceClientVersion != requestedDevice.ServiceClientVersion && !string.IsNullOrEmpty(currentDevice.ServiceClientVersion))

@@ -496,13 +496,13 @@ namespace Home.Communication
             }
         }
 
-        public async Task<Answer<bool>> BroadcastShutdownAsync(Client client, string code, string reason)
+        public async Task<Answer<bool>> BroadcastShutdownAsync(Client client, string code, string reason, bool shutdown_all)
         {
             HttpStatusCode? statusCode = null;
             try
             {
                 string url = GenerateEpUrl(Endpoint.Communication, BROADCAST_SHUTDOWN);
-                var result = await httpClient.GetAsync($"{url}?code={UrlEncoder.Default.Encode(code)}&reason={UrlEncoder.Default.Encode(reason)}");
+                var result = await httpClient.GetAsync($"{url}?code={UrlEncoder.Default.Encode(code)}&reason={UrlEncoder.Default.Encode(reason)}&shutdown_all={shutdown_all}");
                 statusCode = result.StatusCode;
                 result.EnsureSuccessStatusCode();
 

@@ -26,7 +26,8 @@ namespace Home.Controls.Dialogs
                 return;
             }
 
-           var result =  await MainWindow.API.BroadcastShutdownAsync(MainWindow.CLIENT, PasswordCode.Password, TextReason.Text);
+            bool shutdownAllDevices = ChkShutdownAll.IsChecked.Value;
+            var result = await MainWindow.API.BroadcastShutdownAsync(MainWindow.CLIENT, PasswordCode.Password, TextReason.Text, shutdownAllDevices);
 
             if (result.Success)
             {

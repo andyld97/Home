@@ -249,7 +249,7 @@
   <data name="strFolder" xml:space="preserve">
     <value>Verzeichnis</value>
   </data>
-  <data name="strUnkown" xml:space="preserve">
+  <data name="strUnknown" xml:space="preserve">
     <value>Unbekannt</value>
   </data>
   <data name="strToggleTheme" xml:space="preserve">
@@ -914,5 +914,11 @@ Herunterladen: https://developer.microsoft.com/en-us/microsoft-edge/webview2/</v
   </data>
   <data name="strBroadcastShutdown_SuccessMessage" xml:space="preserve">
     <value>Broadcast Shutdown erfolgreich gesendet!</value>
+  </data>
+  <data name="strBroadcastShutdown_AllDevices" xml:space="preserve">
+    <value>Alle Geräte herunterfahren</value>
+  </data>
+  <data name="strSearch_Watermark" xml:space="preserve">
+    <value>Suchen ...</value>
   </data>
 </root>

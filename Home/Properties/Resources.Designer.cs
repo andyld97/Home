@@ -241,6 +241,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Shut down all Devices ähnelt.
+        /// </summary>
+        public static string strBroadcastShutdown_AllDevices {
+            get {
+                return ResourceManager.GetString("strBroadcastShutdown_AllDevices", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Code: ähnelt.
         /// </summary>
         public static string strBroadcastShutdown_Code {
@@ -1978,6 +1987,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Search ... ähnelt.
+        /// </summary>
+        public static string strSearch_Watermark {
+            get {
+                return ResourceManager.GetString("strSearch_Watermark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Seconds ähnelt.
         /// </summary>
         public static string strSeconds {
@@ -2331,9 +2349,9 @@ namespace Home.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Unknown ähnelt.
         /// </summary>
-        public static string strUnkown {
+        public static string strUnknown {
             get {
-                return ResourceManager.GetString("strUnkown", resourceCulture);
+                return ResourceManager.GetString("strUnknown", resourceCulture);
             }
         }
         

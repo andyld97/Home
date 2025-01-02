@@ -28,6 +28,11 @@
                 <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.Black}" />
                 <Setter Property="FontFamily" Value="Consolas" />
             </Style>
+            <Style TargetType="{x:Type CheckBox}">
+                <Setter Property="Margin" Value="2" />
+                <Setter Property="Padding" Value="3" />
+                <Setter Property="Foreground" Value="{DynamicResource Fluent.Ribbon.Brushes.Black}" />
+            </Style>
         </StackPanel.Resources>
 
         <TextBlock Text="{x:Static res:Resources.strBroadcastShutdown_Code}" />
@@ -35,6 +40,8 @@
 
         <TextBlock Text="{x:Static res:Resources.strBroadcastShutdown_Reason}" />
         <TextBox x:Name="TextReason" TextWrapping="Wrap" />
+
+        <CheckBox x:Name="ChkShutdownAll" Content="{x:Static res:Resources.strBroadcastShutdown_AllDevices}" Margin="0,5,0,0" />
 
         <Button x:Name="ButtonSend" Click="ButtonSend_Click" Margin="2,10,2,2" Height="30" Width="120" Content="{x:Static res:Resources.strOK}" HorizontalAlignment="Right" FontWeight="Bold" />
     </StackPanel>

@@ -31,12 +31,14 @@ namespace Home.API.Controllers
         private readonly ILogger<CommunicationController> _logger;
         private IClientService _clientService;
         private readonly HomeContext _context;
+        private readonly WebhookAPI.Webhook _webhookService;
 
-        public CommunicationController(ILogger<CommunicationController> logger, IClientService clientService, HomeContext context)
+        public CommunicationController(ILogger<CommunicationController> logger, IClientService clientService, HomeContext context, WebhookAPI.Webhook webhookService)
         {
             _logger = logger;
             _clientService = clientService;
             _context = context;
+            _webhookService = webhookService;
         }
 
         /// <summary>
@@ -487,11 +489,11 @@ namespace Home.API.Controllers
                 {
                     _clientService.NotifyClientQueues(EventQueueItem.EventKind.DeviceDeleted, device.Guid);
                     await _context.SaveChangesAsync();
-                    await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Success, $"Device \"{deviceName}\" removed! (Deleted {count} screenshots!)", device.Name);
+                    await _webhookService.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Success, $"Device \"{deviceName}\" removed! (Deleted {count} screenshots!)", device.Name);
                 }
                 catch (Exception ex)
                 {
-                    await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, $"Failed to remove \"{deviceName}\": {ex}", device.Name);
+                    await _webhookService.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, $"Failed to remove \"{deviceName}\": {ex}", device.Name);
                 }
                 return Ok(AnswerExtensions.Success("ok"));
             }
@@ -532,15 +534,16 @@ namespace Home.API.Controllers
         /// <summary>
         /// Shuts down all devices specified via config
         /// </summary>
-        /// <param name="code">The security code to prevent unauthorized user from calling this api method</param>
-        /// <param name="reason">The reason why this shutdown was executed; e.g. test or usv</param>
+        /// <param name="code">The security code to prevent unauthorized user from calling this API-method</param>
+        /// <param name="reason">The reason why this shutdown was executed; e.g. test or USV</param>
+        /// <param name="shutdown_all">True if all devices should be shutdown</param>
         /// <returns>Ok on success</returns>
         [HttpGet("broadcast_shutdown")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> SendBroadcastShutdownAsync(string code, string reason)
+        public async Task<IActionResult> SendBroadcastShutdownAsync(string code, string reason, bool shutdown_all)
         {
             var now = DateTime.Now;
 
@@ -551,20 +554,26 @@ namespace Home.API.Controllers
                 return StatusCode(StatusCodes.Status401Unauthorized);
 
             var entries = Program.GlobalConfig.BroadcastShutdownConfig.Entries;
-            var devices = await _context.GetAllDevicesAsync(false);            
+            var devices = await _context.GetAllDevicesAsync(false);
 
-            if (entries != null && entries.Length > 0)
+            // Send also to webhook
+            await _webhookService.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Info, "Broadcast shutdown executed due to the following reason: {}. Devices: {}", "BroadcastShutdown");
+
+            if (!shutdown_all)
             {
-                List<Device> tmp = new List<Device>();
-
-                foreach (var entry in entries) 
+                if (entries != null && entries.Length > 0)
                 {
-                    var d = devices.FirstOrDefault(d => d.DeviceGroup == entry || d.Guid == entry || d.Name == entry);
-                    if (d != null)
-                        tmp.Add(d);                    
-                }
+                    List<Device> tmp = new List<Device>();
 
-                devices = tmp;
+                    foreach (var entry in entries)
+                    {
+                        var d = devices.FirstOrDefault(d => d.DeviceGroup == entry || d.Guid == entry || d.Name == entry);
+                        if (d != null)
+                            tmp.Add(d);
+                    }
+
+                    devices = tmp;
+                }
             }
 
             if (devices.Count > 0)
@@ -577,7 +586,7 @@ namespace Home.API.Controllers
                     var type = ModelConverter.ConvertDevice(device).OS;
                     if (type.IsAndroid())
                     {
-                        _logger.LogWarning($"[Broadcast Shutdown]: Skiing executing of shutdown command {device.Name} is an Android device and doesn't supports this command!");
+                        _logger.LogWarning($"[Broadcast Shutdown]: Skipping executing of shutdown command {device.Name} is an Android device and doesn't supports this command!");
                         continue;
                     }
                     else if (!device.Status)
@@ -587,14 +596,31 @@ namespace Home.API.Controllers
                     }
                     else
                     {
-                        string message = $"[Broadcast Shutdown]: Shutdown device {device.Name} ...";
-                        _logger.LogInformation(message);
+                        void ShutdownDevice(Device device)
+                        {
+                            string message = $"[Broadcast Shutdown]: Shutdown device {device.Name} ...";
+                            _logger.LogInformation(message);
 
-                        // Shutdown the device via command!
-                        var command = Home.API.Helper.GeneralHelper.GetShutdownCommand(false, type);
-                        device.DeviceCommand.Add(new DeviceCommand() { Executable = command.Item1, Parameter = command.Item2, Timestamp = now });
-                        device.DeviceLog.Add(new DeviceLog() { Blob = message, LogLevel = (int)LogLevel.Information, Timestamp = now });
-                        count++;
+                            // Shutdown the device via command!
+                            var command = Home.API.Helper.GeneralHelper.GetShutdownCommand(false, type);
+                            device.DeviceCommand.Add(new DeviceCommand() { Executable = command.Item1, Parameter = command.Item2, Timestamp = now });
+                            device.DeviceLog.Add(new DeviceLog() { Blob = message, LogLevel = (int)LogLevel.Information, Timestamp = now });
+                        }
+
+                        if (device.Name == Environment.MachineName)
+                        {
+                            // Delay execution for this machine for one minute (to ensure that all devices have received the ack command before the current machine is down)
+                            await Task.Delay(TimeSpan.FromMinutes(1)).ContinueWith((p) =>
+                            {
+                                ShutdownDevice(device);
+                            }).ConfigureAwait(false);
+                            count++;
+                        }
+                        else
+                        {
+                            ShutdownDevice(device);
+                            count++;
+                        }
                     }
                 }
 
@@ -668,7 +694,7 @@ namespace Home.API.Controllers
         public IActionResult ConnectionTest()
         {
             // Also ensure that the db connection is working (test)
-            var dummy = _context.Device.Where(d => d.Name == "test").FirstOrDefault();  
+            var dummy = _context.Device.FirstOrDefault(d => d.Name == "test");  
             return Ok();
         }
     }

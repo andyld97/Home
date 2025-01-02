@@ -4,15 +4,9 @@ using Android.OS;
 using Home.Data.Helper;
 using Home.Model;
 using Java.Lang;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using static Android.Provider.Settings;
 using Exception = Java.Lang.Exception;
 using A = Android;
-using Android.Net.Wifi;
-using System.Net.Mail;
 using Units;
 
 namespace Home.Service.Android.Helper
@@ -48,7 +42,7 @@ namespace Home.Service.Android.Helper
 
         public static void ReadDF(DiskDrive drive, string volumeName = "/storage/emulated")
         {
-            string dfData = ExecuteProcess(new[] { "df", "-h" });
+            string dfData = ExecuteProcess(["df", "-h"]);
 
             if (string.IsNullOrEmpty(dfData) || drive == null)
                 return;
@@ -72,11 +66,17 @@ namespace Home.Service.Android.Helper
                 drive.TotalSpace = GeneralHelper.ParseDFEntry(lineValues[1]);
                 drive.FreeSpace = GeneralHelper.ParseDFEntry(lineValues[3]);
             }
+            else
+            {
+                var s = new StatFs("/data");
+                drive.TotalSpace = (ulong)(s.BlockCountLong * s.BlockSizeLong);
+                drive.FreeSpace = (ulong)(s.FreeBlocksLong * s.BlockSizeLong);
+            }
         }
 
         public static string ReadCPUName()
         {
-            string result = ExecuteProcess(new[] { "/system/bin/cat", "/proc/cpuinfo" });
+            string result = ExecuteProcess(["/system/bin/cat", "/proc/cpuinfo"]);
 
             if (string.IsNullOrEmpty(result))
                 return string.Empty;
@@ -100,7 +100,7 @@ namespace Home.Service.Android.Helper
 
         public static void ReadAndAssignMemoryInfo(Device device)
         {
-            string result = ExecuteProcess(new[] { "/system/bin/cat", "/proc/meminfo" });
+            string result = ExecuteProcess(["/system/bin/cat", "/proc/meminfo"]);
 
             if (string.IsNullOrEmpty(result))
                 return;
@@ -133,8 +133,8 @@ namespace Home.Service.Android.Helper
                 Battery battery = new Battery();
                 battery.IsCharging = bm.IsCharging;
 
-                var status = (A.OS.BatteryHealth)bm.GetIntProperty((int)A.OS.BatteryProperty.Status);            
-                battery.BatteryLevelInPercent =  bm.GetIntProperty((int)A.OS.BatteryProperty.Capacity);
+                var status = (A.OS.BatteryHealth)bm.GetIntProperty((int)A.OS.BatteryProperty.Status);
+                battery.BatteryLevelInPercent = bm.GetIntProperty((int)A.OS.BatteryProperty.Capacity);
 
                 if (battery.BatteryLevelInPercent == int.MinValue || battery.BatteryLevelInPercent == int.MaxValue || status == BatteryHealth.Unknown)
                     return null;
@@ -147,13 +147,25 @@ namespace Home.Service.Android.Helper
             }            
         }
 
+        /// <summary>
+        /// https://stackoverflow.com/questions/7071281/get-android-device-name/66651458#66651458 (modified)
+        /// </summary>
+        /// <param name="cr"></param>
+        /// <returns></returns>
         public static string GetDeviceName(ContentResolver cr)
         {
-            string userDeviceName = Global.GetString(cr, "device_name");
-            if (userDeviceName == null)
-                userDeviceName = Secure.GetString(cr, "bluetooth_name");
+            try
+            {
+                string userDeviceName = Global.GetString(cr, "device_name");
+                if (userDeviceName == null)
+                    userDeviceName = Secure.GetString(cr, "bluetooth_name");
 
-            return userDeviceName;
+                return userDeviceName;
+            }
+            catch
+            {
+                return System.Environment.MachineName; // probably localhost
+            }
         }
 
         public static int GetNumberOfCores()
@@ -170,7 +182,6 @@ namespace Home.Service.Android.Helper
             {
                 try
                 {
-
                     System.Collections.IList all = Java.Util.Collections.List(Java.Net.NetworkInterface.NetworkInterfaces);
                     foreach (Java.Net.NetworkInterface nif in all)
                     {
@@ -256,7 +267,8 @@ namespace Home.Service.Android.Helper
 
             var dd = new DiskDrive() { VolumeName = "/", DriveName = "/", DriveID = "android_default_storage", PhysicalName = "android_default_storage" };
             ReadDF(dd);
-            dd.MediaType = $"{currentDevice.Name} {A.OS.Build.GetSerial()}"; // ensure that disks can be added which are having the same amount of space (same GUID) (name is not enough, since you can have device with duplicate names!)
+
+            dd.MediaType = $"{currentDevice.Name} {currentDevice.ID}"; // ensure that disks can be added which are having the same amount of space (same GUID) (name is not enough, since you can have device with duplicate names!)
             currentDevice.DiskDrives = new System.Collections.ObjectModel.ObservableCollection<DiskDrive>() { dd };
         }
     }

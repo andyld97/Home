@@ -10,6 +10,12 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Company>Code A Software</Company>
+	<Version>1.0.2</Version>
+    <Copyright>Code A Software © 2021-2024</Copyright>
+    <Description>Provides data/model classes used in Home eco system</Description>
+    <Title>Home.Data</Title>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -127,7 +133,14 @@
   <ItemGroup>
     <PackageReference Include="ByteUnit" Version="1.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="System.Text.Json" Version="8.0.1" />
+    <PackageReference Include="System.Text.Json" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

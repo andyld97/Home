@@ -10,7 +10,6 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.PlatformAbstractions;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -26,12 +25,11 @@ namespace Home.API
     public class Program
     {
         private static ILogger _logger;
-        public readonly static List<EventQueue> EventQueues = new List<EventQueue>();
-        public readonly static List<Client> Clients = new List<Client>();
-        public readonly static Dictionary<Client, List<string>> LiveModeAssoc = new Dictionary<Client, List<string>>();
-        public readonly static Dictionary<string, bool> AckErrorSentAssoc = new Dictionary<string, bool>();
+        public readonly static List<EventQueue> EventQueues = [];
+        public readonly static List<Client> Clients = [];
+        public readonly static Dictionary<Client, List<string>> LiveModeAssoc = [];
+        public readonly static Dictionary<string, bool> AckErrorSentAssoc = [];
         public static ConcurrentQueue<(Webhook.LogLevel level, string message, string scope)> WebHookLogging = new ConcurrentQueue<(Webhook.LogLevel level, string message, string scope)>();
-        public static Webhook WebHook;
 
         public static Config GlobalConfig;
         public static string DeviceSchedulingRulesPath;
@@ -45,9 +43,9 @@ namespace Home.API
             _logger = loggerFactory.CreateLogger<Startup>();
 
             // Initialize config.json to GlobalConfig
-            // Read config json (if any) [https://stackoverflow.com/a/28700387/6237448]
-            string configPath = System.IO.Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "config.json");
-            DeviceSchedulingRulesPath = System.IO.Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "scheduling.json");
+            // Read config json (if any)
+            string configPath = System.IO.Path.Combine(AppContext.BaseDirectory, "config.json");
+            DeviceSchedulingRulesPath = System.IO.Path.Combine(AppContext.BaseDirectory, "scheduling.json");
 
             if (System.IO.File.Exists(configPath))
             {
@@ -59,7 +57,7 @@ namespace Home.API
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Failed to read logfile: {ex.Message}");
+                    _logger.LogError($"Failed to read config file: {ex.Message}");
                 }
             }
             else
@@ -67,9 +65,6 @@ namespace Home.API
                 _logger.LogInformation("No config file found ...");
                 GlobalConfig = new Config();
             }
-
-            // Initialize webhook
-            WebHook = new Webhook(GlobalConfig.WebHookUrl, "Home", true);
 
             CreateHostBuilder(args).Build().Run();
         }

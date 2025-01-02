@@ -261,7 +261,7 @@
     <value>Folder</value>
     <comment>*</comment>
   </data>
-  <data name="strUnkown" xml:space="preserve">
+  <data name="strUnknown" xml:space="preserve">
     <value>Unknown</value>
     <comment>*</comment>
   </data>
@@ -987,5 +987,11 @@ Download: https://developer.microsoft.com/en-us/microsoft-edge/webview2/</value>
   </data>
   <data name="strBroadcastShutdown_SuccessMessage" xml:space="preserve">
     <value>Broadcast shutdown sent successfully!</value>
+  </data>
+  <data name="strBroadcastShutdown_AllDevices" xml:space="preserve">
+    <value>Shut down all Devices</value>
+  </data>
+  <data name="strSearch_Watermark" xml:space="preserve">
+    <value>Search ...</value>
   </data>
 </root>

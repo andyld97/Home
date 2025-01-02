@@ -27,14 +27,16 @@ namespace Home.API.Services
         private readonly ILogger<HealthCheckService> _logger;
         private readonly IClientService _clientService;
         private IServiceScopeFactory serviceProvider;
+        private readonly WebhookAPI.Webhook _webhookService;
 
         private int hour = -1;
 
-        public HealthCheckService(ILogger<HealthCheckService> logger, IClientService clientService, IServiceScopeFactory serviceProvider)
+        public HealthCheckService(ILogger<HealthCheckService> logger, IClientService clientService, IServiceScopeFactory serviceProvider, Webhook webhookService)
         {
             _logger = logger;
             _clientService = clientService;
             this.serviceProvider = serviceProvider;
+            _webhookService = webhookService;
         }
 
         /// <summary>
@@ -127,7 +129,7 @@ namespace Home.API.Services
                         _logger.LogError(message);
 
                         if (ShouldNotifyWebHook())
-                            await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, message, "HealthCheckService");
+                            await _webhookService.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, message, "HealthCheckService");
                     }
                 }
  
@@ -137,7 +139,7 @@ namespace Home.API.Services
                     while (!Program.WebHookLogging.IsEmpty)
                     {
                         if (Program.WebHookLogging.TryDequeue(out (Webhook.LogLevel, string, string) value))
-                            await Program.WebHook.PostWebHookAsync(value.Item1, value.Item2, value.Item3);
+                            await _webhookService.PostWebHookAsync(value.Item1, value.Item2, value.Item3);
                         else
                             break;
                     }
@@ -155,7 +157,7 @@ namespace Home.API.Services
                         _logger.LogError(message);
 
                         if (ShouldNotifyWebHook())
-                            await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, message, "HealthCheckService");
+                            await _webhookService.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, message, "HealthCheckService");
                     }
                 }
             }
@@ -191,7 +193,7 @@ namespace Home.API.Services
                     _logger.LogError(message);
 
                     if (ShouldNotifyWebHook())
-                        await Program.WebHook.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, message, $"HCS/{device.Name}");
+                        await _webhookService.PostWebHookAsync(WebhookAPI.Webhook.LogLevel.Error, message, $"HCS/{device.Name}");
                 }
             }
         }
