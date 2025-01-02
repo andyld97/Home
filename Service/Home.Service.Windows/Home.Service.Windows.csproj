@@ -39,7 +39,7 @@
     <DefineConstants>$(DefineConstants)TRACE;</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>$(DefineConstants);TRACE</DefineConstants>
+    <DefineConstants>$(DefineConstants);TRACE;LEGACY</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Serialization">

@@ -204,7 +204,7 @@ namespace Home.Service.Legacy
                     // Show message
                     try
                     {
-                        System.Diagnostics.Process.Start("Notification.exe", Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(ackResult.Result.JsonData)));
+                        System.Diagnostics.Process.Start(@"Notification\Notification.exe", Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(ackResult.Result.JsonData)));
                     }
                     catch (Exception ex)
                     {
