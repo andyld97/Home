@@ -7,7 +7,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationId>Home.Service.Android</ApplicationId>
     <ApplicationVersion>1</ApplicationVersion>
-    <ApplicationDisplayVersion>1.1.5</ApplicationDisplayVersion>
+    <ApplicationDisplayVersion>1.1.6</ApplicationDisplayVersion>
   </PropertyGroup>
   <ItemGroup>	
 	  <PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.7.0.4" />	
