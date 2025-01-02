@@ -89,7 +89,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="9.0.0" />
-    <PackageReference Include="WebhookAPI" Version="1.0.6" />
+    <PackageReference Include="WebhookAPI" Version="1.0.7" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="resources\icons\bios.png" />

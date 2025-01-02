@@ -6,7 +6,6 @@ using Home.Data.Com;
 using Home.Data.Events;
 using Home.Model;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -338,7 +337,7 @@ namespace Home.API.Services
 
             // Check if the device name changed
             if (currentDevice.Name != requestedDevice.Name)
-                await RegisterDeviceChangeAsync(prefix, $"Name changed from {f(currentDevice.Name)} to {f(requestedDevice.Name)}", DeviceChangeType.None, currentDevice, now);
+                await RegisterDeviceChangeAsync(prefix, $"name change from {f(currentDevice.Name)} to {f(requestedDevice.Name)}", DeviceChangeType.None, currentDevice, now);
 
             // Check if a newer client version is used
             if (currentDevice.ServiceClientVersion != requestedDevice.ServiceClientVersion && !string.IsNullOrEmpty(currentDevice.ServiceClientVersion))
