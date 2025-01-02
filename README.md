@@ -22,14 +22,14 @@ To get this working you need to setup `Home.API` as a self-hosted API on your lo
 | Windows 9x            | :x:                | -                        | ``.NET Framework 2.0``              | -                                                             |
 | Windows XP            | :heavy_check_mark: | ``Home.Service.Legacy``  | ``.NET Framework 4.0``              | No remote file access!                                               |
 | Windows VISTA         | :heavy_check_mark: | ``Home.Service.Legacy``  | ``.NET Framework 4.0``              | No remote file access!                                        |
-| Windows 7 SP1         | :heavy_check_mark: | ``Home.Service.Windows``         | ``.NET Desktop/ASP.NET Core 8.0.x`` | #LEGACY Compiler-Flag (using WebClient instead of HttpClient) |
-| Windows 8, 8.1, 10/11 | :heavy_check_mark: | ``Home.Service.Windows``         | ``.NET Desktop/ASP.NET Core 8.0.x`` | -                                                             |
-| Rasbpian              | :heavy_check_mark: | ``Home.Service.Linux``   | ``.NET Desktop/ASP.NET Core 8.0.x`` | -                                                             |
-| Debian                | :heavy_check_mark: | ``Home.Service.Linux``   | ``.NET Desktop/ASP.NET Core 8.0.x`` | -                                                             |
-| Ubuntu (>= 18.04)     | :heavy_check_mark: | ``Home.Service.Linux``   | ``.NET Desktop/ASP.NET Core 8.0.x`` | -                                                             |
-| Android 7.0-12.0      | :heavy_check_mark: | ``Home.Service.Android`` | ``Xamarin.Android``                     | No remote file access and NoGL-Version available!                 |
+| Windows 7 SP1         | :heavy_check_mark: | ``Home.Service.Windows``         | ``.NET Desktop/ASP.NET Core 9.0.x`` | #LEGACY Compiler-Flag (using WebClient instead of HttpClient) |
+| Windows 8, 8.1, 10/11 | :heavy_check_mark: | ``Home.Service.Windows``         | ``.NET Desktop/ASP.NET Core 9.0.x`` | -                                                             |
+| Rasbpian              | :heavy_check_mark: | ``Home.Service.Linux``   | ``.NET Linux/ASP.NET Core 9.0.x`` | -                                                             |
+| Debian                | :heavy_check_mark: | ``Home.Service.Linux``   | ``.NET Linux/ASP.NET Core 9.0.x`` | -                                                             |
+| Ubuntu (>= 18.04)     | :heavy_check_mark: | ``Home.Service.Linux``   | ``.NET Linux/ASP.NET Core 9.0.x`` | -                                                             |
+| Android 7.0-15.0      | :heavy_check_mark: | ``Home.Service.Android`` | ``.NET for Android (9.0.0)``                     | No remote file access and NoGL-Version available!                 |
 
-``ASP.NET Core 8.0.x`` is required for remote file access API!
+``ASP.NET Core 9.0.x`` is required for remote file access API!
 
 ## Features
 | Feature                   | Windows (legacy)   | Windows            | Linux                  | Android            |
