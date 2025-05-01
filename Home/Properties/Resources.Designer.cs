@@ -160,7 +160,7 @@ namespace Home.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die AllDevices: {0} ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die All Devices: {0} ähnelt.
         /// </summary>
         public static string strAllDevicesTab {
             get {
@@ -700,6 +700,33 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Execute daily ähnelt.
+        /// </summary>
+        public static string strExecuteDaily {
+            get {
+                return ResourceManager.GetString("strExecuteDaily", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Only run on certain days of the week: ähnelt.
+        /// </summary>
+        public static string strExecuteDays {
+            get {
+                return ResourceManager.GetString("strExecuteDays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Execution Plan ähnelt.
+        /// </summary>
+        public static string strExecutionPlan {
+            get {
+                return ResourceManager.GetString("strExecutionPlan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Exit ähnelt.
         /// </summary>
         public static string strExit {
@@ -876,6 +903,15 @@ namespace Home.Properties {
         public static string strFolder {
             get {
                 return ResourceManager.GetString("strFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Friday ähnelt.
+        /// </summary>
+        public static string strFriday {
+            get {
+                return ResourceManager.GetString("strFriday", resourceCulture);
             }
         }
         
@@ -1114,6 +1150,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Duplicate rule ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedulingRulesDialog_DuplicateRule {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedulingRulesDialog_DuplicateRule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die &lt;Empty Rule&gt; ähnelt.
         /// </summary>
         public static string strManageDeviceSchedulingRulesDialog_EmptyRule {
@@ -1254,6 +1299,15 @@ namespace Home.Properties {
         public static string strMinutes {
             get {
                 return ResourceManager.GetString("strMinutes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Monday ähnelt.
+        /// </summary>
+        public static string strMonday {
+            get {
+                return ResourceManager.GetString("strMonday", resourceCulture);
             }
         }
         
@@ -1888,6 +1942,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Saturday ähnelt.
+        /// </summary>
+        public static string strSaturday {
+            get {
+                return ResourceManager.GetString("strSaturday", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Save report ähnelt.
         /// </summary>
         public static string strSaveReport {
@@ -2275,6 +2338,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Sunday ähnelt.
+        /// </summary>
+        public static string strSunday {
+            get {
+                return ResourceManager.GetString("strSunday", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die The device was deleted successfully! ähnelt.
         /// </summary>
         public static string strTheDeviceWasDeletedSuccessfully {
@@ -2289,6 +2361,15 @@ namespace Home.Properties {
         public static string strTheme {
             get {
                 return ResourceManager.GetString("strTheme", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Thursday ähnelt.
+        /// </summary>
+        public static string strThursday {
+            get {
+                return ResourceManager.GetString("strThursday", resourceCulture);
             }
         }
         
@@ -2343,6 +2424,15 @@ namespace Home.Properties {
         public static string strTools {
             get {
                 return ResourceManager.GetString("strTools", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Tuesday ähnelt.
+        /// </summary>
+        public static string strTuesday {
+            get {
+                return ResourceManager.GetString("strTuesday", resourceCulture);
             }
         }
         
@@ -2453,6 +2543,15 @@ namespace Home.Properties {
         public static string strWebView2RuntimeNotFound_Title {
             get {
                 return ResourceManager.GetString("strWebView2RuntimeNotFound_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Wednesday ähnelt.
+        /// </summary>
+        public static string strWednesday {
+            get {
+                return ResourceManager.GetString("strWednesday", resourceCulture);
             }
         }
         

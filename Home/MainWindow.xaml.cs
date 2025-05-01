@@ -885,7 +885,7 @@ namespace Home
             if (BottomTabControl == null)
                 return;
 
-            BottomTabControl.Height = 23;
+            BottomTabControl.Height = 30;
         }
 
         private async void MenuButtonDeleteDevice_Click(object sender, RoutedEventArgs e)

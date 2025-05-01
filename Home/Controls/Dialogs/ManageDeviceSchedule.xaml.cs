@@ -26,14 +26,20 @@ namespace Home.Controls.Dialogs
     public partial class ManageDeviceSchedule : Window
     {
         private bool isInitalized = false;
+        private bool ignoreCheckedChanged = false;
         private ObservableCollection<DeviceSchedulingRule> rules = new ObservableCollection<DeviceSchedulingRule>();
         private DeviceSchedulingRule currentRule = null;
+
+        private List<CheckBox> chkBootDays = [];
+        private List<CheckBox> chkShutdownDays = [];
 
         public ManageDeviceSchedule(IEnumerable<DeviceSchedulingRule> fetchedRules)
         {
             InitializeComponent();
 
             CmbDevices.ItemsSource = MainWindow.W_INSTANCE.GetDevices();
+            chkBootDays = [ChkBootMonday, ChkBootTuesday, ChkBootWednesday, ChkBootThursday, ChkBootFriday, ChkBootSaturday, ChkBootSunday];
+            chkShutdownDays = [ChkShutdownMonday, ChkShutdownTuesday, ChkShutdownWednesday, ChkShutdownThursday, ChkShutdownFriday, ChkShutdownSaturday, ChkShutdownSunday];
 
             if (fetchedRules != null)
                 rules = new ObservableCollection<DeviceSchedulingRule>(fetchedRules);
@@ -61,6 +67,7 @@ namespace Home.Controls.Dialogs
             if (ListRules.SelectedIndex == -1)
                 ListRules.SelectedIndex = 0;
 
+            ignoreCheckedChanged = true;
             var rule = rules[ListRules.SelectedIndex];
             currentRule = rule;
 
@@ -73,7 +80,29 @@ namespace Home.Controls.Dialogs
 
             GridRule.DataContext = rule;
 
-            var device = MainWindow.W_INSTANCE.GetDevices().Where(d => d.ID == rule.AssociatedDeviceId).FirstOrDefault();
+            // BootRule
+            if (currentRule.BootRule.ExecutionDaysPlan.Daily)
+                RadioBootDaily.IsChecked = true;
+            else
+                RadioBootDays.IsChecked = true;
+
+            PanelBootCheckBoxDays.DataContext = currentRule.BootRule.ExecutionDaysPlan;
+
+            for (int i = 0; i <  currentRule.BootRule.ExecutionDaysPlan.Days.Length; i++)
+                chkBootDays[i].IsChecked = currentRule.BootRule.ExecutionDaysPlan.Days[i];
+
+            // ShutdownRule
+            if (currentRule.ShutdownRule.ExecutionDaysPlan.Daily)
+                RadioShutdownDaily.IsChecked = true;
+            else
+                RadioShutdownDays.IsChecked = true;
+
+            PanelShutdownCheckBoxDays.DataContext = currentRule.ShutdownRule.ExecutionDaysPlan;
+
+            for (int i = 0; i < currentRule.ShutdownRule.ExecutionDaysPlan.Days.Length; i++)
+                chkShutdownDays[i].IsChecked = currentRule.ShutdownRule.ExecutionDaysPlan.Days[i];
+
+            var device = MainWindow.W_INSTANCE.GetDevices().FirstOrDefault(d => d.ID == rule.AssociatedDeviceId);
             if (device != null)
                 CmbDevices.SelectedItem = device;
             else
@@ -81,6 +110,7 @@ namespace Home.Controls.Dialogs
 
             // Always select the first "general"-tab
             MainTabControl.SelectedIndex = 0;
+            ignoreCheckedChanged = false;
         }
 
         private void ButtonAddRule_Click(object sender, RoutedEventArgs e)
@@ -107,6 +137,25 @@ namespace Home.Controls.Dialogs
                 if (rules.Count == 0)
                     GridRule.IsEnabled = false;
             }
+        }
+
+        private void ButtonDuplicateRule_Click(object sender, RoutedEventArgs e)
+        {
+            var rule = new DeviceSchedulingRule()
+            {
+                Name = currentRule.Name + " - Copy",
+                AssociatedDeviceId = currentRule.AssociatedDeviceId,
+                Description = currentRule.Description,
+                IsActive = currentRule.IsActive,
+                CustomMacAddress = currentRule.CustomMacAddress,
+                BootRule = (BootRule)currentRule.BootRule.Clone(),
+                ShutdownRule = (ShutdownRule)currentRule.ShutdownRule.Clone()
+            };
+
+            rules.Add(rule);
+
+            ListRules.SelectedIndex = rules.Count - 1;
+            currentRule = rule;
         }
 
         private async void ButtonApply_Click(object sender, RoutedEventArgs e)
@@ -152,6 +201,78 @@ namespace Home.Controls.Dialogs
                 e.Cancel = false;            
         }
         #endregion
+
+        #region WeekDays
+
+        #region Boot Rule Events
+
+        private void ChkBootWeekday_Checked(object sender, RoutedEventArgs e)
+        {
+            if (currentRule == null || ignoreCheckedChanged) return;
+
+            int index = chkBootDays.IndexOf((CheckBox)sender);
+            currentRule.BootRule.ExecutionDaysPlan.Days[index] = true;
+        }
+
+        private void ChkBootWeekday_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (currentRule == null || ignoreCheckedChanged) return;
+
+            int index = chkBootDays.IndexOf((CheckBox)sender);
+            currentRule.BootRule.ExecutionDaysPlan.Days[index] = false;
+        }
+
+        private void RadioBootDaily_Checked(object sender, RoutedEventArgs e)
+        {
+            if (currentRule == null || ignoreCheckedChanged) return;
+
+            currentRule.BootRule.ExecutionDaysPlan.Daily = true;    
+        }
+
+        private void RadioBootDays_Checked(object sender, RoutedEventArgs e)
+        {
+            if (currentRule == null || ignoreCheckedChanged) return;
+
+            currentRule.BootRule.ExecutionDaysPlan.Daily = false;
+        }
+
+        #endregion
+
+        #region Shutdown Rule Events
+
+        private void ChkShutdownWeek_Checked(object sender, RoutedEventArgs e)
+        {
+            if (currentRule == null || ignoreCheckedChanged) return;
+
+            int index = chkShutdownDays.IndexOf((CheckBox)sender);
+            currentRule.ShutdownRule.ExecutionDaysPlan.Days[index] = true;
+        }
+
+        private void ChkShutdownWeek_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (currentRule == null || ignoreCheckedChanged) return;
+
+            int index = chkShutdownDays.IndexOf((CheckBox)sender);
+            currentRule.ShutdownRule.ExecutionDaysPlan.Days[index] = false;
+        }
+
+        private void RadioShutdownDaily_Checked(object sender, RoutedEventArgs e)
+        {
+            if (currentRule == null || ignoreCheckedChanged) return;
+
+            currentRule.ShutdownRule.ExecutionDaysPlan.Daily = true;
+        }
+
+        private void RadioShutdownDays_Checked(object sender, RoutedEventArgs e)
+        {
+            if (currentRule == null || ignoreCheckedChanged) return;
+
+            currentRule.ShutdownRule.ExecutionDaysPlan.Daily = false;
+        }
+
+        #endregion
+
+        #endregion
     }
 
     #region Converter
@@ -166,6 +287,24 @@ namespace Home.Controls.Dialogs
                 return !true;
 
             return !false;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class TypeToPlanVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is BootRule.BootRuleType brType && brType == BootRule.BootRuleType.None)
+                return Visibility.Collapsed;
+            else if (value is ShutdownRule.ShutdownRuleType srType && srType == ShutdownRule.ShutdownRuleType.None)
+                return Visibility.Collapsed;
+
+            return Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -275,10 +414,27 @@ namespace Home.Controls.Dialogs
                 var device = devices.FirstOrDefault(d => d.ID == guid);
                 if (device == null)
                     return "<unkown>";
+
                 return device.Name; 
             }
 
             return "<unkown>";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class InverterdBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool b)
+                return !b;
+
+            return value;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

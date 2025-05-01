@@ -921,4 +921,37 @@ Herunterladen: https://developer.microsoft.com/en-us/microsoft-edge/webview2/</v
   <data name="strSearch_Watermark" xml:space="preserve">
     <value>Suchen ...</value>
   </data>
+  <data name="strMonday" xml:space="preserve">
+    <value>Montag</value>
+  </data>
+  <data name="strTuesday" xml:space="preserve">
+    <value>Dienstag</value>
+  </data>
+  <data name="strWednesday" xml:space="preserve">
+    <value>Mittwoch</value>
+  </data>
+  <data name="strThursday" xml:space="preserve">
+    <value>Donnerstag</value>
+  </data>
+  <data name="strFriday" xml:space="preserve">
+    <value>Freitag</value>
+  </data>
+  <data name="strSaturday" xml:space="preserve">
+    <value>Samstag</value>
+  </data>
+  <data name="strSunday" xml:space="preserve">
+    <value>Sonntag</value>
+  </data>
+  <data name="strExecutionPlan" xml:space="preserve">
+    <value>Ausführungsplan</value>
+  </data>
+  <data name="strExecuteDaily" xml:space="preserve">
+    <value>Täglich ausführen</value>
+  </data>
+  <data name="strExecuteDays" xml:space="preserve">
+    <value>Nur an bestimmten Wochentagen ausführen:</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_DuplicateRule" xml:space="preserve">
+    <value>Regel duplizieren</value>
+  </data>
 </root>

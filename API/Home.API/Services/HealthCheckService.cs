@@ -67,7 +67,7 @@ namespace Home.API.Services
         {           
             while (!stoppingToken.IsCancellationRequested)
             {
-                await Task.Delay((int)Program.GlobalConfig.HealthCheckTimerInterval.TotalMilliseconds);
+                await Task.Delay((int)Program.GlobalConfig.HealthCheckTimerInterval.TotalMilliseconds, stoppingToken);
 
                 DateTime now = DateTime.Now;
                 var scope =  serviceProvider.CreateAsyncScope();

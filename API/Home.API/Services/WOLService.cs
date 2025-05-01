@@ -63,7 +63,7 @@ namespace Home.API.Services
             if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 await SendWolRequestWindowsAsync(macAddress, port);
             else
-                await SendWolRequestNeutral(macAddress, port);
+                SendWolRequestNeutral(macAddress, port);
         }
 
         #endregion
@@ -74,7 +74,8 @@ namespace Home.API.Services
         /// Wakes up a PC over WOL (platform neutral method, works on both Windows and Linux) [Broadcast]
         /// </summary>
         /// <param name="macAddress">MacAddress in any standard HEX format (- or : as separator)</param>
-        private async Task SendWolRequestNeutral(string macAddress, int port)
+        /// <param name="port">Port to send</param>
+        private static void SendWolRequestNeutral(string macAddress, int port)
         {
             var package = BuildMagicPacket(macAddress);
             var client = new UdpClient();
@@ -134,6 +135,7 @@ namespace Home.API.Services
 
             // First 6 times 0xFF:
             IEnumerable<byte> header = Enumerable.Repeat((byte)0xFF, 6);
+
             // Then 16 times MacAddress:
             IEnumerable<byte> data = Enumerable.Repeat(macBytes, 16).SelectMany(m => m);
             return header.Concat(data).ToArray();

@@ -8,7 +8,7 @@
              xmlns:res="clr-namespace:Home.Properties"
              ToolTip="{Binding Environment.MachineName}"
              ContextMenu="{DynamicResource DeviceMenu}"
-             Width="280" Height="80" Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}">
+             Width="320" Height="80" Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}">
     <UserControl.Resources>
         <local:StateToColorConverter x:Key="stateToColorConverter" />
         <local:TypeToBorderConverter x:Key="typeToBorderConverter" />
@@ -20,7 +20,6 @@
     <UserControl.Opacity>
         <Binding Path="." Converter="{StaticResource deviceToOpacityConverter}" />
     </UserControl.Opacity>
-
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -66,8 +65,8 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
-                        <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <TextBlock Text="{Binding Environment.MachineName}" Foreground="{Binding ., Converter={StaticResource deviceWarningColorConverter}}" Width="170" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                        <StackPanel Margin="15,0,0,0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                            <TextBlock Text="{Binding Environment.MachineName}" Foreground="{Binding ., Converter={StaticResource deviceWarningColorConverter}}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
                             <TextBlock TextAlignment="Left" Foreground="White">
                                 <Run Text="{Binding IP}" />
                             </TextBlock>
