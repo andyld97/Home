@@ -3,20 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Data;
 using System.Globalization;
 using System.Linq;
-using System.Speech.Recognition.SrgsGrammar;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Home.Controls.Dialogs
 {
@@ -37,7 +29,7 @@ namespace Home.Controls.Dialogs
         {
             InitializeComponent();
 
-            CmbDevices.ItemsSource = MainWindow.W_INSTANCE.GetDevices();
+            RefreshDevices();
             chkBootDays = [ChkBootMonday, ChkBootTuesday, ChkBootWednesday, ChkBootThursday, ChkBootFriday, ChkBootSaturday, ChkBootSunday];
             chkShutdownDays = [ChkShutdownMonday, ChkShutdownTuesday, ChkShutdownWednesday, ChkShutdownThursday, ChkShutdownFriday, ChkShutdownSaturday, ChkShutdownSunday];
 
@@ -49,6 +41,16 @@ namespace Home.Controls.Dialogs
             
             if (rules.Count > 0)
                 ListRules.SelectedIndex = 0;
+        }
+
+        private void RefreshDevices()
+        {
+            var devices = MainWindow.W_INSTANCE.GetDevices();
+
+            if (!string.IsNullOrEmpty(SearchDeviceTextBox.Text))
+                devices = devices.Where(d => d.Name.Contains(SearchDeviceTextBox.Text, StringComparison.CurrentCultureIgnoreCase)).ToList();
+
+            CmbDevices.ItemsSource = devices;
         }
 
         private void ListRules_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -273,6 +275,11 @@ namespace Home.Controls.Dialogs
         #endregion
 
         #endregion
+
+        private void PlaceholderTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            RefreshDevices();
+        }
     }
 
     #region Converter

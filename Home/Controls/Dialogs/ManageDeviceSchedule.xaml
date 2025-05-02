@@ -128,14 +128,16 @@
                     <TabItem Header="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_General}" Width="120">
                         <StackPanel Margin="5,2,5,5">
                             <TextBlock>
-                            <Run Text="{x:Static res:Resources.strDevice}" /><Run Text=":" />
+                                <Run Text="{x:Static res:Resources.strDevice}" /><Run Text=":" />
                             </TextBlock>
+
+                            <controls:PlaceholderTextBox x:Name="SearchDeviceTextBox" TextChanged="PlaceholderTextBox_TextChanged" Placeholder="{x:Static res:Resources.strSearch_Watermark}" />
 
                             <ComboBox x:Name="CmbDevices" ItemTemplate="{DynamicResource DeviceComboBoxItemTemplate}" Height="64" SelectionChanged="CmbDevices_SelectionChanged" />
 
                             <TextBlock>
-                            <Run Text="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_CustomMacAddress}" />
-                            <Run Text="A1:B2:C3:D4:E5:F6" FontFamily="Consolas" /><Run Text="):" />
+                                <Run Text="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_CustomMacAddress}" />
+                                <Run Text="A1:B2:C3:D4:E5:F6" FontFamily="Consolas" /><Run Text="):" />
                             </TextBlock>
 
                             <TextBox Text="{Binding CustomMacAddress}" Padding="3" FontFamily="Consolas" MaxLength="17" />

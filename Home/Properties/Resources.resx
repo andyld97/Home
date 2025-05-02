@@ -1027,4 +1027,7 @@ Download: https://developer.microsoft.com/en-us/microsoft-edge/webview2/</value>
   <data name="strManageDeviceSchedulingRulesDialog_DuplicateRule" xml:space="preserve">
     <value>Duplicate rule</value>
   </data>
+  <data name="strNoSearchResults" xml:space="preserve">
+    <value>No search results found!</value>
+  </data>
 </root>

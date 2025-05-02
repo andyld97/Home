@@ -1192,9 +1192,7 @@ namespace Home
         private DateTime lastType = DateTime.MinValue;
 
         private void TextSearch_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            LabelSearch.Visibility = (string.IsNullOrEmpty(TextSearch.Text) ? Visibility.Visible : Visibility.Collapsed);
-
+        {         
             if (searchDelayTimer == null)
             {
                 searchDelayTimer = new DispatcherTimer();
@@ -1204,6 +1202,7 @@ namespace Home
 
             if (!searchDelayTimer.IsEnabled)
                 searchDelayTimer.Start();
+
             lastType = DateTime.Now;
         }
 
@@ -1215,6 +1214,8 @@ namespace Home
 
                 // Apply search (using refresh)         
                 RefreshDeviceHolder(false);
+
+                TextNoSearchResults.Visibility = DeviceHolderAll.Items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 

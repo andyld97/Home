@@ -1,0 +1,14 @@
+﻿<UserControl x:Class="Home.Controls.PlaceholderTextBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Home.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="800">
+    <Grid>
+        <TextBox x:Name="TextBox" Text="{Binding Text, Mode=TwoWay}" TextChanged="PlaceholderTextBox_TextChanged" Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}" Background="{DynamicResource Fluent.Ribbon.Brushes.White}" Padding="3" />
+        <TextBlock IsHitTestVisible="False"  Margin="8,5,0,0"  x:Name="LabelSearch" Text="{Binding Placeholder}" Foreground="Gray" />
+        <Image x:Name="ImgClear" MouseDown="ImgClear_MouseDown" Source="/resources/icons/menu/exit.png" HorizontalAlignment="Right" Width="16" Height="16" Margin="0,0,10,0" />
+    </Grid>
+</UserControl>

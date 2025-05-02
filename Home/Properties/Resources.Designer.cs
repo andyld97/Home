@@ -1366,6 +1366,15 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die No search results found! ähnelt.
+        /// </summary>
+        public static string strNoSearchResults {
+            get {
+                return ResourceManager.GetString("strNoSearchResults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die No warnings! ähnelt.
         /// </summary>
         public static string strNoWarnings {
