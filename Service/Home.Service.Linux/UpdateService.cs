@@ -48,7 +48,8 @@ namespace Home.Service.Linux
                         string version = clientLinuxVersion["version"].Value<string>();
                         decimal dotnetVersion = clientLinuxVersion["dotnetVersion"].Value<decimal>();
                         LastHash = clientLinuxVersion["fileHashSHA256"].Value<string>();
-
+                        
+                        // Prevent downloading new version on new major dotnet update!
                         if (System.Environment.Version.Major != (int)dotnetVersion)
                             return false;
 

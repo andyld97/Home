@@ -10,10 +10,11 @@
   "ip": null, /* Can be set if IP cannot be read */
   "mac": null, /* Can bet set if Mac cannot be read */
   "enable_screenshots": true,
+  "x_display_index": 0,
+  "display_server_protocol": "x11", /* x11 or wayland (scrot, grim) [Used for screenshots: RPI: wayland, Ubuntu-Desktop: x11 with https://askubuntu.com/a/1347651]*/
   "enable_remote_file_access": true,
   "check_for_updates_on_start": true, /* Updates will only work correctly, if Home.Service.Linux is running via systemd-service! */
   "use_automatic_update_timer": false,
   "automatic_timer_interval_hours": 24,
-  "x_display_index": 0,
   "dotnet_path": "/usr/bin/dotnet"
 }

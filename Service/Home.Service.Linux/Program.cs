@@ -46,6 +46,7 @@ namespace Home.Service.Linux
         private static bool enableRemoteFileAccess = true;
         private static int automaticTimerIntervalHours = 24;
         private static int xDisplayIndex = 0;
+        private static string displayServerProtocol = "x11";
 
         #endregion
 
@@ -110,6 +111,9 @@ namespace Home.Service.Linux
                 if (config.ContainsKey("mac"))
                     currentDevice.MacAddress = config["mac"].Value<string>();
 
+                if (config.ContainsKey("display_server_protocol"))
+                    displayServerProtocol = config["display_server_protocol"].Value<string>()?.ToLower();
+
                 if (checkForUpdatesOnStart && CheckAndExecuteUpdate())
                     return;
 
@@ -131,7 +135,7 @@ namespace Home.Service.Linux
             }
             catch (Exception e)
             {
-                Trace.WriteLine("Exiting: " + e.ToString());
+                Trace.WriteLine($"Exiting: {e}");
 
                 if (e.InnerException != null)
                     Trace.WriteLine($"Inner Exception: {e.InnerException.ToString()}");
@@ -260,7 +264,6 @@ namespace Home.Service.Linux
                         // Usage: sudo zenity --error --text="Test" --title="hi"
                         string shellScript = $"#!bin/bash\nDISPLAY=:0 zenity --{image} --title=\"{message.Title}\" --text=\"{message.Content}\"";
 
-
                         try
                         {
                             System.IO.File.Delete("zenity.sh");
@@ -290,14 +293,14 @@ namespace Home.Service.Linux
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine(ex.Message);
+                            Console.WriteLine($"Failed to execute command: {ex}");
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"Failed sending ack: {ex}");
             }
 
 
@@ -332,7 +335,41 @@ namespace Home.Service.Linux
             }
 
             // 2) Create a screenshot (but ensure that this command will be executed as the normal user)
-            Helper.ExecuteSystemCommand("sudo", $"-H -u {NormalUser} bash -c \"scrot {fileName}\"", false, new Dictionary<string, string>() { { "DISPLAY", $":{xDisplayIndex}" } });
+            string screenshotTool = string.Empty;
+            switch (displayServerProtocol)
+            {
+                case "x11":
+                    screenshotTool = "scrot";
+                    break;
+                case "wayland":
+                    screenshotTool = "grim";
+                    break;
+            }
+
+            if (string.IsNullOrEmpty(screenshotTool))
+            {
+                Console.WriteLine("Please make sure to the display_server_protocol to x11 or wayland!");
+                return;
+            }
+
+            var envParams = new Dictionary<string, string>();
+
+            if (screenshotTool == "grim")
+            {
+                string userId = Helper.ExecuteSystemCommand("sudo", $"id -u {NormalUser}").Trim(); // Important without trim it will return something like this: 1000#012 
+                if (string.IsNullOrEmpty(userId))
+                    userId = "1000"; // Fallback
+
+                envParams.Add("XDG_RUNTIME_DIR", $"/run/user/{userId}");
+            }
+            else
+                envParams.Add("DISPLAY", $":{xDisplayIndex}");
+
+            // EnvVars are required that XDG_RUNTIME_DIR is set correctly (seems not to work via process)
+            string envVars = string.Join(" ", envParams.Select(e => $"{e.Key}={e.Value}"));        
+
+            // OLD CODE: Helper.ExecuteSystemCommand("sudo", $"-H -u {NormalUser} bash -c \"{screenshotTool} {fileName}\"", false, envParams);
+            Helper.ExecuteSystemCommand("sudo", $"-u {NormalUser} bash -c \"env {envVars} {screenshotTool} {fileName}\"", false, null);
 
             // 2) Post screenshot to the API
             if (System.IO.File.Exists(fileName))
@@ -343,7 +380,7 @@ namespace Home.Service.Linux
                     var screenshotResult = await api.SendScreenshotAsync(new Screenshot() { DeviceID = currentDevice.ID, Data = Convert.ToBase64String(data) });
 
                     if (!screenshotResult.Success)
-                        Console.WriteLine(screenshotResult.ErrorMessage);
+                        Console.WriteLine($"Recieved error from API: {screenshotResult.ErrorMessage}");
                     else
                         Console.WriteLine("Successfully uploaded screenshot!");
                 }

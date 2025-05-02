@@ -133,7 +133,7 @@ namespace Home.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Active Devices: {0} ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Active: {0} ähnelt.
         /// </summary>
         public static string strActiveDevicesTab {
             get {
@@ -160,7 +160,7 @@ namespace Home.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die All Devices: {0} ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die All: {0} ähnelt.
         /// </summary>
         public static string strAllDevicesTab {
             get {
@@ -1375,7 +1375,7 @@ namespace Home.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Inactive Devices: {0} ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Inactive: {0} ähnelt.
         /// </summary>
         public static string strOfflineDevicesTab {
             get {

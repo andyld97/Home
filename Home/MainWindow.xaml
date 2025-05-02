@@ -147,7 +147,7 @@
                     </Grid.RowDefinitions>
 
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="360" />
+                        <ColumnDefinition Width="325" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
@@ -189,7 +189,7 @@
                                         </TabItem.Header>
 									    <ListBox x:Name="DeviceHolderActive" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" Background="{DynamicResource Fluent.Ribbon.Brushes.White}" BorderThickness="0" SelectionChanged="DeviceHolder_SelectionChanged" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" />
                                     </TabItem>
-                                    <TabItem x:Name="TabOfflineDevices" Width="130">
+                                    <TabItem x:Name="TabOfflineDevices" Width="100">
                                         <TabItem.Header>
                                             <Border Height="20">
                                                 <TextBlock x:Name="TextOfflineDevices" Text="Inaktive Geräte" TextAlignment="Center" />

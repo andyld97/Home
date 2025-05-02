@@ -208,13 +208,13 @@
     <value>Geräte Log</value>
   </data>
   <data name="strActiveDevicesTab" xml:space="preserve">
-    <value>Aktive Geräte: {0}</value>
+    <value>Aktive: {0}</value>
   </data>
   <data name="strAllDevicesTab" xml:space="preserve">
-    <value>Alle Geräte: {0}</value>
+    <value>Alle: {0}</value>
   </data>
   <data name="strOfflineDevicesTab" xml:space="preserve">
-    <value>Inaktive Geräte: {0}</value>
+    <value>Inaktive: {0}</value>
   </data>
   <data name="strShowScreenshots" xml:space="preserve">
     <value>Bilder anzeigen</value>

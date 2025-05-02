@@ -8,7 +8,7 @@
              xmlns:res="clr-namespace:Home.Properties"
              ToolTip="{Binding Environment.MachineName}"
              ContextMenu="{DynamicResource DeviceMenu}"
-             Width="320" Height="80" Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}">
+             Width="280" Height="80" Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}">
     <UserControl.Resources>
         <local:StateToColorConverter x:Key="stateToColorConverter" />
         <local:TypeToBorderConverter x:Key="typeToBorderConverter" />
@@ -66,7 +66,7 @@
                         </Grid.ColumnDefinitions>
 
                         <StackPanel Margin="15,0,0,0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                            <TextBlock Text="{Binding Environment.MachineName}" Foreground="{Binding ., Converter={StaticResource deviceWarningColorConverter}}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                            <TextBlock Text="{Binding Environment.MachineName}" Foreground="{Binding ., Converter={StaticResource deviceWarningColorConverter}}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="0,0,10,0" />
                             <TextBlock TextAlignment="Left" Foreground="White">
                                 <Run Text="{Binding IP}" />
                             </TextBlock>

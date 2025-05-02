@@ -9,7 +9,7 @@ namespace Home.Service.Linux
 {
     public static class Helper
     {
-        public static string ExecuteSystemCommand(string command, string parameter, bool async = false, Dictionary<string, string> env = null)
+        public static string ExecuteSystemCommand(string command, string parameter, bool async = false, Dictionary<string, string> env = null!)
         {
             StringBuilder sb = new StringBuilder();
             try
@@ -18,8 +18,11 @@ namespace Home.Service.Linux
 
                 if (env != null)
                 {
-                    foreach (var item in env.Keys)
-                        info.EnvironmentVariables.Add(item, env[item]);
+                    foreach (var key in env.Keys)
+                    {
+                        Console.WriteLine($"Adding env: {key}={env[key]}");
+                        info.EnvironmentVariables.Add(key, env[key]);
+                    }
                 }
 
                 Process proc = new Process { StartInfo =  info };
@@ -34,7 +37,7 @@ namespace Home.Service.Linux
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"Failed to execute system command: {ex}");
             }
 
             return sb.ToString();
@@ -52,15 +55,13 @@ namespace Home.Service.Linux
                     var obj = JToken.Parse(strInput);
                     return true;
                 }
-                catch (JsonReaderException jex)
+                catch (JsonReaderException)
                 {
                     // Exception in parsing json
-                    Console.WriteLine(jex.Message);
                     return false;
                 }
-                catch (Exception ex) // some other exception
-                {
-                    Console.WriteLine(ex.ToString());
+                catch (Exception)
+                { 
                     return false;
                 }
             }

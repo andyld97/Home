@@ -210,13 +210,13 @@
     <value>Device Log</value>
   </data>
   <data name="strAllDevicesTab" xml:space="preserve">
-    <value>All Devices: {0}</value>
+    <value>All: {0}</value>
   </data>
   <data name="strActiveDevicesTab" xml:space="preserve">
-    <value>Active Devices: {0}</value>
+    <value>Active: {0}</value>
   </data>
   <data name="strOfflineDevicesTab" xml:space="preserve">
-    <value>Inactive Devices: {0}</value>
+    <value>Inactive: {0}</value>
   </data>
   <data name="strShowScreenshots" xml:space="preserve">
     <value>Show screens</value>
