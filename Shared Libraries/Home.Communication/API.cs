@@ -313,7 +313,8 @@ namespace Home.Communication
             try
             {
                 string url = $"{GenerateEpUrl(Endpoint.Communication, RECEIVE_SCREENSHOT)}/{device.ID}/{fileName}";
-                var result = await httpClient.GetAsync(url); 
+                var result = await httpClient.GetAsync(url);
+                result.EnsureSuccessStatusCode();
 
                 var content = await result.Content.ReadAsByteArrayAsync();
                 return content;
