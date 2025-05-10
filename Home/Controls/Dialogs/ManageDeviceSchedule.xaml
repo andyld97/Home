@@ -91,6 +91,12 @@
 
             <Grid Grid.Row="2">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="ButtonMoveUp" Click="ButtonMoveUp_Click" ToolTip="{x:Static res:Resources.strManageDeviceSchedule_MoveUp}" Margin="5">
+                        <Image Width="32" Source="../../resources/icons/up.png" />
+                    </Button>
+                    <Button x:Name="ButtonMoveDown" Click="ButtonMoveDown_Click" ToolTip="{x:Static res:Resources.strManageDeviceSchedule_MoveDown}" Margin="5">
+                        <Image Width="32" Source="../../resources/icons/down.png" />
+                    </Button>
                     <Button x:Name="ButtonAddRule" ToolTip="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_AddRule}" Click="ButtonAddRule_Click" Margin="5">
                         <Image Width="32" Source="../../resources/icons/managment/add.png" />
                     </Button>
@@ -99,7 +105,7 @@
                     </Button>
                     <Button x:Name="ButtonDuplicateRule" ToolTip="{x:Static res:Resources.strManageDeviceSchedulingRulesDialog_DuplicateRule}" Click="ButtonDuplicateRule_Click" Margin="5">
                         <Image Width="32" Source="../../resources/icons/menu/report.png" />
-                    </Button>
+                    </Button>                  
                 </StackPanel>
             </Grid>
         </Grid>

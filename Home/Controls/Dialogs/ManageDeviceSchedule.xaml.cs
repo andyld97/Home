@@ -280,6 +280,26 @@ namespace Home.Controls.Dialogs
         {
             RefreshDevices();
         }
+
+        private void ButtonMoveUp_Click(object sender, RoutedEventArgs e)
+        {
+            int index = rules.IndexOf(currentRule);
+
+            if (index == 0 || rules.Count < 2) return;
+
+            rules.Move(index, index - 1);
+            ListRules.SelectedIndex = index - 1;
+        }
+
+        private void ButtonMoveDown_Click(object sender, RoutedEventArgs e)
+        {
+            int index = rules.IndexOf(currentRule);
+
+            if (index == rules.Count - 1 || rules.Count < 2) return;
+
+            rules.Move(index, index + 1);
+            ListRules.SelectedIndex = index + 1;
+        }
     }
 
     #region Converter

@@ -1024,6 +1024,24 @@ namespace Home.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Verschiebt die ausgewählte Regel nach unten ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedule_MoveDown {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedule_MoveDown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Verschiebt die ausgewählte Regel nach oben ähnelt.
+        /// </summary>
+        public static string strManageDeviceSchedule_MoveUp {
+            get {
+                return ResourceManager.GetString("strManageDeviceSchedule_MoveUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Manage rules ähnelt.
         /// </summary>
         public static string strManageDeviceSchedulingRules {

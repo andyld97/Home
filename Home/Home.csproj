@@ -35,6 +35,7 @@
     <None Remove="resources\icons\bios.png" />
     <None Remove="resources\icons\change.png" />
     <None Remove="resources\icons\cpu.png" />
+    <None Remove="resources\icons\down.png" />
     <None Remove="resources\icons\graphics.png" />
     <None Remove="resources\icons\managment\add.png" />
     <None Remove="resources\icons\managment\remove.png" />
@@ -56,6 +57,7 @@
     <None Remove="resources\icons\ram.png" />
     <None Remove="resources\icons\screen.png" />
     <None Remove="resources\icons\screen_offline.png" />
+    <None Remove="resources\icons\up.png" />
     <None Remove="resources\icons\warning-sm.png" />
     <None Remove="resources\icons\warnings\battery-warning.png" />
     <None Remove="resources\icons\warnings\storage-warning.png" />
@@ -94,6 +96,7 @@
   <ItemGroup>
     <Resource Include="resources\icons\bios.png" />
     <Resource Include="resources\icons\cpu.png" />
+    <Resource Include="resources\icons\down.png" />
     <Resource Include="resources\icons\graphics.png" />
     <Resource Include="resources\icons\managment\add.png" />
     <Resource Include="resources\icons\managment\remove.png" />
@@ -125,6 +128,7 @@
     <Resource Include="resources\icons\live\online.png" />
     <Resource Include="resources\icons\screen.png" />
     <Resource Include="resources\icons\screen_offline.png" />
+    <Resource Include="resources\icons\up.png" />
     <Resource Include="resources\icons\warning-sm.png" />
     <Resource Include="resources\icons\warnings\battery-warning.png" />
     <Resource Include="resources\icons\warnings\storage-warning.png" />
