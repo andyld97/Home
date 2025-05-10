@@ -10,7 +10,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Title>Home.Communication</Title>
-    <Copyright>Code A Software © 2021-2024</Copyright>
+    <Copyright>Code A Software © 2021-2025</Copyright>
     <PackageReleaseNotes>Initial release</PackageReleaseNotes>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Company>Code A Software</Company>

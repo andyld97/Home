@@ -29,7 +29,7 @@
 	<string name="strPermissionsExplanation">All permissions must be granted so that the service can be started!</string>
 	<string name="strSave">Save</string>
 	<string name="strAbout">About</string>
-	<string name="strAboutContent">Home.Service.Android {0}\n\nCopyright © 2021-2024 Code A Software</string>
+	<string name="strAboutContent">Home.Service.Android {0}\n\nCopyright © 2021-2025 Code A Software</string>
 	<string name="strCheckPermissions">Check permissions (repeatable)</string>
 	<string name="strSetIdDescription">The device ID can only be changed if the device is not yet registered. This only makes sense if you want to use the ID of a previous device to pretend to be this device. The device will not be registered but will send ACKs as soon as the service is started!</string>
 	<string name="strSetIdCaption">Device-ID:</string>

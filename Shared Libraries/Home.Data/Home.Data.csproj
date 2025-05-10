@@ -12,7 +12,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Company>Code A Software</Company>
 	<Version>1.0.2</Version>
-    <Copyright>Code A Software © 2021-2024</Copyright>
+    <Copyright>Code A Software © 2021-2025</Copyright>
     <Description>Provides data/model classes used in Home eco system</Description>
     <Title>Home.Data</Title>
     <PackageReadmeFile>README.md</PackageReadmeFile>
