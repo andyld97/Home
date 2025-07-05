@@ -1245,6 +1245,34 @@ namespace Home.Model
 #endif
         public string VolumeSerial { get; set; }
 
+        [JsonIgnore()]
+#if !LEGACY
+        [System.Text.Json.Serialization.JsonIgnore]
+#endif
+        public DeviceType Type
+        {
+            get
+            {
+                // ToDo: Also consider linux values
+                if (MediaType == "Fixed hard disk media")
+                    return DeviceType.HDD;
+                else if (MediaType == "External hard disk media")
+                    return DeviceType.USBHDD;
+                else if (MediaType == "Removable Media" && DiskInterface == "USB")
+                { 
+                    // Maybe usb disk or mounted image
+                    return DeviceType.USB;
+                }
+                else if (MediaType == "Removable Media" && DiskInterface != "USB")
+                {
+                    // Maybe CD/DVD
+                    return DeviceType.OpticalDrive;
+                }
+
+                return DeviceType.HDD; // Default to HDD    
+            }
+        }
+
 #if !LEGACY
         /// <summary>
         /// A unique id for this disk (hash) calculated by all "non-changing" properties
@@ -1324,6 +1352,14 @@ namespace Home.Model
         {
             return $"{PhysicalName}: {VolumeName}";
         }
+    }
+
+    public enum DeviceType
+    {
+        HDD,
+        USBHDD,
+        USB,
+        OpticalDrive,
     }
 
     public class Screenshot

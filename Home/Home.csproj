@@ -151,7 +151,7 @@
     <Resource Include="resources\icons\info.png" />
     <Resource Include="resources\icons\menu\clear_log.png" />
     <Resource Include="resources\icons\media\usbhdd.png" />
-    <Resource Include="resources\icons\media\cd.png" />
+    <Resource Include="resources\icons\media\optical.png" />
     <Resource Include="resources\icons\media\hdd.png" />
     <Resource Include="resources\icons\media\usb.png" />
     <Resource Include="icon.ico" />

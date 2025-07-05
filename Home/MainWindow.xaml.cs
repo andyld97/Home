@@ -1232,27 +1232,14 @@ namespace Home
             if (value is DiskDrive dd)
             {
                 string image = string.Empty;
-                if (dd.MediaType == "Fixed hard disk media")
-                {
-                    image = "hdd";
-                }
-                else if (dd.MediaType == "External hard disk media")
-                {
-                    image = "usbhdd";
-                }
-                else if (dd.MediaType == "Removable Media" && dd.DiskInterface == "USB")
-                {
-                    // Maybe usb disk or mounted image
-                    image = "usb";
-                }
-                else if (dd.MediaType == "Removable Media" && dd.DiskInterface != "USB")
-                {
-                    // Maybe CD/DVD
-                    image = "cd";
-                }
 
-                if (string.IsNullOrEmpty(image))
-                    image = "hdd"; // defaults to hdd
+                switch (dd.Type)
+                {
+                    case Model.DeviceType.HDD: image = "hdd"; break;
+                    case Model.DeviceType.USBHDD: image = "usbhdd"; break;
+                    case Model.DeviceType.USB: image = "usb"; break;
+                    case Model.DeviceType.OpticalDrive: image = "optical"; break;
+                }
 
                 try
                 {

@@ -226,6 +226,10 @@ namespace Home.API.Services
                 {
                     foreach (var disk in dds)
                     {
+                        // Ignore non fixed disks
+                        if (disk.Type == Model.DeviceType.USB || disk.Type == Model.DeviceType.USBHDD)
+                            continue;
+
                         // Check for already existing storage warnings       
                         bool foundStorageWarning = false;
                         foreach (var sw in currentDevice.DeviceWarning.Where(p => p.WarningType == (int)WarningType.StorageWarning && !string.IsNullOrEmpty(p.AdditionalInfo)))
