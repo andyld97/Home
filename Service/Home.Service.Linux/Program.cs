@@ -160,9 +160,9 @@ namespace Home.Service.Linux
             currentDevice.Location = config["location"].ToString();
             currentDevice.DeviceGroup = config["device_group"].ToString();
             NormalUser = config["user"].ToString();
-            currentDevice.OS = (OSType)config["os"].Value<int>();
+            currentDevice.OS = (Device.OSType)config["os"].Value<int>();
             currentDevice.Environment.OSName = currentDevice.OS.ToString();
-            currentDevice.Type = (DeviceType)config["type"].Value<int>();
+            currentDevice.Type = (Device.DeviceType)config["type"].Value<int>();
             currentDevice.Environment.StartTimestamp = startTime;
             RefreshDeviceInfo();
 

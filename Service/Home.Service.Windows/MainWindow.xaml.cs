@@ -407,8 +407,8 @@ namespace Home.Service.Windows
         {
             // Apply settings
             string host = TextAPIUrl.Text;
-            OSType os = (OSType)CmbOS.SelectedIndex;
-            DeviceType dt = (DeviceType)CmbDeviceType.SelectedIndex;
+            Device.OSType os = (Device.OSType)CmbOS.SelectedIndex;
+            Device.DeviceType dt = (Device.DeviceType)CmbDeviceType.SelectedIndex;
             string location = TextLocation.Text;
             string deviceGroup = TextGroup.Text;
 

@@ -1,0 +1,42 @@
+<Solution>
+  <Folder Name="/API/">
+    <Project Path="API/Home.API/Home.API.csproj" />
+  </Folder>
+  <Folder Name="/Assets/">
+    <File Path="Assets/ack.png" />
+    <File Path="Assets/Icons.sketch" />
+    <File Path="Assets/preview.mp4" />
+    <File Path="Assets/Redmi Note 7.html" />
+  </Folder>
+  <Folder Name="/Assets/screenshots/">
+    <File Path="Assets/screenshots/home.png" />
+    <File Path="Assets/screenshots/Home.Service.Android.png" />
+    <File Path="Assets/screenshots/Home.Service.Windows.png" />
+    <File Path="Assets/screenshots/overview.png" />
+  </Folder>
+  <Folder Name="/External Libraries/">
+    <File Path="External Libraries/Serialization.dll" />
+  </Folder>
+  <Folder Name="/Helper Applications/">
+    <Project Path="Helper Applications/ClientUpdate/ClientUpdate.csproj" />
+    <Project Path="Helper Applications/HomeNotification/HomeNotification.csproj" />
+    <Project Path="Helper Applications/Notification/Notification.csproj" Id="aa694400-3ae8-4160-bb47-fd5427932d36" />
+  </Folder>
+  <Folder Name="/Service/">
+    <Project Path="Service/Home.Service.Android/Home.Service.Android.csproj">
+      <Deploy />
+    </Project>
+    <Project Path="Service/Home.Service.Legacy/Home.Service.Legacy.csproj" Id="5a59fda7-bd65-406f-a705-487c82d4ef5b" />
+    <Project Path="Service/Home.Service.Linux/Home.Service.Linux.csproj" />
+    <Project Path="Service/Home.Service.Windows/Home.Service.Windows.csproj" />
+  </Folder>
+  <Folder Name="/Shared Libraries/">
+    <Project Path="Shared Libraries/Home.Communication/Home.Communication.csproj" />
+    <Project Path="Shared Libraries/Home.Data/Home.Data.csproj" />
+    <Project Path="Shared Libraries/Home.Measure.Windows/Home.Measure.Windows.csproj" Id="36f79a8a-96bf-49b5-aaa7-39d434385b44" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
+  <Project Path="Home/Home.csproj" />
+</Solution>
