@@ -58,15 +58,15 @@ namespace Home.Service
                 using (System.IO.FileStream fs = new System.IO.FileStream(sourceFilePath, System.IO.FileMode.Open))
                 {
                     // First n bytes
-                    await fs.ReadAsync(data, 0, length);
+                    await fs.ReadExactlyAsync(data, 0, length);
 
                     // Middle + n bytes
                     fs.Seek(fs.Length / 2, System.IO.SeekOrigin.Begin);
-                    await fs.ReadAsync(data, length, length);
+                    await fs.ReadExactlyAsync(data, length, length);
 
                     // End - n bytes
                     fs.Seek(fs.Length - length, System.IO.SeekOrigin.Begin);
-                    await fs.ReadAsync(data, length * 2, length);
+                    await fs.ReadExactlyAsync(data, length * 2, length);
                 }
             }
 

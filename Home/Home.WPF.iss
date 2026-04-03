@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Home.WPF"
-#define MyAppVersion "1.1.2"
+#define MyAppVersion "1.2.0"
 #define MyAppPublisher "Code A Software"
 #define MyAppURL "https://github.com/andyld97/Home"
 #define MyAppExeName "Home.exe"
@@ -22,7 +22,7 @@ DefaultDirName={autopf}\{#MyAppName}
 DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
-OutputDir=bin\Release\net9.0-windows\publish\
+OutputDir=bin\Release\net10.0-windows7.0\
 OutputBaseFilename=Home.WPF.Setup
 SetupIconFile=icon.ico
 Compression=lzma
@@ -38,75 +38,77 @@ Name: "german"; MessagesFile: "compiler:Languages\German.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "bin\Release\net9.0-windows\publish\cs\*"; DestDir: "{app}\cs"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "bin\Release\net9.0-windows\publish\de\*"; DestDir: "{app}\de"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "bin\Release\net9.0-windows\publish\es\*"; DestDir: "{app}\es"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "bin\Release\net9.0-windows\publish\fr\*"; DestDir: "{app}\fr"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "bin\Release\net9.0-windows\publish\it\*"; DestDir: "{app}\it"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "bin\Release\net9.0-windows\publish\ja\*"; DestDir: "{app}\ja"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "bin\Release\net9.0-windows\publish\ko\*"; DestDir: "{app}\ko"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "bin\Release\net9.0-windows\publish\pl\*"; DestDir: "{app}\pl"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "bin\Release\net9.0-windows\publish\pt-BR\*"; DestDir: "{app}\pt-BR"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "bin\Release\net9.0-windows\publish\ru\*"; DestDir: "{app}\ru"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "bin\Release\net9.0-windows\publish\runtimes\*"; DestDir: "{app}\runtimes"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "bin\Release\net9.0-windows\publish\tr\*"; DestDir: "{app}\tr"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "bin\Release\net9.0-windows\publish\zh-Hans\*"; DestDir: "{app}\zh-Hans"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "bin\Release\net9.0-windows\publish\zh-Hant\*"; DestDir: "{app}\zh-Hant"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "bin\Release\net9.0-windows\publish\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\ControlzEx.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\Fluent.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\sni.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\HarfBuzzSharp.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\Home.Communication.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\Home.Communication.pdb"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\Home.Data.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\Home.Data.pdb"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\Home.deps.json"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\Home.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\Home.dll.config"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\Home.pdb"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\Home.runtimeconfig.json"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\LiveChartsCore.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\LiveChartsCore.SkiaSharpView.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\LiveChartsCore.SkiaSharpView.WPF.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\Microsoft.Bcl.AsyncInterfaces.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\Microsoft.Web.WebView2.Core.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\Microsoft.Web.WebView2.WinForms.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\Microsoft.Web.WebView2.Wpf.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\Microsoft.Xaml.Behaviors.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\Serialization.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\SkiaSharp.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\SkiaSharp.HarfBuzz.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\SkiaSharp.Views.Desktop.Common.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\SkiaSharp.Views.WPF.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\libHarfBuzzSharp.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\libSkiaSharp.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\System.ComponentModel.Composition.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\System.ComponentModel.Composition.Registration.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\System.Data.Odbc.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\System.Data.OleDb.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\System.Data.SqlClient.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\System.DirectoryServices.AccountManagement.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\System.DirectoryServices.Protocols.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\System.IO.Ports.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\System.Management.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\System.Private.ServiceModel.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\System.Reflection.Context.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\System.Runtime.Caching.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\System.ServiceModel.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\System.ServiceModel.Duplex.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\System.ServiceModel.Http.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\System.ServiceModel.NetTcp.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\System.ServiceModel.Primitives.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\System.ServiceModel.Security.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\System.ServiceModel.Syndication.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\System.ServiceProcess.ServiceController.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\System.Speech.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\System.Web.Services.Description.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\WebhookAPI.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\ByteUnit.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\net9.0-windows\publish\WebView2Loader.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\cs\*"; DestDir: "{app}\cs"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "bin\Release\net10.0-windows7.0\de\*"; DestDir: "{app}\de"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "bin\Release\net10.0-windows7.0\es\*"; DestDir: "{app}\es"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "bin\Release\net10.0-windows7.0\fr\*"; DestDir: "{app}\fr"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "bin\Release\net10.0-windows7.0\it\*"; DestDir: "{app}\it"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "bin\Release\net10.0-windows7.0\ja\*"; DestDir: "{app}\ja"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "bin\Release\net10.0-windows7.0\ko\*"; DestDir: "{app}\ko"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "bin\Release\net10.0-windows7.0\pl\*"; DestDir: "{app}\pl"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "bin\Release\net10.0-windows7.0\pt-BR\*"; DestDir: "{app}\pt-BR"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "bin\Release\net10.0-windows7.0\ru\*"; DestDir: "{app}\ru"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "bin\Release\net10.0-windows7.0\runtimes\*"; DestDir: "{app}\runtimes"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "bin\Release\net10.0-windows7.0\tr\*"; DestDir: "{app}\tr"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "bin\Release\net10.0-windows7.0\zh-Hans\*"; DestDir: "{app}\zh-Hans"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "bin\Release\net10.0-windows7.0\zh-Hant\*"; DestDir: "{app}\zh-Hant"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "bin\Release\net10.0-windows7.0\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\ControlzEx.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\Fluent.dll"; DestDir: "{app}"; Flags: ignoreversion
+;Source: "bin\Release\net10.0-windows7.0\sni.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\HarfBuzzSharp.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\Home.Communication.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\Home.Communication.pdb"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\Home.Data.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\Home.Data.pdb"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\Home.deps.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\Home.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\Home.dll.config"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\Home.pdb"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\Home.runtimeconfig.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\LiveChartsCore.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\LiveChartsCore.SkiaSharpView.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\LiveChartsCore.SkiaSharpView.WPF.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\Microsoft.Web.WebView2.Core.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\Microsoft.Web.WebView2.WinForms.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\Microsoft.Web.WebView2.Wpf.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\Microsoft.Xaml.Behaviors.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\Serialization.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\SkiaSharp.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\SkiaSharp.HarfBuzz.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\SkiaSharp.Views.Desktop.Common.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\SkiaSharp.Views.WPF.dll"; DestDir: "{app}"; Flags: ignoreversion
+;Source: "bin\Release\net10.0-windows7.0\libHarfBuzzSharp.dll"; DestDir: "{app}"; Flags: ignoreversion
+;Source: "bin\Release\net10.0-windows7.0\libSkiaSharp.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\System.ComponentModel.Composition.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\System.ComponentModel.Composition.Registration.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\System.Data.Odbc.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\System.Data.OleDb.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\System.Data.SqlClient.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\System.DirectoryServices.AccountManagement.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\System.DirectoryServices.Protocols.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\System.IO.Ports.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\System.Management.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\System.Reflection.Context.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\System.Runtime.Caching.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\System.ServiceModel.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\System.ServiceModel.Duplex.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\System.ServiceModel.Http.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\System.ServiceModel.NetTcp.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\System.ServiceModel.Primitives.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\System.ServiceModel.Security.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\System.ServiceModel.Syndication.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\System.ServiceProcess.ServiceController.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\System.Speech.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\System.Web.Services.Description.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\WebhookAPI.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\ByteUnit.dll"; DestDir: "{app}"; Flags: ignoreversion
+;Source: "bin\Release\net10.0-windows7.0\WebView2Loader.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\GLWpfControl.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\OpenTK.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows7.0\MahApps.Metro.dll"; DestDir: "{app}"; Flags: ignoreversion
+
 ; NOTE: Don't use "Flags ignoreversion" on any shared system files
 
 [Icons]
