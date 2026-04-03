@@ -414,15 +414,6 @@
                                                 <FlowDocumentScrollViewer x:Name="LogHolder" PreviewMouseWheel="LogHolder_PreviewMouseWheel" VerticalScrollBarVisibility="Disabled" />
                                             </ScrollViewer>
                                         </TabItem>
-                                        <TabItem Width="150">
-                                            <TabItem.Header>
-                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                                    <Image Source="resources/icons/menu/shell.png" Width="16" />
-                                                    <TextBlock Margin="5,0,0,0" Text="Remote Shell" TextAlignment="Center" VerticalAlignment="Center"/>
-                                                </StackPanel>
-                                            </TabItem.Header>
-                                            <TextBox IsReadOnly="True" AcceptsReturn="True" BorderThickness="0" Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}" Background="Transparent" TextWrapping="Wrap" />
-                                        </TabItem>
                                     </TabControl>
                                 </Grid>
                             </Grid>

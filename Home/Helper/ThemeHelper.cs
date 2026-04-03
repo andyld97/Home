@@ -23,7 +23,7 @@ namespace Helper
             if (Settings.Instance.UseDarkMode)
             {
                 App.Current.Resources["Item.SelectedColor"] = new SolidColorBrush(Colors.White);
-                tabControlBackgroundColor = Colors.Black;
+                tabControlBackgroundColor = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#171616");
 
                 tabItemBackground = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#AF282828");
                 tabItemSelectedBackground = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#282828");
@@ -31,8 +31,7 @@ namespace Helper
             else
             {
                 App.Current.Resources["Item.SelectedColor"] = new SolidColorBrush(Colors.Gray);
-
-                tabControlBackgroundColor = (System.Windows.Media.Color)ColorConverter.ConvertFromString($"#DADADA");
+                tabControlBackgroundColor = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#DADADA");
 
                 tabItemBackground = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#D7D7D7");
                 tabItemSelectedBackground = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#F9F9F9");
