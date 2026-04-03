@@ -30,8 +30,8 @@ namespace Helper
             if (Settings.Instance.UseDarkMode)
             {
                 App.Current.Resources["Item.SelectedColor"] = new SolidColorBrush(Colors.White);
-                tabControlBackgroundColor = ToColor("#171616");
 
+                tabControlBackgroundColor = ToColor("#171616");
                 tabItemBackground = ToColor("#AF282828");
                 tabItemSelectedBackground = ToColor("#282828");
 
@@ -45,10 +45,17 @@ namespace Helper
             else
             {
                 App.Current.Resources["Item.SelectedColor"] = new SolidColorBrush(Colors.Gray);
-                tabControlBackgroundColor = ToColor("#DADADA");
 
+                tabControlBackgroundColor = ToColor("#DADADA");
                 tabItemBackground = ToColor("#D7D7D7");
                 tabItemSelectedBackground = ToColor("#F9F9F9");
+
+                // Scrollbar / Light
+                App.Current.Resources["ScrollBarButtonBackgroundBrush"] = ToBrush("#FFE6E6E6");
+                App.Current.Resources["ScrollbarThumb"] = ToBrush("#FFB5B5B5");
+                App.Current.Resources["ScrollBarButtonHighlightBackgroundBrush"] = ToBrush("#FFDADADA");
+                App.Current.Resources["ScrollBarButtonArrowForegroundBrush"] = ToBrush("#FF4A4A4A");
+                App.Current.Resources["ScrollBarTrackBrush"] = ToBrush("#FFF5F5F5");
             }
 
             App.Current.Resources["TabControl.Background"] = new SolidColorBrush(tabControlBackgroundColor);
