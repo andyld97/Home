@@ -15,6 +15,7 @@
         <local:ImageConverter x:Key="imageConverter" />
         <local:DeviceToOpacityConverter x:Key="deviceToOpacityConverter" />
         <local:DeviceWarningColorConverter x:Key="deviceWarningColorConverter" />
+        <local:UnknownConverter x:Key="unknownConverter" />
     </UserControl.Resources>
 
     <UserControl.Opacity>
@@ -68,7 +69,7 @@
                         <StackPanel Margin="15,0,0,0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch">
                             <TextBlock Text="{Binding Environment.MachineName}" Foreground="{Binding ., Converter={StaticResource deviceWarningColorConverter}}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="0,0,10,0" />
                             <TextBlock TextAlignment="Left" Foreground="White">
-                                <Run Text="{Binding IP}" />
+                                <Run Text="{Binding IP, Converter={StaticResource unknownConverter}}" />
                             </TextBlock>
                             <TextBlock TextAlignment="Left" Foreground="White">
                                 <Run Text="{Binding LastSeen, StringFormat={x:Static res:Resources.strDateTimeFormat}}" />

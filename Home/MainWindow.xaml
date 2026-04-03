@@ -52,17 +52,17 @@
                 </Fluent:RibbonGroupBox>
 
                 <Fluent:RibbonGroupBox Header="{x:Static res:Resources.strOperations}">
-                    <Fluent:Button x:Name="MenuButtonClearLog" Click="MenuButtonClearLog_Click" Header="{x:Static res:Resources.strClearLog}" LargeIcon="/resources/icons/menu/clear_log.png" />
+                    <Fluent:Button x:Name="MenuButtonClearLog" Width="50" Click="MenuButtonClearLog_Click" Header="{x:Static res:Resources.strClearLog}" LargeIcon="/resources/icons/menu/clear_log.png" />
                     <Fluent:Button x:Name="MenuButtonClearHardwareChanges" Click="MenuButtonClearHardwareChanges_Click" Header="{x:Static res:Resources.strClearHwChanges}" LargeIcon="resources/icons/menu/clear_changes.png" />
-                    <Fluent:Button x:Name="MenuButtonDeleteDevice" Click="MenuButtonDeleteDevice_Click" Header="{x:Static res:Resources.strDeleteDevice}" LargeIcon="/resources/icons/menu/delete.png" />
+                    <Fluent:Button x:Name="MenuButtonDeleteDevice" Width="60" Click="MenuButtonDeleteDevice_Click" Header="{x:Static res:Resources.strDeleteDevice}" LargeIcon="/resources/icons/menu/delete.png" />
                     <Fluent:Button Visibility="Collapsed" Header="{x:Static res:Resources.strRemoteShell}" LargeIcon="/resources/icons/menu/shell.png" IsEnabled="False" />
                     <Fluent:Button Visibility="Collapsed" Header="{x:Static res:Resources.strRemoteConnection}" LargeIcon="/resources/icons/menu/rdp.png" IsEnabled="False" />
                     <Fluent:Button Visibility="Collapsed" Header="{x:Static res:Resources.strMuteSound}" LargeIcon="/resources/icons/menu/mute.png" IsEnabled="False" />                    
                 </Fluent:RibbonGroupBox>
 
                 <Fluent:RibbonGroupBox Header="{x:Static res:Resources.strReport}">
-                    <Fluent:Button x:Name="MenuButtonGenerateReport" Header="{x:Static res:Resources.strSaveReportHtml}" LargeIcon="/resources/icons/menu/html.png" Click="MenuButtonGenerateReport_Click" />
-                    <Fluent:Button x:Name="MenuPrintReport" Header="{x:Static res:Resources.strSaveReportPdf}" LargeIcon="/resources/icons/menu/pdf.png" Click="MenuPrintReport_Click" />
+                    <Fluent:Button x:Name="MenuButtonGenerateReport" Width="50" Header="{x:Static res:Resources.strSaveReportHtml}" LargeIcon="/resources/icons/menu/html.png" Click="MenuButtonGenerateReport_Click" />
+                    <Fluent:Button x:Name="MenuPrintReport" Width="50" Header="{x:Static res:Resources.strSaveReportPdf}" LargeIcon="/resources/icons/menu/pdf.png" Click="MenuPrintReport_Click" />
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
 
@@ -187,7 +187,7 @@
                                                 <TextBlock x:Name="TextActiveDevices" Text="Aktive Geräte" TextAlignment="Center" />
                                             </Border>
                                         </TabItem.Header>
-									    <ListBox x:Name="DeviceHolderActive" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" Background="{DynamicResource Fluent.Ribbon.Brushes.White}" BorderThickness="0" SelectionChanged="DeviceHolder_SelectionChanged" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" />
+									    <ListBox x:Name="DeviceHolderActive" ScrollViewer.VerticalScrollBarVisibility="Auto" ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" Background="{DynamicResource Fluent.Ribbon.Brushes.White}" BorderThickness="0" SelectionChanged="DeviceHolder_SelectionChanged" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" />
                                     </TabItem>
                                     <TabItem x:Name="TabOfflineDevices" Width="100">
                                         <TabItem.Header>
@@ -195,7 +195,7 @@
                                                 <TextBlock x:Name="TextOfflineDevices" Text="Inaktive Geräte" TextAlignment="Center" />
                                             </Border>
                                         </TabItem.Header>
-                                            <ListBox x:Name="DeviceHolderOffline" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" Background="{DynamicResource Fluent.Ribbon.Brushes.White}" BorderThickness="0" SelectionChanged="DeviceHolder_SelectionChanged" Grid.Row="1" />
+                                        <ListBox x:Name="DeviceHolderOffline" ScrollViewer.VerticalScrollBarVisibility="Auto" ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" Background="{DynamicResource Fluent.Ribbon.Brushes.White}" BorderThickness="0" SelectionChanged="DeviceHolder_SelectionChanged" Grid.Row="1" />
                                     </TabItem>
                                     <TabItem x:Name="TabAllDevices" Background="{DynamicResource Fluent.Ribbon.Brushes.White}" Width="100">
                                         <TabItem.Header>
@@ -213,7 +213,7 @@
                                             <controls:PlaceholderTextBox x:Name="TextSearch" Margin="2" TextChanged="TextSearch_TextChanged" Placeholder="{x:Static res:Resources.strSearch_Watermark}" />
 
                                             <Grid Grid.Row="1">
-                                                <ListBox x:Name="DeviceHolderAll" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" Background="{DynamicResource Fluent.Ribbon.Brushes.White}" BorderThickness="0" SelectionChanged="DeviceHolder_SelectionChanged" />
+                                                <ListBox x:Name="DeviceHolderAll" ScrollViewer.VerticalScrollBarVisibility="Auto" ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" Background="{DynamicResource Fluent.Ribbon.Brushes.White}" BorderThickness="0" SelectionChanged="DeviceHolder_SelectionChanged" />
                                                 <TextBlock x:Name="TextNoSearchResults" Visibility="Collapsed" Text="{x:Static res:Resources.strNoSearchResults}" FontSize="20" TextWrapping="Wrap" Foreground="{DynamicResource Fluent.Ribbon.Brushes.Black}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                             </Grid>                                          
                                         </Grid>

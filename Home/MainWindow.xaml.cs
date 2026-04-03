@@ -25,7 +25,7 @@ using static Home.Model.Device;
 using static Home.Data.Helper.GeneralHelper;
 using Microsoft.Web.WebView2.Core;
 using Home.Data.Helper;
-using Model;
+using Home.Model;
 using Microsoft.Win32;
 using Controls.Dialogs;
 using Microsoft.AspNetCore.Mvc.TagHelpers;

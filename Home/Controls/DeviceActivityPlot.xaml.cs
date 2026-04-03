@@ -19,7 +19,6 @@ using System.Windows.Shapes;
 using Home.Model;
 using SkiaSharp;
 using Home.Data.Helper;
-using Model;
 using System.Diagnostics;
 using SkiaSharp.Views.WPF;
 
