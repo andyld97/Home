@@ -35,7 +35,7 @@ namespace Helper
                 tabItemBackground = ToColor("#AF282828");
                 tabItemSelectedBackground = ToColor("#282828");
 
-                // Scrollbar
+                // Scrollbar / Dark
                 App.Current.Resources["ScrollBarButtonBackgroundBrush"] = ToBrush("#FF2B2B2B");
                 App.Current.Resources["ScrollbarThumb"] = ToBrush("#FF383838");
                 App.Current.Resources["ScrollBarButtonHighlightBackgroundBrush"] = ToBrush("#FF3C3C3C");
@@ -60,7 +60,7 @@ namespace Helper
             {
                 if (Settings.Instance.UseDarkMode)
                 {
-                    var fixedBlack = (Color)ColorConverter.ConvertFromString("#FF252525");
+                    var fixedBlack = ToColor("#FF252525");
                     theme.Resources["Fluent.Ribbon.Colors.White"] = fixedBlack;
                     theme.Resources["Fluent.Ribbon.Brushes.White"] = new SolidColorBrush(fixedBlack);
                 }

@@ -107,7 +107,7 @@
                                                 <Path HorizontalAlignment="Center"
                                                   VerticalAlignment="Center"
                                                   Data="M 0 0 L 10 0 L 5 10 Z"
-                                                  Fill="{StaticResource ScrollBarButtonArrowForegroundBrush}"
+                                                  Fill="{DynamicResource ScrollBarButtonArrowForegroundBrush}"
                                                   Stretch="Fill"
                                                   Height="{StaticResource ScrollBarArrowHeight}"
                                                   Width="{StaticResource ScrollBarArrowWidth}" />
@@ -184,7 +184,7 @@
                                                            Fill="{DynamicResource ScrollBarButtonBackgroundBrush}" />
                                                     <ControlTemplate.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter TargetName="ThumbRectangle" Property="Fill" Value="{StaticResource ScrollBarButtonHighlightBackgroundBrush}" />
+                                                            <Setter TargetName="ThumbRectangle" Property="Fill" Value="{DynamicResource ScrollBarButtonHighlightBackgroundBrush}" />
                                                         </Trigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
