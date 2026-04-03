@@ -10,11 +10,12 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Title>Home.Communication</Title>
-    <Copyright>Code A Software © 2021-2024</Copyright>
+    <Copyright>Code A Software © 2021-2026</Copyright>
     <PackageReleaseNotes>Initial release</PackageReleaseNotes>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Company>Code A Software</Company>
     <Description>Provides API class to communicate to a hosted Home.API service</Description>
+	<Version>1.0.3</Version>
   </PropertyGroup>
 
   <ItemGroup>

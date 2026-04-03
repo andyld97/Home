@@ -2,7 +2,7 @@
 using Helper;
 using Home;
 using Home.Data.Helper;
-using Model;
+using Home.Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -82,7 +82,7 @@ namespace Controls.Dialogs
             ComboBoxThemeChooser.SelectedItem = Themes.Where(p => p.DisplayName.Contains(Settings.Instance.Theme.Replace(".Colorful", string.Empty)) && p.DisplayName.Contains(value)).FirstOrDefault();
 
             Settings.Instance.Save();
-            ThemeHelper.ApplyTheme();
+            ThemeHelper.ApplyTheming();
         }
 
         private void UpdateThemeSettings()
@@ -99,7 +99,7 @@ namespace Controls.Dialogs
             Settings.Instance.Save();
 
             // Apply theming
-            ThemeHelper.ApplyTheme();
+            ThemeHelper.ApplyTheming();
             MainWindow.W_INSTANCE.UpdateGlowingBrush();
         }
 

@@ -51,7 +51,7 @@ namespace Home.Controls
                 if (value != lastSelectedDevice1)
                 {
                     lastSelectedDevice1 = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LastSelectedDevice"));
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LastSelectedDevice)));
                 }
             }
         }
@@ -99,6 +99,13 @@ namespace Home.Controls
         {
             if (screenshotToDisplay == null)
                 return;
+
+            if (!System.IO.File.Exists(path))
+            {                
+                // Display default screenshot instead
+                await SetImageSourceAsync(null, string.Empty, (LastSelectedDevice.Type != Device.DeviceType.Smartphone && LastSelectedDevice.Status == Device.DeviceStatus.Offline), LastSelectedDevice);
+                return;
+            }
 
             await SetImageSourceAsync(null, path, LastSelectedDevice.Status == Device.DeviceStatus.Offline, LastSelectedDevice);
                 

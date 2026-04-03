@@ -210,13 +210,13 @@
     <value>Device Log</value>
   </data>
   <data name="strAllDevicesTab" xml:space="preserve">
-    <value>AllDevices: {0}</value>
+    <value>All: {0}</value>
   </data>
   <data name="strActiveDevicesTab" xml:space="preserve">
-    <value>Active Devices: {0}</value>
+    <value>Active: {0}</value>
   </data>
   <data name="strOfflineDevicesTab" xml:space="preserve">
-    <value>Inactive Devices: {0}</value>
+    <value>Inactive: {0}</value>
   </data>
   <data name="strShowScreenshots" xml:space="preserve">
     <value>Show screens</value>
@@ -993,5 +993,47 @@ Download: https://developer.microsoft.com/en-us/microsoft-edge/webview2/</value>
   </data>
   <data name="strSearch_Watermark" xml:space="preserve">
     <value>Search ...</value>
+  </data>
+  <data name="strMonday" xml:space="preserve">
+    <value>Monday</value>
+  </data>
+  <data name="strTuesday" xml:space="preserve">
+    <value>Tuesday</value>
+  </data>
+  <data name="strWednesday" xml:space="preserve">
+    <value>Wednesday</value>
+  </data>
+  <data name="strThursday" xml:space="preserve">
+    <value>Thursday</value>
+  </data>
+  <data name="strFriday" xml:space="preserve">
+    <value>Friday</value>
+  </data>
+  <data name="strSaturday" xml:space="preserve">
+    <value>Saturday</value>
+  </data>
+  <data name="strSunday" xml:space="preserve">
+    <value>Sunday</value>
+  </data>
+  <data name="strExecutionPlan" xml:space="preserve">
+    <value>Execution Plan</value>
+  </data>
+  <data name="strExecuteDaily" xml:space="preserve">
+    <value>Execute daily</value>
+  </data>
+  <data name="strExecuteDays" xml:space="preserve">
+    <value>Only run on certain days of the week:</value>
+  </data>
+  <data name="strManageDeviceSchedulingRulesDialog_DuplicateRule" xml:space="preserve">
+    <value>Duplicate rule</value>
+  </data>
+  <data name="strNoSearchResults" xml:space="preserve">
+    <value>No search results found!</value>
+  </data>
+  <data name="strManageDeviceSchedule_MoveUp" xml:space="preserve">
+    <value>Verschiebt die ausgewählte Regel nach oben</value>
+  </data>
+  <data name="strManageDeviceSchedule_MoveDown" xml:space="preserve">
+    <value>Verschiebt die ausgewählte Regel nach unten</value>
   </data>
 </root>

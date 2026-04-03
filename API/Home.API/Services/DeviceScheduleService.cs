@@ -42,15 +42,15 @@ namespace Home.API.Services
             {
                 try
                 {
-                    await Task.Delay((int)TimeSpan.FromSeconds(0.25).TotalMilliseconds);
+                    await Task.Delay(250, stoppingToken);
 
                     var now = DateTime.Now;
-                    // Test 
-                    // now = new DateTime(2023, 1, 30, 7, 55, 0);
+                    int weekDayIndex = ((int)now.DayOfWeek + 6) % 7;
 
                     // Make sure the service only runs once in a minute to prevent executing events multiple times!
                     if (lastServiceExecutionTime != DateTime.MinValue && lastServiceExecutionTime.Minute == now.Minute)
                         continue;
+
                     lastServiceExecutionTime = now;
 
                     var scope = _serviceProvider.CreateAsyncScope();
@@ -67,7 +67,22 @@ namespace Home.API.Services
                         if (!rule.IsActive) continue;
                         if (rule.BootRule == null && rule.ShutdownRule == null) continue;
 
-                        if (rule.BootRule.Type != BootRule.BootRuleType.None)
+                        bool executeBootRule = true;
+                        bool executeShutdownRule = true;
+
+                        // Check daily execution plan
+                        if (rule.BootRule.Type != BootRule.BootRuleType.None && !rule.BootRule.ExecutionDaysPlan.Daily)
+                        {
+                            if (!rule.BootRule.ExecutionDaysPlan.Days[weekDayIndex])
+                                executeBootRule = false;
+                        }
+                        if (rule.ShutdownRule.Type != ShutdownRule.ShutdownRuleType.None && !rule.ShutdownRule.ExecutionDaysPlan.Daily)
+                        {
+                            if (!rule.ShutdownRule.ExecutionDaysPlan.Days[weekDayIndex])
+                                executeShutdownRule = false;
+                        }
+
+                        if (executeBootRule && rule.BootRule.Type != BootRule.BootRuleType.None)
                         {
                             var time = ParseTime(rule.BootRule.Time);
                             if (time == (-1, -1))
@@ -87,7 +102,7 @@ namespace Home.API.Services
                             }
                         }
 
-                        if (rule.ShutdownRule.Type != ShutdownRule.ShutdownRuleType.None)
+                        if (executeShutdownRule && rule.ShutdownRule.Type != ShutdownRule.ShutdownRuleType.None)
                         {
                             var time = ParseTime(rule.ShutdownRule.Time);
                             if (time == (-1, -1))
@@ -112,10 +127,13 @@ namespace Home.API.Services
                         }
                     }
                 }
+                catch (TaskCanceledException)
+                {
+                    // ignore
+                }
                 catch (Exception ex)
                 {
-                    if (!(ex is TaskCanceledException))
-                        _logger.LogError($"Error while executing DeviceScheduleService: {ex.Message}");
+                    _logger.LogError($"Error while executing DeviceScheduleService: {ex.Message}");
                 }
             }
         }
@@ -218,7 +236,13 @@ namespace Home.API.Services
             try
             {
                 var device = await _context.Device.FirstOrDefaultAsync(d => d.Guid == deviceId);
-                ArgumentNullException.ThrowIfNull(deviceId);
+                ArgumentNullException.ThrowIfNull(device);
+
+                if (!device.Status)
+                {
+                    _logger.LogWarning($"Skipping executing of shutdown command: {device.Name} is not active!");
+                    return;
+                }
 
                 var type = (Home.Model.Device.OSType)device.Ostype;
                 if (type.IsAndroid())
@@ -250,7 +274,7 @@ namespace Home.API.Services
             if (string.IsNullOrEmpty(dateTime) || !dateTime.Contains(':') || dateTime.Length != 5)
                 return (-1, -1);
 
-            string[] parts = dateTime.Split(new string[] { ":" }, StringSplitOptions.RemoveEmptyEntries);
+            string[] parts = dateTime.Split([":"], StringSplitOptions.RemoveEmptyEntries);
 
             if (parts.Length != 2)
                 return (-1, -1);

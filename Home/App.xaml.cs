@@ -1,6 +1,7 @@
 ﻿using ControlzEx.Theming;
 using Helper;
 using Home.Model;
+using Home.Properties;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -35,7 +36,8 @@ namespace Home
             var third = deviceMenu.Items[2] as System.Windows.Controls.MenuItem;
             third.Header = Home.Properties.Resources.strReboot;
 
-            ThemeHelper.ApplyTheme();
+            ThemeHelper.ApplyTheming();
+
             base.OnStartup(e);
         }
 

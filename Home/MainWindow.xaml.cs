@@ -25,7 +25,7 @@ using static Home.Model.Device;
 using static Home.Data.Helper.GeneralHelper;
 using Microsoft.Web.WebView2.Core;
 using Home.Data.Helper;
-using Model;
+using Home.Model;
 using Microsoft.Win32;
 using Controls.Dialogs;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
@@ -885,7 +885,7 @@ namespace Home
             if (BottomTabControl == null)
                 return;
 
-            BottomTabControl.Height = 23;
+            BottomTabControl.Height = 30;
         }
 
         private async void MenuButtonDeleteDevice_Click(object sender, RoutedEventArgs e)
@@ -1192,9 +1192,7 @@ namespace Home
         private DateTime lastType = DateTime.MinValue;
 
         private void TextSearch_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            LabelSearch.Visibility = (string.IsNullOrEmpty(TextSearch.Text) ? Visibility.Visible : Visibility.Collapsed);
-
+        {         
             if (searchDelayTimer == null)
             {
                 searchDelayTimer = new DispatcherTimer();
@@ -1204,6 +1202,7 @@ namespace Home
 
             if (!searchDelayTimer.IsEnabled)
                 searchDelayTimer.Start();
+
             lastType = DateTime.Now;
         }
 
@@ -1215,6 +1214,8 @@ namespace Home
 
                 // Apply search (using refresh)         
                 RefreshDeviceHolder(false);
+
+                TextNoSearchResults.Visibility = DeviceHolderAll.Items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
@@ -1231,27 +1232,14 @@ namespace Home
             if (value is DiskDrive dd)
             {
                 string image = string.Empty;
-                if (dd.MediaType == "Fixed hard disk media")
-                {
-                    image = "hdd";
-                }
-                else if (dd.MediaType == "External hard disk media")
-                {
-                    image = "usbhdd";
-                }
-                else if (dd.MediaType == "Removable Media" && dd.DiskInterface == "USB")
-                {
-                    // Maybe usb disk or mounted image
-                    image = "usb";
-                }
-                else if (dd.MediaType == "Removable Media" && dd.DiskInterface != "USB")
-                {
-                    // Maybe CD/DVD
-                    image = "cd";
-                }
 
-                if (string.IsNullOrEmpty(image))
-                    image = "hdd"; // defaults to hdd
+                switch (dd.Type)
+                {
+                    case Model.DeviceType.HDD: image = "hdd"; break;
+                    case Model.DeviceType.USBHDD: image = "usbhdd"; break;
+                    case Model.DeviceType.USB: image = "usb"; break;
+                    case Model.DeviceType.OpticalDrive: image = "optical"; break;
+                }
 
                 try
                 {

@@ -260,7 +260,7 @@ namespace Home.Service.Android
 
         private void ButtonCheckPermissions_Click(object sender, EventArgs e)
         {
-            CheckPermissions();
+            CheckPermissions(false);
             RefreshServiceStatus();
         }
 
@@ -406,6 +406,14 @@ namespace Home.Service.Android
                     permission_ = permission;
                     if (permission == A.Manifest.Permission.WriteExternalStorage || permission == A.Manifest.Permission.ReadExternalStorage)
                         isStoragePermission = true;
+
+                    if (isStoragePermission && Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu)
+                    {
+                        // Not necessary for Android >= 11. And we are actually not really accessing external storage!
+                        requestPermissions = false;
+                        requestCode += index;
+                        continue;
+                    }
 
                     requestPermissions = true;
                     requestCode += index;

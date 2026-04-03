@@ -116,7 +116,7 @@ namespace Home.Model
         }
     }
 
-    public class ShutdownRule : INotifyPropertyChanged
+    public class ShutdownRule : INotifyPropertyChanged, ICloneable
     {
         private string time = "00:00";
         private ShutdownRuleType type = ShutdownRuleType.Shutdown;
@@ -158,6 +158,9 @@ namespace Home.Model
         [JsonPropertyName("rule_command_info")]
         public RuleCommandInfo RuleCommandInfo { get; set; } = new RuleCommandInfo();
 
+        [JsonPropertyName("execution_days_plan")]
+        public ExecutionDaysPlan ExecutionDaysPlan { get; set; } = new ExecutionDaysPlan();
+
         public enum ShutdownRuleType
         {
             None,
@@ -173,9 +176,33 @@ namespace Home.Model
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public object Clone()
+        {
+            return new ShutdownRule()
+            {
+                ExecutionDaysPlan = new ExecutionDaysPlan()
+                {
+                    Daily = this.ExecutionDaysPlan.Daily,
+                    Days = (bool[])this.ExecutionDaysPlan.Days.Clone()
+                },
+                RuleAPICallInfo = new RuleAPICallInfo()
+                {
+                    HttpMethod = this.RuleAPICallInfo.HttpMethod,
+                    Url = this.RuleAPICallInfo.Url
+                },
+                RuleCommandInfo = new RuleCommandInfo()
+                {
+                    Executable = this.RuleCommandInfo.Executable,
+                    Parameter = this.RuleCommandInfo.Parameter
+                },
+                Time = this.Time,
+                Type = this.Type
+            };
+        }
     }
 
-    public class BootRule : INotifyPropertyChanged
+    public class BootRule : INotifyPropertyChanged, ICloneable
     {
         private string time = "00:00";
         private BootRuleType type = BootRuleType.WakeOnLan;
@@ -214,6 +241,9 @@ namespace Home.Model
         [JsonPropertyName("rule_api_call_info")]
         public RuleAPICallInfo RuleAPICallInfo { get; set; } = new RuleAPICallInfo();
 
+        [JsonPropertyName("execution_days_plan")] 
+        public ExecutionDaysPlan ExecutionDaysPlan { get; set; } = new ExecutionDaysPlan();
+
         public enum BootRuleType
         {
             None,
@@ -227,6 +257,25 @@ namespace Home.Model
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public object Clone()
+        {
+            return new BootRule()
+            {
+                ExecutionDaysPlan = new ExecutionDaysPlan()
+                {
+                    Daily = this.ExecutionDaysPlan.Daily,
+                    Days = (bool[])this.ExecutionDaysPlan.Days.Clone()
+                },
+                RuleAPICallInfo = new RuleAPICallInfo()
+                {
+                    HttpMethod = this.RuleAPICallInfo.HttpMethod,
+                    Url = this.RuleAPICallInfo.Url
+                },
+                Time = this.Time,
+                Type = this.Type
+            };
         }
     }
 
@@ -308,6 +357,47 @@ namespace Home.Model
                 }
             }
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
+    public class ExecutionDaysPlan : INotifyPropertyChanged
+    {
+        private bool daily = true;
+        private bool[] days = new bool[7] { true, true, true, true, true, true, true };
+
+        [JsonPropertyName("daily")]
+        public bool Daily
+        {
+            get => daily;
+            set
+            {
+                if (value != daily)
+                {
+                    daily = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        [JsonPropertyName("days")]
+        public bool[] Days
+        {
+            get => days;
+            set
+            {
+                if (value != days)
+                {
+                    days = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }   
 
         public event PropertyChangedEventHandler PropertyChanged;
 

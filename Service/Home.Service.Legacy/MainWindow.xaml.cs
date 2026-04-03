@@ -268,8 +268,8 @@ namespace Home.Service.Legacy
         {
             // Apply settings
             string host = TextAPIUrl.Text;
-            OSType os = (CmbOS.SelectedIndex == 0 ? OSType.WindowsXP : OSType.WindowsVista);
-            DeviceType dt = (DeviceType)CmbDeviceType.SelectedIndex;
+            Device.OSType os = (CmbOS.SelectedIndex == 0 ? OSType.WindowsXP : OSType.WindowsVista);
+            Device.DeviceType dt = (Device.DeviceType)CmbDeviceType.SelectedIndex;
             string location = TextLocation.Text;
             string deviceGroup = TextGroup.Text;
 

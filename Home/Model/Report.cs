@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using Units;
 
-namespace Model
+namespace Home.Model
 {
     public static class Report
     {

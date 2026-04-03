@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Home.Measure.Windows")]
-[assembly: AssemblyCopyright("Copyright ©  2021-2025")]
+[assembly: AssemblyCopyright("Copyright ©  2021-2026")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

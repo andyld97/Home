@@ -64,7 +64,7 @@ namespace Home.API
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(options => 
             {
-                options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo() {  Title = "Home API", Version = "v1" });
+                options.SwaggerDoc("v1", new Microsoft.OpenApi.OpenApiInfo() {  Title = "Home API", Version = "v1" });
                 options.IncludeXmlComments(XmlCommentsFilePath);
             });
         }

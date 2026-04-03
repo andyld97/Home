@@ -19,7 +19,6 @@ using System.Windows.Shapes;
 using Home.Model;
 using SkiaSharp;
 using Home.Data.Helper;
-using Model;
 using System.Diagnostics;
 using SkiaSharp.Views.WPF;
 
@@ -70,6 +69,12 @@ namespace Home.Controls
 
         private void InitalizeDeviceActivityPlot()
         {
+            var xAxis = new Axis();
+            var yAxis = new Axis();
+
+            plot.XAxes = new[] { xAxis };
+            plot.YAxes = new[] { yAxis };
+
             // This legend is always switching colors, so I am going to use my own legend!
             xaxis =  plot.XAxes.FirstOrDefault() as Axis;
             yaxis = plot.YAxes.FirstOrDefault() as Axis;            
@@ -146,11 +151,11 @@ namespace Home.Controls
                     batteryPoints.Add(new Point(batteryCounter++, bPercent));
             }
 
-            void mapping(Point s, ChartPoint e)
+            Coordinate mapping(Point s, int i)
             {
-                e.SecondaryValue = s.X;
-                e.PrimaryValue = s.Y;
+                return new Coordinate(s.X, s.Y); 
             }
+
             var cpuSeries = new LineSeries<Point>()
             {
                 Values = cpuPoints,
@@ -159,7 +164,7 @@ namespace Home.Controls
                 Fill = null,
                 GeometrySize = 0,
                 Name = Home.Properties.Resources.strDeviceActivityPlot_CPU_Name,
-                TooltipLabelFormatter = (s) => string.Format(Home.Properties.Resources.strDeviceActivityPlot_CPU_Tooltip, Math.Round(s.PrimaryValue, 0)),
+                YToolTipLabelFormatter = (s) => string.Format(Home.Properties.Resources.strDeviceActivityPlot_CPU_Tooltip, Math.Round(s.Coordinate.PrimaryValue, 0)),
             };
 
             var ramSeries = new LineSeries<Point>()
@@ -170,7 +175,7 @@ namespace Home.Controls
                 Fill = null,
                 GeometrySize = 0,
                 Name = Home.Properties.Resources.strDeviceActivityPlot_RAM_Name,
-                TooltipLabelFormatter = (s) => string.Format(Home.Properties.Resources.strDeviceActivityPlot_RAM_Tooltip, Math.Round(s.PrimaryValue, 0)),
+                YToolTipLabelFormatter = (s) => string.Format(Home.Properties.Resources.strDeviceActivityPlot_RAM_Tooltip, Math.Round(s.Coordinate.PrimaryValue, 0)),
             };
 
             var diskSeries = new LineSeries<Point>()
@@ -181,7 +186,7 @@ namespace Home.Controls
                 Fill = null,
                 GeometrySize = 0,
                 Name = Home.Properties.Resources.strDeviceActivityPlot_DISK_Name,
-                TooltipLabelFormatter = (s) => string.Format(Home.Properties.Resources.strDeviceActivityPlot_DISK_Tooltip, Math.Round(s.PrimaryValue, 0)),
+                YToolTipLabelFormatter = (s) => string.Format(Home.Properties.Resources.strDeviceActivityPlot_DISK_Tooltip, Math.Round(s.Coordinate.PrimaryValue, 0)),
             };
 
             var batterySeries = new LineSeries<Point>()
@@ -192,7 +197,7 @@ namespace Home.Controls
                 Fill = null,
                 GeometrySize = 0,
                 Name = Home.Properties.Resources.strDeviceActivityPlot_Battery_Name,
-                TooltipLabelFormatter = (s) => string.Format(Home.Properties.Resources.strDeviceActivityPlot_Battery_Tooltip, Math.Round(s.PrimaryValue, 0))
+                YToolTipLabelFormatter = (s) => string.Format(Home.Properties.Resources.strDeviceActivityPlot_Battery_Tooltip, Math.Round(s.Coordinate.PrimaryValue, 0))
             };
 
             List<ISeries> series = new List<ISeries>();

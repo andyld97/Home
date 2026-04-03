@@ -11,14 +11,14 @@ namespace Home.Data
         public static readonly string[] HTML_EXTENSIONS = new string[] { ".html", ".htm" };
         public static readonly string[] IMG_EXTENSIONS = new string[] { ".jpg", ".jpeg", ".jpe", ".jif", ".jfif", ".jfi", ".png", ".gif", ".tiff", ".tif", ".bmp", ".jp2", ".j2k", ".jpf", ".jpx", ".jpm", ".mj2", ".heif", ".heic" };
 
-        public static readonly DateTime ReleaseDate = new DateTime(2024, 01, 27, 10, 0, 0);
+        public static readonly DateTime ReleaseDate = new DateTime(2026, 04, 03, 11, 0, 0);
 
-        public const string HomeServiceWindowsClientVersion = "1.2.9";
+        public const string HomeServiceWindowsClientVersion = "1.3.0";
 
-        public const string HomeServiceLinuxClientVersion = "1.1.8";
+        public const string HomeServiceLinuxClientVersion = "1.2.0";
 
-        public const string HomeServiceLegacyClientVersion = "1.1.4";      
+        public const string HomeServiceLegacyClientVersion = "1.2.0";      
 
-        public const string HomeServiceAndroidClientVersion = "1.1.6";
+        public const string HomeServiceAndroidClientVersion = "1.2.0";
     }
 }

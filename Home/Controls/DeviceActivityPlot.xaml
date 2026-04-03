@@ -42,7 +42,7 @@
         </StackPanel>
 
         <Border MinHeight="150">
-            <lvc:CartesianChart x:Name="plot" />
+            <lvc:CartesianChart x:Name="plot" Background="Transparent" />
         </Border>
     </DockPanel>
 </UserControl>

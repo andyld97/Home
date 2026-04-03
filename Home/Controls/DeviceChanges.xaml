@@ -35,7 +35,7 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <ScrollViewer>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel>
             <GroupBox x:Name="GrpWarning" Header="{x:Static res:Resources.strWarnings}" Margin="2" BorderThickness="0.5" MaxHeight="150">
                 <ScrollViewer>
